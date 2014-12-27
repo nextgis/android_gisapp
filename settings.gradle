@@ -1,1 +1,1 @@
-include ':app', ':maplib', ':maplib', ':maplibui'
+include ':app', ':maplib', ':maplibui'
