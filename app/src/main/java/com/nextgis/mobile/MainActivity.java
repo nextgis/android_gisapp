@@ -2,8 +2,8 @@ package com.nextgis.mobile;
 
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
@@ -27,14 +27,19 @@ public class MainActivity extends ActionBarActivity {
 
         setContentView(R.layout.activity_main);
 
-        //restoreActionBar();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        toolbar.getBackground().setAlpha(128);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.primary_dark));
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         mMapFragment = (MapFragment) getSupportFragmentManager().findFragmentByTag("MAP");
 
         if (mMapFragment == null) {
             mMapFragment = new MapFragment();
-            if(mMapFragment.onInit((String) getTitle(), mMap)) {
+            if(mMapFragment.onInit(mMap)) {
                 fragmentTransaction.add(R.id.map, mMapFragment, "MAP").commit();
             }
         }
@@ -42,17 +47,11 @@ public class MainActivity extends ActionBarActivity {
         getSupportFragmentManager().executePendingTransactions();
 
         mLayersFragment = (LayersFragment) getSupportFragmentManager().findFragmentById(R.id.layers);
-        if(mLayersFragment != null && mLayersFragment.onInit((String) getTitle(), mMap)) {
+        if(mLayersFragment != null && mLayersFragment.onInit(mMap)) {
             mLayersFragment.getView().setBackgroundColor(getResources().getColor(R.color.background_material_light));
             // Set up the drawer.
             mLayersFragment.setUp(R.id.layers, (DrawerLayout) findViewById(R.id.drawer_layout));
         }
-    }
-
-    public void restoreActionBar() {
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setDisplayShowTitleEnabled(true);
     }
 
     @Override
@@ -62,7 +61,7 @@ public class MainActivity extends ActionBarActivity {
             // if the drawer is not showing. Otherwise, let the drawer
             // decide what to show in the action bar.
             getMenuInflater().inflate(R.menu.main, menu);
-            restoreActionBar();
+            //restoreActionBar();
             return true;
         }
         return super.onCreateOptionsMenu(menu);

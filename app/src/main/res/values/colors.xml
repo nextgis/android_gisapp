@@ -1,18 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="actionBarColor">#801d3f58</color>
-    <color name="colorlight">#50C0DB</color>
-    <color name="colordark">#AFEEEE</color>
-    <color name="colormid">#ADD8E6</color>
-    <color name="btnOnColor">#1D3F58</color>
-    <color name="btnOnGradientStart">#436884</color>
-    <color name="btnOnGradientEnd">#224560</color>
-    <color name="btnOffColor">#2A4D68</color>
-    <color name="btnOffGradientStart">#81B0D5</color>
-    <color name="btnOffGradientEnd">#335F81</color>
-    <color name="btnTextColor">#ffffff</color>
-    <color name="btnBorderColor">#8ab7d7</color>
-    <color name="bkColorLight">#ececea</color>
-    <color name="bkColorDark">#d4d4d2</color>
-    <color name="bkColorStrongDark">#737373</color>
+    <color name="actionBarColor">#8003a9f4</color>
+    <color name="primary">#03a9f4</color>
+    <color name="primary_dark">#01579b</color>
+    <color name="accent">#03a9f4</color>
+    <!--indigo from http://www.google.co.uk/design/spec/style/color.html#color-color-palette -->
 </resources>
