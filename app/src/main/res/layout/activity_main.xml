@@ -52,7 +52,7 @@
 
     <fragment
         android:id="@+id/layers"
-        android:name="com.nextgis.maplibui.fragments.LayersFragment"
+        android:name="com.nextgis.mobile.LayersFragment"
         android:layout_width="@dimen/navigation_drawer_width"
         android:layout_height="match_parent"
         android:layout_gravity="left|start"
