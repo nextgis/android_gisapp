@@ -51,7 +51,7 @@ public class GISApplication extends Application {
             File mapFullPath = new File(mapPath, mapName);
 
             final Bitmap bkBitmap = BitmapFactory.decodeResource(getResources(), com.nextgis.maplibui.R.drawable.bk_tile);
-            mMap = new MapDrawable(bkBitmap, mapFullPath, new LayerFactoryUI());
+            mMap = new MapDrawable(bkBitmap, this, mapFullPath, new LayerFactoryUI(mapFullPath));
         }
     }
 

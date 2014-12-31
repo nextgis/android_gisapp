@@ -173,6 +173,11 @@ public class MapFragment extends Fragment implements MapEventListener {
 
     }
 
+    @Override
+    public void onLayerDrawFinished(int id, float percent) {
+        //TODO: invalidate map or listen event in map?
+    }
+
     protected void setZoomInEnabled(boolean bEnabled) {
         if(mivZoomIn == null)
             return;

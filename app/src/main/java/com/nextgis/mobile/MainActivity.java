@@ -90,6 +90,6 @@ public class MainActivity extends ActionBarActivity {
     }
 
     protected void addRemoteLayer(){
-
+        mMap.addRemoteLayer();
     }
 }
