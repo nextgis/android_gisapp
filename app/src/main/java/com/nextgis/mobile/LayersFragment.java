@@ -34,8 +34,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplibui.LayersListAdapter;
-import com.nextgis.maplibui.MapView;
 
 /**
  * A layers fragment class
@@ -46,7 +46,6 @@ public class LayersFragment extends Fragment {
     protected ListView mLayersListView;
     protected View mFragmentContainerView;
     protected LayersListAdapter mListAdapter;
-	protected MapView mMap;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,6 +58,12 @@ public class LayersFragment extends Fragment {
         return inflater.inflate(R.layout.layersfragment, container, false);
 	}
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        // Indicate that this fragment would like to influence the set of actions in the action bar.
+        setHasOptionsMenu(true);
+    }
 
     public boolean isDrawerOpen() {
         return mDrawerLayout != null && mDrawerLayout.isDrawerOpen(mFragmentContainerView);
@@ -70,7 +75,7 @@ public class LayersFragment extends Fragment {
      * @param fragmentId   The android:id of this fragment in its activity's layout.
      * @param drawerLayout The DrawerLayout containing this fragment's UI.
      */
-    public void setUp(int fragmentId, DrawerLayout drawerLayout) {
+    public void setUp(int fragmentId, DrawerLayout drawerLayout, MapDrawable map) {
         mFragmentContainerView = getActivity().findViewById(fragmentId);
 
         Display display = getActivity().getWindowManager().getDefaultDisplay();
@@ -90,7 +95,7 @@ public class LayersFragment extends Fragment {
         mFragmentContainerView.setLayoutParams(params);
 
         mLayersListView = (ListView) mFragmentContainerView.findViewById(R.id.layer_list);
-        mListAdapter = new LayersListAdapter(getActivity(), mMap.getMap());
+        mListAdapter = new LayersListAdapter(getActivity(), map);
         mLayersListView.setAdapter(mListAdapter);
 
         mDrawerLayout = drawerLayout;
@@ -151,10 +156,5 @@ public class LayersFragment extends Fragment {
         super.onConfigurationChanged(newConfig);
         // Forward the new configuration the drawer toggle component.
         mDrawerToggle.onConfigurationChanged(newConfig);
-    }
-
-    public boolean onInit(MapView map) {
-        mMap = map;
-        return true;
     }
 }

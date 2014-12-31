@@ -21,7 +21,8 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mMap = new MapView(this);
+        GISApplication app = (GISApplication)getApplication();
+        mMap = new MapView(this, app.getMap());
 
         setContentView(R.layout.activity_main);
 
@@ -41,14 +42,17 @@ public class MainActivity extends ActionBarActivity {
                 fragmentTransaction.add(R.id.map, mMapFragment, "MAP").commit();
             }
         }
+        else{
+            mMapFragment.onInit(mMap);
+        }
 
         getSupportFragmentManager().executePendingTransactions();
 
         mLayersFragment = (LayersFragment) getSupportFragmentManager().findFragmentById(R.id.layers);
-        if(mLayersFragment != null && mLayersFragment.onInit(mMap)) {
+        if(mLayersFragment != null) {
             mLayersFragment.getView().setBackgroundColor(getResources().getColor(R.color.background_material_light));
             // Set up the drawer.
-            mLayersFragment.setUp(R.id.layers, (DrawerLayout) findViewById(R.id.drawer_layout));
+            mLayersFragment.setUp(R.id.layers, (DrawerLayout) findViewById(R.id.drawer_layout), app.getMap());
         }
     }
 

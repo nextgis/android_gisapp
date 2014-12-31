@@ -30,9 +30,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.map.Layer;
-import com.nextgis.maplib.map.MapEventListener;
+import com.nextgis.maplib.api.MapEventListener;
 import com.nextgis.maplibui.MapView;
 
 
@@ -147,7 +148,7 @@ public class MapFragment extends Fragment implements MapEventListener {
     }
 
     @Override
-    public void onLayerAdded(Layer layer) {
+    public void onLayerAdded(ILayer layer) {
 
     }
 
@@ -157,7 +158,7 @@ public class MapFragment extends Fragment implements MapEventListener {
     }
 
     @Override
-    public void onLayerChanged(Layer layer) {
+    public void onLayerChanged(ILayer layer) {
 
     }
 
