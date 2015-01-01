@@ -35,27 +35,35 @@ import static com.nextgis.maplib.util.Constants.KEY_PREF_MAP_NAME;
 import static com.nextgis.maplib.util.Constants.KEY_PREF_MAP_PATH;
 import static com.nextgis.maplib.util.Constants.PREFS_MAP;
 
-public class GISApplication extends Application {
+
+public class GISApplication
+        extends Application
+{
     protected MapDrawable mMap;
 
+
     @Override
-    public void onCreate() {
+    public void onCreate()
+    {
         super.onCreate();
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         File defaultPath = getExternalFilesDir(PREFS_MAP);
-        if(defaultPath != null) {
+        if (defaultPath != null) {
             String mapPath = sharedPreferences.getString(KEY_PREF_MAP_PATH, defaultPath.getPath());
             String mapName = sharedPreferences.getString(KEY_PREF_MAP_NAME, "default.ngm");
 
             File mapFullPath = new File(mapPath, mapName);
 
-            final Bitmap bkBitmap = BitmapFactory.decodeResource(getResources(), com.nextgis.maplibui.R.drawable.bk_tile);
+            final Bitmap bkBitmap = BitmapFactory.decodeResource(getResources(),
+                                                                 com.nextgis.maplibui.R.drawable.bk_tile);
             mMap = new MapDrawable(bkBitmap, this, mapFullPath, new LayerFactoryUI(mapFullPath));
         }
     }
 
-    public MapDrawable getMap() {
+
+    public MapDrawable getMap()
+    {
         return mMap;
     }
 }

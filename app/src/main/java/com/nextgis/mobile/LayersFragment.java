@@ -3,20 +3,20 @@
  * Purpose:  Mobile GIS for Android.
  * Author:   Dmitry Baryshnikov (aka Bishop), polimax@mail.ru
  ******************************************************************************
-*   Copyright (C) 2014 NextGIS
-*
-*    This program is free software: you can redistribute it and/or modify
-*    it under the terms of the GNU General Public License as published by
-*    the Free Software Foundation, either version 2 of the License, or
-*    (at your option) any later version.
-*
-*    This program is distributed in the hope that it will be useful,
-*    but WITHOUT ANY WARRANTY; without even the implied warranty of
-*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*    GNU General Public License for more details.
-*
-*    You should have received a copy of the GNU General Public License
-*    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *   Copyright (C) 2014 NextGIS
+ *
+ *    This program is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 2 of the License, or
+ *    (at your option) any later version.
+ *
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
 package com.nextgis.mobile;
 
@@ -37,45 +37,66 @@ import android.widget.ListView;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplibui.LayersListAdapter;
 
+
 /**
  * A layers fragment class
  */
-public class LayersFragment extends Fragment {
-	protected ActionBarDrawerToggle mDrawerToggle;
-    protected DrawerLayout mDrawerLayout;
-    protected ListView mLayersListView;
-    protected View mFragmentContainerView;
-    protected LayersListAdapter mListAdapter;
+public class LayersFragment
+        extends Fragment
+{
+    protected ActionBarDrawerToggle mDrawerToggle;
+    protected DrawerLayout          mDrawerLayout;
+    protected ListView              mLayersListView;
+    protected View                  mFragmentContainerView;
+    protected LayersListAdapter     mListAdapter;
+
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
     }
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        return inflater.inflate(R.layout.layersfragment, container, false);
-	}
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
+    public View onCreateView(
+            LayoutInflater inflater,
+            ViewGroup container,
+            Bundle savedInstanceState)
+    {
+
+        return inflater.inflate(R.layout.layersfragment, container, false);
+    }
+
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
         super.onActivityCreated(savedInstanceState);
         // Indicate that this fragment would like to influence the set of actions in the action bar.
         setHasOptionsMenu(true);
     }
 
-    public boolean isDrawerOpen() {
+
+    public boolean isDrawerOpen()
+    {
         return mDrawerLayout != null && mDrawerLayout.isDrawerOpen(mFragmentContainerView);
     }
+
 
     /**
      * Users of this fragment must call this method to set up the navigation drawer interactions.
      *
-     * @param fragmentId   The android:id of this fragment in its activity's layout.
-     * @param drawerLayout The DrawerLayout containing this fragment's UI.
+     * @param fragmentId
+     *         The android:id of this fragment in its activity's layout.
+     * @param drawerLayout
+     *         The DrawerLayout containing this fragment's UI.
      */
-    public void setUp(int fragmentId, DrawerLayout drawerLayout, MapDrawable map) {
+    public void setUp(
+            int fragmentId,
+            DrawerLayout drawerLayout,
+            MapDrawable map)
+    {
         mFragmentContainerView = getActivity().findViewById(fragmentId);
 
         Display display = getActivity().getWindowManager().getDefaultDisplay();
@@ -90,8 +111,9 @@ public class LayersFragment extends Fragment {
         }
 
         ViewGroup.LayoutParams params = mFragmentContainerView.getLayoutParams();
-        if(params.width >= displayWidth)
+        if (params.width >= displayWidth) {
             params.width = (int) (displayWidth * 0.8);
+        }
         mFragmentContainerView.setLayoutParams(params);
 
         mLayersListView = (ListView) mFragmentContainerView.findViewById(R.id.layer_list);
@@ -107,15 +129,18 @@ public class LayersFragment extends Fragment {
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the navigation drawer and the action bar app icon.
 
-        mDrawerToggle = new ActionBarDrawerToggle(
-                getActivity(),                    // host Activity
-                mDrawerLayout,                    // DrawerLayout object
+        mDrawerToggle = new ActionBarDrawerToggle(getActivity(),                    // host Activity
+                                                  mDrawerLayout,// DrawerLayout object
 //                R.drawable.ic_drawer,             // nav drawer image to replace 'Up' caret
-                R.string.layers_drawer_open,  // "open drawer" description for accessibility
-                R.string.layers_drawer_close  // "close drawer" description for accessibility
-        ) {
+                                                  R.string.layers_drawer_open,
+                                                  // "open drawer" description for accessibility
+                                                  R.string.layers_drawer_close
+                                                  // "close drawer" description for accessibility
+        )
+        {
             @Override
-            public void onDrawerClosed(View drawerView) {
+            public void onDrawerClosed(View drawerView)
+            {
                 super.onDrawerClosed(drawerView);
                 if (!isAdded()) {
                     return;
@@ -124,8 +149,10 @@ public class LayersFragment extends Fragment {
                 getActivity().supportInvalidateOptionsMenu(); // calls onPrepareOptionsMenu()
             }
 
+
             @Override
-            public void onDrawerOpened(View drawerView) {
+            public void onDrawerOpened(View drawerView)
+            {
                 super.onDrawerOpened(drawerView);
                 if (!isAdded()) {
                     return;
@@ -136,9 +163,11 @@ public class LayersFragment extends Fragment {
         };
 
         // Defer code dependent on restoration of previous instance state.
-        mDrawerLayout.post(new Runnable() {
+        mDrawerLayout.post(new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 mDrawerToggle.syncState();
             }
         });
@@ -146,13 +175,17 @@ public class LayersFragment extends Fragment {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
+
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
         return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
 
+
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(Configuration newConfig)
+    {
         super.onConfigurationChanged(newConfig);
         // Forward the new configuration the drawer toggle component.
         mDrawerToggle.onConfigurationChanged(newConfig);

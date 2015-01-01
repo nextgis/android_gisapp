@@ -11,17 +11,21 @@ import android.support.v4.widget.DrawerLayout;
 import com.nextgis.maplibui.MapView;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity
+        extends ActionBarActivity
+{
 
-    protected MapFragment mMapFragment;
+    protected MapFragment    mMapFragment;
     protected LayersFragment mLayersFragment;
-    protected MapView mMap;
+    protected MapView        mMap;
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 
-        GISApplication app = (GISApplication)getApplication();
+        GISApplication app = (GISApplication) getApplication();
         mMap = new MapView(this, app.getMap());
 
         setContentView(R.layout.activity_main);
@@ -38,26 +42,31 @@ public class MainActivity extends ActionBarActivity {
 
         if (mMapFragment == null) {
             mMapFragment = new MapFragment();
-            if(mMapFragment.onInit(mMap)) {
+            if (mMapFragment.onInit(mMap)) {
                 fragmentTransaction.add(R.id.map, mMapFragment, "MAP").commit();
             }
-        }
-        else{
+        } else {
             mMapFragment.onInit(mMap);
         }
 
         getSupportFragmentManager().executePendingTransactions();
 
-        mLayersFragment = (LayersFragment) getSupportFragmentManager().findFragmentById(R.id.layers);
-        if(mLayersFragment != null) {
-            mLayersFragment.getView().setBackgroundColor(getResources().getColor(R.color.background_material_light));
+        mLayersFragment =
+                (LayersFragment) getSupportFragmentManager().findFragmentById(R.id.layers);
+        if (mLayersFragment != null) {
+            mLayersFragment.getView()
+                           .setBackgroundColor(
+                                   getResources().getColor(R.color.background_material_light));
             // Set up the drawer.
-            mLayersFragment.setUp(R.id.layers, (DrawerLayout) findViewById(R.id.drawer_layout), app.getMap());
+            mLayersFragment.setUp(R.id.layers, (DrawerLayout) findViewById(R.id.drawer_layout),
+                                  app.getMap());
         }
     }
 
+
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
         if (!mLayersFragment.isDrawerOpen()) {
             // Only show items in the action bar relevant to this screen
             // if the drawer is not showing. Otherwise, let the drawer
@@ -69,8 +78,10 @@ public class MainActivity extends ActionBarActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
 
         switch (item.getItemId()) {
             case R.id.menu_settings:
@@ -89,7 +100,9 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    protected void addRemoteLayer(){
+
+    protected void addRemoteLayer()
+    {
         mMap.addRemoteLayer();
     }
 }

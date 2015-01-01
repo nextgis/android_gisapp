@@ -7,7 +7,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.nextgis.mobile.MainActivity"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    >
 
     <!--
          As the main content view, the view below consumes the entire
@@ -15,12 +16,14 @@
     -->
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
 
         <FrameLayout
             android:id="@+id/map"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            >
 
             <!-- We use a Toolbar so that our drawer can be displayed
                  in front of the action bar -->
@@ -34,7 +37,8 @@
             android:minHeight="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            />
 
     </FrameLayout>
 
@@ -44,8 +48,7 @@
          languages and on the right side for right-to-left languages.
          If you're not building against API 17 or higher, use
          android:layout_gravity="left" instead.
-    -->
-    <!--
+    --><!--
          The drawer is given a fixed width in dp and extends the full height of
          the container.
     -->
@@ -56,6 +59,7 @@
         android:layout_width="@dimen/navigation_drawer_width"
         android:layout_height="match_parent"
         android:layout_gravity="left|start"
-        android:fitsSystemWindows="true"/>
+        android:fitsSystemWindows="true"
+        />
 
 </android.support.v4.widget.DrawerLayout>

@@ -37,7 +37,10 @@ import com.nextgis.maplib.api.MapEventListener;
 import com.nextgis.maplibui.MapView;
 
 
-public class MapFragment extends Fragment implements MapEventListener {
+public class MapFragment
+        extends Fragment
+        implements MapEventListener
+{
 
     protected final static int mMargings = 10;
 
@@ -46,28 +49,40 @@ public class MapFragment extends Fragment implements MapEventListener {
     protected ImageView mivZoomOut;
 
     protected RelativeLayout mMapRelativeLayout;
-    protected boolean mShowZoomControl;
+    protected boolean        mShowZoomControl;
 
-    public MapFragment() {
+
+    public MapFragment()
+    {
         mShowZoomControl = true;
     }
 
-    public boolean isShowZoomControl() {
+
+    public boolean isShowZoomControl()
+    {
         return mShowZoomControl;
     }
 
-    public void setShowZoomControl(boolean showZoomControl) {
+
+    public void setShowZoomControl(boolean showZoomControl)
+    {
         mShowZoomControl = showZoomControl;
     }
 
+
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
     }
 
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(
+            LayoutInflater inflater,
+            ViewGroup container,
+            Bundle savedInstanceState)
+    {
         View view = inflater.inflate(R.layout.mapfragment, container, false);
         FrameLayout layout = (FrameLayout) view.findViewById(R.id.mapholder);
 
@@ -79,8 +94,9 @@ public class MapFragment extends Fragment implements MapEventListener {
                         RelativeLayout.LayoutParams.MATCH_PARENT,
                         RelativeLayout.LayoutParams.MATCH_PARENT));
 
-                if(mShowZoomControl)
+                if (mShowZoomControl) {
                     addMapButtons(mMapRelativeLayout); //TODO: remove this.
+                }
                 //TODO: The idea is to have one fab (new in Android L v5) to add new geometry to layer.
                 //TODO: The zoom should be the same as scale bar: user have to choose meters, foots or zoom to seen over the map. The bar/rech shold shown only while zoom/scale is changed
                 //TODO: The zoomin/zoomout buttons should be at left center or top of display and has alpha about 25%. First tap on screen make them non transparent
@@ -95,18 +111,23 @@ public class MapFragment extends Fragment implements MapEventListener {
         return view;
     }
 
+
     @Override
-    public void onDestroyView() {
-        if(mMap != null){
+    public void onDestroyView()
+    {
+        if (mMap != null) {
             mMap.removeListener(this);
-            if(mMapRelativeLayout != null)
+            if (mMapRelativeLayout != null) {
                 mMapRelativeLayout.removeView(mMap);
+            }
         }
 
         super.onDestroyView();
     }
 
-    protected void addMapButtons(RelativeLayout rl) {
+
+    protected void addMapButtons(RelativeLayout rl)
+    {
         mivZoomIn = new ImageView(getActivity());
         mivZoomIn.setImageResource(R.drawable.ic_plus);
         mivZoomIn.setId(R.drawable.ic_plus);
@@ -115,29 +136,33 @@ public class MapFragment extends Fragment implements MapEventListener {
         mivZoomOut.setImageResource(R.drawable.ic_minus);
         //mivZoomOut.setId(R.drawable.ic_minus);
 
-        mivZoomIn.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
+        mivZoomIn.setOnClickListener(new OnClickListener()
+        {
+            public void onClick(View v)
+            {
                 mMap.zoomIn();
             }
         });
 
-        mivZoomOut.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
+        mivZoomOut.setOnClickListener(new OnClickListener()
+        {
+            public void onClick(View v)
+            {
                 mMap.zoomOut();
             }
         });
 
-        final RelativeLayout.LayoutParams RightParams4 = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        final RelativeLayout.LayoutParams RightParams4 =
+                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+                                                RelativeLayout.LayoutParams.WRAP_CONTENT);
         RightParams4.setMargins(mMargings + 5, mMargings - 5, mMargings + 5, mMargings - 5);
         RightParams4.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         RightParams4.addRule(RelativeLayout.CENTER_IN_PARENT);//ALIGN_PARENT_TOP
         rl.addView(mivZoomIn, RightParams4);
 
-        final RelativeLayout.LayoutParams RightParams2 = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        final RelativeLayout.LayoutParams RightParams2 =
+                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+                                                RelativeLayout.LayoutParams.WRAP_CONTENT);
         RightParams2.setMargins(mMargings + 5, mMargings - 5, mMargings + 5, mMargings - 5);
         RightParams2.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         RightParams2.addRule(RelativeLayout.BELOW, R.drawable.ic_plus);
@@ -147,40 +172,59 @@ public class MapFragment extends Fragment implements MapEventListener {
         setZoomOutEnabled(mMap.canZoomOut());
     }
 
+
     @Override
-    public void onLayerAdded(ILayer layer) {
+    public void onLayerAdded(ILayer layer)
+    {
 
     }
 
+
     @Override
-    public void onLayerDeleted(int id) {
+    public void onLayerDeleted(int id)
+    {
 
     }
 
+
     @Override
-    public void onLayerChanged(ILayer layer) {
+    public void onLayerChanged(ILayer layer)
+    {
 
     }
 
+
     @Override
-    public void onExtentChanged(int zoom, GeoPoint center) {
+    public void onExtentChanged(
+            int zoom,
+            GeoPoint center)
+    {
         setZoomInEnabled(mMap.canZoomIn());
         setZoomOutEnabled(mMap.canZoomOut());
     }
 
+
     @Override
-    public void onLayersReordered() {
+    public void onLayersReordered()
+    {
 
     }
 
+
     @Override
-    public void onLayerDrawFinished(int id, float percent) {
+    public void onLayerDrawFinished(
+            int id,
+            float percent)
+    {
         //TODO: invalidate map or listen event in map?
     }
 
-    protected void setZoomInEnabled(boolean bEnabled) {
-        if(mivZoomIn == null)
+
+    protected void setZoomInEnabled(boolean bEnabled)
+    {
+        if (mivZoomIn == null) {
             return;
+        }
         if (bEnabled) {
             mivZoomIn.getDrawable().setAlpha(255);
         } else {
@@ -188,9 +232,12 @@ public class MapFragment extends Fragment implements MapEventListener {
         }
     }
 
-    protected void setZoomOutEnabled(boolean bEnabled) {
-        if(mivZoomOut == null)
+
+    protected void setZoomOutEnabled(boolean bEnabled)
+    {
+        if (mivZoomOut == null) {
             return;
+        }
         if (bEnabled) {
             mivZoomOut.getDrawable().setAlpha(255);
         } else {
@@ -198,7 +245,9 @@ public class MapFragment extends Fragment implements MapEventListener {
         }
     }
 
-    public boolean onInit(MapView map) {
+
+    public boolean onInit(MapView map)
+    {
         mMap = map;
         mMap.addListener(this);
         return true;
