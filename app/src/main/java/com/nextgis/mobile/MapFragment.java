@@ -32,7 +32,6 @@ import android.widget.RelativeLayout;
 
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.datasource.GeoPoint;
-import com.nextgis.maplib.map.Layer;
 import com.nextgis.maplib.api.MapEventListener;
 import com.nextgis.maplibui.MapView;
 
@@ -44,9 +43,9 @@ public class MapFragment
 
     protected final static int mMargings = 10;
 
-    protected MapView mMap;
-    protected ImageView mivZoomIn;
-    protected ImageView mivZoomOut;
+    protected MapView     mMap;
+    protected ImageView   mivZoomIn;
+    protected ImageView   mivZoomOut;
 
     protected RelativeLayout mMapRelativeLayout;
     protected boolean        mShowZoomControl;

@@ -10,7 +10,6 @@ import android.support.v4.widget.DrawerLayout;
 
 import com.nextgis.maplibui.MapView;
 
-
 public class MainActivity
         extends ActionBarActivity
 {
