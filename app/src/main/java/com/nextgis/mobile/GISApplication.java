@@ -31,9 +31,7 @@ import com.nextgis.maplibui.mapui.LayerFactoryUI;
 
 import java.io.File;
 
-import static com.nextgis.maplib.util.Constants.KEY_PREF_MAP_NAME;
-import static com.nextgis.maplib.util.Constants.KEY_PREF_MAP_PATH;
-import static com.nextgis.maplib.util.Constants.PREFS_MAP;
+import static com.nextgis.maplib.util.Constants.*;
 
 
 public class GISApplication
@@ -51,13 +49,15 @@ public class GISApplication
         File defaultPath = getExternalFilesDir(PREFS_MAP);
         if (defaultPath != null) {
             String mapPath = sharedPreferences.getString(KEY_PREF_MAP_PATH, defaultPath.getPath());
-            String mapName = sharedPreferences.getString(KEY_PREF_MAP_NAME, "default.ngm");
+            String mapName = sharedPreferences.getString(KEY_PREF_MAP_NAME, "default");
 
-            File mapFullPath = new File(mapPath, mapName);
+            File mapFullPath = new File(mapPath, mapName + MAP_EXT);
 
             final Bitmap bkBitmap = BitmapFactory.decodeResource(getResources(),
                                                                  com.nextgis.maplibui.R.drawable.bk_tile);
             mMap = new MapDrawable(bkBitmap, this, mapFullPath, new LayerFactoryUI(mapFullPath));
+            mMap.setName(mapName);
+            mMap.load();
         }
     }
 
