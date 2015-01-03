@@ -30,7 +30,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.api.MapEventListener;
 import com.nextgis.maplibui.MapView;
@@ -173,7 +172,7 @@ public class MapFragment
 
 
     @Override
-    public void onLayerAdded(ILayer layer)
+    public void onLayerAdded(int id)
     {
 
     }
@@ -187,7 +186,7 @@ public class MapFragment
 
 
     @Override
-    public void onLayerChanged(ILayer layer)
+    public void onLayerChanged(int id)
     {
 
     }
@@ -195,7 +194,7 @@ public class MapFragment
 
     @Override
     public void onExtentChanged(
-            int zoom,
+            float zoom,
             GeoPoint center)
     {
         setZoomInEnabled(mMap.canZoomIn());
