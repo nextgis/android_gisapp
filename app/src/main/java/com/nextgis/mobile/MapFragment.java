@@ -20,6 +20,7 @@
  ****************************************************************************/
 package com.nextgis.mobile;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -93,7 +94,7 @@ public class MapFragment
                         RelativeLayout.LayoutParams.MATCH_PARENT));
 
                 if (mShowZoomControl) {
-                    addMapButtons(mMapRelativeLayout); //TODO: remove this.
+                    addMapButtons(view.getContext(), mMapRelativeLayout); //TODO: remove this.
                 }
                 //TODO: The idea is to have one fab (new in Android L v5) to add new geometry to layer.
                 //TODO: The zoom should be the same as scale bar: user have to choose meters, foots or zoom to seen over the map. The bar/rech shold shown only while zoom/scale is changed
@@ -124,13 +125,13 @@ public class MapFragment
     }
 
 
-    protected void addMapButtons(RelativeLayout rl)
+    protected void addMapButtons(Context context, RelativeLayout rl)
     {
-        mivZoomIn = new ImageView(getActivity());
+        mivZoomIn = new ImageView(context);
         mivZoomIn.setImageResource(R.drawable.ic_plus);
         mivZoomIn.setId(R.drawable.ic_plus);
 
-        mivZoomOut = new ImageView(getActivity());
+        mivZoomOut = new ImageView(context);
         mivZoomOut.setImageResource(R.drawable.ic_minus);
         //mivZoomOut.setId(R.drawable.ic_minus);
 
