@@ -20,10 +20,16 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<resources>
-    <color name="actionBarColor">#8003a9f4</color>
-    <color name="primary">#03a9f4</color>
-    <color name="primary_dark">#01579b</color>
-    <color name="accent">#03a9f4</color>
-    <!--indigo from http://www.google.co.uk/design/spec/style/color.html#color-color-palette -->
-</resources>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <CheckBoxPreference
+        android:key="keep_screen_on"
+        android:title="@string/keep_screen_on"
+        android:defaultValue="true"
+        android:summary="@string/keep_screen_on_summary" />
+    <CheckBoxPreference
+        android:key="show_zoom_controls"
+        android:title="@string/show_zoom_controls"
+        android:defaultValue="true"
+        android:summary="@string/show_zoom_controls_summary" />
+
+</PreferenceScreen>

@@ -20,10 +20,22 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<resources>
-    <color name="actionBarColor">#8003a9f4</color>
-    <color name="primary">#03a9f4</color>
-    <color name="primary_dark">#01579b</color>
-    <color name="accent">#03a9f4</color>
-    <!--indigo from http://www.google.co.uk/design/spec/style/color.html#color-color-palette -->
-</resources>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference
+        android:title="@string/general"
+        android:summary="@string/general_summary" >
+        <intent
+            android:targetPackage="com.nextgis.mobile"
+            android:targetClass="com.nextgis.mobile.SettingsActivity"
+            android:action="com.nextgis.mobile.PREFS_GENERAL" />
+    </Preference>
+    <Preference
+        android:title="@string/map"
+        android:summary="@string/map_summary" >
+        <intent
+            android:targetPackage="com.nextgis.mobile"
+            android:targetClass="com.nextgis.mobile.SettingsActivity"
+            android:action="com.nextgis.mobile.PREFS_MAP" />
+    </Preference>
+
+</PreferenceScreen>

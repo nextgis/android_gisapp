@@ -20,10 +20,18 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<resources>
-    <color name="actionBarColor">#8003a9f4</color>
-    <color name="primary">#03a9f4</color>
-    <color name="primary_dark">#01579b</color>
-    <color name="accent">#03a9f4</color>
-    <!--indigo from http://www.google.co.uk/design/spec/style/color.html#color-color-palette -->
-</resources>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:id="@+id/mapholder"
+             tools:context="com.nextgis.maplibui.MapFragment"
+    >
+
+    <RelativeLayout
+        android:id="@+id/maprl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+    </RelativeLayout>
+</FrameLayout>
