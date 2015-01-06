@@ -56,9 +56,11 @@ public class SettingsActivity extends PreferenceActivity
         toolbar.getBackground().setAlpha(255);
         toolbar.setTitle(R.string.action_settings);
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        toolbar.setNavigationOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 SettingsActivity.this.finish();
             }
         });
