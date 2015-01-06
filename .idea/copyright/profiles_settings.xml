@@ -1,3 +1,7 @@
 <component name="CopyrightManager">
-  <settings default="" />
+  <settings default="NextGIS Mobile">
+    <module2copyright>
+      <element module="All" copyright="NextGIS Mobile" />
+    </module2copyright>
+  </settings>
 </component>
