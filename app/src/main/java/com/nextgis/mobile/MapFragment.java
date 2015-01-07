@@ -22,7 +22,9 @@
 package com.nextgis.mobile;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +38,7 @@ import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.api.MapEventListener;
 import com.nextgis.maplibui.MapView;
 
+import static com.nextgis.mobile.util.SettingsConstants.*;
 
 public class MapFragment
         extends Fragment
@@ -125,6 +128,12 @@ public class MapFragment
         super.onDestroyView();
     }
 
+    protected void removeMapButtons(Context context, RelativeLayout rl)
+    {
+        rl.removeAllViewsInLayout();
+        mivZoomIn = null;
+        mivZoomOut = null;
+    }
 
     protected void addMapButtons(Context context, RelativeLayout rl)
     {
@@ -251,5 +260,36 @@ public class MapFragment
         mMap = map;
         mMap.addListener(this);
         return true;
+    }
+
+
+    @Override
+    public void onPause()
+    {
+        final SharedPreferences.Editor edit = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
+        if(null != mMap) {
+            edit.putFloat(KEY_PREF_ZOOM_LEVEL, mMap.getZoomLevel());
+            GeoPoint point = mMap.getMapCenter();
+            edit.putLong(KEY_PREF_SCROLL_X, Double.doubleToRawLongBits(point.getX()));
+            edit.putLong(KEY_PREF_SCROLL_Y, Double.doubleToRawLongBits(point.getY()));
+        }
+        edit.commit();
+
+        super.onPause();
+    }
+
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        if(null != mMap) {
+            float mMapZoom = prefs.getFloat(KEY_PREF_ZOOM_LEVEL, mMap.getMinZoom());
+            double mMapScrollX = Double.longBitsToDouble(prefs.getLong(KEY_PREF_SCROLL_X, 0));
+            double mMapScrollY = Double.longBitsToDouble(prefs.getLong(KEY_PREF_SCROLL_Y, 0));
+            mMap.setZoomAndCenter(mMapZoom, new GeoPoint(mMapScrollX, mMapScrollY));
+        }
     }
 }

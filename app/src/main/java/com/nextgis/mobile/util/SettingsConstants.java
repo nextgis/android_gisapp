@@ -41,14 +41,12 @@ public interface SettingsConstants
     /**
      * Preference key - not UI
      */
-    public static final String PREFS_TILE_SOURCE      = "map_tile_source";
-    public static final String PREFS_SCROLL_X         = "map_scroll_x";
-    public static final String PREFS_SCROLL_Y         = "map_scroll_y";
-    public static final String PREFS_ZOOM_LEVEL       = "map_zoom_level";
-    public static final String PREFS_SHOW_LOCATION    = "map_show_loc";
-    public static final String PREFS_SHOW_COMPASS     = "map_show_compass";
-    public static final String PREFS_SHOW_INFO        = "map_show_info";
-    public static final String PREFS_WAR_SHOW_INFO    = "map_war_show_info";
+    public static final String KEY_PREF_SCROLL_X      = "map_scroll_x";
+    public static final String KEY_PREF_SCROLL_Y      = "map_scroll_y";
+    public static final String KEY_PREF_ZOOM_LEVEL    = "map_zoom_level";
+    public static final String KEY_PREF_SHOW_LOCATION = "map_show_loc";
+    public static final String KEY_PREF_SHOW_COMPASS  = "map_show_compass";
+    public static final String KEY_PREF_SHOW_INFO     = "map_show_info";
     public static final String KEY_PREF_APP_FIRST_RUN = "app_first_run";
     public static final String KEY_PREF_MAP           = "map";
 
