@@ -49,8 +49,8 @@ public interface SettingsConstants
     public static final String PREFS_SHOW_COMPASS     = "map_show_compass";
     public static final String PREFS_SHOW_INFO        = "map_show_info";
     public static final String PREFS_WAR_SHOW_INFO    = "map_war_show_info";
-    public static final String PREFS_IS_FRESH_INSTALL = "map_is_fresh_install";
-    public static final String PREFS_MAP              = "map";
+    public static final String KEY_PREF_APP_FIRST_RUN = "app_first_run";
+    public static final String KEY_PREF_MAP           = "map";
 
     /**
      * Preference keys - in UI

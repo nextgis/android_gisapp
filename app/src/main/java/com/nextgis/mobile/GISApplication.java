@@ -29,9 +29,11 @@ import android.preference.PreferenceManager;
 
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplibui.mapui.LayerFactoryUI;
+import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
 
 import java.io.File;
 
+import static com.nextgis.maplib.util.GeoConstants.TMSTYPE_OSM;
 import static com.nextgis.mobile.util.SettingsConstants.*;
 import static com.nextgis.maplib.util.Constants.*;
 
@@ -48,7 +50,7 @@ public class GISApplication
         super.onCreate();
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        File defaultPath = getExternalFilesDir(PREFS_MAP);
+        File defaultPath = getExternalFilesDir(KEY_PREF_MAP);
         if (defaultPath != null) {
             String mapPath = sharedPreferences.getString(KEY_PREF_MAP_PATH, defaultPath.getPath());
             String mapName = sharedPreferences.getString(KEY_PREF_MAP_NAME, "default");
@@ -60,6 +62,14 @@ public class GISApplication
             mMap = new MapDrawable(bkBitmap, this, mapFullPath, new LayerFactoryUI(mapFullPath));
             mMap.setName(mapName);
             mMap.load();
+
+            if(sharedPreferences.getBoolean(KEY_PREF_APP_FIRST_RUN, true))
+            {
+                onFirstRun();
+                SharedPreferences.Editor edit = sharedPreferences.edit();
+                edit.putBoolean(KEY_PREF_APP_FIRST_RUN, false);
+                edit.commit();
+            }
         }
     }
 
@@ -67,5 +77,20 @@ public class GISApplication
     public MapDrawable getMap()
     {
         return mMap;
+    }
+
+    protected void onFirstRun()
+    {
+        //add OpenStreetMap layer on application first run
+        String layerName = getString(R.string.osm);
+        String layerURL = getString(R.string.osm_url);
+        RemoteTMSLayerUI layer = new RemoteTMSLayerUI(getApplicationContext(), mMap.getLayerFactory().cretateLayerStorage());
+        layer.setName(layerName);
+        layer.setURL(layerURL);
+        layer.setTMSType(TMSTYPE_OSM);
+        layer.setVisible(true);
+
+        mMap.addLayer(layer);
+        mMap.save();
     }
 }
