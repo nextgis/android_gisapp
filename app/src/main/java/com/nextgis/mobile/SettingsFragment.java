@@ -41,18 +41,18 @@ public class SettingsFragment extends PreferenceFragment
             addPreferencesFromResource(R.xml.preferences_map);
         } /*else if ("user".equals(settings)) {
             addPreferencesFromResource(R.xml.preferences_user);
-        } else if ("scanex".equals(settings)) {
-            addPreferencesFromResource(R.xml.preferences_scanex);
         }
         support = new SettingsSupport(getActivity(), this.getPreferenceScreen());
         */
     }
+
     @Override
     public void onResume() {
         super.onResume();
     //    if(support != null)
     //        support.registerListener();
     }
+
     @Override
     public void onPause() {
         super.onPause();

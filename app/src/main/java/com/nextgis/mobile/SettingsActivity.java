@@ -54,7 +54,7 @@ public class SettingsActivity extends PreferenceActivity
 
         Toolbar toolbar = (Toolbar) toolbarContainer.findViewById(R.id.main_toolbar);
         toolbar.getBackground().setAlpha(255);
-        toolbar.setTitle(R.string.action_settings);
+        toolbar.setTitle(getTitle());
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         toolbar.setNavigationOnClickListener(new View.OnClickListener()
         {
@@ -82,12 +82,12 @@ public class SettingsActivity extends PreferenceActivity
         else if (action != null && action.equals(ACTION_PREFS_SCANEX)) {
             addPreferencesFromResource(R.xml.preferences_scanex);
             bAddPrefXML = true;
-        }
+        }*/
         else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
             // Load the legacy preferences headers
             addPreferencesFromResource(R.xml.preference_headers_legacy);
             bAddPrefXML = true;
-        }*/
+        }
         if(bAddPrefXML){
             //support = new SettingsSupport(this, this.getPreferenceScreen());
         }

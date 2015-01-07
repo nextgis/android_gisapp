@@ -37,5 +37,13 @@
             android:targetClass="com.nextgis.mobile.SettingsActivity"
             android:action="com.nextgis.mobile.PREFS_MAP" />
     </Preference>
+    <Preference
+        android:title="@string/ngw"
+        android:summary="@string/ngw_summary" >
+        <intent
+            android:targetPackage="com.nextgis.mobile"
+            android:targetClass="com.nextgis.mobile.NGWSettingsActivityProxy"
+            android:action="com.nextgis.mobile.PREFS_NGW" />
+    </Preference>
 
 </PreferenceScreen>

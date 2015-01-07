@@ -33,5 +33,12 @@
         android:summary="@string/map_summary">
         <extra android:name="settings" android:value="map" />
     </header>
-
+    <header
+        android:title="@string/ngw"
+        android:summary="@string/ngw_summary">
+        <intent
+            android:targetPackage="com.nextgis.mobile"
+            android:targetClass="com.nextgis.mobile.NGWSettingsActivityProxy"
+            android:action="com.nextgis.mobile.PREFS_NGW" />
+    </header>
 </preference-headers>

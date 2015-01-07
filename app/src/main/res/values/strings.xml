@@ -38,5 +38,7 @@
     <string name="show_zoom_controls_summary">Show zoom in and zoom out control on map</string>
     <string name="map">Map</string>
     <string name="map_summary">Map settings</string>
+    <string name="ngw">NextGIS Web</string>
+    <string name="ngw_summary">NextGIS Web settings</string>
 
 </resources>
