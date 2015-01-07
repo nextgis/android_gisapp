@@ -97,8 +97,9 @@ public class MapFragment
                         RelativeLayout.LayoutParams.MATCH_PARENT,
                         RelativeLayout.LayoutParams.MATCH_PARENT));
 
-                if (mShowZoomControl) {
-                    addMapButtons(view.getContext(), mMapRelativeLayout); //TODO: remove this.
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                if (sharedPreferences.getBoolean(KEY_PREF_SHOW_ZOOM_CONTROLS, false)) {
+                    addMapButtons(view.getContext(), mMapRelativeLayout);
                 }
                 //TODO: The idea is to have one fab (new in Android L v5) to add new geometry to layer.
                 //TODO: The zoom should be the same as scale bar: user have to choose meters, foots or zoom to seen over the map. The bar/rech shold shown only while zoom/scale is changed

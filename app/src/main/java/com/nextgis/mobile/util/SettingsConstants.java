@@ -31,7 +31,7 @@ public interface SettingsConstants
     public final static String ACTION_PREFS_NGW      = "com.nextgis.mobile.PREFS_NGW";
     public final static String ACTION_PREFS_COMPASS  = "com.nextgis.mobile.PREFS_COMPASS";
     public final static String ACTION_PREFS_TRACKING = "com.nextgis.mobile.PREFS_TRACKING";
-    public final static String ACTION_PREFS_EDIT = "com.nextgis.mobile.PREFS_EDIT";
+    public final static String ACTION_PREFS_EDIT     = "com.nextgis.mobile.PREFS_EDIT";
 
     /**
      * map preference
@@ -63,7 +63,6 @@ public interface SettingsConstants
     public static final String KEY_PREF_SW_SENDPOS_SRV       = "sw_sendpos_service";
     public static final String KEY_PREF_SW_ENERGY_ECO        = "sw_energy_economy";
     public static final String KEY_PREF_TIME_DATASEND        = "time_between_datasend";
-    public static final String KEY_PREF_START_SVC_ON_STARTUP = "start_services_on_startup";
     public static final String KEY_PREF_ACCURATE_LOC         = "accurate_coordinates_pick";
     public static final String KEY_PREF_ACCURATE_GPSCOUNT    = "accurate_coordinates_pick_count";
     public static final String KEY_PREF_ACCURATE_CE          = "accurate_type";
@@ -74,4 +73,5 @@ public interface SettingsConstants
     public static final String KEY_PREF_COMPASS_WAKE_LOCK    = "compass_wake_lock";
     public static final String KEY_PREF_MAP_PATH             = "map_path";
     public static final String KEY_PREF_MAP_NAME             = "map_name";
+    public static final String KEY_PREF_SHOW_ZOOM_CONTROLS   = "show_zoom_controls";
 }
