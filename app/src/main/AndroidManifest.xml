@@ -58,6 +58,11 @@
         <activity android:name=".NGWSettingsActivityProxy"
                   android:label="@string/nextgis_web"
                   android:theme="@style/AppBaseTheme"/>
+
+        <activity android:name=".AboutActivity"
+                  android:label="@string/action_about"
+                  android:theme="@style/AppBaseTheme"/>
+
     </application>
 
 </manifest>

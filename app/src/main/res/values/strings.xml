@@ -40,5 +40,10 @@
     <string name="map_summary">Map settings</string>
     <string name="ngw">NextGIS Web</string>
     <string name="ngw_summary">NextGIS Web settings</string>
+    <string name="app_description">This is the mobile GIS for use and gaver spatial data at field and send it to web server. Also it write tracks and send position information to web server.</string>
+    <string name="credits_intro">Credits:</string>
+    <string name="credits"><![CDATA[Some icons used in the application are from <a href=\"http://icons8.com/android-icons\">Icons8.com</a>, licensed under a <a href=\"http://creativecommons.org/licenses/by-nd/3.0/\">CC BY-ND 3.0 license</a>]]></string>
+    <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2012–2015]]></string>
+    <string name="action_about">About</string>
 
 </resources>

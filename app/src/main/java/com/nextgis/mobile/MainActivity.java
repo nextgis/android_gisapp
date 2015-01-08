@@ -114,6 +114,10 @@ public class MainActivity
                 //intentSet.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intentSet);
                 return true;
+            case R.id.menu_about:
+                Intent intentAbout = new Intent(this, AboutActivity.class);
+                startActivity(intentAbout);
+                return true;
             case R.id.menu_add_local:
 
                 return true;
