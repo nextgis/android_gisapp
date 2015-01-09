@@ -28,7 +28,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 
 

@@ -125,11 +125,17 @@ public class MainActivity
                 addRemoteLayer();
                 return true;
             case R.id.menu_add_ngw:
-
+                addNGWLayer();
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    protected void addNGWLayer()
+    {
+        mMap.addNGWLayer();
     }
 
 
