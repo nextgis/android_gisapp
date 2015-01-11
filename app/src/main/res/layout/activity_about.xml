@@ -30,6 +30,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView"
+        >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -118,5 +130,8 @@
         android:layout_margin="20dp"
         android:linksClickable="true"
         />
+
+    </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>
