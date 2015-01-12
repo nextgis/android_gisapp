@@ -90,16 +90,10 @@ public class MapFragment
                 if (sharedPreferences.getBoolean(KEY_PREF_SHOW_ZOOM_CONTROLS, false)) {
                     addMapButtons(view.getContext(), mMapRelativeLayout);
                 }
-                //TODO: The idea is to have one fab (new in Android L v5) to add new geometry to layer.
-                //TODO: The zoom should be the same as scale bar: user have to choose meters, foots or zoom to seen over the map. The bar/rech shold shown only while zoom/scale is changed
-                //TODO: The zoomin/zoomout buttons should be at left center or top of display and has alpha about 25%. First tap on screen make them non transparent
-                //http://stackoverflow.com/questions/26740107/is-there-a-library-for-floating-action-buttons-with-labels
-                //https://github.com/futuresimple/android-floating-action-button
-                //http://stackoverflow.com/questions/26928976/android-floating-action-button-api-19-kitkat
-                //http://stackoverflow.com/questions/24464017/android-landroid-material-circular-button
-                //http://stackoverflow.com/questions/24451026/android-l-fab-button
             }
+            mMap.invalidate();
         }
+
 
         return view;
     }

@@ -301,7 +301,7 @@ public class FloatingActionsMenu extends ViewGroup {
         LayoutParams params = (LayoutParams) child.getLayoutParams();
         params.mCollapseDir.setFloatValues(expandedTranslation, collapsedTranslation);
         params.mExpandDir.setFloatValues(collapsedTranslation, expandedTranslation);
-        params.setAnimationsTarget(child);
+        params.setAnimationsTarget(proxy);
 
         View label = (View) child.getTag(R.id.fab_label);
         if (label != null) {
@@ -317,7 +317,7 @@ public class FloatingActionsMenu extends ViewGroup {
           LayoutParams labelParams = (LayoutParams) label.getLayoutParams();
           labelParams.mCollapseDir.setFloatValues(expandedTranslation, collapsedTranslation);
           labelParams.mExpandDir.setFloatValues(collapsedTranslation, expandedTranslation);
-          labelParams.setAnimationsTarget(label);
+          labelParams.setAnimationsTarget(labelProxy);
         }
 
         nextY = expandUp ?
@@ -356,7 +356,7 @@ public class FloatingActionsMenu extends ViewGroup {
         LayoutParams params = (LayoutParams) child.getLayoutParams();
         params.mCollapseDir.setFloatValues(expandedTranslation, collapsedTranslation);
         params.mExpandDir.setFloatValues(collapsedTranslation, expandedTranslation);
-        params.setAnimationsTarget(child);
+        params.setAnimationsTarget(proxy);
 
         nextX = expandLeft ?
             childX - mButtonSpacing :
@@ -432,7 +432,7 @@ public class FloatingActionsMenu extends ViewGroup {
       mCollapseAnimation.play(mCollapseDir);
     }
 
-    public void setAnimationsTarget(View view) {
+    public void setAnimationsTarget(AnimatorProxy view){
       mCollapseAlpha.setTarget(view);
       mCollapseDir.setTarget(view);
       mExpandAlpha.setTarget(view);
@@ -463,7 +463,7 @@ public class FloatingActionsMenu extends ViewGroup {
           button.getTag(R.id.fab_label) != null) continue;
 
       TextView label = new TextView(context);
-      label.setText(button.getTitle());
+      label.setText(" " + button.getTitle() + " ");
       addView(label);
 
       button.setTag(R.id.fab_label, label);
