@@ -82,7 +82,7 @@ public class MapFragment
         if (mMap != null) {
             mMapRelativeLayout = (RelativeLayout) layout.findViewById(R.id.maprl);
             if (mMapRelativeLayout != null) {
-                mMapRelativeLayout.addView(mMap, new RelativeLayout.LayoutParams(
+                mMapRelativeLayout.addView(mMap, 0, new RelativeLayout.LayoutParams(
                         RelativeLayout.LayoutParams.MATCH_PARENT,
                         RelativeLayout.LayoutParams.MATCH_PARENT));
 

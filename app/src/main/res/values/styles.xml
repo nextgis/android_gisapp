@@ -44,4 +44,9 @@
         <item name="windowActionBarOverlay">true</item>
     </style>
 
+    <style name="menu_labels_style">
+        <item name="android:background">@drawable/abc_popup_background_mtrl_mult</item>
+        <item name="android:textColor">@color/primary_text_default_material_light</item>
+    </style>
+
 </resources>
