@@ -50,28 +50,17 @@ public class MapFragment
     protected MapView     mMap;
     protected ImageView   mivZoomIn;
     protected ImageView   mivZoomOut;
+    protected boolean mShowZoomControls;
 
     protected RelativeLayout mMapRelativeLayout;
-    protected boolean        mShowZoomControl;
+
+    protected static final String KEY_PREF_WAS_ZOOM_CONTROLS_SHOWN = "was_zoom_controls_shown";
 
 
     public MapFragment()
     {
-        mShowZoomControl = true;
+        mShowZoomControls = false;
     }
-
-
-    public boolean isShowZoomControl()
-    {
-        return mShowZoomControl;
-    }
-
-
-    public void setShowZoomControl(boolean showZoomControl)
-    {
-        mShowZoomControl = showZoomControl;
-    }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -129,15 +118,18 @@ public class MapFragment
         super.onDestroyView();
     }
 
-    protected void removeMapButtons(Context context, RelativeLayout rl)
+    protected void removeMapButtons(RelativeLayout rl)
     {
-        rl.removeAllViewsInLayout();
+        mShowZoomControls = false;
+        rl.removeViewInLayout(mivZoomIn);
+        rl.removeViewInLayout(mivZoomOut);
         mivZoomIn = null;
         mivZoomOut = null;
     }
 
     protected void addMapButtons(Context context, RelativeLayout rl)
     {
+        mShowZoomControls = true;
         mivZoomIn = new ImageView(context);
         mivZoomIn.setImageResource(R.drawable.ic_plus);
         mivZoomIn.setId(R.drawable.ic_plus);
@@ -274,6 +266,7 @@ public class MapFragment
             edit.putLong(KEY_PREF_SCROLL_X, Double.doubleToRawLongBits(point.getX()));
             edit.putLong(KEY_PREF_SCROLL_Y, Double.doubleToRawLongBits(point.getY()));
         }
+        edit.putBoolean(KEY_PREF_WAS_ZOOM_CONTROLS_SHOWN, mShowZoomControls);
         edit.commit();
 
         super.onPause();
@@ -286,11 +279,22 @@ public class MapFragment
         super.onResume();
 
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        if(null != mMap) {
+        if (null != mMap) {
             float mMapZoom = prefs.getFloat(KEY_PREF_ZOOM_LEVEL, mMap.getMinZoom());
             double mMapScrollX = Double.longBitsToDouble(prefs.getLong(KEY_PREF_SCROLL_X, 0));
             double mMapScrollY = Double.longBitsToDouble(prefs.getLong(KEY_PREF_SCROLL_Y, 0));
             mMap.setZoomAndCenter(mMapZoom, new GeoPoint(mMapScrollX, mMapScrollY));
+        }
+
+        //change zoom controls visibility
+        boolean showControls = prefs.getBoolean(KEY_PREF_SHOW_ZOOM_CONTROLS, false);
+        if (prefs.getBoolean(KEY_PREF_WAS_ZOOM_CONTROLS_SHOWN, false) != showControls) {
+            if (showControls) {
+                addMapButtons(getActivity(), mMapRelativeLayout);
+            }
+            else {
+                removeMapButtons(mMapRelativeLayout);
+            }
         }
     }
 }
