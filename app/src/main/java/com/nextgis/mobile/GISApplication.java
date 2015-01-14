@@ -35,6 +35,7 @@ import java.io.File;
 
 import static com.nextgis.maplib.util.GeoConstants.*;
 import static com.nextgis.mobile.util.SettingsConstants.*;
+import static com.nextgis.maplib.util.SettingsConstants.*;
 import static com.nextgis.maplib.util.Constants.*;
 
 

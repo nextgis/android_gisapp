@@ -48,7 +48,6 @@ public interface SettingsConstants
     public static final String KEY_PREF_SHOW_COMPASS  = "map_show_compass";
     public static final String KEY_PREF_SHOW_INFO     = "map_show_info";
     public static final String KEY_PREF_APP_FIRST_RUN = "app_first_run";
-    public static final String KEY_PREF_MAP           = "map";
 
     /**
      * Preference keys - in UI
@@ -71,7 +70,6 @@ public interface SettingsConstants
     public static final String KEY_PREF_COMPASS_TRUE_NORTH   = "compass_true_north";
     public static final String KEY_PREF_COMPASS_SHOW_MAGNET  = "compass_show_magnetic";
     public static final String KEY_PREF_COMPASS_WAKE_LOCK    = "compass_wake_lock";
-    public static final String KEY_PREF_MAP_PATH             = "map_path";
     public static final String KEY_PREF_MAP_NAME             = "map_name";
     public static final String KEY_PREF_SHOW_ZOOM_CONTROLS   = "show_zoom_controls";
 }
