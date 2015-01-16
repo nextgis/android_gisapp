@@ -31,6 +31,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
 
+import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplibui.MapView;
 
 public class MainActivity
@@ -51,7 +52,7 @@ public class MainActivity
         PreferenceManager.setDefaultValues(this, R.xml.preferences_general, false);
 
         GISApplication app = (GISApplication) getApplication();
-        mMap = new MapView(this, app.getMap());
+        mMap = new MapView(this, (MapDrawable) app.getMap());
 
         setContentView(R.layout.activity_main);
 
@@ -84,7 +85,7 @@ public class MainActivity
                                    getResources().getColor(R.color.background_material_light));
             // Set up the drawer.
             mLayersFragment.setUp(R.id.layers, (DrawerLayout) findViewById(R.id.drawer_layout),
-                                  app.getMap());
+                                  (MapDrawable) app.getMap());
         }
     }
 

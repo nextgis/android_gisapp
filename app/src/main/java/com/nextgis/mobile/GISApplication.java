@@ -27,6 +27,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.preference.PreferenceManager;
 
+import com.nextgis.maplib.api.IGISApplication;
+import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplibui.mapui.LayerFactoryUI;
 import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
@@ -40,7 +42,7 @@ import static com.nextgis.maplib.util.Constants.*;
 
 
 public class GISApplication
-        extends Application
+        extends Application implements IGISApplication
 {
     protected MapDrawable mMap;
 
@@ -49,6 +51,24 @@ public class GISApplication
     public void onCreate()
     {
         super.onCreate();
+
+        getMap();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        if(sharedPreferences.getBoolean(KEY_PREF_APP_FIRST_RUN, true))
+        {
+            onFirstRun();
+            SharedPreferences.Editor edit = sharedPreferences.edit();
+            edit.putBoolean(KEY_PREF_APP_FIRST_RUN, false);
+            edit.commit();
+        }
+    }
+
+    @Override
+    public MapBase getMap()
+    {
+        if(null != mMap)
+            return mMap;
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         File defaultPath = getExternalFilesDir(KEY_PREF_MAP);
@@ -63,20 +83,8 @@ public class GISApplication
             mMap = new MapDrawable(bkBitmap, this, mapFullPath, new LayerFactoryUI(mapFullPath));
             mMap.setName(mapName);
             mMap.load();
-
-            if(sharedPreferences.getBoolean(KEY_PREF_APP_FIRST_RUN, true))
-            {
-                onFirstRun();
-                SharedPreferences.Editor edit = sharedPreferences.edit();
-                edit.putBoolean(KEY_PREF_APP_FIRST_RUN, false);
-                edit.commit();
-            }
         }
-    }
 
-
-    public MapDrawable getMap()
-    {
         return mMap;
     }
 
