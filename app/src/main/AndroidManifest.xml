@@ -4,13 +4,11 @@
     >
 
     <!--uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/-->
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-
     <!--uses-permission android:name="android.permission.READ_SYNC_SETTINGS"/>
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/-->
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
@@ -20,28 +18,11 @@
     <!--uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.VIBRATE"/-->
 
-    <!--uses-feature
-        android:name="android.hardware.location"
-        android:required="true"
-        /-->
-
-    <uses-feature
-        android:name="android.hardware.telephony"
-        android:required="false"
-        />
-    <uses-feature
-        android:name="android.hardware.wifi"
-        android:required="false"
-        />
-
-    <!--uses-feature
-        android:name="android.hardware.camera"
-        android:required="false"
-        />
-    <uses-feature
-        android:name="android.hardware.compass"
-        android:required="false"
-        /-->
+    <!--uses-feature android:name="android.hardware.location" android:required="true"/-->
+    <uses-feature android:name="android.hardware.telephony" android:required="false"/>
+    <uses-feature android:name="android.hardware.wifi" android:required="false"/>
+    <!--uses-feature android:name="android.hardware.camera" android:required="false"/>
+    <uses-feature android:name="android.hardware.compass" android:required="false"/-->
 
     <supports-screens
         android:largeScreens="true"
@@ -83,7 +64,7 @@
                   android:theme="@style/AppBaseTheme"/>
 
         <provider
-            android:name="com.nextgis.maplib.datasource.NGWLayerContentProvider"
+            android:name="com.nextgis.maplib.datasource.LayerContentProvider"
             android:authorities="com.nextgis.mobile.provider"
             android:exported="false"
             android:syncable="true"/>
