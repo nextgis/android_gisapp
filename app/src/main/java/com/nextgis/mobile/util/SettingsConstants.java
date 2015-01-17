@@ -23,6 +23,7 @@ package com.nextgis.mobile.util;
 
 public interface SettingsConstants
 {
+    public final static String AUTHORITY = "com.nextgis.mobile.provider";
     /**
      * preference pages
      */

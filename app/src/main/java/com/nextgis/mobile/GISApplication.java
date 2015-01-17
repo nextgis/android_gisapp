@@ -88,6 +88,14 @@ public class GISApplication
         return mMap;
     }
 
+
+    @Override
+    public String getAuthority()
+    {
+        return AUTHORITY;
+    }
+
+
     protected void onFirstRun()
     {
         //add OpenStreetMap layer on application first run
