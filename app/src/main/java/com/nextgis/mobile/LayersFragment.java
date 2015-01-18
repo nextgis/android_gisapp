@@ -21,6 +21,14 @@
 
 package com.nextgis.mobile;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -33,11 +41,28 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import android.widget.TextView;
+import com.nextgis.maplib.datasource.ngw.SyncAdapter;
 import com.nextgis.maplib.map.MapDrawable;
+import com.nextgis.maplib.util.Constants;
+import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.maplibui.LayersListAdapter;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+import static com.nextgis.maplib.util.Constants.NGW_ACCOUNT_TYPE;
+import static com.nextgis.mobile.util.SettingsConstants.*;
 
 /**
  * A layers fragment class
@@ -50,12 +75,16 @@ public class LayersFragment
     protected ListView              mLayersListView;
     protected View                  mFragmentContainerView;
     protected LayersListAdapter     mListAdapter;
-
+    protected TextView mInfoText;
+    protected SyncReceiver mSyncReceiver;
+    protected ImageButton mSyncButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        mSyncReceiver = new SyncReceiver();
     }
 
 
@@ -65,8 +94,51 @@ public class LayersFragment
             ViewGroup container,
             Bundle savedInstanceState)
     {
+        View view = inflater.inflate(R.layout.fragment_layers, container, false);
 
-        return inflater.inflate(R.layout.fragment_layers, container, false);
+        LinearLayout linearLayout = (LinearLayout)view.findViewById(R.id.action_space);
+        if(null != linearLayout){
+            linearLayout.setBackgroundColor(getResources().getColor(R.color.primary));
+        }
+
+        mSyncButton = (ImageButton) view.findViewById(R.id.sync);
+        if(null != mSyncButton){
+            final List<Account> accounts = new ArrayList<>();
+            final AccountManager accountManager = AccountManager.get(getActivity());
+            Collections.addAll(accounts, accountManager.getAccountsByType(NGW_ACCOUNT_TYPE));
+            if(accounts.isEmpty())
+                mSyncButton.setEnabled(false);
+            else{
+                mSyncButton.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        for(Account account : accounts){
+                            ContentResolver.requestSync(account, AUTHORITY, Bundle.EMPTY);
+                        }
+
+                        updateInfo();
+                    }
+                });
+            }
+        }
+
+        mInfoText = (TextView)view.findViewById(R.id.info);
+        updateInfo();
+        return view;
+    }
+
+    protected void updateInfo(){
+        if(null == mInfoText)
+            return;
+
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
+                Constants.PREFERENCES, Context.MODE_MULTI_PROCESS);
+        long timeStamp = sharedPreferences.getLong(SettingsConstants.KEY_PREF_LAST_SYNC_TIMESTAMP, 0);
+        if(timeStamp > 0){
+            mInfoText.setText(getString(R.string.last_sync_time) + ": " + new SimpleDateFormat().format(new Date(timeStamp)));
+        }
     }
 
 
@@ -190,5 +262,56 @@ public class LayersFragment
         super.onConfigurationChanged(newConfig);
         // Forward the new configuration the drawer toggle component.
         mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    public void refresh(boolean start)
+    {
+        if (mSyncButton == null)
+            return;
+        if (start) {
+            RotateAnimation rotateAnimation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
+                                                                  0.5f);
+            rotateAnimation.setFillAfter(true);
+            rotateAnimation.setDuration(700);
+            rotateAnimation.setRepeatCount(500);
+
+            mSyncButton.startAnimation(rotateAnimation);
+        } else {
+            mSyncButton.clearAnimation();
+        }
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(SyncAdapter.SYNC_START);
+        intentFilter.addAction(SyncAdapter.SYNC_FINISH);
+        getActivity().registerReceiver(mSyncReceiver, intentFilter);
+    }
+
+
+    @Override
+    public void onPause()
+    {
+        getActivity().unregisterReceiver(mSyncReceiver);
+        super.onPause();
+    }
+
+
+    protected class SyncReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(SyncAdapter.SYNC_START)) {
+                refresh(true);
+            }
+            else if (intent.getAction().equals(SyncAdapter.SYNC_FINISH)) {
+                refresh(false);
+                updateInfo();
+            }
+        }
     }
 }

@@ -20,11 +20,54 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<com.nextgis.mobile.ReorderedLayerViewAnimated xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          android:id="@+id/layer_list"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:choiceMode="singleChoice"
-          tools:context="com.nextgis.maplibui.LayersFragment"
-    />
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary"
+        android:id="@+id/action_space"
+        >
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/toolbar"
+            android:gravity="end"
+            >
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/sync"
+                android:background="@drawable/ic_action_sync"
+                android:layout_margin="2dp"
+                />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/info"
+            android:padding="5dp"
+            android:textColor="@color/abc_primary_text_material_dark"
+            />
+    </LinearLayout>
+
+    <com.nextgis.mobile.ReorderedLayerViewAnimated
+        android:id="@+id/layer_list"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:choiceMode="singleChoice"
+        tools:context="com.nextgis.maplibui.LayersFragment"
+        />
+
+</LinearLayout>

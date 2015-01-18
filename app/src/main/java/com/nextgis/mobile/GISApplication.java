@@ -67,7 +67,7 @@ public class GISApplication
         }
 
         //turn on sync automatically (every 2 sec. on network exist) - to often?
-        ContentResolver.setMasterSyncAutomatically(true);
+        //ContentResolver.setMasterSyncAutomatically(true);
 
         //turn on periodic sync. Can be set for each layer individually, but this is simpler
         if(sharedPreferences.getBoolean(KEY_PREF_SYNC_PERIODICALLY, true)) {

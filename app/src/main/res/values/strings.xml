@@ -48,5 +48,6 @@
     <string name="add_current_place">Add current place</string>
     <string name="add_new_geometry">Add new geometry</string>
     <string name="add_geometry_by_walk">Add geometry by walk</string>
+    <string name="last_sync_time">Last sync time</string>
 
 </resources>

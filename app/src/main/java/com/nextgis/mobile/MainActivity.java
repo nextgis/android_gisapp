@@ -123,9 +123,6 @@ public class MainActivity
                 startActivity(intentAbout);
                 return true;
             case R.id.menu_add_local:
-                //test manual sync
-                ContentResolver.requestSync(LayerFactory.getAccountByName(this, "176.9.38.120/wwf"), "com.nextgis.mobile.provider", new Bundle());
-                //SyncStatusInfo status = ContentResolver.getSyncStatus(account, authority);
                 return true;
             case R.id.menu_add_remote:
                 addRemoteLayer();
