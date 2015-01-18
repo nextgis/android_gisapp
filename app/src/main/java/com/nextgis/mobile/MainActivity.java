@@ -21,6 +21,7 @@
 
 package com.nextgis.mobile;
 
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
@@ -31,6 +32,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
 
+import com.nextgis.maplib.map.Layer;
+import com.nextgis.maplib.map.LayerFactory;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplibui.MapView;
 
@@ -120,7 +123,9 @@ public class MainActivity
                 startActivity(intentAbout);
                 return true;
             case R.id.menu_add_local:
-
+                //test manual sync
+                ContentResolver.requestSync(LayerFactory.getAccountByName(this, "176.9.38.120/wwf"), "com.nextgis.mobile.provider", new Bundle());
+                //SyncStatusInfo status = ContentResolver.getSyncStatus(account, authority);
                 return true;
             case R.id.menu_add_remote:
                 addRemoteLayer();

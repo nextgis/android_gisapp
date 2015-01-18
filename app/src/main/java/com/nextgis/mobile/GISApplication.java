@@ -22,13 +22,16 @@
 package com.nextgis.mobile;
 
 import android.app.Application;
+import android.content.ContentResolver;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.map.MapBase;
+import com.nextgis.maplib.map.MapContentProviderHelper;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplibui.mapui.LayerFactoryUI;
 import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
@@ -61,6 +64,21 @@ public class GISApplication
             SharedPreferences.Editor edit = sharedPreferences.edit();
             edit.putBoolean(KEY_PREF_APP_FIRST_RUN, false);
             edit.commit();
+        }
+
+        //turn on sync automatically (every 2 sec. on network exist) - to often?
+        ContentResolver.setMasterSyncAutomatically(true);
+
+        //turn on periodic sync. Can be set for each layer individually, but this is simpler
+        if(sharedPreferences.getBoolean(KEY_PREF_SYNC_PERIODICALLY, true)) {
+            Bundle params = new Bundle();
+            params.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, false);
+            params.putBoolean(ContentResolver.SYNC_EXTRAS_DO_NOT_RETRY, false);
+            params.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, false);
+
+            MapContentProviderHelper.setSyncPeriod(mMap, params,
+                                                   sharedPreferences.getLong(KEY_PREF_SYNC_PERIOD,
+                                                                             600)); //10 min
         }
     }
 
