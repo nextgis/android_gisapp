@@ -21,8 +21,11 @@
 
 package com.nextgis.mobile;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Application;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -30,9 +33,11 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 
 import com.nextgis.maplib.api.IGISApplication;
+import com.nextgis.maplib.datasource.ngw.SyncAdapter;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapContentProviderHelper;
 import com.nextgis.maplib.map.MapDrawable;
+import com.nextgis.maplibui.NGWSettingsActivity;
 import com.nextgis.maplibui.mapui.LayerFactoryUI;
 import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
 
@@ -76,9 +81,8 @@ public class GISApplication
             params.putBoolean(ContentResolver.SYNC_EXTRAS_DO_NOT_RETRY, false);
             params.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, false);
 
-            MapContentProviderHelper.setSyncPeriod(mMap, params,
-                                                   sharedPreferences.getLong(KEY_PREF_SYNC_PERIOD,
-                                                                             600)); //10 min
+            SyncAdapter.setSyncPeriod(this, params,
+                                      sharedPreferences.getLong(KEY_PREF_SYNC_PERIOD, 600)); //10 min
         }
     }
 
@@ -128,4 +132,5 @@ public class GISApplication
         mMap.addLayer(layer);
         mMap.save();
     }
+
 }
