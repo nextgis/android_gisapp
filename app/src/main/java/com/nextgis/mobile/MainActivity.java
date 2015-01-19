@@ -21,6 +21,7 @@
 
 package com.nextgis.mobile;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
@@ -138,41 +139,9 @@ public class MainActivity
                 startActivity(intentAbout);
                 return true;
             case R.id.menu_add_local:
-                //test sync
-                IGISApplication application = (IGISApplication)getApplication();
-                MapBase map = application.getMap();
-                NGWVectorLayer ngwVectorLayer = null;
-                for(int i = 0; i < map.getLayerCount(); i++){
-                    ILayer layer = map.getLayer(i);
-                    if(layer instanceof NGWVectorLayer)
-                    {
-                        ngwVectorLayer = (NGWVectorLayer)layer;
-                    }
-                }
-                if(null != ngwVectorLayer) {
-                    Uri uri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/" + ngwVectorLayer.getPath().getName());
-                    ContentValues values = new ContentValues();
-                    values.put("width", 1);
-                    values.put("azimuth", 2.0);
-                    values.put("status", "test");
-                    values.put("temperatur", -10);
-                    values.put("name", "None");
-                    try {
-                        GeoPoint pt = new GeoPoint(37, 55);
-                        pt.setCRS(CRS_WGS84);
-                        pt.project(CRS_WEB_MERCATOR);
-                        values.put(VectorLayer.FIELD_GEOM, pt.toBlob());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    Uri result = getContentResolver().insert(uri, values);
-                    if (result == null) {
-                        Log.d(TAG, "insert failed");
-                    }
-                    else{
-                        Log.d(TAG, result.toString());
-                    }
-                }
+                //testInsert();
+                //testUpdate();
+                //testDelete();
                 return true;
             case R.id.menu_add_remote:
                 addRemoteLayer();
@@ -183,6 +152,110 @@ public class MainActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    void testUpdate(){
+        //test sync
+        IGISApplication application = (IGISApplication)getApplication();
+        MapBase map = application.getMap();
+        NGWVectorLayer ngwVectorLayer = null;
+        for(int i = 0; i < map.getLayerCount(); i++){
+            ILayer layer = map.getLayer(i);
+            if(layer instanceof NGWVectorLayer)
+            {
+                ngwVectorLayer = (NGWVectorLayer)layer;
+            }
+        }
+        if(null != ngwVectorLayer) {
+            Uri uri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/" + ngwVectorLayer.getPath().getName());
+            Uri updateUri =
+                    ContentUris.withAppendedId(uri, 1022);
+            ContentValues values = new ContentValues();
+            values.put("width", 2);
+            values.put("azimuth", 4.0);
+            values.put("status", "test3");
+            values.put("temperatur", -30);
+            values.put("name", "None");
+            try {
+                GeoPoint pt = new GeoPoint(47, 65);
+                pt.setCRS(CRS_WGS84);
+                pt.project(CRS_WEB_MERCATOR);
+                values.put(VectorLayer.FIELD_GEOM, pt.toBlob());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            int result = getContentResolver().update(updateUri, values, null, null);
+            if (result == 0) {
+                Log.d(TAG, "update failed");
+            }
+            else{
+                Log.d(TAG, "" + result);
+            }
+        }
+    }
+
+    void testInsert(){
+        //test sync
+        IGISApplication application = (IGISApplication)getApplication();
+        MapBase map = application.getMap();
+        NGWVectorLayer ngwVectorLayer = null;
+        for(int i = 0; i < map.getLayerCount(); i++){
+            ILayer layer = map.getLayer(i);
+            if(layer instanceof NGWVectorLayer)
+            {
+                ngwVectorLayer = (NGWVectorLayer)layer;
+            }
+        }
+        if(null != ngwVectorLayer) {
+            Uri uri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/" + ngwVectorLayer.getPath().getName());
+            ContentValues values = new ContentValues();
+            values.put(VectorLayer.FIELD_ID, 1022);
+            values.put("width", 1);
+            values.put("azimuth", 2.0);
+            values.put("status", "test");
+            values.put("temperatur", -10);
+            values.put("name", "None");
+            try {
+                GeoPoint pt = new GeoPoint(37, 55);
+                pt.setCRS(CRS_WGS84);
+                pt.project(CRS_WEB_MERCATOR);
+                values.put(VectorLayer.FIELD_GEOM, pt.toBlob());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Uri result = getContentResolver().insert(uri, values);
+            if (result == null) {
+                Log.d(TAG, "insert failed");
+            }
+            else{
+                Log.d(TAG, result.toString());
+            }
+        }
+    }
+
+    void testDelete(){
+        IGISApplication application = (IGISApplication)getApplication();
+        MapBase map = application.getMap();
+        NGWVectorLayer ngwVectorLayer = null;
+        for(int i = 0; i < map.getLayerCount(); i++){
+            ILayer layer = map.getLayer(i);
+            if(layer instanceof NGWVectorLayer)
+            {
+                ngwVectorLayer = (NGWVectorLayer)layer;
+            }
+        }
+        if(null != ngwVectorLayer) {
+            Uri uri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/" +
+                                ngwVectorLayer.getPath().getName());
+            Uri deleteUri =
+                    ContentUris.withAppendedId(uri, 1022);
+            int result = getContentResolver().delete(deleteUri, null, null);
+            if (result == 0) {
+                Log.d(TAG, "delete failed");
+            } else {
+                Log.d(TAG, ""+result);
+            }
+        }
     }
 
 

@@ -35,7 +35,22 @@
         android:layout_height="match_parent"
         >
 
-        <com.getbase.floatingactionbutton.FloatingActionsMenu
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            fab:fab_addButtonColorNormal="@color/primary"
+            fab:fab_addButtonColorPressed="@color/accent"
+            fab:fab_addButtonPlusIconColor="@android:color/white"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
+            fab:fab_icon="@drawable/ic_action_maps_place"
+            />
+
+        <!--com.getbase.floatingactionbutton.FloatingActionsMenu
             android:id="@+id/multiple_actions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -80,7 +95,7 @@
                 fab:fab_icon="@drawable/ic_action_maps_place"
                 fab:fab_colorPressed="@color/accent"/>
 
-        </com.getbase.floatingactionbutton.FloatingActionsMenu>
+        </com.getbase.floatingactionbutton.FloatingActionsMenu-->
 
 
     </RelativeLayout>
