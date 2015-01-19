@@ -21,21 +21,36 @@
 
 package com.nextgis.mobile;
 
-import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
 
-import com.nextgis.maplib.map.Layer;
-import com.nextgis.maplib.map.LayerFactory;
+import android.widget.Toast;
+import com.nextgis.maplib.api.IGISApplication;
+import com.nextgis.maplib.api.ILayer;
+import com.nextgis.maplib.datasource.GeoPoint;
+import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapDrawable;
+import com.nextgis.maplib.map.NGWVectorLayer;
+import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplibui.MapView;
+import com.nextgis.mobile.util.SettingsConstants;
+
+import java.io.IOException;
+
+import static com.nextgis.maplib.util.Constants.*;
+import static com.nextgis.maplib.util.GeoConstants.CRS_WEB_MERCATOR;
+import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
+
 
 public class MainActivity
         extends ActionBarActivity
@@ -123,6 +138,41 @@ public class MainActivity
                 startActivity(intentAbout);
                 return true;
             case R.id.menu_add_local:
+                //test sync
+                IGISApplication application = (IGISApplication)getApplication();
+                MapBase map = application.getMap();
+                NGWVectorLayer ngwVectorLayer = null;
+                for(int i = 0; i < map.getLayerCount(); i++){
+                    ILayer layer = map.getLayer(i);
+                    if(layer instanceof NGWVectorLayer)
+                    {
+                        ngwVectorLayer = (NGWVectorLayer)layer;
+                    }
+                }
+                if(null != ngwVectorLayer) {
+                    Uri uri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/" + ngwVectorLayer.getPath().getName());
+                    ContentValues values = new ContentValues();
+                    values.put("width", 1);
+                    values.put("azimuth", 2.0);
+                    values.put("status", "test");
+                    values.put("temperatur", -10);
+                    values.put("name", "None");
+                    try {
+                        GeoPoint pt = new GeoPoint(37, 55);
+                        pt.setCRS(CRS_WGS84);
+                        pt.project(CRS_WEB_MERCATOR);
+                        values.put(VectorLayer.FIELD_GEOM, pt.toBlob());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    Uri result = getContentResolver().insert(uri, values);
+                    if (result == null) {
+                        Log.d(TAG, "insert failed");
+                    }
+                    else{
+                        Log.d(TAG, result.toString());
+                    }
+                }
                 return true;
             case R.id.menu_add_remote:
                 addRemoteLayer();
