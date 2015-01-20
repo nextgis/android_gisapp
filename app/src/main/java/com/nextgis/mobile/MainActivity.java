@@ -38,6 +38,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.widget.Toast;
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
+import com.nextgis.maplib.datasource.GeoMultiPoint;
 import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapDrawable;
@@ -139,7 +140,7 @@ public class MainActivity
                 startActivity(intentAbout);
                 return true;
             case R.id.menu_add_local:
-                //testInsert();
+                testInsert();
                 //testUpdate();
                 //testDelete();
                 return true;
@@ -180,7 +181,9 @@ public class MainActivity
                 GeoPoint pt = new GeoPoint(47, 65);
                 pt.setCRS(CRS_WGS84);
                 pt.project(CRS_WEB_MERCATOR);
-                values.put(VectorLayer.FIELD_GEOM, pt.toBlob());
+                GeoMultiPoint mpt = new GeoMultiPoint();
+                mpt.add(pt);
+                values.put(VectorLayer.FIELD_GEOM, mpt.toBlob());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -219,7 +222,9 @@ public class MainActivity
                 GeoPoint pt = new GeoPoint(37, 55);
                 pt.setCRS(CRS_WGS84);
                 pt.project(CRS_WEB_MERCATOR);
-                values.put(VectorLayer.FIELD_GEOM, pt.toBlob());
+                GeoMultiPoint mpt = new GeoMultiPoint();
+                mpt.add(pt);
+                values.put(VectorLayer.FIELD_GEOM, mpt.toBlob());
             } catch (IOException e) {
                 e.printStackTrace();
             }
