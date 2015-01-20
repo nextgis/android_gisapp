@@ -115,7 +115,13 @@ public class LayersFragment
                     public void onClick(View view)
                     {
                         for(Account account : accounts){
-                            ContentResolver.requestSync(account, AUTHORITY, Bundle.EMPTY);
+                            Bundle settingsBundle = new Bundle();
+                            settingsBundle.putBoolean(
+                                    ContentResolver.SYNC_EXTRAS_MANUAL, true);
+                            settingsBundle.putBoolean(
+                                    ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+
+                            ContentResolver.requestSync(account, AUTHORITY, settingsBundle);
                         }
 
                         updateInfo();
