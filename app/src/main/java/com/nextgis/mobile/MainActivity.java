@@ -170,7 +170,7 @@ public class MainActivity
         if(null != ngwVectorLayer) {
             Uri uri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/" + ngwVectorLayer.getPath().getName());
             Uri updateUri =
-                    ContentUris.withAppendedId(uri, 1022);
+                    ContentUris.withAppendedId(uri, 26);
             ContentValues values = new ContentValues();
             values.put("width", 2);
             values.put("azimuth", 4.0);
@@ -212,12 +212,12 @@ public class MainActivity
         if(null != ngwVectorLayer) {
             Uri uri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/" + ngwVectorLayer.getPath().getName());
             ContentValues values = new ContentValues();
-            values.put(VectorLayer.FIELD_ID, 1022);
+            //values.put(VectorLayer.FIELD_ID, 26);
             values.put("width", 1);
             values.put("azimuth", 2.0);
-            values.put("status", "test");
+            values.put("status", "got");
             values.put("temperatur", -10);
-            values.put("name", "None");
+            values.put("name", "get");
             try {
                 GeoPoint pt = new GeoPoint(37, 55);
                 pt.setCRS(CRS_WGS84);
@@ -253,7 +253,7 @@ public class MainActivity
             Uri uri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/" +
                                 ngwVectorLayer.getPath().getName());
             Uri deleteUri =
-                    ContentUris.withAppendedId(uri, 1022);
+                    ContentUris.withAppendedId(uri, 27);
             int result = getContentResolver().delete(deleteUri, null, null);
             if (result == 0) {
                 Log.d(TAG, "delete failed");
