@@ -140,7 +140,7 @@ public class MainActivity
                 startActivity(intentAbout);
                 return true;
             case R.id.menu_add_local:
-                testInsert();
+                //testInsert();
                 //testUpdate();
                 //testDelete();
                 return true;
@@ -274,4 +274,5 @@ public class MainActivity
     {
         mMap.addRemoteLayer();
     }
+
 }
