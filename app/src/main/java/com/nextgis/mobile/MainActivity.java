@@ -35,7 +35,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
 
-import android.widget.Toast;
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.datasource.GeoMultiPoint;
@@ -48,6 +47,8 @@ import com.nextgis.maplibui.MapView;
 import com.nextgis.mobile.util.SettingsConstants;
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import static com.nextgis.maplib.util.Constants.*;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WEB_MERCATOR;
@@ -140,7 +141,7 @@ public class MainActivity
                 startActivity(intentAbout);
                 return true;
             case R.id.menu_add_local:
-                //testInsert();
+                testInsert();
                 //testUpdate();
                 //testDelete();
                 return true;
@@ -170,15 +171,18 @@ public class MainActivity
         if(null != ngwVectorLayer) {
             Uri uri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/" + ngwVectorLayer.getPath().getName());
             Uri updateUri =
-                    ContentUris.withAppendedId(uri, 26);
+                    ContentUris.withAppendedId(uri, 29);
             ContentValues values = new ContentValues();
-            values.put("width", 2);
-            values.put("azimuth", 4.0);
-            values.put("status", "test3");
-            values.put("temperatur", -30);
-            values.put("name", "None");
+            values.put("width", 4);
+            values.put("azimuth", 8.0);
+            values.put("status", "test4");
+            values.put("temperatur", -10);
+            values.put("name", "xxx");
+
+            Calendar calendar = new GregorianCalendar(2014, Calendar.JANUARY, 23);
+            values.put("datetime", calendar.getTimeInMillis());
             try {
-                GeoPoint pt = new GeoPoint(47, 65);
+                GeoPoint pt = new GeoPoint(67, 65);
                 pt.setCRS(CRS_WGS84);
                 pt.project(CRS_WEB_MERCATOR);
                 GeoMultiPoint mpt = new GeoMultiPoint();
@@ -215,9 +219,13 @@ public class MainActivity
             //values.put(VectorLayer.FIELD_ID, 26);
             values.put("width", 1);
             values.put("azimuth", 2.0);
-            values.put("status", "got");
-            values.put("temperatur", -10);
+            values.put("status", "grot");
+            values.put("temperatur", -13);
             values.put("name", "get");
+
+            Calendar calendar = new GregorianCalendar(2015, Calendar.JANUARY, 23);
+            values.put("datetime", calendar.getTimeInMillis());
+
             try {
                 GeoPoint pt = new GeoPoint(37, 55);
                 pt.setCRS(CRS_WGS84);
