@@ -36,11 +36,10 @@ import android.widget.RelativeLayout;
 
 import android.widget.Toast;
 import com.nextgis.maplib.api.ILayer;
-import com.nextgis.maplib.datasource.Geo;
 import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.api.MapEventListener;
-import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.GeoConstants;
+import com.nextgis.maplibui.ChooseLayerDialog;
 import com.nextgis.maplibui.MapView;
 import com.nextgis.maplibui.api.ILayerUI;
 
