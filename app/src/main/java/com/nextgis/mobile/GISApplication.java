@@ -21,38 +21,35 @@
 
 package com.nextgis.mobile;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.Application;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.datasource.ngw.SyncAdapter;
+import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.maplib.map.MapBase;
-import com.nextgis.maplib.map.MapContentProviderHelper;
 import com.nextgis.maplib.map.MapDrawable;
-import com.nextgis.maplibui.NGWSettingsActivity;
 import com.nextgis.maplibui.mapui.LayerFactoryUI;
 import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
 
 import java.io.File;
 
-import static com.nextgis.maplib.util.GeoConstants.*;
+import static com.nextgis.maplib.util.Constants.MAP_EXT;
+import static com.nextgis.maplib.util.GeoConstants.TMSTYPE_OSM;
+import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_MAP;
+import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_MAP_PATH;
 import static com.nextgis.mobile.util.SettingsConstants.*;
-import static com.nextgis.maplib.util.SettingsConstants.*;
-import static com.nextgis.maplib.util.Constants.*;
 
 
 public class GISApplication
         extends Application implements IGISApplication
 {
     protected MapDrawable mMap;
+    protected GpsEventSource mGpsEventSource;
 
 
     @Override
@@ -60,11 +57,12 @@ public class GISApplication
     {
         super.onCreate();
 
+        mGpsEventSource = new GpsEventSource(this);
+
         getMap();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        if(sharedPreferences.getBoolean(KEY_PREF_APP_FIRST_RUN, true))
-        {
+        if (sharedPreferences.getBoolean(KEY_PREF_APP_FIRST_RUN, true)) {
             onFirstRun();
             SharedPreferences.Editor edit = sharedPreferences.edit();
             edit.putBoolean(KEY_PREF_APP_FIRST_RUN, false);
@@ -75,21 +73,22 @@ public class GISApplication
         //ContentResolver.setMasterSyncAutomatically(true);
 
         //turn on periodic sync. Can be set for each layer individually, but this is simpler
-        if(sharedPreferences.getBoolean(KEY_PREF_SYNC_PERIODICALLY, true)) {
+        if (sharedPreferences.getBoolean(KEY_PREF_SYNC_PERIODICALLY, true)) {
             Bundle params = new Bundle();
             params.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, false);
             params.putBoolean(ContentResolver.SYNC_EXTRAS_DO_NOT_RETRY, false);
             params.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, false);
 
-            SyncAdapter.setSyncPeriod(this, params,
-                                      sharedPreferences.getLong(KEY_PREF_SYNC_PERIOD, 600)); //10 min
+            SyncAdapter.setSyncPeriod(this, params, sharedPreferences.getLong(KEY_PREF_SYNC_PERIOD,
+                                                                              600)); //10 min
         }
     }
+
 
     @Override
     public MapBase getMap()
     {
-        if(null != mMap)
+        if (null != mMap)
             return mMap;
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -115,6 +114,13 @@ public class GISApplication
     public String getAuthority()
     {
         return AUTHORITY;
+    }
+
+
+    @Override
+    public GpsEventSource getGpsEventSource()
+    {
+        return mGpsEventSource;
     }
 
 
