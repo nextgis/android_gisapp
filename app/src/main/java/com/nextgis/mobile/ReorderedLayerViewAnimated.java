@@ -151,6 +151,9 @@ public class ReorderedLayerViewAnimated
 
     @Override
     protected void touchEventsEnded () {
+        LayersListAdapter adapter = (LayersListAdapter)getAdapter();
+        adapter.endDrag();
+
         final View mobileView = getViewForID(mMobileItemId);
         if (mCellIsMobile|| mIsWaitingForScrollFinish) {
             mCellIsMobile = false;
