@@ -21,9 +21,12 @@
 
 package com.nextgis.mobile;
 
+import android.content.BroadcastReceiver;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
@@ -35,15 +38,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
 
+import android.widget.Toast;
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.datasource.GeoMultiPoint;
 import com.nextgis.maplib.datasource.GeoPoint;
+import com.nextgis.maplib.datasource.ngw.SyncAdapter;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplibui.MapView;
+import com.nextgis.maplibui.util.Constants;
 import com.nextgis.mobile.util.SettingsConstants;
 
 import java.io.IOException;
@@ -62,7 +68,7 @@ public class MainActivity
     protected MapFragment    mMapFragment;
     protected LayersFragment mLayersFragment;
     protected MapView        mMap;
-
+    protected MessageReceiver mMessageReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -108,6 +114,8 @@ public class MainActivity
             mLayersFragment.setUp(R.id.layers, (DrawerLayout) findViewById(R.id.drawer_layout),
                                   (MapDrawable) app.getMap());
         }
+
+        mMessageReceiver = new MessageReceiver();
     }
 
 
@@ -140,7 +148,7 @@ public class MainActivity
                 startActivity(intentAbout);
                 return true;
             case R.id.menu_add_local:
-                testInsert();
+                //testInsert();
                 //testUpdate();
                 //testDelete();
                 return true;
@@ -282,4 +290,32 @@ public class MainActivity
         mMap.addRemoteLayer();
     }
 
+    protected class MessageReceiver extends BroadcastReceiver
+    {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Constants.MESSAGE_INTENT)) {
+                Toast.makeText(MainActivity.this, intent.getExtras().getString(
+                        Constants.KEY_ERROR), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Constants.MESSAGE_INTENT);
+        registerReceiver(mMessageReceiver, intentFilter);
+    }
+
+
+    @Override
+    protected void onPause()
+    {
+        unregisterReceiver(mMessageReceiver);
+        super.onPause();
+    }
 }
