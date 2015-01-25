@@ -101,13 +101,17 @@ public class MapFragment
             mMap.invalidate();
         }
 
-        view.findViewById(R.id.action_add_current_location).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addCurrentLocation();
-            }
-        });
-
+        View mainButton = view.findViewById(R.id.action_add_current_location);
+        if(null != mainButton) {
+            mainButton.setOnClickListener(new OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    addCurrentLocation();
+                }
+            });
+        }
 
         return view;
     }

@@ -23,6 +23,7 @@ package com.nextgis.mobile;
 
 import android.app.Application;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -121,6 +122,15 @@ public class GISApplication
     public GpsEventSource getGpsEventSource()
     {
         return mGpsEventSource;
+    }
+
+
+    @Override
+    public void showSettings()
+    {
+        Intent intentSet = new Intent(this, SettingsActivity.class);
+        intentSet.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);//Intent.FLAG_ACTIVITY_CLEAR_TOP |
+        startActivity(intentSet);
     }
 
 

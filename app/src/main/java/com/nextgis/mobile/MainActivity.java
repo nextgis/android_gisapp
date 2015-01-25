@@ -132,9 +132,8 @@ public class MainActivity
 
         switch (item.getItemId()) {
             case R.id.menu_settings:
-                Intent intentSet = new Intent(this, SettingsActivity.class);
-                //intentSet.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intentSet);
+                final IGISApplication app = (IGISApplication) getApplication();
+                app.showSettings();
                 return true;
             case R.id.menu_about:
                 Intent intentAbout = new Intent(this, AboutActivity.class);

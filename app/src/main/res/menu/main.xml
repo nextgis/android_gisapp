@@ -51,11 +51,13 @@
         android:title="@string/action_settings"
         android:orderInCategory="100"
         app:showAsAction="never"
+        android:icon="@drawable/ic_action_settings"
         />
     <item
         android:id="@+id/menu_about"
         android:title="@string/action_about"
         android:orderInCategory="100"
         app:showAsAction="never"
+        android:icon="@drawable/ic_launcher"
         />
 </menu>
