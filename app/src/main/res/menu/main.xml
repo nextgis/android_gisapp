@@ -47,6 +47,13 @@
     </item>
 
     <item
+        android:id="@+id/menu_locate"
+        android:title="@string/menu_locate"
+        android:orderInCategory="100"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_action_location_found"
+        />
+    <item
         android:id="@+id/menu_settings"
         android:title="@string/action_settings"
         android:orderInCategory="100"
