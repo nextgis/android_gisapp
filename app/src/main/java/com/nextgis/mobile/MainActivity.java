@@ -55,6 +55,7 @@ import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.map.VectorLayer;
+import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplibui.MapView;
 import com.nextgis.maplibui.util.Constants;
 import com.nextgis.mobile.util.SettingsConstants;
@@ -185,8 +186,11 @@ public class MainActivity
 
         if(location != null) {
             GeoPoint center = new GeoPoint(location.getLongitude(), location.getLatitude());
-            Geo.wgs84ToMercatorSphere(center);
-            mMap.setZoomAndCenter(mMap.getZoomLevel(), center);
+            center.setCRS(GeoConstants.CRS_WGS84);
+            if(center.project(GeoConstants.CRS_WEB_MERCATOR)) {
+                mMap.invalidate();
+                mMap.setZoomAndCenter(mMap.getZoomLevel(), center);
+            }
         }
     }
 
