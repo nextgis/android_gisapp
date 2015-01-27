@@ -27,7 +27,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
@@ -39,11 +43,14 @@ import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
 
 import android.widget.Toast;
+import com.nextgis.maplib.api.GpsEventListener;
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
+import com.nextgis.maplib.datasource.Geo;
 import com.nextgis.maplib.datasource.GeoMultiPoint;
 import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.datasource.ngw.SyncAdapter;
+import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.map.NGWVectorLayer;
@@ -63,12 +70,15 @@ import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
 
 public class MainActivity
         extends ActionBarActivity
+        implements GpsEventListener
 {
 
-    protected MapFragment    mMapFragment;
-    protected LayersFragment mLayersFragment;
-    protected MapView        mMap;
+    protected MapFragment     mMapFragment;
+    protected LayersFragment  mLayersFragment;
+    protected MapView         mMap;
     protected MessageReceiver mMessageReceiver;
+    private   GpsEventSource  gpsEventSource;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -116,6 +126,8 @@ public class MainActivity
         }
 
         mMessageReceiver = new MessageReceiver();
+
+        gpsEventSource = ((IGISApplication) getApplication()).getGpsEventSource();
     }
 
 
@@ -158,10 +170,26 @@ public class MainActivity
             case R.id.menu_add_ngw:
                 addNGWLayer();
                 return true;
+            case R.id.menu_locate:
+                locateCurrentPosition();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+
+    private void locateCurrentPosition()
+    {
+        Location location = gpsEventSource.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+        if(location != null) {
+            GeoPoint center = new GeoPoint(location.getLongitude(), location.getLatitude());
+            Geo.wgs84ToMercatorSphere(center);
+            mMap.setZoomAndCenter(mMap.getZoomLevel(), center);
+        }
+    }
+
 
     void testUpdate(){
         //test sync
@@ -309,13 +337,29 @@ public class MainActivity
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Constants.MESSAGE_INTENT);
         registerReceiver(mMessageReceiver, intentFilter);
+        gpsEventSource.addListener(this);
     }
 
 
     @Override
     protected void onPause()
     {
+        gpsEventSource.removeListener(this);
         unregisterReceiver(mMessageReceiver);
         super.onPause();
     }
+
+    @Override
+    public void onLocationChanged(Location location)
+    {
+
+    }
+
+
+    @Override
+    public void onGpsStatusChanged(int event)
+    {
+
+    }
+
 }
