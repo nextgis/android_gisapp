@@ -55,11 +55,13 @@ import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.map.VectorLayer;
+import com.nextgis.maplib.util.FileUtil;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplibui.MapView;
 import com.nextgis.maplibui.util.Constants;
 import com.nextgis.mobile.util.SettingsConstants;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -78,8 +80,9 @@ public class MainActivity
     protected LayersFragment  mLayersFragment;
     protected MapView         mMap;
     protected MessageReceiver mMessageReceiver;
-    private   GpsEventSource  gpsEventSource;
+    protected GpsEventSource  gpsEventSource;
 
+    protected final static int FILE_SELECT_CODE = 555;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -161,9 +164,7 @@ public class MainActivity
                 startActivity(intentAbout);
                 return true;
             case R.id.menu_add_local:
-                //testInsert();
-                //testUpdate();
-                //testDelete();
+                addLocalLayer();
                 return true;
             case R.id.menu_add_remote:
                 addRemoteLayer();
@@ -177,6 +178,55 @@ public class MainActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    protected void addLocalLayer()
+    {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+        try {
+            startActivityForResult(
+                    Intent.createChooser(intent, getString(R.string.select_file)),
+                    FILE_SELECT_CODE);
+        } catch (android.content.ActivityNotFoundException ex) {
+            // Potentially direct the user to the Market with a Dialog
+            Toast.makeText(this, getString(R.string.warning_install_file_manager),
+                           Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //http://stackoverflow.com/questions/10114324/show-dialogfragment-from-onactivityresult
+        //http://stackoverflow.com/questions/16265733/failure-delivering-result-onactivityforresult/18345899
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case FILE_SELECT_CODE:
+                if (resultCode == RESULT_OK) {
+                    // Get the Uri of the selected file
+                    Uri uri = data.getData();
+                    Log.d(TAG, "File Uri: " + uri.toString());
+                    //check the file type from extension
+                    String fileName = FileUtil.getFileNameByUri(this, uri, "");
+                    if(fileName.endsWith("zip") || fileName.endsWith("ZIP")){ //create local tile layer
+                        mMap.addLocalTMSLayer(uri);
+                    }
+                    else if(fileName.endsWith("geojson") || fileName.endsWith("GEOJSON")){ //create local vector layer
+                        mMap.addLocalVectorLayer(uri);
+                    }
+                    else if(fileName.endsWith("ngfp") || fileName.endsWith("NGFP")){ //create local vector layer with form
+                        mMap.addLocalVectorLayerWithForm(uri);
+                    }
+                    else{
+                        Toast.makeText(this, getString(R.string.error_file_unsupported), Toast.LENGTH_SHORT).show();
+                    }
+                }
+                break;
+        }
     }
 
 
