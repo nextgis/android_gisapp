@@ -40,11 +40,11 @@ import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
 import java.io.File;
 
 import static com.nextgis.maplib.util.Constants.MAP_EXT;
+import static com.nextgis.maplib.util.Constants.NOT_FOUND;
 import static com.nextgis.maplib.util.GeoConstants.TMSTYPE_OSM;
-import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_MAP;
-import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_MAP_PATH;
 import static com.nextgis.mobile.util.SettingsConstants.*;
-
+import static com.nextgis.maplibui.util.SettingsConstants.*;
+import static com.nextgis.maplib.util.SettingsConstants.*;
 
 public class GISApplication
         extends Application implements IGISApplication
@@ -70,18 +70,18 @@ public class GISApplication
             edit.commit();
         }
 
-        //turn on sync automatically (every 2 sec. on network exist) - to often?
-        //ContentResolver.setMasterSyncAutomatically(true);
-
         //turn on periodic sync. Can be set for each layer individually, but this is simpler
         if (sharedPreferences.getBoolean(KEY_PREF_SYNC_PERIODICALLY, true)) {
-            Bundle params = new Bundle();
-            params.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, false);
-            params.putBoolean(ContentResolver.SYNC_EXTRAS_DO_NOT_RETRY, false);
-            params.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, false);
+            String periodString = sharedPreferences.getString(KEY_PREF_SYNC_PERIOD, ""+NOT_FOUND); //10 min
+            long period = Long.parseLong(periodString);
+            if(period != NOT_FOUND){
+                Bundle params = new Bundle();
+                params.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, false);
+                params.putBoolean(ContentResolver.SYNC_EXTRAS_DO_NOT_RETRY, false);
+                params.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, false);
 
-            SyncAdapter.setSyncPeriod(this, params, sharedPreferences.getLong(KEY_PREF_SYNC_PERIOD,
-                                                                              600)); //10 min
+                SyncAdapter.setSyncPeriod(this, params, period);
+            }
         }
     }
 
