@@ -30,26 +30,21 @@ import android.content.IntentFilter;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
-import android.os.Handler;
-import android.os.Message;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.support.v4.widget.DrawerLayout;
-
 import android.widget.Toast;
 import com.nextgis.maplib.api.GpsEventListener;
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
-import com.nextgis.maplib.datasource.Geo;
 import com.nextgis.maplib.datasource.GeoMultiPoint;
 import com.nextgis.maplib.datasource.GeoPoint;
-import com.nextgis.maplib.datasource.ngw.SyncAdapter;
 import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapDrawable;
@@ -57,16 +52,17 @@ import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.FileUtil;
 import com.nextgis.maplib.util.GeoConstants;
+import com.nextgis.maplibui.CurrentLocationOverlay;
 import com.nextgis.maplibui.MapView;
+import com.nextgis.maplibui.MapViewOverlays;
 import com.nextgis.maplibui.util.Constants;
 import com.nextgis.mobile.util.SettingsConstants;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import static com.nextgis.maplib.util.Constants.*;
+import static com.nextgis.maplib.util.Constants.TAG;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WEB_MERCATOR;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
 
@@ -78,9 +74,10 @@ public class MainActivity
 
     protected MapFragment     mMapFragment;
     protected LayersFragment  mLayersFragment;
-    protected MapView         mMap;
+    protected MapViewOverlays mMap;
     protected MessageReceiver mMessageReceiver;
     protected GpsEventSource  gpsEventSource;
+    protected CurrentLocationOverlay mCurrentLocationOverlay;
 
     protected final static int FILE_SELECT_CODE = 555;
 
@@ -93,7 +90,7 @@ public class MainActivity
         PreferenceManager.setDefaultValues(this, R.xml.preferences_general, false);
 
         GISApplication app = (GISApplication) getApplication();
-        mMap = new MapView(this, (MapDrawable) app.getMap());
+        mMap = new MapViewOverlays(this, (MapDrawable) app.getMap());
 
         setContentView(R.layout.activity_main);
 
@@ -132,6 +129,8 @@ public class MainActivity
         mMessageReceiver = new MessageReceiver();
 
         gpsEventSource = ((IGISApplication) getApplication()).getGpsEventSource();
+        mCurrentLocationOverlay = new CurrentLocationOverlay(this, mMap.getMap());
+        mMap.addOverlay(mCurrentLocationOverlay);
     }
 
 
@@ -392,12 +391,14 @@ public class MainActivity
         intentFilter.addAction(Constants.MESSAGE_INTENT);
         registerReceiver(mMessageReceiver, intentFilter);
         gpsEventSource.addListener(this);
+        mCurrentLocationOverlay.startShowingCurrentLocation();
     }
 
 
     @Override
     protected void onPause()
     {
+        mCurrentLocationOverlay.stopShowingCurrentLocation();
         gpsEventSource.removeListener(this);
         unregisterReceiver(mMessageReceiver);
         super.onPause();
