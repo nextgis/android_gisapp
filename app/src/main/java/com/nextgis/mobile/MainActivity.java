@@ -378,7 +378,7 @@ public class MainActivity
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Constants.MESSAGE_INTENT)) {
                 Toast.makeText(MainActivity.this, intent.getExtras().getString(
-                        Constants.KEY_ERROR), Toast.LENGTH_SHORT).show();
+                        Constants.KEY_MESSAGE), Toast.LENGTH_SHORT).show();
             }
         }
     }

@@ -72,8 +72,7 @@ public class GISApplication
 
         //turn on periodic sync. Can be set for each layer individually, but this is simpler
         if (sharedPreferences.getBoolean(KEY_PREF_SYNC_PERIODICALLY, true)) {
-            String periodString = sharedPreferences.getString(KEY_PREF_SYNC_PERIOD, ""+NOT_FOUND); //10 min
-            long period = Long.parseLong(periodString);
+            long period = sharedPreferences.getLong(KEY_PREF_SYNC_PERIOD_LONG, NOT_FOUND); //10 min
             if(period != NOT_FOUND){
                 Bundle params = new Bundle();
                 params.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, false);
