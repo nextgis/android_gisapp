@@ -231,8 +231,7 @@ public class MainActivity
 
     private void locateCurrentPosition()
     {
-        Location location = gpsEventSource.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
+        Location location = gpsEventSource.getLastKnownLocation();
         if(location != null) {
             GeoPoint center = new GeoPoint(location.getLongitude(), location.getLatitude());
             center.setCRS(GeoConstants.CRS_WGS84);
