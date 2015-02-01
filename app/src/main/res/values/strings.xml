@@ -31,29 +31,29 @@
     <string name="action_add_remote">Add layer (web)</string>
     <string name="action_add_ngw">Add layer (NGW)</string>
     <string name="general">General</string>
-    <string name="general_summary">The application general settings</string>
+    <string name="general_summary">General settings</string>
     <string name="keep_screen_on">Keep screen on</string>
-    <string name="keep_screen_on_summary">Prevent screen switch off</string>
+    <string name="keep_screen_on_summary">Do not turn off screen</string>
     <string name="show_zoom_controls">Show zoom controls</string>
-    <string name="show_zoom_controls_summary">Show zoom in and zoom out control on map</string>
+    <string name="show_zoom_controls_summary">Show zoom in/zoom out control on the map</string>
     <string name="map">Map</string>
     <string name="map_summary">Map settings</string>
     <string name="ngw">NextGIS Web</string>
     <string name="ngw_summary">NextGIS Web settings</string>
-    <string name="app_description">This is the mobile GIS for use and gaver spatial data at field and send it to web server. Also it write tracks and send position information to web server.</string>
+    <string name="app_description">Mobile GIS application for visualize and gather spatial data in the field and send it back to server. NextGIS Mobile also writes tracks and sends position information to web server.</string>
     <string name="credits_intro">Credits:</string>
     <string name="credits"><![CDATA[Some icons used in the application are from:<br>- <a href=\"http://icons8.com/android-icons\">Icons8.com</a>, licensed under a <a href=\"http://creativecommons.org/licenses/by-nd/3.0/\">CC BY-ND 3.0 license</a><br>- <a href=\"http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html\">romannurik.github.io</a>, licensed under a <a href=\"http://creativecommons.org/licenses/by/3.0/\">CC BY 3.0 license</a>]]></string>
     <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2012–2015]]></string>
     <string name="action_about">About</string>
     <string name="add_current_place">Add current place</string>
     <string name="add_new_geometry">Add new geometry</string>
-    <string name="add_geometry_by_walk">Add geometry by walk</string>
-    <string name="warn_no_edit_layers">There is no editable layers</string>
+    <string name="add_geometry_by_walk">Add geometry by walking</string>
+    <string name="warn_no_edit_layers">No editable layers</string>
     <string name="select_layer">Select layer to edit</string>
     <string name="menu_locate">Locate</string>
     <string name="select_file">Select file to create layer</string>
     <string name="warning_install_file_manager">Please install a File Manager</string>
-    <string name="error_file_unsupported">The file type is unsupported</string>
+    <string name="error_file_unsupported">File type is not supported</string>
     <string name="warning_not_implemented">Not implemented yet</string>
 
 </resources>
