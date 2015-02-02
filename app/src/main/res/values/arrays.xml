@@ -20,12 +20,10 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <ListPreference
-        android:key="location_source_str"
-        android:title="@string/pref_location_accuracy"
-        android:entryValues="@array/location_accuracy_val"
-        android:defaultValue="3"
-        />
-
-</PreferenceScreen>
+<resources>
+    <string-array name="location_accuracy_val">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+</resources>

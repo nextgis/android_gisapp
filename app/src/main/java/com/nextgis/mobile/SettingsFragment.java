@@ -24,7 +24,11 @@ package com.nextgis.mobile;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.ListPreference;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import com.nextgis.maplib.util.SettingsConstants;
+
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class SettingsFragment extends PreferenceFragment
@@ -39,6 +43,10 @@ public class SettingsFragment extends PreferenceFragment
             addPreferencesFromResource(R.xml.preferences_general);
         } else if ("map".equals(settings)) {
             addPreferencesFromResource(R.xml.preferences_map);
+
+            final ListPreference lpLocationAccuracy = (ListPreference) findPreference(
+                    SettingsConstants.KEY_PREF_LOCATION_SOURCE+"_str");
+            SettingsActivity.initializeLocationAccuracy(lpLocationAccuracy);
         } /*else if ("user".equals(settings)) {
             addPreferencesFromResource(R.xml.preferences_user);
         }

@@ -21,8 +21,11 @@
 package com.nextgis.mobile;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.ListPreference;
+import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.support.v4.app.NavUtils;
 import android.support.v7.widget.Toolbar;
@@ -30,12 +33,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import com.nextgis.maplib.util.SettingsConstants;
 
 import java.util.List;
 
 import static com.nextgis.mobile.util.SettingsConstants.*;
 
-public class SettingsActivity extends PreferenceActivity
+
+public class SettingsActivity
+        extends PreferenceActivity
 {
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -44,9 +50,8 @@ public class SettingsActivity extends PreferenceActivity
 
         ViewGroup root = ((ViewGroup) findViewById(android.R.id.content));
         LinearLayout content = (LinearLayout) root.getChildAt(0);
-        LinearLayout toolbarContainer = (LinearLayout) View.inflate(this,
-                                                                    R.layout.activity_settings,
-                                                                    null);
+        LinearLayout toolbarContainer =
+                (LinearLayout) View.inflate(this, R.layout.activity_settings, null);
 
         root.removeAllViews();
         toolbarContainer.addView(content);
@@ -70,10 +75,13 @@ public class SettingsActivity extends PreferenceActivity
         if (action != null && action.equals(ACTION_PREFS_GENERAL)) {
             addPreferencesFromResource(R.xml.preferences_general);
             bAddPrefXML = true;
-        }
-        else if (action != null && action.equals(ACTION_PREFS_MAP)) {
+        } else if (action != null && action.equals(ACTION_PREFS_MAP)) {
             addPreferencesFromResource(R.xml.preferences_map);
             bAddPrefXML = true;
+
+            final ListPreference lpLocationAccuracy = (ListPreference) findPreference(
+                    SettingsConstants.KEY_PREF_LOCATION_SOURCE+"_str");
+            initializeLocationAccuracy(lpLocationAccuracy);
         }
         /*else if (action != null && action.equals(ACTION_PREFS_USER)) {
             addPreferencesFromResource(R.xml.preferences_user);
@@ -88,13 +96,15 @@ public class SettingsActivity extends PreferenceActivity
             addPreferencesFromResource(R.xml.preference_headers_legacy);
             bAddPrefXML = true;
         }
-        if(bAddPrefXML){
+        if (bAddPrefXML) {
             //support = new SettingsSupport(this, this.getPreferenceScreen());
         }
     }
 
+
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
@@ -104,23 +114,30 @@ public class SettingsActivity extends PreferenceActivity
         }
     }
 
+
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
-    public void onBuildHeaders(List<Header> target) {
+    public void onBuildHeaders(List<Header> target)
+    {
         loadHeadersFromResource(R.xml.preference_headers, target);
     }
 
+
     @Override
-    public void onResume() {
+    public void onResume()
+    {
         super.onResume();
-    //    if(support != null)
-    //        support.registerListener();
+        //    if(support != null)
+        //        support.registerListener();
     }
+
+
     @Override
-    public void onPause() {
+    public void onPause()
+    {
         super.onPause();
-    //    if(support != null)
-    //        support.unregisterListener();
+        //    if(support != null)
+        //        support.unregisterListener();
     }
 
 
@@ -130,5 +147,41 @@ public class SettingsActivity extends PreferenceActivity
     {
         return SettingsFragment.class.getName().equals(fragmentName);
         //return super.isValidFragment(fragmentName);
+    }
+
+
+    public static void initializeLocationAccuracy(ListPreference listPreference)
+    {
+        if (listPreference != null) {
+            Context ctx = listPreference.getContext();
+            CharSequence[] entries = new CharSequence[3];
+            entries[0] = ctx.getString(R.string.pref_location_accuracy_gps);
+            entries[1] = ctx.getString(R.string.pref_location_accuracy_cell);
+            entries[2] = ctx.getString(R.string.pref_location_accuracy_gps) +
+                         " & " +
+                         ctx.getString(R.string.pref_location_accuracy_cell);
+            listPreference.setEntries(entries);
+            listPreference.setSummary(listPreference.getEntry());
+
+            listPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+            {
+                @Override
+                public boolean onPreferenceChange(
+                        Preference preference,
+                        Object newValue)
+                {
+                    int value = Integer.parseInt(newValue.toString());
+                    CharSequence summary = ((ListPreference) preference).getEntries()[value - 1];
+                    preference.setSummary(summary);
+
+                    preference.getSharedPreferences()
+                              .edit()
+                              .putInt(SettingsConstants.KEY_PREF_LOCATION_SOURCE, value)
+                              .apply();
+
+                    return true;
+                }
+            });
+        }
     }
 }

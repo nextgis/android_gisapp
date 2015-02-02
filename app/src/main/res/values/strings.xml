@@ -55,5 +55,8 @@
     <string name="warning_install_file_manager">Please install a File Manager</string>
     <string name="error_file_unsupported">File type is not supported</string>
     <string name="warning_not_implemented">Not implemented yet</string>
+    <string name="pref_location_accuracy">Location accuracy</string>
+    <string name="pref_location_accuracy_gps">GPS</string>
+    <string name="pref_location_accuracy_cell">Cellular</string>
 
 </resources>
