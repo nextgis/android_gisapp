@@ -129,7 +129,9 @@ public class MainActivity
         mMessageReceiver = new MessageReceiver();
 
         gpsEventSource = ((IGISApplication) getApplication()).getGpsEventSource();
-        mCurrentLocationOverlay = new CurrentLocationOverlay(this, mMap.getMap());
+        mCurrentLocationOverlay = new CurrentLocationOverlay(this, mMap);
+        mCurrentLocationOverlay.setStandingMarker(R.drawable.ic_location_standing);
+        mCurrentLocationOverlay.setMovingMarker(R.drawable.ic_location_moving);
         mMap.addOverlay(mCurrentLocationOverlay);
     }
 
