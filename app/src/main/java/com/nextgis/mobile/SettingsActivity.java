@@ -21,13 +21,13 @@
 package com.nextgis.mobile;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.support.v4.app.NavUtils;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -150,7 +150,7 @@ public class SettingsActivity
     }
 
 
-    public static void initializeLocationAccuracy(ListPreference listPreference)
+    public static void initializeLocationAccuracy(final ListPreference listPreference)
     {
         if (listPreference != null) {
             Context ctx = listPreference.getContext();
@@ -177,7 +177,11 @@ public class SettingsActivity
                     preference.getSharedPreferences()
                               .edit()
                               .putInt(SettingsConstants.KEY_PREF_LOCATION_SOURCE, value)
-                              .apply();
+                              .commit();
+
+                    Activity parent = (Activity) listPreference.getContext();
+                    GISApplication application = (GISApplication) parent.getApplication();
+                    application.getGpsEventSource().updateActiveListeners();
 
                     return true;
                 }
