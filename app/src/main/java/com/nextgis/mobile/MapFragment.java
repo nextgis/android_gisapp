@@ -87,11 +87,6 @@ public class MapFragment
                 mMapRelativeLayout.addView(mMap, 0, new RelativeLayout.LayoutParams(
                         RelativeLayout.LayoutParams.MATCH_PARENT,
                         RelativeLayout.LayoutParams.MATCH_PARENT));
-
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                if (sharedPreferences.getBoolean(KEY_PREF_SHOW_ZOOM_CONTROLS, false)) {
-                    addMapButtons(view.getContext(), mMapRelativeLayout);
-                }
             }
             mMap.invalidate();
         }
