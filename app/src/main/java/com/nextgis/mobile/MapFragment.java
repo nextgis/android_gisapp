@@ -57,16 +57,11 @@ public class MapFragment
     protected MapView     mMap;
     protected ImageView   mivZoomIn;
     protected ImageView   mivZoomOut;
-    protected boolean mShowZoomControls;
 
     protected RelativeLayout mMapRelativeLayout;
 
-    protected static final String KEY_PREF_WAS_ZOOM_CONTROLS_SHOWN = "was_zoom_controls_shown";
-
-
     public MapFragment()
     {
-        mShowZoomControls = false;
     }
 
     @Override
@@ -132,23 +127,21 @@ public class MapFragment
 
     protected void removeMapButtons(RelativeLayout rl)
     {
-        mShowZoomControls = false;
-        rl.removeViewInLayout(mivZoomIn);
-        rl.removeViewInLayout(mivZoomOut);
+        rl.removeViewInLayout(rl.findViewById(R.drawable.ic_minus));
+        rl.removeViewInLayout(rl.findViewById(R.drawable.ic_plus));
         mivZoomIn = null;
         mivZoomOut = null;
     }
 
     protected void addMapButtons(Context context, RelativeLayout rl)
     {
-        mShowZoomControls = true;
         mivZoomIn = new ImageView(context);
         mivZoomIn.setImageResource(R.drawable.ic_plus);
         mivZoomIn.setId(R.drawable.ic_plus);
 
         mivZoomOut = new ImageView(context);
         mivZoomOut.setImageResource(R.drawable.ic_minus);
-        //mivZoomOut.setId(R.drawable.ic_minus);
+        mivZoomOut.setId(R.drawable.ic_minus);
 
         mivZoomIn.setOnClickListener(new OnClickListener()
         {
@@ -278,7 +271,6 @@ public class MapFragment
             edit.putLong(KEY_PREF_SCROLL_X, Double.doubleToRawLongBits(point.getX()));
             edit.putLong(KEY_PREF_SCROLL_Y, Double.doubleToRawLongBits(point.getY()));
         }
-        edit.putBoolean(KEY_PREF_WAS_ZOOM_CONTROLS_SHOWN, mShowZoomControls);
         edit.commit();
 
         super.onPause();
@@ -300,13 +292,11 @@ public class MapFragment
 
         //change zoom controls visibility
         boolean showControls = prefs.getBoolean(KEY_PREF_SHOW_ZOOM_CONTROLS, false);
-        if (prefs.getBoolean(KEY_PREF_WAS_ZOOM_CONTROLS_SHOWN, false) != showControls) {
-            if (showControls) {
-                addMapButtons(getActivity(), mMapRelativeLayout);
-            }
-            else {
-                removeMapButtons(mMapRelativeLayout);
-            }
+        if (showControls) {
+            addMapButtons(getActivity(), mMapRelativeLayout);
+        }
+        else {
+            removeMapButtons(mMapRelativeLayout);
         }
     }
 
