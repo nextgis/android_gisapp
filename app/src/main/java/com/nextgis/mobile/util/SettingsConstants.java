@@ -32,6 +32,7 @@ public interface SettingsConstants
     public final static String ACTION_PREFS_NGW      = "com.nextgis.mobile.PREFS_NGW";
     public final static String ACTION_PREFS_COMPASS  = "com.nextgis.mobile.PREFS_COMPASS";
     public final static String ACTION_PREFS_TRACKING = "com.nextgis.mobile.PREFS_TRACKING";
+    public final static String ACTION_PREFS_LOCATION = "com.nextgis.mobile.PREFS_LOCATION";
     public final static String ACTION_PREFS_EDIT     = "com.nextgis.mobile.PREFS_EDIT";
 
     /**

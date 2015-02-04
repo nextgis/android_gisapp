@@ -39,32 +39,23 @@ public class SettingsFragment extends PreferenceFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         String settings = getArguments().getString("settings");
-        if ("general".equals(settings)) {
-            addPreferencesFromResource(R.xml.preferences_general);
-        } else if ("map".equals(settings)) {
-            addPreferencesFromResource(R.xml.preferences_map);
+        switch (settings) {
+            /*case "general":
+                addPreferencesFromResource(R.xml.preferences_general);
+                break;*/
+            case "map":
+                addPreferencesFromResource(R.xml.preferences_map);
+                break;
+            case "location":
+                addPreferencesFromResource(R.xml.preferences_location);
 
-            final ListPreference lpLocationAccuracy = (ListPreference) findPreference(
-                    SettingsConstants.KEY_PREF_LOCATION_SOURCE+"_str");
-            SettingsActivity.initializeLocationAccuracy(lpLocationAccuracy);
-        } /*else if ("user".equals(settings)) {
-            addPreferencesFromResource(R.xml.preferences_user);
+                final ListPreference lpLocationAccuracy = (ListPreference) findPreference(
+                        SettingsConstants.KEY_PREF_LOCATION_SOURCE + "_str");
+                SettingsActivity.initializeLocationAccuracy(lpLocationAccuracy);
+                break;
+            case "tracks":
+                addPreferencesFromResource(R.xml.preferences_tracks);
+                break;
         }
-        support = new SettingsSupport(getActivity(), this.getPreferenceScreen());
-        */
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    //    if(support != null)
-    //        support.registerListener();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    //    if(support != null)
-    //        support.unregisterListener();
     }
 }

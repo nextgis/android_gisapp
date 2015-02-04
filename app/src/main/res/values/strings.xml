@@ -58,5 +58,9 @@
     <string name="pref_location_accuracy">Location accuracy</string>
     <string name="pref_location_accuracy_gps">GPS</string>
     <string name="pref_location_accuracy_cell">Cellular</string>
+    <string name="location">Location</string>
+    <string name="tracks">Tracks</string>
+    <string name="location_summary">Location settings</string>
+    <string name="tracks_summary">Tracks settings</string>
 
 </resources>

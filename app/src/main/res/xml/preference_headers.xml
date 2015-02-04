@@ -21,17 +21,29 @@
   -->
 
 <preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
-    <header
+    <!-- TODO: header
         android:fragment="com.nextgis.mobile.SettingsFragment"
         android:title="@string/general"
         android:summary="@string/general_summary">
         <extra android:name="settings" android:value="general" />
-    </header>
+    </header-->
     <header
         android:fragment="com.nextgis.mobile.SettingsFragment"
         android:title="@string/map"
         android:summary="@string/map_summary">
         <extra android:name="settings" android:value="map" />
+    </header>
+    <header
+        android:fragment="com.nextgis.mobile.SettingsFragment"
+        android:title="@string/location"
+        android:summary="@string/location_summary">
+        <extra android:name="settings" android:value="location" />
+    </header>
+    <header
+        android:fragment="com.nextgis.mobile.SettingsFragment"
+        android:title="@string/tracks"
+        android:summary="@string/tracks_summary">
+        <extra android:name="settings" android:value="tracks" />
     </header>
     <header
         android:title="@string/ngw"

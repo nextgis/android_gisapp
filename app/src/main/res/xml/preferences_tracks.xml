@@ -21,23 +21,11 @@
   -->
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <CheckBoxPreference
-        android:key="keep_screen_on"
-        android:title="@string/keep_screen_on"
-        android:defaultValue="false"
-        android:summary="@string/keep_screen_on_summary"
-        />
-    <CheckBoxPreference
-        android:key="show_zoom_controls"
-        android:title="@string/show_zoom_controls"
-        android:defaultValue="false"
-        android:summary="@string/show_zoom_controls_summary"
-        />
-    <!-- TODO:
-    1) Add checkbox show may location
-    2) Add list preference show coordinates format
-    3) Add checkbox show scale bar/zoom level
-    4) tile size
-    5) drawing canvas size in percent   -->
+    <!-- TODO: add
+    1) time period and
+    2) minimal distance to pick location
+    3) account (or accounts?) to send current location
+    4) tracks group rules - daily, weekly, monthly etc.
+    -->
 
 </PreferenceScreen>

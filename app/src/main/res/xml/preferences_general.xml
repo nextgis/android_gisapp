@@ -21,17 +21,6 @@
   -->
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <CheckBoxPreference
-        android:key="keep_screen_on"
-        android:title="@string/keep_screen_on"
-        android:defaultValue="false"
-        android:summary="@string/keep_screen_on_summary"
-        />
-    <CheckBoxPreference
-        android:key="show_zoom_controls"
-        android:title="@string/show_zoom_controls"
-        android:defaultValue="false"
-        android:summary="@string/show_zoom_controls_summary"
-        />
+
 
 </PreferenceScreen>
