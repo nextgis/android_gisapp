@@ -1,5 +1,8 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
+project.extensions.GisAuthAccountType = 'com.nextgis.account'
+project.extensions.GisAuthAccountLabel = '@string/nextgis_web'
+
 buildscript {
     repositories {
         jcenter()
