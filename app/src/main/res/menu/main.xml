@@ -54,6 +54,13 @@
         android:icon="@drawable/ic_action_location_found"
         />
     <item
+        android:id="@+id/menu_track"
+        android:title="@string/track_start"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_action_maps_directions_walk"
+        />
+    <item
         android:id="@+id/menu_settings"
         android:title="@string/action_settings"
         android:orderInCategory="100"

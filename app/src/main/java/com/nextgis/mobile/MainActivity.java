@@ -21,6 +21,7 @@
 
 package com.nextgis.mobile;
 
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -50,6 +51,7 @@ import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.map.VectorLayer;
+import com.nextgis.maplib.service.TrackerService;
 import com.nextgis.maplib.util.FileUtil;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplibui.CurrentLocationOverlay;
@@ -176,9 +178,34 @@ public class MainActivity
             case R.id.menu_locate:
                 locateCurrentPosition();
                 return true;
+            case R.id.menu_track:
+                Intent trackerService = new Intent(this, TrackerService.class);
+                trackerService.putExtra(TrackerService.TARGET_CLASS, this.getClass().getName());
+
+                if (isTrackerServiceRunning()) {
+                    stopService(trackerService);
+                    item.setTitle(R.string.track_start);
+                } else {
+                    startService(trackerService);
+                    item.setTitle(R.string.track_stop);
+                }
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    public boolean isTrackerServiceRunning() {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (TrackerService.class.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 
@@ -393,6 +420,18 @@ public class MainActivity
         registerReceiver(mMessageReceiver, intentFilter);
         gpsEventSource.addListener(this);
         mCurrentLocationOverlay.startShowingCurrentLocation();
+    }
+
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+        if (!mLayersFragment.isDrawerOpen()) {
+            int title = isTrackerServiceRunning() ? R.string.track_stop : R.string.track_start;
+            menu.findItem(R.id.menu_track).setTitle(title);
+        }
+
+        return super.onPrepareOptionsMenu(menu);
     }
 
 

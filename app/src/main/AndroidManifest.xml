@@ -75,6 +75,10 @@
                        android:resource="@xml/syncadapter" />
         </service>
 
+        <service
+            android:process=":tracks"
+            android:name="com.nextgis.maplib.service.TrackerService"/>
+
         <provider
             android:name="com.nextgis.maplib.datasource.LayerContentProvider"
             android:authorities="com.nextgis.mobile.provider"

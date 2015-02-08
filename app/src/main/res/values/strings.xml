@@ -62,5 +62,7 @@
     <string name="tracks">Tracks</string>
     <string name="location_summary">Location settings</string>
     <string name="tracks_summary">Tracks settings</string>
+    <string name="track_start">Start new track</string>
+    <string name="track_stop">Stop track</string>
 
 </resources>
