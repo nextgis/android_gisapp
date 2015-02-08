@@ -36,6 +36,7 @@ import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplibui.mapui.LayerFactoryUI;
 import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
+import com.nextgis.maplibui.mapui.TrackLayerUI;
 
 import java.io.File;
 
@@ -144,7 +145,14 @@ public class GISApplication
         layer.setTMSType(TMSTYPE_OSM);
         layer.setVisible(true);
 
+        String trackLayerName = getString(R.string.tracks);
+        TrackLayerUI
+                trackLayer = new TrackLayerUI(getApplicationContext(), mMap.createLayerStorage());
+        trackLayer.setName(trackLayerName);
+        trackLayer.setVisible(true);
+
         mMap.addLayer(layer);
+        mMap.addLayer(trackLayer);
         mMap.save();
     }
 
