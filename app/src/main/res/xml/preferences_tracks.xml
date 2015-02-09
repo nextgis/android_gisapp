@@ -21,9 +21,25 @@
   -->
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference
+        android:key="tracks_min_time"
+        android:title="@string/pref_min_time"
+        android:defaultValue="10"
+        android:inputType="number"
+        android:numeric="integer"
+        />
+
+    <EditTextPreference
+        android:key="tracks_min_distance"
+        android:title="@string/pref_min_distance"
+        android:defaultValue="2"
+        android:inputType="number|numberDecimal"
+        android:numeric="decimal"
+        />
+
     <!-- TODO: add
-    1) time period and
-    2) minimal distance to pick location
+    1) time period and -done
+    2) minimal distance to pick location -done
     3) account (or accounts?) to send current location
     4) tracks group rules - daily, weekly, monthly etc.
     -->

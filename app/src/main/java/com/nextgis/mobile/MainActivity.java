@@ -182,7 +182,7 @@ public class MainActivity
                 Intent trackerService = new Intent(this, TrackerService.class);
                 trackerService.putExtra(TrackerService.TARGET_CLASS, this.getClass().getName());
 
-                if (isTrackerServiceRunning()) {
+                if (isTrackerServiceRunning(this)) {
                     stopService(trackerService);
                     item.setTitle(R.string.track_start);
                 } else {
@@ -196,8 +196,8 @@ public class MainActivity
     }
 
 
-    public boolean isTrackerServiceRunning() {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+    public static boolean isTrackerServiceRunning(Context context) {
+        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
 
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (TrackerService.class.getName().equals(service.service.getClassName())) {
@@ -427,7 +427,7 @@ public class MainActivity
     public boolean onPrepareOptionsMenu(Menu menu)
     {
         if (!mLayersFragment.isDrawerOpen()) {
-            int title = isTrackerServiceRunning() ? R.string.track_stop : R.string.track_start;
+            int title = isTrackerServiceRunning(this) ? R.string.track_stop : R.string.track_start;
             menu.findItem(R.id.menu_track).setTitle(title);
         }
 

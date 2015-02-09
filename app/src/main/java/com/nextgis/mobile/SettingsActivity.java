@@ -25,6 +25,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -33,6 +34,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import com.nextgis.maplib.util.SettingsConstants;
 
 import java.util.List;
@@ -71,7 +73,7 @@ public class SettingsActivity
         });
 
         String action = getIntent().getAction();
-        if(action != null) {
+        if (action != null) {
             switch (action) {
                 /*case ACTION_PREFS_GENERAL:
                     addPreferencesFromResource(R.xml.preferences_general);
@@ -88,10 +90,15 @@ public class SettingsActivity
                     break;
                 case ACTION_PREFS_TRACKING:
                     addPreferencesFromResource(R.xml.preferences_tracks);
+
+                    final EditTextPreference minTime = (EditTextPreference) findPreference(
+                            SettingsConstants.KEY_PREF_TRACKS_MIN_TIME);
+                    final EditTextPreference minDistance = (EditTextPreference) findPreference(
+                            SettingsConstants.KEY_PREF_TRACKS_MIN_DISTANCE);
+                    initializeLocationMins(minTime, minDistance);
                     break;
             }
-        }
-        else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
             // Load the legacy preferences headers
             addPreferencesFromResource(R.xml.preference_headers_legacy);
         }
@@ -117,6 +124,7 @@ public class SettingsActivity
     {
         loadHeadersFromResource(R.xml.preference_headers, target);
     }
+
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
@@ -164,5 +172,51 @@ public class SettingsActivity
                 }
             });
         }
+    }
+
+
+    public static void initializeLocationMins(
+            EditTextPreference minTime,
+            final EditTextPreference minDistance)
+    {
+        final Context context = minDistance.getContext();
+        minTime.setSummary(minTime.getText() + " " + context.getString(R.string.seconds));
+        minDistance.setSummary(minDistance.getText() + " " + context.getString(R.string.meters));
+
+        minTime.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+        {
+            @Override
+            public boolean onPreferenceChange(
+                    Preference preference,
+                    Object newValue)
+            {
+                preference.setSummary(newValue + " " + context.getString(R.string.seconds));
+
+                if (MainActivity.isTrackerServiceRunning(context)) {
+                    Toast.makeText(context, context.getString(R.string.tracks_reload),
+                                   Toast.LENGTH_SHORT).show();
+                }
+
+                return true;
+            }
+        });
+
+        minDistance.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+        {
+            @Override
+            public boolean onPreferenceChange(
+                    Preference preference,
+                    Object newValue)
+            {
+                preference.setSummary(newValue + " " + context.getString(R.string.meters));
+
+                if (MainActivity.isTrackerServiceRunning(context)) {
+                    Toast.makeText(context, context.getString(R.string.tracks_reload),
+                                   Toast.LENGTH_SHORT).show();
+                }
+
+                return true;
+            }
+        });
     }
 }
