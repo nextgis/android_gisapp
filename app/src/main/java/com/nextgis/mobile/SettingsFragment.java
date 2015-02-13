@@ -55,16 +55,26 @@ public class SettingsFragment extends PreferenceFragment
 
                 final ListPreference lpLocationAccuracy = (ListPreference) findPreference(
                         SettingsConstants.KEY_PREF_LOCATION_SOURCE + "_str");
-                initializeLocationAccuracy(lpLocationAccuracy);
+                initializeLocationAccuracy(lpLocationAccuracy, false);
+
+                final EditTextPreference minTimeLoc = (EditTextPreference) findPreference(
+                        SettingsConstants.KEY_PREF_LOCATION_MIN_TIME);
+                final EditTextPreference minDistanceLoc = (EditTextPreference) findPreference(
+                        SettingsConstants.KEY_PREF_LOCATION_MIN_DISTANCE);
+                initializeLocationMins(minTimeLoc, minDistanceLoc, false);
                 break;
             case "tracks":
                 addPreferencesFromResource(R.xml.preferences_tracks);
+
+                final ListPreference lpTracksAccuracy = (ListPreference) findPreference(
+                        SettingsConstants.KEY_PREF_TRACKS_SOURCE + "_str");
+                initializeLocationAccuracy(lpTracksAccuracy, true);
 
                 final EditTextPreference minTime = (EditTextPreference) findPreference(
                         SettingsConstants.KEY_PREF_TRACKS_MIN_TIME);
                 final EditTextPreference minDistance = (EditTextPreference) findPreference(
                         SettingsConstants.KEY_PREF_TRACKS_MIN_DISTANCE);
-                initializeLocationMins(minTime, minDistance);
+                initializeLocationMins(minTime, minDistance, true);
                 break;
         }
     }

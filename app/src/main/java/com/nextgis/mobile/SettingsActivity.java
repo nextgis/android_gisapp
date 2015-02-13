@@ -86,16 +86,26 @@ public class SettingsActivity
 
                     final ListPreference lpLocationAccuracy = (ListPreference) findPreference(
                             SettingsConstants.KEY_PREF_LOCATION_SOURCE + "_str");
-                    initializeLocationAccuracy(lpLocationAccuracy);
+                    initializeLocationAccuracy(lpLocationAccuracy, false);
+
+                    final EditTextPreference minTimeLoc = (EditTextPreference) findPreference(
+                            SettingsConstants.KEY_PREF_LOCATION_MIN_TIME);
+                    final EditTextPreference minDistanceLoc = (EditTextPreference) findPreference(
+                            SettingsConstants.KEY_PREF_LOCATION_MIN_DISTANCE);
+                    initializeLocationMins(minTimeLoc, minDistanceLoc, false);
                     break;
                 case ACTION_PREFS_TRACKING:
                     addPreferencesFromResource(R.xml.preferences_tracks);
+
+                    final ListPreference lpTracksAccuracy = (ListPreference) findPreference(
+                            SettingsConstants.KEY_PREF_TRACKS_SOURCE + "_str");
+                    initializeLocationAccuracy(lpTracksAccuracy, true);
 
                     final EditTextPreference minTime = (EditTextPreference) findPreference(
                             SettingsConstants.KEY_PREF_TRACKS_MIN_TIME);
                     final EditTextPreference minDistance = (EditTextPreference) findPreference(
                             SettingsConstants.KEY_PREF_TRACKS_MIN_DISTANCE);
-                    initializeLocationMins(minTime, minDistance);
+                    initializeLocationMins(minTime, minDistance, true);
                     break;
             }
         } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
@@ -135,7 +145,9 @@ public class SettingsActivity
     }
 
 
-    public static void initializeLocationAccuracy(final ListPreference listPreference)
+    public static void initializeLocationAccuracy(
+            final ListPreference listPreference,
+            final boolean isTracks)
     {
         if (listPreference != null) {
             Context ctx = listPreference.getContext();
@@ -159,14 +171,12 @@ public class SettingsActivity
                     CharSequence summary = ((ListPreference) preference).getEntries()[value - 1];
                     preference.setSummary(summary);
 
-                    preference.getSharedPreferences()
-                              .edit()
-                              .putInt(SettingsConstants.KEY_PREF_LOCATION_SOURCE, value)
-                              .commit();
+                    String preferenceKey = isTracks
+                                           ? SettingsConstants.KEY_PREF_TRACKS_SOURCE
+                                           : SettingsConstants.KEY_PREF_LOCATION_SOURCE;
+                    preference.getSharedPreferences().edit().putInt(preferenceKey, value).commit();
 
-                    Activity parent = (Activity) listPreference.getContext();
-                    GISApplication application = (GISApplication) parent.getApplication();
-                    application.getGpsEventSource().updateActiveListeners();
+                    sectionWork(preference.getContext(), isTracks);
 
                     return true;
                 }
@@ -177,7 +187,8 @@ public class SettingsActivity
 
     public static void initializeLocationMins(
             EditTextPreference minTime,
-            final EditTextPreference minDistance)
+            final EditTextPreference minDistance,
+            final boolean isTracks)
     {
         final Context context = minDistance.getContext();
         minTime.setSummary(minTime.getText() + " " + context.getString(R.string.seconds));
@@ -192,10 +203,15 @@ public class SettingsActivity
             {
                 preference.setSummary(newValue + " " + context.getString(R.string.seconds));
 
-                if (MainActivity.isTrackerServiceRunning(context)) {
-                    Toast.makeText(context, context.getString(R.string.tracks_reload),
-                                   Toast.LENGTH_SHORT).show();
-                }
+                String preferenceKey = isTracks
+                                       ? SettingsConstants.KEY_PREF_TRACKS_MIN_TIME
+                                       : SettingsConstants.KEY_PREF_LOCATION_MIN_TIME;
+                preference.getSharedPreferences()
+                          .edit()
+                          .putLong(preferenceKey, (Long) newValue)
+                          .commit();
+
+                sectionWork(preference.getContext(), isTracks);
 
                 return true;
             }
@@ -210,13 +226,35 @@ public class SettingsActivity
             {
                 preference.setSummary(newValue + " " + context.getString(R.string.meters));
 
-                if (MainActivity.isTrackerServiceRunning(context)) {
-                    Toast.makeText(context, context.getString(R.string.tracks_reload),
-                                   Toast.LENGTH_SHORT).show();
-                }
+                String preferenceKey = isTracks
+                                       ? SettingsConstants.KEY_PREF_TRACKS_MIN_DISTANCE
+                                       : SettingsConstants.KEY_PREF_LOCATION_MIN_DISTANCE;
+                preference.getSharedPreferences()
+                          .edit()
+                          .putFloat(preferenceKey, (Float) newValue)
+                          .commit();
+
+                sectionWork(preference.getContext(), isTracks);
 
                 return true;
             }
         });
+    }
+
+
+    private static void sectionWork(
+            Context context,
+            boolean isTracks)
+    {
+        if (!isTracks) {
+            Activity parent = (Activity) context;
+            GISApplication application = (GISApplication) parent.getApplication();
+            application.getGpsEventSource().updateActiveListeners();
+        } else {
+            if (MainActivity.isTrackerServiceRunning(context)) {
+                Toast.makeText(context, context.getString(R.string.tracks_reload),
+                               Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }
