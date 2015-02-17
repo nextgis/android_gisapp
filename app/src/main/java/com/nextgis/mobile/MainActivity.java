@@ -28,6 +28,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SyncResult;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -267,6 +268,20 @@ public class MainActivity
             if(center.project(GeoConstants.CRS_WEB_MERCATOR)) {
                 mMap.invalidate();
                 mMap.setZoomAndCenter(mMap.getZoomLevel(), center);
+            }
+        }
+    }
+
+    void testSync(){
+        IGISApplication application = (IGISApplication)getApplication();
+        MapBase map = application.getMap();
+        NGWVectorLayer ngwVectorLayer = null;
+        for(int i = 0; i < map.getLayerCount(); i++){
+            ILayer layer = map.getLayer(i);
+            if(layer instanceof NGWVectorLayer)
+            {
+                ngwVectorLayer = (NGWVectorLayer)layer;
+                ngwVectorLayer.sync(application.getAuthority(), new SyncResult());
             }
         }
     }
