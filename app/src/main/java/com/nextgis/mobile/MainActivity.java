@@ -30,7 +30,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SyncResult;
 import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -56,9 +55,8 @@ import com.nextgis.maplib.service.TrackerService;
 import com.nextgis.maplib.util.FileUtil;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplibui.CurrentLocationOverlay;
-import com.nextgis.maplibui.MapView;
 import com.nextgis.maplibui.MapViewOverlays;
-import com.nextgis.maplibui.util.Constants;
+import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.mobile.util.SettingsConstants;
 
 import java.io.IOException;
@@ -419,9 +417,9 @@ public class MainActivity
     {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Constants.MESSAGE_INTENT)) {
+            if (intent.getAction().equals(ConstantsUI.MESSAGE_INTENT)) {
                 Toast.makeText(MainActivity.this, intent.getExtras().getString(
-                        Constants.KEY_MESSAGE), Toast.LENGTH_SHORT).show();
+                        ConstantsUI.KEY_MESSAGE), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -432,7 +430,7 @@ public class MainActivity
     {
         super.onResume();
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(Constants.MESSAGE_INTENT);
+        intentFilter.addAction(ConstantsUI.MESSAGE_INTENT);
         registerReceiver(mMessageReceiver, intentFilter);
         gpsEventSource.addListener(this);
         mCurrentLocationOverlay.startShowingCurrentLocation();

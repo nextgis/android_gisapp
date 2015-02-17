@@ -44,7 +44,7 @@ import static com.nextgis.maplib.util.Constants.MAP_EXT;
 import static com.nextgis.maplib.util.Constants.NOT_FOUND;
 import static com.nextgis.maplib.util.GeoConstants.TMSTYPE_OSM;
 import static com.nextgis.mobile.util.SettingsConstants.*;
-import static com.nextgis.maplibui.util.SettingsConstants.*;
+import static com.nextgis.maplibui.util.SettingsConstantsUI.*;
 import static com.nextgis.maplib.util.SettingsConstants.*;
 
 public class GISApplication
