@@ -266,8 +266,9 @@ public class MainActivity
             GeoPoint center = new GeoPoint(location.getLongitude(), location.getLatitude());
             center.setCRS(GeoConstants.CRS_WGS84);
             if(center.project(GeoConstants.CRS_WEB_MERCATOR)) {
-                mMap.invalidate();
-                mMap.setZoomAndCenter(mMap.getZoomLevel(), center);
+                mMap.panTo(center);
+                //.setZoomAndCenter(mMap.getZoomLevel(), center);
+                //mMap.invalidate();
             }
         }
     }
