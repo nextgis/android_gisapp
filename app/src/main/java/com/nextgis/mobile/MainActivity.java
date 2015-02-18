@@ -55,6 +55,7 @@ import com.nextgis.maplib.service.TrackerService;
 import com.nextgis.maplib.util.FileUtil;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplibui.CurrentLocationOverlay;
+import com.nextgis.maplibui.CurrentTrackOverlay;
 import com.nextgis.maplibui.MapViewOverlays;
 import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.mobile.util.SettingsConstants;
@@ -66,6 +67,7 @@ import java.util.GregorianCalendar;
 import static com.nextgis.maplib.util.Constants.TAG;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WEB_MERCATOR;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
+import static com.nextgis.maplibui.TracksActivity.isTrackerServiceRunning;
 
 
 public class MainActivity
@@ -79,8 +81,10 @@ public class MainActivity
     protected MessageReceiver mMessageReceiver;
     protected GpsEventSource  gpsEventSource;
     protected CurrentLocationOverlay mCurrentLocationOverlay;
+    protected CurrentTrackOverlay    mCurrentTrackOverlay;
 
     protected final static int FILE_SELECT_CODE = 555;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -133,6 +137,10 @@ public class MainActivity
         mCurrentLocationOverlay = new CurrentLocationOverlay(this, mMap);
         mCurrentLocationOverlay.setStandingMarker(R.drawable.ic_location_standing);
         mCurrentLocationOverlay.setMovingMarker(R.drawable.ic_location_moving);
+
+        mCurrentTrackOverlay = new CurrentTrackOverlay(this, mMap);
+
+        mMap.addOverlay(mCurrentTrackOverlay);
         mMap.addOverlay(mCurrentLocationOverlay);
     }
 
@@ -192,19 +200,6 @@ public class MainActivity
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-
-    public static boolean isTrackerServiceRunning(Context context) {
-        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (TrackerService.class.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
 
