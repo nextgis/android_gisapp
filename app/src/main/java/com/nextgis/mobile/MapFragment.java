@@ -288,7 +288,8 @@ public class MapFragment
         //change zoom controls visibility
         boolean showControls = prefs.getBoolean(KEY_PREF_SHOW_ZOOM_CONTROLS, false);
         if (showControls) {
-            addMapButtons(getActivity(), mMapRelativeLayout);
+            if (mivZoomIn == null || mivZoomOut == null)
+                addMapButtons(getActivity(), mMapRelativeLayout);
         }
         else {
             removeMapButtons(mMapRelativeLayout);

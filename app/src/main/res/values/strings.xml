@@ -67,7 +67,6 @@
     <string name="tracks_reload">Restart current track to apply changes</string>
     <string name="pref_min_time">Minimum update time</string>
     <string name="pref_min_distance">Minimum update distance</string>
-    <string name="meters">m</string>
-    <string name="seconds">s</string>
+    <string name="frequentest">, as frequent as possible</string>
 
 </resources>
