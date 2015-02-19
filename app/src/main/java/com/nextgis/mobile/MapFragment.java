@@ -126,6 +126,7 @@ public class MapFragment
         rl.removeViewInLayout(rl.findViewById(R.drawable.ic_plus));
         mivZoomIn = null;
         mivZoomOut = null;
+        rl.invalidate();
     }
 
     protected void addMapButtons(Context context, RelativeLayout rl)
