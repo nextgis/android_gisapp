@@ -29,6 +29,7 @@ import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceFragment;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,6 +37,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import com.nextgis.maplib.util.SettingsConstants;
+import com.nextgis.maplibui.util.SettingsConstantsUI;
 
 import java.util.List;
 
@@ -80,6 +82,14 @@ public class SettingsActivity
                     break;*/
                 case ACTION_PREFS_MAP:
                     addPreferencesFromResource(R.xml.preferences_map);
+
+                    final ListPreference lpCoordinateFormat = (ListPreference) findPreference(
+                            SettingsConstantsUI.KEY_PREF_COORD_FORMAT);
+                    initializeCoordinateFormat(lpCoordinateFormat);
+
+                    final EditTextPreference edMapPath = (EditTextPreference) findPreference(
+                            SettingsConstants.KEY_PREF_MAP_PATH);
+                    initializeMapPath(edMapPath);
                     break;
                 case ACTION_PREFS_LOCATION:
                     addPreferencesFromResource(R.xml.preferences_location);
@@ -111,6 +121,38 @@ public class SettingsActivity
         } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
             // Load the legacy preferences headers
             addPreferencesFromResource(R.xml.preference_headers_legacy);
+        }
+    }
+
+
+    public static void initializeMapPath(EditTextPreference edMapPath)
+    {
+
+    }
+
+
+    public static void initializeCoordinateFormat(ListPreference lpCoordinateFormat)
+    {
+        if(null != lpCoordinateFormat){
+            lpCoordinateFormat.setSummary(lpCoordinateFormat.getEntry());
+
+            lpCoordinateFormat.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+            {
+                @Override
+                public boolean onPreferenceChange(
+                        Preference preference,
+                        Object newValue)
+                {
+                    int value = Integer.parseInt(newValue.toString());
+                    CharSequence summary = ((ListPreference) preference).getEntries()[value];
+                    preference.setSummary(summary);
+
+                    String preferenceKey = preference.getKey() + "_int";
+                    preference.getSharedPreferences().edit().putInt(preferenceKey, value).commit();
+
+                    return true;
+                }
+            });
         }
     }
 
@@ -242,7 +284,7 @@ public class SettingsActivity
     }
 
 
-    private static void sectionWork(
+    protected static void sectionWork(
             Context context,
             boolean isTracks)
     {

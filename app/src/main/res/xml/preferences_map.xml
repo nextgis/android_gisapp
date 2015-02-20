@@ -33,8 +33,21 @@
         android:defaultValue="false"
         android:summary="@string/show_zoom_controls_summary"
         />
+    <ListPreference
+        android:key="coordinates_format"
+        android:title="@string/coordinates_format"
+        android:summary="@string/coordinates_format_summary"
+        android:defaultValue="0"
+        android:entries="@array/coordinates_format"
+        android:entryValues="@array/coordinates_format_val"
+        android:dialogTitle="@string/select_coordinates_format" />
+    <EditTextPreference
+        android:key="map_path"
+        android:title="@string/map_path"
+        android:summary="@string/map_path_summary"/>
+
     <!-- TODO:
-    1) Add checkbox show may location
+    1) Add checkbox show my location
     2) Add list preference show coordinates format
     3) Add checkbox show scale bar/zoom level
     4) tile size

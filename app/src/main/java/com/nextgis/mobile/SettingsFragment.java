@@ -26,12 +26,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
-import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import com.nextgis.maplib.util.SettingsConstants;
-
-import static com.nextgis.mobile.SettingsActivity.initializeLocationAccuracy;
-import static com.nextgis.mobile.SettingsActivity.initializeLocationMins;
+import com.nextgis.maplibui.util.SettingsConstantsUI;
 
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -49,32 +46,41 @@ public class SettingsFragment extends PreferenceFragment
                 break;*/
             case "map":
                 addPreferencesFromResource(R.xml.preferences_map);
+
+                final ListPreference lpCoordinateFormat = (ListPreference) findPreference(
+                        SettingsConstantsUI.KEY_PREF_COORD_FORMAT);
+                SettingsActivity.initializeCoordinateFormat(lpCoordinateFormat);
+
+                final EditTextPreference edMapPath = (EditTextPreference) findPreference(
+                        SettingsConstants.KEY_PREF_MAP_PATH);
+                SettingsActivity.initializeMapPath(edMapPath);
+
                 break;
             case "location":
                 addPreferencesFromResource(R.xml.preferences_location);
 
                 final ListPreference lpLocationAccuracy = (ListPreference) findPreference(
                         SettingsConstants.KEY_PREF_LOCATION_SOURCE + "_str");
-                initializeLocationAccuracy(lpLocationAccuracy, false);
+                SettingsActivity.initializeLocationAccuracy(lpLocationAccuracy, false);
 
                 final EditTextPreference minTimeLoc = (EditTextPreference) findPreference(
                         SettingsConstants.KEY_PREF_LOCATION_MIN_TIME);
                 final EditTextPreference minDistanceLoc = (EditTextPreference) findPreference(
                         SettingsConstants.KEY_PREF_LOCATION_MIN_DISTANCE);
-                initializeLocationMins(minTimeLoc, minDistanceLoc, false);
+                SettingsActivity.initializeLocationMins(minTimeLoc, minDistanceLoc, false);
                 break;
             case "tracks":
                 addPreferencesFromResource(R.xml.preferences_tracks);
 
                 final ListPreference lpTracksAccuracy = (ListPreference) findPreference(
                         SettingsConstants.KEY_PREF_TRACKS_SOURCE + "_str");
-                initializeLocationAccuracy(lpTracksAccuracy, true);
+                SettingsActivity.initializeLocationAccuracy(lpTracksAccuracy, true);
 
                 final EditTextPreference minTime = (EditTextPreference) findPreference(
                         SettingsConstants.KEY_PREF_TRACKS_MIN_TIME);
                 final EditTextPreference minDistance = (EditTextPreference) findPreference(
                         SettingsConstants.KEY_PREF_TRACKS_MIN_DISTANCE);
-                initializeLocationMins(minTime, minDistance, true);
+                SettingsActivity.initializeLocationMins(minTime, minDistance, true);
                 break;
         }
     }
