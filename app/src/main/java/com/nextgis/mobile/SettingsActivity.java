@@ -324,7 +324,7 @@ public class SettingsActivity
 
                     File newPath = new File((String)o);
                     if(newPath.listFiles().length != 0){
-                        Toast.makeText(context, context.getString(R.string.warning_folder_shouldbe_empty), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, context.getString(R.string.warning_folder_should_be_empty), Toast.LENGTH_SHORT).show();
                         return false;
                     }
 

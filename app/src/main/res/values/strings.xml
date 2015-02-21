@@ -48,7 +48,7 @@
     <string name="add_current_place">Add current place</string>
     <string name="add_new_geometry">Add new geometry</string>
     <string name="add_geometry_by_walk">Add geometry by walking</string>
-    <string name="warn_no_edit_layers">No editable layers</string>
+    <string name="warning_no_edit_layers">No editable layers</string>
     <string name="select_layer">Select layer to edit</string>
     <string name="menu_locate">Locate</string>
     <string name="select_file">Select file to create layer</string>
@@ -77,6 +77,6 @@
     <string name="select_map_path">Select map folder path</string>
     <string name="moving">Moving…</string>
     <string name="warning_map_moving">Dangerous operation! Don\'t cancel it or kill the application during the data moving to new location! You data may be broken or lost!</string>
-    <string name="warning_folder_shouldbe_empty">The folder should be empty. Cancel operation.</string>
+    <string name="warning_folder_should_be_empty">The folder should be empty. Cancel operation.</string>
 
 </resources>

@@ -299,7 +299,7 @@ public class MapFragment
         //show select layer dialog if several layers, else start default or custom form
         List<ILayer> layers = mMap.getVectorLayersByType(GeoConstants.GTMultiPoint | GeoConstants.GTPoint);
         if(layers.isEmpty()){
-            Toast.makeText(getActivity(), getString(R.string.warn_no_edit_layers), Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG).show();
         }
         else if(layers.size() == 1){
             //open form
@@ -309,7 +309,7 @@ public class MapFragment
                 vectorLayerUI.showEditForm(getActivity());
             }
             else{
-                Toast.makeText(getActivity(), getString(R.string.warn_no_edit_layers), Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG).show();
             }
         }
         else{
