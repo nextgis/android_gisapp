@@ -275,7 +275,7 @@ public class MainActivity
             if(layer instanceof NGWVectorLayer)
             {
                 ngwVectorLayer = (NGWVectorLayer)layer;
-                ngwVectorLayer.sync(null, application.getAuthority(), new SyncResult());
+                ngwVectorLayer.sync(application.getAuthority(), new SyncResult());
             }
         }
     }
