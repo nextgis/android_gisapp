@@ -178,8 +178,6 @@ public class SelectMapPathDialogPreference extends DialogPreference implements I
             if (callChangeListener(value)) {
                 setText(value);
                 setSummary(value);
-
-                //TODO: move map data
             }
         }
     }
