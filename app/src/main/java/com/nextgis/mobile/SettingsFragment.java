@@ -51,9 +51,9 @@ public class SettingsFragment extends PreferenceFragment
                         SettingsConstantsUI.KEY_PREF_COORD_FORMAT);
                 SettingsActivity.initializeCoordinateFormat(lpCoordinateFormat);
 
-                final EditTextPreference edMapPath = (EditTextPreference) findPreference(
+                final SelectMapPathDialogPreference mapPath = (SelectMapPathDialogPreference) findPreference(
                         SettingsConstants.KEY_PREF_MAP_PATH);
-                SettingsActivity.initializeMapPath(edMapPath);
+                SettingsActivity.initializeMapPath(getActivity(), mapPath);
 
                 break;
             case "location":

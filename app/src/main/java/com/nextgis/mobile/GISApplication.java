@@ -102,7 +102,7 @@ public class GISApplication
 
             final Bitmap bkBitmap = BitmapFactory.decodeResource(getResources(),
                                                                  com.nextgis.maplibui.R.drawable.bk_tile);
-            mMap = new MapDrawable(bkBitmap, this, mapFullPath, new LayerFactoryUI(mapFullPath));
+            mMap = new MapDrawable(bkBitmap, this, mapFullPath, new LayerFactoryUI());
             mMap.setName(mapName);
             mMap.load();
         }

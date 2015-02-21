@@ -69,5 +69,14 @@
     <string name="pref_min_distance">Minimum update distance</string>
     <string name="meters">m</string>
     <string name="seconds">s</string>
+    <string name="coordinates_format">Coordinates format</string>
+    <string name="select_coordinates_format">Select coordinates format</string>
+    <string name="coordinates_format_summary">Coordinate text format</string>
+    <string name="map_path">Map path</string>
+    <string name="map_path_summary">The path to map data folder. Changing map folder may prevent data deletion on application uninstall process</string>
+    <string name="select_map_path">Select map folder path</string>
+    <string name="moving">Moving…</string>
+    <string name="warning_map_moving">Dangerous operation! Don\'t cancel it or kill the application during the data moving to new location! You data may be broken or lost!</string>
+    <string name="warning_folder_shouldbe_empty">The folder should be empty. Cancel operation.</string>
 
 </resources>

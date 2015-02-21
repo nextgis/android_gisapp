@@ -22,23 +22,29 @@ package com.nextgis.mobile;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceFragment;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 
+import java.io.File;
 import java.util.List;
 
 import static com.nextgis.mobile.util.SettingsConstants.*;
@@ -87,9 +93,10 @@ public class SettingsActivity
                             SettingsConstantsUI.KEY_PREF_COORD_FORMAT);
                     initializeCoordinateFormat(lpCoordinateFormat);
 
-                    final EditTextPreference edMapPath = (EditTextPreference) findPreference(
+                    final SelectMapPathDialogPreference mapPath = (SelectMapPathDialogPreference) findPreference(
                             SettingsConstants.KEY_PREF_MAP_PATH);
-                    initializeMapPath(edMapPath);
+                    initializeMapPath(this, mapPath);
+
                     break;
                 case ACTION_PREFS_LOCATION:
                     addPreferencesFromResource(R.xml.preferences_location);
@@ -123,13 +130,6 @@ public class SettingsActivity
             addPreferencesFromResource(R.xml.preference_headers_legacy);
         }
     }
-
-
-    public static void initializeMapPath(EditTextPreference edMapPath)
-    {
-
-    }
-
 
     public static void initializeCoordinateFormat(ListPreference lpCoordinateFormat)
     {
@@ -297,6 +297,108 @@ public class SettingsActivity
                 Toast.makeText(context, context.getString(R.string.tracks_reload),
                                Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+    public static void initializeMapPath(final Context context, final SelectMapPathDialogPreference mapPath)
+    {
+        if(null != mapPath){
+            mapPath.setSummary(mapPath.getText());
+
+            mapPath.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+            {
+                private ProgressDialog dialog;
+
+                @Override
+                public boolean onPreferenceChange(
+                        Preference preference,
+                        Object o)
+                {
+                    Activity parent = (Activity) context;
+                    if(null == parent)
+                        return false;
+
+                    GISApplication application = (GISApplication) parent.getApplication();
+                    if(null == application)
+                        return false;
+
+                    File newPath = new File((String)o);
+                    if(newPath.listFiles().length != 0){
+                        Toast.makeText(context, context.getString(R.string.warning_folder_shouldbe_empty), Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
+
+                    ContentResolver.cancelSync(null, application.getAuthority());
+
+                    new BackgroundMoveTask(parent, application.getMap(), new File((String)o)).execute();
+
+                    return true;
+                }
+            });
+        }
+    }
+
+    private static class BackgroundMoveTask extends AsyncTask<Void, Void, Void>
+    {
+        protected ProgressDialog mProgressDialog;
+        protected Activity       mActivity;
+        protected MapBase        mMap;
+        protected File           mPath;
+
+
+        public BackgroundMoveTask(
+                Activity activity,
+                MapBase map,
+                File path)
+        {
+            mActivity = activity;
+            mMap = map;
+            mPath = path;
+        }
+
+
+        @Override
+        protected Void doInBackground(Void... voids)
+        {
+            mMap.moveTo(mPath);
+            return null;
+        }
+
+
+        @Override
+        protected void onPreExecute()
+        {
+            //not good solution but rare used so let it be
+            lockScreenOrientation();
+            mProgressDialog =
+                    ProgressDialog.show(mActivity, mActivity.getString(R.string.moving), mActivity.getString(R.string.warning_map_moving), true);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setIcon(mActivity.getResources().getDrawable(R.drawable.ic_warning));
+        }
+
+
+        @Override
+        protected void onPostExecute(Void aVoid)
+        {
+            mProgressDialog.dismiss();
+            unlockScreenOrientation();
+        }
+
+
+        protected void lockScreenOrientation()
+        {
+            int currentOrientation = mActivity.getResources().getConfiguration().orientation;
+            if (currentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+                mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            } else {
+                mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            }
+        }
+
+
+        protected void unlockScreenOrientation()
+        {
+            mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         }
     }
 }
