@@ -78,5 +78,6 @@
     <string name="moving">Moving…</string>
     <string name="warning_map_moving">Dangerous operation! Don\'t cancel it or kill the application during the data moving to new location! You data may be broken or lost!</string>
     <string name="warning_folder_should_be_empty">The folder should be empty. Cancel operation.</string>
+    <string name="frequentest">, as frequent as possible</string>
 
 </resources>

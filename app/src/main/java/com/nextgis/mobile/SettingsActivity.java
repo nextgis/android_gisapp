@@ -47,6 +47,7 @@ import com.nextgis.maplibui.util.SettingsConstantsUI;
 import java.io.File;
 import java.util.List;
 
+import static com.nextgis.maplibui.TracksActivity.isTrackerServiceRunning;
 import static com.nextgis.mobile.util.SettingsConstants.*;
 
 
@@ -233,8 +234,8 @@ public class SettingsActivity
             final boolean isTracks)
     {
         final Context context = minDistance.getContext();
-        minTime.setSummary(minTime.getText() + " " + context.getString(R.string.seconds));
-        minDistance.setSummary(minDistance.getText() + " " + context.getString(R.string.meters));
+        minTime.setSummary(getMinSummary(context, R.string.unit_second, minTime.getText()));
+        minDistance.setSummary(getMinSummary(context, R.string.unit_meter, minDistance.getText()));
 
         minTime.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
         {
@@ -243,14 +244,14 @@ public class SettingsActivity
                     Preference preference,
                     Object newValue)
             {
-                preference.setSummary(newValue + " " + context.getString(R.string.seconds));
+                preference.setSummary(getMinSummary(context, R.string.unit_second, (String) newValue));
 
                 String preferenceKey = isTracks
                                        ? SettingsConstants.KEY_PREF_TRACKS_MIN_TIME
                                        : SettingsConstants.KEY_PREF_LOCATION_MIN_TIME;
                 preference.getSharedPreferences()
                           .edit()
-                          .putLong(preferenceKey, (Long) newValue)
+                          .putString(preferenceKey, (String) newValue)
                           .commit();
 
                 sectionWork(preference.getContext(), isTracks);
@@ -266,14 +267,15 @@ public class SettingsActivity
                     Preference preference,
                     Object newValue)
             {
-                preference.setSummary(newValue + " " + context.getString(R.string.meters));
+                preference.setSummary(
+                        getMinSummary(context, R.string.unit_meter, (String) newValue));
 
                 String preferenceKey = isTracks
                                        ? SettingsConstants.KEY_PREF_TRACKS_MIN_DISTANCE
                                        : SettingsConstants.KEY_PREF_LOCATION_MIN_DISTANCE;
                 preference.getSharedPreferences()
                           .edit()
-                          .putFloat(preferenceKey, (Float) newValue)
+                          .putString(preferenceKey, (String) newValue)
                           .commit();
 
                 sectionWork(preference.getContext(), isTracks);
@@ -293,11 +295,31 @@ public class SettingsActivity
             GISApplication application = (GISApplication) parent.getApplication();
             application.getGpsEventSource().updateActiveListeners();
         } else {
-            if (MainActivity.isTrackerServiceRunning(context)) {
+            if (isTrackerServiceRunning(context)) {
                 Toast.makeText(context, context.getString(R.string.tracks_reload),
                                Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+
+    private static String getMinSummary(
+            Context context,
+            int unit,
+            String newValue)
+    {
+        int value = 0;
+
+        try {
+            value = Integer.parseInt(newValue);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+
+        String addition = context.getString(unit);
+        addition += value == 0 ? context.getString(R.string.frequentest) : "";
+
+        return value + " " + addition;
     }
 
     public static void initializeMapPath(final Context context, final SelectMapPathDialogPreference mapPath)

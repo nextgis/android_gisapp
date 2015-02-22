@@ -126,6 +126,7 @@ public class MapFragment
         rl.removeViewInLayout(rl.findViewById(R.drawable.ic_plus));
         mivZoomIn = null;
         mivZoomOut = null;
+        rl.invalidate();
     }
 
     protected void addMapButtons(Context context, RelativeLayout rl)
@@ -288,7 +289,8 @@ public class MapFragment
         //change zoom controls visibility
         boolean showControls = prefs.getBoolean(KEY_PREF_SHOW_ZOOM_CONTROLS, false);
         if (showControls) {
-            addMapButtons(getActivity(), mMapRelativeLayout);
+            if (mivZoomIn == null || mivZoomOut == null)
+                addMapButtons(getActivity(), mMapRelativeLayout);
         }
         else {
             removeMapButtons(mMapRelativeLayout);

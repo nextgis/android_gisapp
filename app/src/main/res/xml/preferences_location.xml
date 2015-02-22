@@ -31,7 +31,7 @@
     <EditTextPreference
         android:key="location_min_time"
         android:title="@string/pref_min_time"
-        android:defaultValue="10"
+        android:defaultValue="5"
         android:inputType="number"
         android:numeric="integer"
         />
