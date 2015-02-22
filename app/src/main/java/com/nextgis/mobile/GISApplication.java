@@ -30,15 +30,22 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import com.nextgis.maplib.api.IGISApplication;
+import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.datasource.ngw.SyncAdapter;
 import com.nextgis.maplib.location.GpsEventSource;
+import com.nextgis.maplib.map.Layer;
+import com.nextgis.maplib.map.LayerGroup;
 import com.nextgis.maplib.map.MapBase;
+import com.nextgis.maplib.map.MapContentProviderHelper;
 import com.nextgis.maplib.map.MapDrawable;
+import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplibui.mapui.LayerFactoryUI;
 import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
 import com.nextgis.maplibui.mapui.TrackLayerUI;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.nextgis.maplib.util.Constants.MAP_EXT;
 import static com.nextgis.maplib.util.Constants.NOT_FOUND;
@@ -105,9 +112,26 @@ public class GISApplication
             mMap = new MapDrawable(bkBitmap, this, mapFullPath, new LayerFactoryUI());
             mMap.setName(mapName);
             mMap.load();
+
+            checkTracksLayerExist();
         }
 
         return mMap;
+    }
+
+    protected void checkTracksLayerExist(){
+        List<ILayer> tracks = new ArrayList<>();
+        LayerGroup.getLayersByType(mMap, Constants.LAYERTYPE_TRACKS, tracks);
+        if(tracks.isEmpty()){
+            String trackLayerName = getString(R.string.tracks);
+            TrackLayerUI
+                    trackLayer = new TrackLayerUI(getApplicationContext(), mMap.createLayerStorage());
+            trackLayer.setName(trackLayerName);
+            trackLayer.setVisible(true);
+            mMap.addLayer(trackLayer);
+
+            mMap.save();
+        }
     }
 
 
@@ -145,14 +169,8 @@ public class GISApplication
         layer.setTMSType(TMSTYPE_OSM);
         layer.setVisible(true);
 
-        String trackLayerName = getString(R.string.tracks);
-        TrackLayerUI
-                trackLayer = new TrackLayerUI(getApplicationContext(), mMap.createLayerStorage());
-        trackLayer.setName(trackLayerName);
-        trackLayer.setVisible(true);
-
         mMap.addLayer(layer);
-        mMap.addLayer(trackLayer);
+        mMap.moveLayer(0, layer);
         mMap.save();
     }
 
