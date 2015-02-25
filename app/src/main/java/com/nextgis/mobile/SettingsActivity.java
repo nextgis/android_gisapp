@@ -395,7 +395,7 @@ public class SettingsActivity
             mProgressDialog =
                     ProgressDialog.show(mActivity, mActivity.getString(R.string.moving), mActivity.getString(R.string.warning_map_moving), true);
             mProgressDialog.setCancelable(false);
-            mProgressDialog.setIcon(mActivity.getResources().getDrawable(R.drawable.ic_warning));
+            mProgressDialog.setIcon(mActivity.getResources().getDrawable(R.drawable.ic_action_warning));
         }
 
 
