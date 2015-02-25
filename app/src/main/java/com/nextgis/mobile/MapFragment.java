@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -36,12 +37,16 @@ import android.widget.RelativeLayout;
 
 import android.widget.Toast;
 import com.nextgis.maplib.api.ILayer;
+import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.api.MapEventListener;
+import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.GeoConstants;
+import com.nextgis.maplib.util.VectorCacheItem;
 import com.nextgis.maplibui.ChooseLayerDialog;
 import com.nextgis.maplibui.MapView;
 import com.nextgis.maplibui.api.ILayerUI;
+import com.nextgis.maplibui.api.MapViewEventListener;
 
 import java.util.List;
 
@@ -49,25 +54,31 @@ import static com.nextgis.mobile.util.SettingsConstants.*;
 
 public class MapFragment
         extends Fragment
-        implements MapEventListener
+        implements MapViewEventListener
 {
 
-    protected final static int mMargings = 10;
+    protected final static int mMargins     = 10;
+    protected static final int mToleranceDP = 20;
+    protected float mTolerancePX;
 
-    protected MapView     mMap;
-    protected ImageView   mivZoomIn;
-    protected ImageView   mivZoomOut;
+    protected MapView   mMap;
+    protected ImageView mivZoomIn;
+    protected ImageView mivZoomOut;
 
     protected RelativeLayout mMapRelativeLayout;
+
 
     public MapFragment()
     {
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        mTolerancePX = getActivity().getResources().getDisplayMetrics().density * mToleranceDP;
     }
 
 
@@ -92,7 +103,7 @@ public class MapFragment
         }
 
         View mainButton = view.findViewById(R.id.action_add_current_location);
-        if(null != mainButton) {
+        if (null != mainButton) {
             mainButton.setOnClickListener(new OnClickListener()
             {
                 @Override
@@ -119,6 +130,7 @@ public class MapFragment
 
         super.onDestroyView();
     }
+
 
     protected void removeMapButtons(RelativeLayout rl)
     {
@@ -158,7 +170,7 @@ public class MapFragment
         final RelativeLayout.LayoutParams RightParams4 =
                 new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
                                                 RelativeLayout.LayoutParams.WRAP_CONTENT);
-        RightParams4.setMargins(mMargings + 5, mMargings - 5, mMargings + 5, mMargings - 5);
+        RightParams4.setMargins(mMargins + 5, mMargins - 5, mMargins + 5, mMargins - 5);
         RightParams4.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         RightParams4.addRule(RelativeLayout.CENTER_IN_PARENT);//ALIGN_PARENT_TOP
         rl.addView(mivZoomIn, RightParams4);
@@ -166,7 +178,7 @@ public class MapFragment
         final RelativeLayout.LayoutParams RightParams2 =
                 new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
                                                 RelativeLayout.LayoutParams.WRAP_CONTENT);
-        RightParams2.setMargins(mMargings + 5, mMargings - 5, mMargings + 5, mMargings - 5);
+        RightParams2.setMargins(mMargins + 5, mMargins - 5, mMargins + 5, mMargins - 5);
         RightParams2.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         RightParams2.addRule(RelativeLayout.BELOW, R.drawable.ic_plus);
         rl.addView(mivZoomOut, RightParams2);
@@ -320,6 +332,38 @@ public class MapFragment
             newChooseLayerDialog.setTitle(getString(R.string.select_layer))
                        .setLayerList(layers)
                        .show(getActivity().getSupportFragmentManager(), "choose_layer");
+        }
+    }
+
+
+    @Override
+    public void onLongPress(MotionEvent event)
+    {
+        double dMinX = event.getX() - mTolerancePX;
+        double dMaxX = event.getX() + mTolerancePX;
+        double dMinY = event.getY() - mTolerancePX;
+        double dMaxY = event.getY() + mTolerancePX;
+
+        GeoEnvelope mapEnv = mMap.screenToMap(new GeoEnvelope(dMinX, dMaxX, dMinY, dMaxY));
+        if(null == mapEnv)
+            return;
+
+        //show actions dialog
+        List<ILayer> layers = mMap.getVectorLayersByType(GeoConstants.GTAny);
+        List<VectorCacheItem> items = null;
+        VectorLayer vectorLayer = null;
+        boolean intersects = false;
+        for(ILayer layer : layers){
+            vectorLayer = (VectorLayer)layer;
+            items = vectorLayer.query(mapEnv);
+            if(!items.isEmpty()){
+                intersects = true;
+                break;
+            }
+        }
+
+        if(intersects){
+            Toast.makeText(getActivity(), "cool! geometry is pick", Toast.LENGTH_LONG).show();
         }
     }
 }
