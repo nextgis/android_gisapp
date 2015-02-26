@@ -29,6 +29,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SyncResult;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -60,7 +62,9 @@ import com.nextgis.maplibui.MapViewOverlays;
 import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.mobile.util.SettingsConstants;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -197,6 +201,11 @@ public class MainActivity
                     item.setTitle(R.string.track_stop);
                 }
                 return true;
+            case R.id.menu_test:
+                //testAttachInsert();
+                //testUpdateAttach();
+                //testDeleteAttach();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -214,6 +223,7 @@ public class MainActivity
                     Intent.createChooser(intent, getString(R.string.select_file)),
                     FILE_SELECT_CODE);
         } catch (android.content.ActivityNotFoundException ex) {
+            //TODO: open select local resource dialog
             // Potentially direct the user to the Market with a Dialog
             Toast.makeText(this, getString(R.string.warning_install_file_manager),
                            Toast.LENGTH_SHORT).show();
@@ -322,6 +332,93 @@ public class MainActivity
             }
             else{
                 Log.d(TAG, "" + result);
+            }
+        }
+    }
+
+    void testUpdateAttach(){
+        IGISApplication application = (IGISApplication)getApplication();
+        MapBase map = application.getMap();
+        NGWVectorLayer ngwVectorLayer = null;
+        for(int i = 0; i < map.getLayerCount(); i++){
+            ILayer layer = map.getLayer(i);
+            if(layer instanceof NGWVectorLayer)
+            {
+                ngwVectorLayer = (NGWVectorLayer)layer;
+            }
+        }
+        if(null != ngwVectorLayer) {
+            Uri updateUri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/" +
+                                      ngwVectorLayer.getPath().getName() + "/36/attach/1000");
+            ContentValues values = new ContentValues();
+            values.put(VectorLayer.ATTACH_DISPLAY_NAME, "no_image.jpg");
+            values.put(VectorLayer.ATTACH_DESCRIPTION, "simple update description");
+            values.put(VectorLayer.ATTACH_ID, 999);
+            int result = getContentResolver().update(updateUri, values, null, null);
+            if (result == 0) {
+                Log.d(TAG, "update failed");
+            } else {
+                Log.d(TAG, "" + result);
+            }
+        }
+    }
+
+    void testDeleteAttach(){
+        IGISApplication application = (IGISApplication)getApplication();
+        MapBase map = application.getMap();
+        NGWVectorLayer ngwVectorLayer = null;
+        for(int i = 0; i < map.getLayerCount(); i++){
+            ILayer layer = map.getLayer(i);
+            if(layer instanceof NGWVectorLayer)
+            {
+                ngwVectorLayer = (NGWVectorLayer)layer;
+            }
+        }
+        if(null != ngwVectorLayer) {
+            Uri deleteUri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/" +
+                                ngwVectorLayer.getPath().getName() + "/36/attach/1000");
+            int result = getContentResolver().delete(deleteUri, null, null);
+            if (result == 0) {
+                Log.d(TAG, "delete failed");
+            } else {
+                Log.d(TAG, "" + result);
+            }
+        }
+    }
+
+    void testAttachInsert(){
+        IGISApplication application = (IGISApplication)getApplication();
+        MapBase map = application.getMap();
+        NGWVectorLayer ngwVectorLayer = null;
+        for(int i = 0; i < map.getLayerCount(); i++){
+            ILayer layer = map.getLayer(i);
+            if(layer instanceof NGWVectorLayer)
+            {
+                ngwVectorLayer = (NGWVectorLayer)layer;
+            }
+        }
+        if(null != ngwVectorLayer) {
+            Uri uri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/" + ngwVectorLayer.getPath().getName() + "/36/attach");
+            ContentValues values = new ContentValues();
+            values.put(VectorLayer.ATTACH_DISPLAY_NAME, "test_image.jpg");
+            values.put(VectorLayer.ATTACH_MIME_TYPE, "image/jpeg");
+            values.put(VectorLayer.ATTACH_DESCRIPTION, "test image description");
+
+            Uri result = getContentResolver().insert(uri, values);
+            if (result == null) {
+                Log.d(TAG, "insert failed");
+            }
+            else{
+                try {
+                    OutputStream outStream = getContentResolver().openOutputStream(result);
+                    Bitmap sourceBitmap = BitmapFactory.decodeResource(getResources(), com.nextgis.maplibui.R.drawable.bk_tile);
+                    sourceBitmap.compress(Bitmap.CompressFormat.JPEG, 75, outStream);
+                    outStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                Log.d(TAG, result.toString());
             }
         }
     }

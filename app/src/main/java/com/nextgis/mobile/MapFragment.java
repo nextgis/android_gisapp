@@ -37,6 +37,7 @@ import android.widget.RelativeLayout;
 
 import android.widget.Toast;
 import com.nextgis.maplib.api.ILayer;
+import com.nextgis.maplib.api.ILayerView;
 import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.api.MapEventListener;
@@ -354,6 +355,12 @@ public class MapFragment
         VectorLayer vectorLayer = null;
         boolean intersects = false;
         for(ILayer layer : layers){
+            if(!layer.isValid())
+                continue;
+            ILayerView layerView = (ILayerView)layer;
+            if(!layerView.isVisible())
+                continue;
+
             vectorLayer = (VectorLayer)layer;
             items = vectorLayer.query(mapEnv);
             if(!items.isEmpty()){
