@@ -199,7 +199,7 @@ public class MainActivity
                     item.setTitle(R.string.track_stop);
                 }
                 return true;
-            case R.id.menu_test:
+            /*case R.id.menu_test:
                 //testAttachInsert();
                 testAttachUpdate();
                 //testAttachDelete();
@@ -210,6 +210,7 @@ public class MainActivity
                     }
                 }.start();
                 return true;
+                */
         }
 
         return super.onOptionsItemSelected(item);
