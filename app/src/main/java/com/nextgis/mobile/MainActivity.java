@@ -21,7 +21,6 @@
 
 package com.nextgis.mobile;
 
-import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -62,7 +61,6 @@ import com.nextgis.maplibui.MapViewOverlays;
 import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.mobile.util.SettingsConstants;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Calendar;
@@ -203,8 +201,14 @@ public class MainActivity
                 return true;
             case R.id.menu_test:
                 //testAttachInsert();
-                //testUpdateAttach();
-                //testDeleteAttach();
+                testAttachUpdate();
+                //testAttachDelete();
+                new Thread() {
+                    @Override
+                    public void run() {
+                        testSync();
+                    }
+                }.start();
                 return true;
         }
 
@@ -336,9 +340,9 @@ public class MainActivity
         }
     }
 
-    void testUpdateAttach(){
+    void testAttachUpdate(){
         IGISApplication application = (IGISApplication)getApplication();
-        MapBase map = application.getMap();
+        /*MapBase map = application.getMap();
         NGWVectorLayer ngwVectorLayer = null;
         for(int i = 0; i < map.getLayerCount(); i++){
             ILayer layer = map.getLayer(i);
@@ -350,22 +354,25 @@ public class MainActivity
         if(null != ngwVectorLayer) {
             Uri updateUri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/" +
                                       ngwVectorLayer.getPath().getName() + "/36/attach/1000");
+        */
+            Uri updateUri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/layer_20150210140455993/36/attach/2");
+
             ContentValues values = new ContentValues();
             values.put(VectorLayer.ATTACH_DISPLAY_NAME, "no_image.jpg");
             values.put(VectorLayer.ATTACH_DESCRIPTION, "simple update description");
-            values.put(VectorLayer.ATTACH_ID, 999);
+        //    values.put(VectorLayer.ATTACH_ID, 999);
             int result = getContentResolver().update(updateUri, values, null, null);
             if (result == 0) {
                 Log.d(TAG, "update failed");
             } else {
                 Log.d(TAG, "" + result);
             }
-        }
+        //}
     }
 
-    void testDeleteAttach(){
+    void testAttachDelete(){
         IGISApplication application = (IGISApplication)getApplication();
-        MapBase map = application.getMap();
+        /*MapBase map = application.getMap();
         NGWVectorLayer ngwVectorLayer = null;
         for(int i = 0; i < map.getLayerCount(); i++){
             ILayer layer = map.getLayer(i);
@@ -377,18 +384,20 @@ public class MainActivity
         if(null != ngwVectorLayer) {
             Uri deleteUri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/" +
                                 ngwVectorLayer.getPath().getName() + "/36/attach/1000");
+        */
+            Uri deleteUri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/layer_20150210140455993/36/attach/1");
             int result = getContentResolver().delete(deleteUri, null, null);
             if (result == 0) {
                 Log.d(TAG, "delete failed");
             } else {
                 Log.d(TAG, "" + result);
             }
-        }
+        //}
     }
 
     void testAttachInsert(){
         IGISApplication application = (IGISApplication)getApplication();
-        MapBase map = application.getMap();
+        /*MapBase map = application.getMap();
         NGWVectorLayer ngwVectorLayer = null;
         for(int i = 0; i < map.getLayerCount(); i++){
             ILayer layer = map.getLayer(i);
@@ -399,6 +408,8 @@ public class MainActivity
         }
         if(null != ngwVectorLayer) {
             Uri uri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/" + ngwVectorLayer.getPath().getName() + "/36/attach");
+        */
+            Uri uri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/layer_20150210140455993/36/attach");
             ContentValues values = new ContentValues();
             values.put(VectorLayer.ATTACH_DISPLAY_NAME, "test_image.jpg");
             values.put(VectorLayer.ATTACH_MIME_TYPE, "image/jpeg");
@@ -420,7 +431,7 @@ public class MainActivity
 
                 Log.d(TAG, result.toString());
             }
-        }
+        //}
     }
 
     void testInsert(){
