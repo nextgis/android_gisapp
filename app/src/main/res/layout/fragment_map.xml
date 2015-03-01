@@ -83,7 +83,7 @@
                 fab:fab_colorNormal="@color/primary"
                 fab:fab_size="mini"
                 fab:fab_title="@string/add_new_geometry"
-                fab:fab_icon="@drawable/ic_action_image_edit"
+                fab:fab_icon="@drawable/ic_action_edit_light"
                 fab:fab_colorPressed="@color/accent"/>
 
             <com.getbase.floatingactionbutton.FloatingActionButton

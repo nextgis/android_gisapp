@@ -25,8 +25,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -45,6 +48,7 @@ import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplib.util.VectorCacheItem;
 import com.nextgis.maplibui.ChooseLayerDialog;
+import com.nextgis.maplibui.EditLayerOverlay;
 import com.nextgis.maplibui.MapView;
 import com.nextgis.maplibui.api.ILayerUI;
 import com.nextgis.maplibui.api.MapViewEventListener;
@@ -67,7 +71,13 @@ public class MapFragment
     protected ImageView mivZoomOut;
 
     protected RelativeLayout mMapRelativeLayout;
+    protected View mMainButton;
+    protected int mMode;
 
+    protected static final int MODE_NORMAL = 0;
+    protected static final int MODE_SELECT_ACTION = 1;
+    protected static final int MODE_EDIT = 2; //EDIT_POINT, EDIT_LINE EDIT_POLYGON
+    protected static final String KEY_MODE = "mode";
 
     public MapFragment()
     {
@@ -78,8 +88,56 @@ public class MapFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
         mTolerancePX = getActivity().getResources().getDisplayMetrics().density * mToleranceDP;
+    }
+
+
+    protected void setMode(int mode)
+    {
+        MainActivity activity = (MainActivity)getActivity();
+        Toolbar toolbar = activity.getBottomToolbar();
+        switch (mode){
+            case MODE_NORMAL:
+                if(null != toolbar){
+                    toolbar.setVisibility(View.GONE);
+                }
+                mMainButton.setVisibility(View.VISIBLE);
+                break;
+            case MODE_EDIT:
+                break;
+            case MODE_SELECT_ACTION:
+                //hide FAB, show bottom toolbar
+                if(null != toolbar){
+                    mMainButton.setVisibility(View.GONE);
+                    toolbar.setVisibility(View.VISIBLE);
+                    toolbar.getBackground().setAlpha(128);
+                    toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            switch(item.getItemId()){
+                                case R.id.menu_edit:
+                                    break;
+                                case R.id.menu_delete:
+                                    //TODO: delete feature and show undo toast long
+                                    //remove from cache items immediately and from layer in 2 secs also invalidate map
+                                    //if undo - put the geometry back to cache and invalidate
+                                    break;
+                                case R.id.menu_info:
+                                    //TODO: show attributes fragment
+                                    // in small displays on map fragment place,
+                                    // in large displays - at right side af map.
+                                    // Also need the next and prev buttons to navigate throw records
+                                    break;
+                            }
+                            return true;
+                        }
+                    });
+                    // Inflate a menu to be displayed in the toolbar
+                    toolbar.inflateMenu(R.menu.select_action);
+                }
+                break;
+        }
+        mMode = mode;
     }
 
 
@@ -103,9 +161,9 @@ public class MapFragment
             mMap.invalidate();
         }
 
-        View mainButton = view.findViewById(R.id.action_add_current_location);
-        if (null != mainButton) {
-            mainButton.setOnClickListener(new OnClickListener()
+        mMainButton = view.findViewById(R.id.action_add_current_location);
+        if (null != mMainButton) {
+            mMainButton.setOnClickListener(new OnClickListener()
             {
                 @Override
                 public void onClick(View v)
@@ -216,6 +274,12 @@ public class MapFragment
             GeoPoint center)
     {
         setZoomInEnabled(mMap.canZoomIn());
+
+            //TODO: show select dialog
+            //1. edit geometry
+            //2. delete geometry
+            //3. see attributes
+            //Toast.makeText(getActivity(), "cool! geometry is pick", Toast.LENGTH_LONG).show();
         setZoomOutEnabled(mMap.canZoomOut());
     }
 
@@ -267,6 +331,31 @@ public class MapFragment
         mMap = map;
         mMap.addListener(this);
         return true;
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_MODE, mMode);
+    }
+
+
+    @Override
+    public void onViewStateRestored(
+            @Nullable
+            Bundle savedInstanceState)
+    {
+        super.onViewStateRestored(savedInstanceState);
+        if(null == savedInstanceState) {
+            mMode = MODE_NORMAL;
+        }
+        else{
+            mMode = savedInstanceState.getInt(KEY_MODE);
+        }
+
+        setMode(mMode);
     }
 
 
@@ -370,7 +459,27 @@ public class MapFragment
         }
 
         if(intersects){
-            Toast.makeText(getActivity(), "cool! geometry is pick", Toast.LENGTH_LONG).show();
+            //add geometry to overlay
+            MainActivity activity = (MainActivity)getActivity();
+            EditLayerOverlay editLayerOverlay = activity.getEditLayerOverlay();
+            editLayerOverlay.setFeature(vectorLayer, items.get(0));
+            editLayerOverlay.setMode(EditLayerOverlay.MODE_HIGHLIGHT);
+            mMap.postInvalidate();
+            //set select action mode
+            setMode(MODE_SELECT_ACTION);
+        }
+    }
+
+
+    @Override
+    public void onSingleTapUp(MotionEvent event)
+    {
+        if(mMode == MODE_SELECT_ACTION) {
+            setMode(MODE_NORMAL);
+            MainActivity activity = (MainActivity)getActivity();
+            EditLayerOverlay editLayerOverlay = activity.getEditLayerOverlay();
+            editLayerOverlay.setFeature(null, null);
+            mMap.postInvalidate();
         }
     }
 }

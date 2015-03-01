@@ -57,6 +57,7 @@ import com.nextgis.maplib.util.FileUtil;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplibui.CurrentLocationOverlay;
 import com.nextgis.maplibui.CurrentTrackOverlay;
+import com.nextgis.maplibui.EditLayerOverlay;
 import com.nextgis.maplibui.MapViewOverlays;
 import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.mobile.util.SettingsConstants;
@@ -84,6 +85,7 @@ public class MainActivity
     protected GpsEventSource  gpsEventSource;
     protected CurrentLocationOverlay mCurrentLocationOverlay;
     protected CurrentTrackOverlay    mCurrentTrackOverlay;
+    protected EditLayerOverlay mEditLayerOverlay;
 
     protected final static int FILE_SELECT_CODE = 555;
 
@@ -142,8 +144,12 @@ public class MainActivity
 
         mCurrentTrackOverlay = new CurrentTrackOverlay(this, mMap);
 
+        //add edit layer overlay
+        mEditLayerOverlay = new EditLayerOverlay(this, mMap);
+
         mMap.addOverlay(mCurrentTrackOverlay);
         mMap.addOverlay(mCurrentLocationOverlay);
+        mMap.addOverlay(mEditLayerOverlay);
     }
 
 
@@ -159,6 +165,10 @@ public class MainActivity
             return true;
         }
         return super.onCreateOptionsMenu(menu);
+    }
+
+    public Toolbar getBottomToolbar(){
+        return (Toolbar) findViewById(R.id.bottom_toolbar);
     }
 
 
@@ -575,4 +585,9 @@ public class MainActivity
 
     }
 
+
+    public EditLayerOverlay getEditLayerOverlay()
+    {
+        return mEditLayerOverlay;
+    }
 }
