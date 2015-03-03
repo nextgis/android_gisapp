@@ -35,6 +35,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -121,6 +122,19 @@ public class MapFragment
                 mMainButton.setVisibility(View.VISIBLE);
                 break;
             case MODE_EDIT:
+                //TODO: hide my place and restore it after the end edit session
+                if(null != toolbar) {
+                    mMainButton.setVisibility(View.GONE);
+                    toolbar.setVisibility(View.VISIBLE);
+                    toolbar.getBackground().setAlpha(128);
+                    Menu menu = toolbar.getMenu();
+                    if (null != menu)
+                        menu.clear();
+
+                    EditLayerOverlay editLayerOverlay = activity.getEditLayerOverlay();
+                    editLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT);
+                    //toolbar.inflateMenu(R.menu.select_action);
+                }
                 break;
             case MODE_SELECT_ACTION:
                 //hide FAB, show bottom toolbar
@@ -133,6 +147,7 @@ public class MapFragment
                         public boolean onMenuItemClick(MenuItem item) {
                             switch(item.getItemId()){
                                 case R.id.menu_edit:
+                                    setMode(MODE_EDIT);
                                     break;
                                 case R.id.menu_delete:
                                     //TODO: delete feature and show undo toast long
@@ -142,7 +157,7 @@ public class MapFragment
                                 case R.id.menu_info:
                                     //TODO: show attributes fragment
                                     // in small displays on map fragment place,
-                                    // in large displays - at right side af map.
+                                    // in large displays - at right side of map.
                                     // Also need the next and prev buttons to navigate throw records
                                     break;
                             }
@@ -150,15 +165,18 @@ public class MapFragment
                         }
                     });
                     // Inflate a menu to be displayed in the toolbar
+                    Menu menu = toolbar.getMenu();
+                    if(null != menu)
+                        menu.clear();
                     toolbar.inflateMenu(R.menu.select_action);
-                    //distributetolbarItems(toolbar);
+                    //distributeToolbarItems(toolbar);
                 }
                 break;
         }
         mMode = mode;
     }
 
-    protected void distributetolbarItems(Toolbar toolbar){
+    protected void distributeToolbarItems(Toolbar toolbar){
         toolbar.setContentInsetsAbsolute(0,0);
         // Get the ChildCount of your Toolbar, this should only be 1
         int childCount = toolbar.getChildCount();
