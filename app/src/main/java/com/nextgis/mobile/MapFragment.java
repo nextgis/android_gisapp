@@ -580,12 +580,12 @@ public class MapFragment
         if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
             mStatusSource.setText(location.getExtras().getInt("satellites") + "");
             mStatusSource.setCompoundDrawablesWithIntrinsicBounds(
-                    getResources().getDrawable(R.drawable.ic_location_on_white_18dp),
+                    getResources().getDrawable(R.drawable.ic_location),
                     null, null, null);
         } else {
             mStatusSource.setText("");
             mStatusSource.setCompoundDrawablesWithIntrinsicBounds(
-                    getResources().getDrawable(R.drawable.ic_signal_wifi_4_bar_white_18dp),
+                    getResources().getDrawable(R.drawable.ic_signal_wifi),
                     null, null, null);
         }
 

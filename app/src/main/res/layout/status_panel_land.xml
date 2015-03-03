@@ -52,23 +52,23 @@
         android:id="@+id/tv_accuracy"
         android:layout_weight="1"
         style="@style/status_panel_text_land"
-        android:drawableLeft="@drawable/ic_unfold_less_white_18dp"
-        android:drawableStart="@drawable/ic_unfold_less_white_18dp"
+        android:drawableLeft="@drawable/ic_accuracy"
+        android:drawableStart="@drawable/ic_accuracy"
         />
 
     <TextView
         android:id="@+id/tv_altitude"
         android:layout_weight="1"
         style="@style/status_panel_text_land"
-        android:drawableLeft="@drawable/ic_format_indent_increase_white_18dp"
-        android:drawableStart="@drawable/ic_format_indent_increase_white_18dp"
+        android:drawableLeft="@drawable/ic_altitude"
+        android:drawableStart="@drawable/ic_altitude"
         />
 
     <TextView
         android:id="@+id/tv_speed"
         android:layout_weight="2"
         style="@style/status_panel_text_land"
-        android:drawableLeft="@drawable/ic_av_timer_white_18dp"
-        android:drawableStart="@drawable/ic_av_timer_white_18dp"
+        android:drawableLeft="@drawable/ic_speed"
+        android:drawableStart="@drawable/ic_speed"
         />
 </LinearLayout>
