@@ -24,21 +24,33 @@
       xmlns:app="http://schemas.android.com/apk/res-auto"
     >
     <item
-        android:id="@+id/menu_edit"
+        android:id="@+id/menu_edit_apply"
         app:showAsAction="always|withText"
-        android:icon="@drawable/ic_action_edit_light"
-        android:title="@string/action_edit"
+        android:icon="@drawable/ic_action_apply"
+        android:title="@string/apply"
         />
     <item
-        android:id="@+id/menu_delete"
-        app:showAsAction="always|withText"
+        android:id="@+id/menu_edit_add_new_point"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_action_add_point"
+        android:title="@string/add_point"
+        />
+    <item
+        android:id="@+id/menu_edit_delete_point"
+        app:showAsAction="always"
         android:icon="@drawable/ic_action_delete_light"
         android:title="@string/action_delete"
         />
     <item
-        android:id="@+id/menu_info"
-        app:showAsAction="always|withText"
-        android:icon="@drawable/ic_action_information_light"
-        android:title="@string/action_attributes"
+        android:id="@+id/menu_edit_move_point_to_current_location"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_action_move_point_to_location"
+        android:title="@string/move_point_to_current_location"
+        />
+    <item
+        android:id="@+id/menu_edit_attributes"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_action_attributes"
+        android:title="@string/edit_attributes"
         />
 </menu>

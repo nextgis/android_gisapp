@@ -82,5 +82,8 @@
     <string name="action_delete">Delete</string>
     <string name="action_attributes">Attributes</string>
     <string name="action_edit">Edit</string>
+    <string name="add_point">Add point</string>
+    <string name="edit_attributes">Edit attributes</string>
+    <string name="move_point_to_current_location">Point to current location</string>
 
 </resources>

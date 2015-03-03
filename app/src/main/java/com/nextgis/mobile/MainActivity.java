@@ -144,7 +144,7 @@ public class MainActivity
 
         mCurrentTrackOverlay = new CurrentTrackOverlay(this, mMap);
 
-        //add edit layer overlay
+        //add edit_point layer overlay
         mEditLayerOverlay = new EditLayerOverlay(this, mMap);
 
         mMap.addOverlay(mCurrentTrackOverlay);
@@ -211,16 +211,15 @@ public class MainActivity
                 return true;
             /*case R.id.menu_test:
                 //testAttachInsert();
-                testAttachUpdate();
-                //testAttachDelete();
+                //testAttachUpdate();
+                testAttachDelete();
                 new Thread() {
                     @Override
                     public void run() {
                         testSync();
                     }
                 }.start();
-                return true;
-                */
+                return true;*/
         }
 
         return super.onOptionsItemSelected(item);
