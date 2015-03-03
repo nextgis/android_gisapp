@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Project:  NextGIS Mobile
+  ~ Purpose:  Mobile GIS for Android.
+  ~ Authors:  Stanislav Petriakov
+  ~ ******************************************************************************
+  ~ Copyright (c) 2015 NextGIS, info@nextgis.com
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 2 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/primary"
+              android:padding="5dp"
+              android:alpha="0.5"
+              android:orientation="vertical"
+              android:gravity="center_vertical"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        >
+
+        <TextView
+            android:id="@+id/tv_latitude"
+            style="@style/status_panel_text"
+            android:layout_weight="1"
+            android:gravity="center"
+            />
+
+        <TextView
+            android:id="@+id/tv_longitude"
+            style="@style/status_panel_text"
+            android:layout_weight="1"
+            android:gravity="center"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        >
+
+        <TextView
+            android:id="@+id/tv_source"
+            android:layout_weight="1"
+            style="@style/status_panel_text"
+            />
+
+        <TextView
+            android:id="@+id/tv_accuracy"
+            style="@style/status_panel_text"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/ic_unfold_less_white_18dp"
+            android:drawableStart="@drawable/ic_unfold_less_white_18dp"
+            />
+
+        <TextView
+            android:id="@+id/tv_altitude"
+            style="@style/status_panel_text"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/ic_format_indent_increase_white_18dp"
+            android:drawableStart="@drawable/ic_format_indent_increase_white_18dp"
+            />
+
+        <TextView
+            android:id="@+id/tv_speed"
+            style="@style/status_panel_text"
+            android:layout_weight="2"
+            android:drawableLeft="@drawable/ic_av_timer_white_18dp"
+            android:drawableStart="@drawable/ic_av_timer_white_18dp"
+            />
+    </LinearLayout>
+</LinearLayout>

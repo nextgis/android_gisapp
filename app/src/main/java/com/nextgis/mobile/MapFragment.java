@@ -1,7 +1,7 @@
 /*
  * Project:  NextGIS Mobile
  * Purpose:  Mobile GIS for Android.
- * Author:   Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
+ * Authors:  Dmitry Baryshnikov aka Bishop (bishop.dev@gmail.com), Stanislav Petriakov
  * *****************************************************************************
  * Copyright (c) 2012-2015. NextGIS, info@nextgis.com
  *
@@ -23,6 +23,8 @@ package com.nextgis.mobile;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -41,15 +43,18 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-
+import android.widget.TextView;
 import android.widget.Toast;
+import com.nextgis.maplib.api.GpsEventListener;
+import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.api.ILayerView;
 import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplib.datasource.GeoPoint;
-import com.nextgis.maplib.api.MapEventListener;
+import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.GeoConstants;
+import com.nextgis.maplib.util.LocationUtil;
 import com.nextgis.maplib.util.VectorCacheItem;
 import com.nextgis.maplibui.ChooseLayerDialog;
 import com.nextgis.maplibui.EditLayerOverlay;
@@ -63,7 +68,7 @@ import static com.nextgis.mobile.util.SettingsConstants.*;
 
 public class MapFragment
         extends Fragment
-        implements MapViewEventListener
+        implements MapViewEventListener, GpsEventListener
 {
 
     protected final static int mMargins     = 10;
@@ -74,9 +79,17 @@ public class MapFragment
     protected ImageView mivZoomIn;
     protected ImageView mivZoomOut;
 
+    protected TextView  mStatusSource, mStatusAccuracy, mStatusSpeed,
+            mStatusAltitude, mStatusLatitude, mStatusLongitude;
+    protected FrameLayout mStatusPanel;
+
     protected RelativeLayout mMapRelativeLayout;
+    protected GpsEventSource mGpsEventSource;
     protected View mMainButton;
     protected int mMode;
+
+    protected int mCoordinatesFormat;
+
 
     protected static final int MODE_NORMAL = 0;
     protected static final int MODE_SELECT_ACTION = 1;
@@ -215,6 +228,9 @@ public class MapFragment
                 }
             });
         }
+
+        mGpsEventSource = ((IGISApplication) getActivity().getApplication()).getGpsEventSource();
+        mStatusPanel = (FrameLayout) view.findViewById(R.id.fl_status_panel);
 
         return view;
     }
@@ -405,6 +421,8 @@ public class MapFragment
     @Override
     public void onPause()
     {
+        mGpsEventSource.removeListener(this);
+
         final SharedPreferences.Editor edit = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
         if(null != mMap) {
             edit.putFloat(KEY_PREF_ZOOM_LEVEL, mMap.getZoomLevel());
@@ -440,6 +458,10 @@ public class MapFragment
         else {
             removeMapButtons(mMapRelativeLayout);
         }
+
+        mCoordinatesFormat = prefs.getInt(KEY_PREF_COORD_FORMAT + "_int", Location.FORMAT_DEGREES);
+        fillStatusPanel(mGpsEventSource.getLastKnownLocation());
+        mGpsEventSource.addListener(this);
     }
 
     protected void addCurrentLocation(){
@@ -524,5 +546,91 @@ public class MapFragment
             editLayerOverlay.setFeature(null, null);
             mMap.postInvalidate();
         }
+    }
+
+
+    @Override
+    public void onLocationChanged(Location location)
+    {
+        fillStatusPanel(location);
+    }
+
+
+    private void fillStatusPanel(Location location)
+    {
+        if (location == null)
+            return;
+
+        mStatusPanel.removeAllViews();
+
+        View panel = getActivity().getLayoutInflater().inflate(R.layout.status_panel_land, mStatusPanel, false);
+        defineTextViews(panel);
+        fillTextViews(location);
+
+        if (!isFitOneLine()) {
+            panel = getActivity().getLayoutInflater().inflate(R.layout.status_panel, mStatusPanel, false);
+            defineTextViews(panel);
+            fillTextViews(location);
+        }
+
+        mStatusPanel.addView(panel);
+    }
+
+    private void fillTextViews(Location location) {
+        if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
+            mStatusSource.setText(location.getExtras().getInt("satellites") + "");
+            mStatusSource.setCompoundDrawablesWithIntrinsicBounds(
+                    getResources().getDrawable(R.drawable.ic_location_on_white_18dp),
+                    null, null, null);
+        } else {
+            mStatusSource.setText("");
+            mStatusSource.setCompoundDrawablesWithIntrinsicBounds(
+                    getResources().getDrawable(R.drawable.ic_signal_wifi_4_bar_white_18dp),
+                    null, null, null);
+        }
+
+        mStatusAccuracy.setText(String.format("%.1f %s", location.getAccuracy(),
+                                              getString(R.string.unit_meter)));
+        mStatusAltitude.setText(String.format("%.1f %s", location.getAltitude(),
+                                              getString(R.string.unit_meter)));
+        mStatusSpeed.setText(String.format("%.1f %s/%s", location.getSpeed() * 3600 / 1000,
+                                           getString(R.string.unit_kilometer),
+                                           getString(R.string.unit_hour)));
+        mStatusLatitude.setText(
+                LocationUtil.formatCoordinate(location.getLatitude(), mCoordinatesFormat) + " " +
+                getString(R.string.latitude_caption_short));
+        mStatusLongitude.setText(
+                LocationUtil.formatCoordinate(location.getLongitude(), mCoordinatesFormat) + " " +
+                getString(R.string.longitude_caption_short));
+    }
+
+    private boolean isFitOneLine() {
+        mStatusLongitude.measure(0, 0);
+        mStatusLatitude.measure(0, 0);
+        mStatusAltitude.measure(0, 0);
+        mStatusSpeed.measure(0, 0);
+        mStatusAccuracy.measure(0, 0);
+        mStatusSource.measure(0, 0);
+
+        int totalWidth = mStatusSource.getMeasuredWidth() + mStatusLongitude.getMeasuredWidth() +
+                         mStatusLatitude.getMeasuredWidth() + mStatusAccuracy.getMeasuredWidth() +
+                         mStatusSpeed.getMeasuredWidth() + mStatusAltitude.getMeasuredWidth();
+
+        return totalWidth < mStatusPanel.getMeasuredWidth();
+    }
+
+    private void defineTextViews(View panel) {
+        mStatusSource = (TextView) panel.findViewById(R.id.tv_source);
+        mStatusAccuracy = (TextView) panel.findViewById(R.id.tv_accuracy);
+        mStatusSpeed = (TextView) panel.findViewById(R.id.tv_speed);
+        mStatusAltitude = (TextView) panel.findViewById(R.id.tv_altitude);
+        mStatusLatitude = (TextView) panel.findViewById(R.id.tv_latitude);
+        mStatusLongitude = (TextView) panel.findViewById(R.id.tv_longitude);
+    }
+
+    @Override
+    public void onGpsStatusChanged(int event)
+    {
+
     }
 }

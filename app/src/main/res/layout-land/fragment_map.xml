@@ -2,7 +2,7 @@
 <!--
   ~ Project:  NextGIS Mobile
   ~ Purpose:  Mobile GIS for Android.
-  ~ Author:   Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
+  ~ Authors:  Dmitry Baryshnikov aka Bishop (bishop.dev@gmail.com), Stanislav Petriakov
   ~ ******************************************************************************
   ~ Copyright (c) 2012-2015. NextGIS, info@nextgis.com
   ~
@@ -35,17 +35,23 @@
         android:layout_height="match_parent"
         >
 
+        <FrameLayout
+            android:id="@+id/fl_status_panel"
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/action_add_current_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             fab:fab_addButtonColorNormal="@color/primary"
             fab:fab_addButtonColorPressed="@color/accent"
             fab:fab_addButtonPlusIconColor="@android:color/white"
-            android:layout_marginBottom="16dp"
+            android:layout_above="@+id/fl_status_panel"
             android:layout_marginRight="16dp"
             android:layout_marginEnd="16dp"
             fab:fab_icon="@drawable/ic_action_maps_place"
