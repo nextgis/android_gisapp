@@ -126,10 +126,12 @@ public class MapFragment
                     toolbar.setVisibility(View.GONE);
                 }
                 mMainButton.setVisibility(View.VISIBLE);
+                mStatusPanel.setVisibility(View.VISIBLE);
                 break;
             case MODE_EDIT:
                 if(null != toolbar) {
                     mMainButton.setVisibility(View.GONE);
+                    mStatusPanel.setVisibility(View.INVISIBLE);
                     toolbar.setVisibility(View.VISIBLE);
                     toolbar.getBackground().setAlpha(128);
                     Menu menu = toolbar.getMenu();
@@ -147,6 +149,7 @@ public class MapFragment
                 //hide FAB, show bottom toolbar
                 if(null != toolbar){
                     mMainButton.setVisibility(View.GONE);
+                    mStatusPanel.setVisibility(View.INVISIBLE);
                     toolbar.setVisibility(View.VISIBLE);
                     toolbar.getBackground().setAlpha(128);
                     toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
