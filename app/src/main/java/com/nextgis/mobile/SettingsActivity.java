@@ -60,26 +60,29 @@ public class SettingsActivity
         super.onCreate(savedInstanceState);
 
         ViewGroup root = ((ViewGroup) findViewById(android.R.id.content));
-        LinearLayout content = (LinearLayout) root.getChildAt(0);
-        LinearLayout toolbarContainer =
-                (LinearLayout) View.inflate(this, R.layout.activity_settings, null);
+        if(null != root) {
+            View content = root.getChildAt(0);
+            if (null != content) {
+                LinearLayout toolbarContainer = (LinearLayout) View.inflate(this, R.layout.activity_settings, null);
 
-        root.removeAllViews();
-        toolbarContainer.addView(content);
-        root.addView(toolbarContainer);
+                root.removeAllViews();
+                toolbarContainer.addView(content);
+                root.addView(toolbarContainer);
 
-        Toolbar toolbar = (Toolbar) toolbarContainer.findViewById(R.id.main_toolbar);
-        toolbar.getBackground().setAlpha(255);
-        toolbar.setTitle(getTitle());
-        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                SettingsActivity.this.finish();
+                Toolbar toolbar = (Toolbar) toolbarContainer.findViewById(R.id.main_toolbar);
+                toolbar.getBackground().setAlpha(255);
+                toolbar.setTitle(getTitle());
+                toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+                toolbar.setNavigationOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        SettingsActivity.this.finish();
+                    }
+                });
             }
-        });
+        }
 
         String action = getIntent().getAction();
         if (action != null) {
