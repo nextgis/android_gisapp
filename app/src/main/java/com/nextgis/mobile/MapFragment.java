@@ -1,7 +1,7 @@
 /*
  * Project:  NextGIS Mobile
  * Purpose:  Mobile GIS for Android.
- * Authors:  Dmitry Baryshnikov aka Bishop (bishop.dev@gmail.com), Stanislav Petriakov
+ * Author:   Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
  * *****************************************************************************
  * Copyright (c) 2012-2015. NextGIS, info@nextgis.com
  *
@@ -60,6 +60,7 @@ import com.nextgis.maplib.util.VectorCacheItem;
 import com.nextgis.maplibui.ChooseLayerDialog;
 import com.nextgis.maplibui.EditLayerOverlay;
 import com.nextgis.maplibui.MapView;
+import com.nextgis.maplibui.api.EditEventListener;
 import com.nextgis.maplibui.api.ILayerUI;
 import com.nextgis.maplibui.api.MapViewEventListener;
 
@@ -69,7 +70,7 @@ import static com.nextgis.mobile.util.SettingsConstants.*;
 
 public class MapFragment
         extends Fragment
-        implements MapViewEventListener, GpsEventListener
+        implements MapViewEventListener, GpsEventListener, EditEventListener
 {
 
     protected final static int mMargins     = 10;
@@ -86,6 +87,7 @@ public class MapFragment
 
     protected RelativeLayout mMapRelativeLayout;
     protected GpsEventSource mGpsEventSource;
+
     protected View mMainButton;
     protected int mMode;
 
@@ -94,7 +96,7 @@ public class MapFragment
 
     protected static final int MODE_NORMAL = 0;
     protected static final int MODE_SELECT_ACTION = 1;
-    protected static final int MODE_EDIT = 2; //EDIT_POINT, EDIT_LINE EDIT_POLYGON
+    protected static final int MODE_EDIT = 2;
     protected static final String KEY_MODE = "mode";
 
     public MapFragment()
@@ -122,7 +124,6 @@ public class MapFragment
                 mMainButton.setVisibility(View.VISIBLE);
                 break;
             case MODE_EDIT:
-                //TODO: hide my place and restore it after the end edit session
                 if(null != toolbar) {
                     mMainButton.setVisibility(View.GONE);
                     toolbar.setVisibility(View.VISIBLE);
@@ -132,8 +133,10 @@ public class MapFragment
                         menu.clear();
 
                     EditLayerOverlay editLayerOverlay = activity.getEditLayerOverlay();
-                    editLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT);
-                    //toolbar.inflateMenu(R.menu.select_action);
+                    if(null != editLayerOverlay) {
+                        editLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT);
+                        editLayerOverlay.setToolbar(toolbar);
+                    }
                 }
                 break;
             case MODE_SELECT_ACTION:
@@ -441,6 +444,13 @@ public class MapFragment
     {
         mGpsEventSource.removeListener(this);
 
+        MainActivity activity = (MainActivity)getActivity();
+        EditLayerOverlay editLayerOverlay = activity.getEditLayerOverlay();
+        if(null != editLayerOverlay){
+            editLayerOverlay.removeListener(this);
+        }
+
+
         final SharedPreferences.Editor edit = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
         if(null != mMap) {
             edit.putFloat(KEY_PREF_ZOOM_LEVEL, mMap.getZoomLevel());
@@ -480,6 +490,12 @@ public class MapFragment
         mCoordinatesFormat = prefs.getInt(KEY_PREF_COORD_FORMAT + "_int", Location.FORMAT_DEGREES);
         fillStatusPanel(mGpsEventSource.getLastKnownLocation());
         mGpsEventSource.addListener(this);
+
+        MainActivity activity = (MainActivity)getActivity();
+        EditLayerOverlay editLayerOverlay = activity.getEditLayerOverlay();
+        if(null != editLayerOverlay){
+            editLayerOverlay.addListener(this);
+        }
     }
 
     protected void addCurrentLocation(){
@@ -545,8 +561,10 @@ public class MapFragment
             //add geometry to overlay
             MainActivity activity = (MainActivity)getActivity();
             EditLayerOverlay editLayerOverlay = activity.getEditLayerOverlay();
-            editLayerOverlay.setFeature(vectorLayer, items.get(0));
-            editLayerOverlay.setMode(EditLayerOverlay.MODE_HIGHLIGHT);
+            if(null != editLayerOverlay) {
+                editLayerOverlay.setFeature(vectorLayer, items.get(0));
+                editLayerOverlay.setMode(EditLayerOverlay.MODE_HIGHLIGHT);
+            }
             mMap.postInvalidate();
             //set select action mode
             setMode(MODE_SELECT_ACTION);
@@ -561,7 +579,9 @@ public class MapFragment
             setMode(MODE_NORMAL);
             MainActivity activity = (MainActivity)getActivity();
             EditLayerOverlay editLayerOverlay = activity.getEditLayerOverlay();
-            editLayerOverlay.setFeature(null, null);
+            if(null != editLayerOverlay){
+                editLayerOverlay.setFeature(null, null);
+            }
             mMap.postInvalidate();
         }
     }
@@ -650,5 +670,20 @@ public class MapFragment
     public void onGpsStatusChanged(int event)
     {
 
+    }
+
+
+    @Override
+    public void onStartEditSession()
+    {
+        //TODO: hide my place
+    }
+
+
+    @Override
+    public void onFinishEditSession()
+    {
+        //TODO: restore my place after the end edit session
+        setMode(MODE_NORMAL);
     }
 }
