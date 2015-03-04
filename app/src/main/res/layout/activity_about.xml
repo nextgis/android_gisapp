@@ -26,9 +26,7 @@
               android:layout_height="wrap_content">
 
     <include
-        layout="@layout/actionbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        layout="@layout/actionbar"/>
 
     <ScrollView
         android:layout_width="match_parent"
