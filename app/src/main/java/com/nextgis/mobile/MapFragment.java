@@ -94,6 +94,7 @@ public class MapFragment
     protected GpsEventSource mGpsEventSource;
     protected View mMainButton;
     protected int mMode;
+    protected EditLayerOverlay mEditLayerOverlay;
 
     protected int mCoordinatesFormat;
 
@@ -119,7 +120,7 @@ public class MapFragment
     protected void setMode(int mode)
     {
         MainActivity activity = (MainActivity)getActivity();
-        Toolbar toolbar = activity.getBottomToolbar();
+        final Toolbar toolbar = activity.getBottomToolbar();
         switch (mode){
             case MODE_NORMAL:
                 if(null != toolbar){
@@ -138,10 +139,9 @@ public class MapFragment
                     if (null != menu)
                         menu.clear();
 
-                    EditLayerOverlay editLayerOverlay = activity.getEditLayerOverlay();
-                    if(null != editLayerOverlay) {
-                        editLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT);
-                        editLayerOverlay.setToolbar(toolbar);
+                    if(null != mEditLayerOverlay) {
+                        mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT);
+                        mEditLayerOverlay.setToolbar(toolbar);
                     }
                 }
                 break;
@@ -160,6 +160,11 @@ public class MapFragment
                                     setMode(MODE_EDIT);
                                     break;
                                 case R.id.menu_delete:
+                                    if(null != mEditLayerOverlay) {
+                                        mEditLayerOverlay.deleteItem();
+                                    }
+
+                                    onSingleTapUp(null);
                                     //TODO: delete feature and show undo toast long
                                     //remove from cache items immediately and from layer in 2 secs also invalidate map
                                     //if undo - put the geometry back to cache and invalidate
@@ -451,10 +456,8 @@ public class MapFragment
     {
         mGpsEventSource.removeListener(this);
 
-        MainActivity activity = (MainActivity)getActivity();
-        EditLayerOverlay editLayerOverlay = activity.getEditLayerOverlay();
-        if(null != editLayerOverlay){
-            editLayerOverlay.removeListener(this);
+        if(null != mEditLayerOverlay){
+            mEditLayerOverlay.removeListener(this);
         }
 
 
@@ -498,10 +501,10 @@ public class MapFragment
         fillStatusPanel(mGpsEventSource.getLastKnownLocation());
         mGpsEventSource.addListener(this);
 
-        MainActivity activity = (MainActivity)getActivity();
-        EditLayerOverlay editLayerOverlay = activity.getEditLayerOverlay();
-        if(null != editLayerOverlay){
-            editLayerOverlay.addListener(this);
+        MainActivity activity = (MainActivity) getActivity();
+        mEditLayerOverlay = activity.getEditLayerOverlay();
+        if(null != mEditLayerOverlay){
+            mEditLayerOverlay.addListener(this);
         }
     }
 
@@ -566,11 +569,10 @@ public class MapFragment
 
         if(intersects){
             //add geometry to overlay
-            MainActivity activity = (MainActivity)getActivity();
-            EditLayerOverlay editLayerOverlay = activity.getEditLayerOverlay();
-            if(null != editLayerOverlay) {
-                editLayerOverlay.setFeature(vectorLayer, items.get(0));
-                editLayerOverlay.setMode(EditLayerOverlay.MODE_HIGHLIGHT);
+
+            if(null != mEditLayerOverlay) {
+                mEditLayerOverlay.setFeature(vectorLayer, items.get(0));
+                mEditLayerOverlay.setMode(EditLayerOverlay.MODE_HIGHLIGHT);
             }
             mMap.postInvalidate();
             //set select action mode
@@ -584,10 +586,9 @@ public class MapFragment
     {
         if(mMode == MODE_SELECT_ACTION) {
             setMode(MODE_NORMAL);
-            MainActivity activity = (MainActivity)getActivity();
-            EditLayerOverlay editLayerOverlay = activity.getEditLayerOverlay();
-            if(null != editLayerOverlay){
-                editLayerOverlay.setFeature(null, null);
+
+            if(null != mEditLayerOverlay){
+                mEditLayerOverlay.setFeature(null, null);
             }
             mMap.postInvalidate();
         }
