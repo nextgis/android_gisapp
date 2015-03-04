@@ -60,6 +60,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAppearance">@style/TextAppearance.AppCompat.Medium</item>
         <item name="android:textColor">@android:color/white</item>
+        <item name="android:gravity">center_vertical</item>
     </style>
 
     <style name="status_panel_text_land" parent="status_panel_text">
