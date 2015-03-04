@@ -2,7 +2,8 @@
 <!--
   ~ Project:  NextGIS Mobile
   ~ Purpose:  Mobile GIS for Android.
-  ~ Author:   Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
+  ~ Author:   Dmitry Baryshnikov aka Bishop, bishop.dev@gmail.com
+  ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
   ~ Copyright (c) 2012-2015. NextGIS, info@nextgis.com
   ~
@@ -40,6 +41,7 @@
             android:layout_alignParentBottom="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:minHeight="16dp"
             />
 
         <com.getbase.floatingactionbutton.FloatingActionButton

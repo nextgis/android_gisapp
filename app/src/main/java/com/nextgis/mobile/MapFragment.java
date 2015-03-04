@@ -1,7 +1,8 @@
 /*
  * Project:  NextGIS Mobile
  * Purpose:  Mobile GIS for Android.
- * Author:   Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
+ * Author:   Dmitry Baryshnikov aka Bishop, bishop.dev@gmail.com
+ * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
  * Copyright (c) 2012-2015. NextGIS, info@nextgis.com
  *
@@ -21,10 +22,12 @@
 
 package com.nextgis.mobile;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -43,6 +46,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,6 +67,7 @@ import com.nextgis.maplibui.MapView;
 import com.nextgis.maplibui.api.EditEventListener;
 import com.nextgis.maplibui.api.ILayerUI;
 import com.nextgis.maplibui.api.MapViewEventListener;
+import com.nineoldandroids.view.ViewHelper;
 
 import java.util.List;
 
@@ -87,7 +92,6 @@ public class MapFragment
 
     protected RelativeLayout mMapRelativeLayout;
     protected GpsEventSource mGpsEventSource;
-
     protected View mMainButton;
     protected int mMode;
 
@@ -599,19 +603,44 @@ public class MapFragment
         if (location == null)
             return;
 
-        mStatusPanel.removeAllViews();
+        boolean needViewUpdate = true;
+        boolean isCurrentOrientationOneLine = mStatusPanel.getChildCount() > 0 &&
+                ((LinearLayout) mStatusPanel.getChildAt(0)).getOrientation() == LinearLayout.HORIZONTAL;
 
-        View panel = getActivity().getLayoutInflater().inflate(R.layout.status_panel_land, mStatusPanel, false);
-        defineTextViews(panel);
+        View panel;
+        if (!isCurrentOrientationOneLine) {
+            panel = getActivity().getLayoutInflater()
+                                 .inflate(R.layout.status_panel_land, mStatusPanel, false);
+            defineTextViews(panel);
+        } else {
+            panel = mStatusPanel.getChildAt(0);
+            needViewUpdate = false;
+        }
+
         fillTextViews(location);
 
         if (!isFitOneLine()) {
             panel = getActivity().getLayoutInflater().inflate(R.layout.status_panel, mStatusPanel, false);
             defineTextViews(panel);
             fillTextViews(location);
+            needViewUpdate = true;
         }
 
-        mStatusPanel.addView(panel);
+        if (needViewUpdate) {
+            mStatusPanel.removeAllViews();
+            setAlpha(panel);
+            mStatusPanel.addView(panel);
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    private void setAlpha(View view) {
+        float alpha = ViewHelper.getAlpha(getActivity().findViewById(R.id.main_toolbar));
+
+        if (alpha == 1.0 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+            alpha = getActivity().findViewById(R.id.main_toolbar).getBackground().getAlpha() / 255f;
+
+        ViewHelper.setAlpha(view, alpha);
     }
 
     private void fillTextViews(Location location) {
@@ -654,7 +683,11 @@ public class MapFragment
                          mStatusLatitude.getMeasuredWidth() + mStatusAccuracy.getMeasuredWidth() +
                          mStatusSpeed.getMeasuredWidth() + mStatusAltitude.getMeasuredWidth();
 
-        return totalWidth < mStatusPanel.getMeasuredWidth();
+        DisplayMetrics metrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        return totalWidth < metrics.widthPixels;
+//        return totalWidth < mStatusPanel.getWidth();
     }
 
     private void defineTextViews(View panel) {
