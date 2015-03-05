@@ -100,6 +100,7 @@ public class MainActivity
 
         GISApplication app = (GISApplication) getApplication();
         mMap = new MapViewOverlays(this, (MapDrawable) app.getMap());
+        mMap.setId(777);
 
         setContentView(R.layout.activity_main);
 

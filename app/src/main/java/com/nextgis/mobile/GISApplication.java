@@ -101,6 +101,9 @@ public class GISApplication
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         File defaultPath = getExternalFilesDir(KEY_PREF_MAP);
+        if(defaultPath == null){
+            defaultPath = new File(getFilesDir(), KEY_PREF_MAP);
+        }
         if (defaultPath != null) {
             String mapPath = sharedPreferences.getString(KEY_PREF_MAP_PATH, defaultPath.getPath());
             String mapName = sharedPreferences.getString(KEY_PREF_MAP_NAME, "default");
