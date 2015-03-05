@@ -164,10 +164,7 @@ public class MapFragment
                                         mEditLayerOverlay.deleteItem();
                                     }
 
-                                    onSingleTapUp(null);
-                                    //TODO: delete feature and show undo toast long
-                                    //remove from cache items immediately and from layer in 2 secs also invalidate map
-                                    //if undo - put the geometry back to cache and invalidate
+                                    setMode(MODE_NORMAL);
                                     break;
                                 case R.id.menu_info:
                                     //TODO: show attributes fragment
