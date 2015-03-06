@@ -55,9 +55,10 @@ import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.service.TrackerService;
 import com.nextgis.maplib.util.FileUtil;
 import com.nextgis.maplib.util.GeoConstants;
-import com.nextgis.maplibui.CurrentLocationOverlay;
-import com.nextgis.maplibui.CurrentTrackOverlay;
-import com.nextgis.maplibui.EditLayerOverlay;
+import com.nextgis.maplibui.BottomToolbar;
+import com.nextgis.maplibui.overlay.CurrentLocationOverlay;
+import com.nextgis.maplibui.overlay.CurrentTrackOverlay;
+import com.nextgis.maplibui.overlay.EditLayerOverlay;
 import com.nextgis.maplibui.MapViewOverlays;
 import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.mobile.util.SettingsConstants;
@@ -168,8 +169,8 @@ public class MainActivity
         return super.onCreateOptionsMenu(menu);
     }
 
-    public Toolbar getBottomToolbar(){
-        return (Toolbar) findViewById(R.id.bottom_toolbar);
+    public BottomToolbar getBottomToolbar(){
+        return (BottomToolbar) findViewById(R.id.bottom_toolbar);
     }
 
 

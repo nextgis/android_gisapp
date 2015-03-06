@@ -35,7 +35,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import com.nextgis.maplib.util.Constants;
-import com.nextgis.maplibui.LocalResourcesListAdapter;
+import com.nextgis.maplibui.dialog.LocalResourcesListAdapter;
 import com.nextgis.maplibui.api.ISelectResourceDialog;
 
 import java.io.File;

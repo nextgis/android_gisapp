@@ -61,8 +61,9 @@ import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplib.util.LocationUtil;
 import com.nextgis.maplib.util.VectorCacheItem;
-import com.nextgis.maplibui.ChooseLayerDialog;
-import com.nextgis.maplibui.EditLayerOverlay;
+import com.nextgis.maplibui.BottomToolbar;
+import com.nextgis.maplibui.dialog.ChooseLayerDialog;
+import com.nextgis.maplibui.overlay.EditLayerOverlay;
 import com.nextgis.maplibui.MapView;
 import com.nextgis.maplibui.api.EditEventListener;
 import com.nextgis.maplibui.api.ILayerUI;
@@ -120,7 +121,7 @@ public class MapFragment
     protected void setMode(int mode)
     {
         MainActivity activity = (MainActivity)getActivity();
-        final Toolbar toolbar = activity.getBottomToolbar();
+        final BottomToolbar toolbar = activity.getBottomToolbar();
         switch (mode){
             case MODE_NORMAL:
                 if(null != toolbar){
@@ -150,9 +151,21 @@ public class MapFragment
                 if(null != toolbar){
                     mMainButton.setVisibility(View.GONE);
                     mStatusPanel.setVisibility(View.INVISIBLE);
+                    toolbar.setNavigationIcon(R.drawable.ic_action_cancel);
+                    toolbar.setNavigationOnClickListener(new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View view)
+                        {
+                            if(null != mEditLayerOverlay) {
+                                mEditLayerOverlay.setMode(EditLayerOverlay.MODE_NONE);
+                            }
+                            setMode(MODE_NORMAL);
+                        }
+                    });
                     toolbar.setVisibility(View.VISIBLE);
                     toolbar.getBackground().setAlpha(128);
-                    toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+                    toolbar.setOnMenuItemClickListener(new BottomToolbar.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
                             switch(item.getItemId()){
@@ -163,7 +176,6 @@ public class MapFragment
                                     if(null != mEditLayerOverlay) {
                                         mEditLayerOverlay.deleteItem();
                                     }
-
                                     setMode(MODE_NORMAL);
                                     break;
                                 case R.id.menu_info:
@@ -444,6 +456,10 @@ public class MapFragment
             mMode = savedInstanceState.getInt(KEY_MODE);
         }
 
+        if(null == mEditLayerOverlay){
+            MainActivity activity = (MainActivity) getActivity();
+            mEditLayerOverlay = activity.getEditLayerOverlay();
+        }
         setMode(mMode);
     }
 
