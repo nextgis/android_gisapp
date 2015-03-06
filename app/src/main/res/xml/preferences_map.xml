@@ -22,6 +22,12 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <CheckBoxPreference
+        android:key="show_status_panel"
+        android:title="@string/show_status_panel"
+        android:defaultValue="true"
+        android:summary="@string/show_status_panel_summary"
+        />
+    <CheckBoxPreference
         android:key="keep_screen_on"
         android:title="@string/keep_screen_on"
         android:defaultValue="false"

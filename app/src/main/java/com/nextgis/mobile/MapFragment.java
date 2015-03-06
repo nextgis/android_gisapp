@@ -67,6 +67,7 @@ import com.nextgis.maplibui.MapView;
 import com.nextgis.maplibui.api.EditEventListener;
 import com.nextgis.maplibui.api.ILayerUI;
 import com.nextgis.maplibui.api.MapViewEventListener;
+import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nineoldandroids.view.ViewHelper;
 
 import java.util.List;
@@ -90,19 +91,21 @@ public class MapFragment
             mStatusAltitude, mStatusLatitude, mStatusLongitude;
     protected FrameLayout mStatusPanel;
 
-    protected RelativeLayout mMapRelativeLayout;
-    protected GpsEventSource mGpsEventSource;
-    protected View mMainButton;
-    protected int mMode;
+    protected RelativeLayout   mMapRelativeLayout;
+    protected GpsEventSource   mGpsEventSource;
+    protected View             mMainButton;
+    protected int              mMode;
     protected EditLayerOverlay mEditLayerOverlay;
 
     protected int mCoordinatesFormat;
 
 
-    protected static final int MODE_NORMAL = 0;
-    protected static final int MODE_SELECT_ACTION = 1;
-    protected static final int MODE_EDIT = 2;
-    protected static final String KEY_MODE = "mode";
+    protected static final int    MODE_NORMAL        = 0;
+    protected static final int    MODE_SELECT_ACTION = 1;
+    protected static final int    MODE_EDIT          = 2;
+    protected static final String KEY_MODE           = "mode";
+    private boolean mShowStatusPanel;
+
 
     public MapFragment()
     {
@@ -119,18 +122,20 @@ public class MapFragment
 
     protected void setMode(int mode)
     {
-        MainActivity activity = (MainActivity)getActivity();
+        MainActivity activity = (MainActivity) getActivity();
         final Toolbar toolbar = activity.getBottomToolbar();
-        switch (mode){
+        switch (mode) {
             case MODE_NORMAL:
-                if(null != toolbar){
+                if (null != toolbar) {
                     toolbar.setVisibility(View.GONE);
                 }
                 mMainButton.setVisibility(View.VISIBLE);
-                mStatusPanel.setVisibility(View.VISIBLE);
+
+                if (mShowStatusPanel)
+                    mStatusPanel.setVisibility(View.VISIBLE);
                 break;
             case MODE_EDIT:
-                if(null != toolbar) {
+                if (null != toolbar) {
                     mMainButton.setVisibility(View.GONE);
                     mStatusPanel.setVisibility(View.INVISIBLE);
                     toolbar.setVisibility(View.VISIBLE);
@@ -139,7 +144,7 @@ public class MapFragment
                     if (null != menu)
                         menu.clear();
 
-                    if(null != mEditLayerOverlay) {
+                    if (null != mEditLayerOverlay) {
                         mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT);
                         mEditLayerOverlay.setToolbar(toolbar);
                     }
@@ -147,20 +152,22 @@ public class MapFragment
                 break;
             case MODE_SELECT_ACTION:
                 //hide FAB, show bottom toolbar
-                if(null != toolbar){
+                if (null != toolbar) {
                     mMainButton.setVisibility(View.GONE);
                     mStatusPanel.setVisibility(View.INVISIBLE);
                     toolbar.setVisibility(View.VISIBLE);
                     toolbar.getBackground().setAlpha(128);
-                    toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+                    toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener()
+                    {
                         @Override
-                        public boolean onMenuItemClick(MenuItem item) {
-                            switch(item.getItemId()){
+                        public boolean onMenuItemClick(MenuItem item)
+                        {
+                            switch (item.getItemId()) {
                                 case R.id.menu_edit:
                                     setMode(MODE_EDIT);
                                     break;
                                 case R.id.menu_delete:
-                                    if(null != mEditLayerOverlay) {
+                                    if (null != mEditLayerOverlay) {
                                         mEditLayerOverlay.deleteItem();
                                     }
 
@@ -178,7 +185,7 @@ public class MapFragment
                     });
                     // Inflate a menu to be displayed in the toolbar
                     Menu menu = toolbar.getMenu();
-                    if(null != menu)
+                    if (null != menu)
                         menu.clear();
                     toolbar.inflateMenu(R.menu.select_action);
                     //distributeToolbarItems(toolbar);
@@ -495,13 +502,22 @@ public class MapFragment
         }
 
         mCoordinatesFormat = prefs.getInt(KEY_PREF_COORD_FORMAT + "_int", Location.FORMAT_DEGREES);
-        fillStatusPanel(mGpsEventSource.getLastKnownLocation());
         mGpsEventSource.addListener(this);
 
         MainActivity activity = (MainActivity) getActivity();
         mEditLayerOverlay = activity.getEditLayerOverlay();
         if(null != mEditLayerOverlay){
             mEditLayerOverlay.addListener(this);
+        }
+
+        mShowStatusPanel = prefs.getBoolean(SettingsConstantsUI.KEY_PREF_SHOW_STATUS_PANEL, true);
+
+        if (mShowStatusPanel) {
+            mStatusPanel.setVisibility(View.VISIBLE);
+            fillStatusPanel(mGpsEventSource.getLastKnownLocation());
+        } else {
+            mStatusPanel.removeAllViews();
+            mStatusPanel.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -601,7 +617,7 @@ public class MapFragment
 
     private void fillStatusPanel(Location location)
     {
-        if (location == null)
+        if (location == null || mStatusPanel.getVisibility() == FrameLayout.INVISIBLE)
             return;
 
         boolean needViewUpdate = true;
