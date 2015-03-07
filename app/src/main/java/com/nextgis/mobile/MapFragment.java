@@ -567,6 +567,9 @@ public class MapFragment
     @Override
     public void onLongPress(MotionEvent event)
     {
+        if(mMode != MODE_NORMAL)
+            return;
+
         double dMinX = event.getX() - mTolerancePX;
         double dMaxX = event.getX() + mTolerancePX;
         double dMinY = event.getY() - mTolerancePX;
@@ -621,6 +624,27 @@ public class MapFragment
             }
             mMap.postInvalidate();
         }
+    }
+
+
+    @Override
+    public void panStart(MotionEvent e)
+    {
+
+    }
+
+
+    @Override
+    public void panMoveTo(MotionEvent e)
+    {
+
+    }
+
+
+    @Override
+    public void panStop()
+    {
+
     }
 
 
