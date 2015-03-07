@@ -2,7 +2,7 @@
 <!--
   ~ Project:  NextGIS Mobile
   ~ Purpose:  Mobile GIS for Android.
-  ~ Author:   Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
+  ~ Author:   Maxim Dubinin (sim@gis-lab.info)
   ~ ******************************************************************************
   ~ Copyright (c) 2012-2015. NextGIS, info@nextgis.com
   ~
@@ -21,4 +21,68 @@
   -->
 
 <resources>
+
+    <string name="app_name">NextGIS Mobile</string>
+    <string name="navigation_drawer_open">Открыть панель навигации</string>
+    <string name="navigation_drawer_close">Закрыть панель навигации</string>
+    <string name="action_settings">Настройки</string>
+    <string name="action_add">Добавить слой</string>
+    <string name="action_add_local">Локальный</string>
+    <string name="action_add_remote">Веб</string>
+    <string name="action_add_ngw">NGW</string>
+    <string name="general">Общие</string>
+    <string name="general_summary">Общие настройки</string>
+    <string name="keep_screen_on">Не отключать экран</string>
+    <string name="keep_screen_on_summary">Держать экран включенным</string>
+    <string name="show_zoom_controls">Включить управление масштабами</string>
+    <string name="show_zoom_controls_summary">Показывать кнопки +/- на карте для увеличения/уменьшения</string>
+    <string name="map">Карта</string>
+    <string name="map_summary">Настройки карты</string>
+    <string name="ngw">NextGIS Web</string>
+    <string name="ngw_summary">Настройки NextGIS Web</string>
+    <string name="app_description">Мобильная ГИС для визуализации и сбора геоданных в поле и отправки результатов на сервер. NextGIS Mobile также записывает треки и отправляет координаты местоположения на сервер.</string>
+    <string name="credits_intro">Лицензии:</string>
+    <string name="credits"><![CDATA[Некоторые иконки использованные в приложении:<br>- <a href=\"http://icons8.com/android-icons\">Icons8.com</a>, <a href=\"http://creativecommons.org/licenses/by-nd/3.0/\">CC BY-ND 3.0</a><br>- <a href=\"http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html\">romannurik.github.io</a>, <a href=\"http://creativecommons.org/licenses/by/3.0/\">CC BY 3.0</a>]]></string>
+    <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2012–2015]]></string>
+    <string name="action_about">О программе</string>
+    <string name="add_current_place">Добавить текущую точку</string>
+    <string name="add_new_geometry">Добавить новый объект</string>
+    <string name="add_geometry_by_walk">Добавить новый объект обходом</string>
+    <string name="warning_no_edit_layers">Нет редактируемых слоёв</string>
+    <string name="select_layer">Выберите слой для редактирования</string>
+    <string name="menu_locate">Найти</string>
+    <string name="select_file">Выберите файл для создания слоя</string>
+    <string name="warning_install_file_manager">Пожалуйста, установите менеджер файлов</string>
+    <string name="error_file_unsupported">Тип файла не поддерживается</string>
+    <string name="warning_not_implemented">Еще не реализовано</string>
+    <string name="pref_location_accuracy">Точность определения местоположения</string>
+    <string name="pref_location_accuracy_gps">GPS</string>
+    <string name="pref_location_accuracy_cell">Сотовая связь</string>
+    <string name="location">Местоположение</string>
+    <string name="tracks">Треки</string>
+    <string name="location_summary">Настройки местоположения</string>
+    <string name="tracks_summary">Настройки треков</string>
+    <string name="track_start">Начать запись трека</string>
+    <string name="track_stop">Завершить запись трека</string>
+    <string name="tracks_reload">Перезапустите запись для применения изменений</string>
+    <string name="pref_min_time">Минимальное время обновления</string>
+    <string name="pref_min_distance">Минимальное расстояние обновления</string>
+    <string name="meters">м</string>
+    <string name="seconds">с</string>
+    <string name="coordinates_format">Формат координат</string>
+    <string name="select_coordinates_format">Выберите формат координат</string>
+    <string name="coordinates_format_summary">Выберите текст для координат</string>
+    <string name="map_path">Пусть к картам</string>
+    <string name="map_path_summary">Путь к папке для карт. Изменение может привести к тому, что папка не будет очищаться при удаление приложения</string>
+    <string name="select_map_path">Выберите путь к папке для карт</string>
+    <string name="moving">Перемещение…</string>
+    <string name="warning_map_moving">Внимание! Не отменяйте операцию и не останавливайте приложение в процессе перемещения данных в новое место. Может привести к потере данных!</string>
+    <string name="warning_folder_should_be_empty">Папка должна быть пустой. Операция отменена.</string>
+    <string name="frequentest">, так часто, как возможно</string>
+    <string name="action_delete">Удалить</string>
+    <string name="action_attributes">Атрибуты</string>
+    <string name="action_edit">Редактировать</string>
+    <string name="show_status_panel">Панель статуса</string>
+    <string name="show_status_panel_summary">Показать панель статуса внизу экрана</string>
+
 </resources>
