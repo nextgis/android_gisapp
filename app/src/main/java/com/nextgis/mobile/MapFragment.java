@@ -68,6 +68,7 @@ import com.nextgis.maplibui.MapView;
 import com.nextgis.maplibui.api.EditEventListener;
 import com.nextgis.maplibui.api.ILayerUI;
 import com.nextgis.maplibui.api.MapViewEventListener;
+import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nineoldandroids.view.ViewHelper;
 
@@ -81,7 +82,6 @@ public class MapFragment
 {
 
     protected final static int mMargins     = 10;
-    protected static final int mToleranceDP = 20;
     protected float mTolerancePX;
 
     protected MapView   mMap;
@@ -117,7 +117,7 @@ public class MapFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        mTolerancePX = getActivity().getResources().getDisplayMetrics().density * mToleranceDP;
+        mTolerancePX = getActivity().getResources().getDisplayMetrics().density * ConstantsUI.TOLERANCE_DP;
     }
 
 
