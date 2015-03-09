@@ -567,7 +567,7 @@ public class MapFragment
     @Override
     public void onLongPress(MotionEvent event)
     {
-        if(mMode != MODE_NORMAL)
+        if(mMode == MODE_EDIT)
             return;
 
         double dMinX = event.getX() - mTolerancePX;
