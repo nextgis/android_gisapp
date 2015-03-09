@@ -22,12 +22,10 @@
 
 package com.nextgis.mobile;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -58,6 +56,7 @@ import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.maplib.map.VectorLayer;
+import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplib.util.LocationUtil;
 import com.nextgis.maplib.util.VectorCacheItem;
@@ -70,7 +69,6 @@ import com.nextgis.maplibui.api.ILayerUI;
 import com.nextgis.maplibui.api.MapViewEventListener;
 import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
-import com.nineoldandroids.view.ViewHelper;
 
 import java.util.List;
 
@@ -548,7 +546,7 @@ public class MapFragment
             ILayer vectorLayer = layers.get(0);
             if(vectorLayer instanceof ILayerUI){
                 ILayerUI vectorLayerUI = (ILayerUI)vectorLayer;
-                vectorLayerUI.showEditForm(getActivity());
+                vectorLayerUI.showEditForm(getActivity(), Constants.NOT_FOUND);
             }
             else{
                 Toast.makeText(getActivity(), getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG).show();
@@ -685,19 +683,9 @@ public class MapFragment
 
         if (needViewUpdate) {
             mStatusPanel.removeAllViews();
-            setAlpha(panel);
+            panel.getBackground().setAlpha(128);
             mStatusPanel.addView(panel);
         }
-    }
-
-    @TargetApi(Build.VERSION_CODES.KITKAT)
-    private void setAlpha(View view) {
-        float alpha = ViewHelper.getAlpha(getActivity().findViewById(R.id.main_toolbar));
-
-        if (alpha == 1.0 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-            alpha = getActivity().findViewById(R.id.main_toolbar).getBackground().getAlpha() / 255f;
-
-        ViewHelper.setAlpha(view, alpha);
     }
 
     private void fillTextViews(Location location) {
