@@ -47,6 +47,7 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import com.nextgis.mobile.R;
@@ -448,4 +449,15 @@ public class FloatingActionButton extends ImageButton {
 
     super.setVisibility(visibility);
   }
+
+
+    @Override
+    protected boolean onSetAlpha(int alpha)
+    {
+        if(alpha == 0)
+            setVisibility(View.GONE);
+        else
+            setVisibility(View.VISIBLE);
+        return super.onSetAlpha(alpha);
+    }
 }

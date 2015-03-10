@@ -123,8 +123,8 @@ public class FloatingActionsMenu extends ViewGroup {
 
     TypedArray attr = context.obtainStyledAttributes(attributeSet, R.styleable.FloatingActionsMenu, 0, 0);
     mAddButtonPlusColor = attr.getColor(R.styleable.FloatingActionsMenu_fab_addButtonPlusIconColor, getColor(android.R.color.white));
-    mAddButtonColorNormal = attr.getColor(R.styleable.FloatingActionsMenu_fab_addButtonColorNormal, getColor(android.R.color.holo_blue_dark));
-    mAddButtonColorPressed = attr.getColor(R.styleable.FloatingActionsMenu_fab_addButtonColorPressed, getColor(android.R.color.holo_blue_light));
+    mAddButtonColorNormal = attr.getColor(R.styleable.FloatingActionsMenu_fab_addButtonColorNormal, getColor(R.color.primary));
+    mAddButtonColorPressed = attr.getColor(R.styleable.FloatingActionsMenu_fab_addButtonColorPressed, getColor(R.color.accent));
     mAddButtonSize = attr.getInt(R.styleable.FloatingActionsMenu_fab_addButtonSize, FloatingActionButton.SIZE_NORMAL);
     mAddButtonStrokeVisible = attr.getBoolean(R.styleable.FloatingActionsMenu_fab_addButtonStrokeVisible, true);
     mExpandDirection = attr.getInt(R.styleable.FloatingActionsMenu_fab_expandDirection, EXPAND_UP);
@@ -327,13 +327,14 @@ public class FloatingActionsMenu extends ViewGroup {
 
         int childX = addButtonLeft + (mAddButton.getMeasuredWidth() - child.getMeasuredWidth()) / 2;
         int childY = expandUp ? nextY - child.getMeasuredHeight() : nextY;
-        child.layout(childX, childY, childX + child.getMeasuredWidth(), childY + child.getMeasuredHeight());
 
         float collapsedTranslation = addButtonY - childY;
         float expandedTranslation = 0f;
 
         proxy.setTranslationY(mExpanded ? expandedTranslation : collapsedTranslation);
         proxy.setAlpha(mExpanded ? 1f : 0f);
+
+        child.layout(childX, childY, childX + child.getMeasuredWidth(), childY + child.getMeasuredHeight());
 
         LayoutParams params = (LayoutParams) child.getLayoutParams();
         params.mCollapseDir.setFloatValues(expandedTranslation, collapsedTranslation);
@@ -346,10 +347,10 @@ public class FloatingActionsMenu extends ViewGroup {
           int labelTop = childY - mLabelsVerticalOffset + (child.getMeasuredHeight() - label.getMeasuredHeight()) / 2;
 
           AnimatorProxy proxyLabel = AnimatorProxy.wrap(label);
-          label.layout(labelLeft, labelTop, labelsRight, labelTop + label.getMeasuredHeight());
 
           proxyLabel.setTranslationY(mExpanded ? expandedTranslation : collapsedTranslation);
           proxyLabel.setAlpha(mExpanded ? 1f : 0f);
+          label.layout(labelLeft, labelTop, labelsRight, labelTop + label.getMeasuredHeight());
 
           LayoutParams labelParams = (LayoutParams) label.getLayoutParams();
           labelParams.mCollapseDir.setFloatValues(expandedTranslation, collapsedTranslation);
@@ -384,7 +385,6 @@ public class FloatingActionsMenu extends ViewGroup {
         AnimatorProxy proxy = AnimatorProxy.wrap(child);
         int childX = expandLeft ? nextX - child.getMeasuredWidth() : nextX;
         int childY = addButtonTop + (mAddButton.getMeasuredHeight() - child.getMeasuredHeight()) / 2;
-        child.layout(childX, childY, childX + child.getMeasuredWidth(), childY + child.getMeasuredHeight());
 
         float collapsedTranslation = addButtonX - childX;
         float expandedTranslation = 0f;
@@ -392,6 +392,7 @@ public class FloatingActionsMenu extends ViewGroup {
 
         proxy.setTranslationX(mExpanded ? expandedTranslation : collapsedTranslation);
         proxy.setAlpha(mExpanded ? 1f : 0f);
+        child.layout(childX, childY, childX + child.getMeasuredWidth(), childY + child.getMeasuredHeight());
 
         LayoutParams params = (LayoutParams) child.getLayoutParams();
         params.mCollapseDir.setFloatValues(expandedTranslation, collapsedTranslation);

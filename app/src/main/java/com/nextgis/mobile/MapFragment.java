@@ -264,14 +264,28 @@ public class MapFragment
             mMap.invalidate();
         }
 
-        mMainButton = view.findViewById(R.id.action_add_current_location);
-        if (null != mMainButton) {
-            mMainButton.setOnClickListener(new OnClickListener()
+        mMainButton = view.findViewById(R.id.multiple_actions);
+
+        View addCurrentLocation = view.findViewById(R.id.add_current_location);
+        if (null != addCurrentLocation) {
+            addCurrentLocation.setOnClickListener(new OnClickListener()
             {
                 @Override
                 public void onClick(View v)
                 {
                     addCurrentLocation();
+                }
+            });
+        }
+
+        final View addNewGeometry = view.findViewById(R.id.add_new_geometry);
+        if(null != addNewGeometry){
+            addNewGeometry.setOnClickListener(new OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    addNewGeometry();
                 }
             });
         }
@@ -532,6 +546,29 @@ public class MapFragment
         } else {
             mStatusPanel.removeAllViews();
             mStatusPanel.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    protected void addNewGeometry(){
+        //show select layer dialog if several layers, else start default or custom form
+        List<ILayer> layers = mMap.getVectorLayersByType(GeoConstants.GTMultiPoint | GeoConstants.GTPoint);
+        if(layers.isEmpty()){
+            Toast.makeText(getActivity(), getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG).show();
+        }
+        else if(layers.size() == 1){
+            //open form
+            ILayer vectorLayer = layers.get(0);
+            mEditLayerOverlay.setFeature((VectorLayer)vectorLayer, null);
+            setMode(MODE_EDIT);
+        }
+        else{
+            //TODO: open choose edit layer dialog
+            /*
+            ChooseLayerDialog newChooseLayerDialog = new ChooseLayerDialog();
+            newChooseLayerDialog.setTitle(getString(R.string.select_layer))
+                                .setLayerList(layers)
+                                .show(getActivity().getSupportFragmentManager(), "choose_layer");
+                                */
         }
     }
 
