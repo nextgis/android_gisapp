@@ -655,7 +655,7 @@ public class MapFragment
 
     private void fillStatusPanel(Location location)
     {
-        if (location == null || mStatusPanel.getVisibility() == FrameLayout.INVISIBLE)
+        if (mStatusPanel.getVisibility() == FrameLayout.INVISIBLE)
             return;
 
         boolean needViewUpdate = true;
@@ -689,31 +689,35 @@ public class MapFragment
     }
 
     private void fillTextViews(Location location) {
-        if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
-            mStatusSource.setText(location.getExtras().getInt("satellites") + "");
-            mStatusSource.setCompoundDrawablesWithIntrinsicBounds(
-                    getResources().getDrawable(R.drawable.ic_location),
-                    null, null, null);
-        } else {
-            mStatusSource.setText("");
-            mStatusSource.setCompoundDrawablesWithIntrinsicBounds(
-                    getResources().getDrawable(R.drawable.ic_signal_wifi),
-                    null, null, null);
+        if(null == location){
+            mStatusAccuracy.setText(getString(R.string.n_a));
+            mStatusAltitude.setText(getString(R.string.n_a));
+            mStatusSpeed.setText(getString(R.string.n_a));
+            mStatusLatitude.setText(getString(R.string.n_a));
+            mStatusLongitude.setText(getString(R.string.n_a));
         }
+        else {
+            if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
+                mStatusSource.setText(location.getExtras().getInt("satellites") + "");
+                mStatusSource.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_location),
+                                                                      null, null, null);
+            } else {
+                mStatusSource.setText("");
+                mStatusSource.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_signal_wifi),
+                                                                      null, null, null);
+            }
 
-        mStatusAccuracy.setText(String.format("%.1f %s", location.getAccuracy(),
-                                              getString(R.string.unit_meter)));
-        mStatusAltitude.setText(String.format("%.1f %s", location.getAltitude(),
-                                              getString(R.string.unit_meter)));
-        mStatusSpeed.setText(String.format("%.1f %s/%s", location.getSpeed() * 3600 / 1000,
-                                           getString(R.string.unit_kilometer),
-                                           getString(R.string.unit_hour)));
-        mStatusLatitude.setText(
-                LocationUtil.formatCoordinate(location.getLatitude(), mCoordinatesFormat) + " " +
-                getString(R.string.latitude_caption_short));
-        mStatusLongitude.setText(
-                LocationUtil.formatCoordinate(location.getLongitude(), mCoordinatesFormat) + " " +
-                getString(R.string.longitude_caption_short));
+            mStatusAccuracy.setText(String.format("%.1f %s", location.getAccuracy(), getString(R.string.unit_meter)));
+            mStatusAltitude.setText(String.format("%.1f %s", location.getAltitude(), getString(R.string.unit_meter)));
+            mStatusSpeed.setText(String.format("%.1f %s/%s", location.getSpeed() * 3600 / 1000,
+                                               getString(R.string.unit_kilometer), getString(R.string.unit_hour)));
+            mStatusLatitude.setText(LocationUtil.formatCoordinate(location.getLatitude(), mCoordinatesFormat) +
+                                    " " +
+                                    getString(R.string.latitude_caption_short));
+            mStatusLongitude.setText(LocationUtil.formatCoordinate(location.getLongitude(), mCoordinatesFormat) +
+                                     " " +
+                                     getString(R.string.longitude_caption_short));
+        }
     }
 
     private boolean isFitOneLine() {
