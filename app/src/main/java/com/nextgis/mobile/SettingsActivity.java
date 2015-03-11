@@ -2,6 +2,7 @@
  * Project:  NextGIS Mobile
  * Purpose:  Mobile GIS for Android.
  * Author:   Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
+ * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
  * Copyright (c) 2012-2015. NextGIS, info@nextgis.com
  *
@@ -30,7 +31,6 @@ import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -101,6 +101,9 @@ public class SettingsActivity
                             SettingsConstants.KEY_PREF_MAP_PATH);
                     initializeMapPath(this, mapPath);
 
+                    final ListPreference showCurrentLocation = (ListPreference) findPreference(
+                            SettingsConstantsUI.KEY_PREF_SHOW_CURRENT_LOC);
+                    initializeShowCurrentLocation(this, showCurrentLocation);
                     break;
                 case ACTION_PREFS_LOCATION:
                     addPreferencesFromResource(R.xml.preferences_location);
@@ -109,9 +112,9 @@ public class SettingsActivity
                             SettingsConstants.KEY_PREF_LOCATION_SOURCE + "_str");
                     initializeLocationAccuracy(lpLocationAccuracy, false);
 
-                    final EditTextPreference minTimeLoc = (EditTextPreference) findPreference(
+                    final ListPreference minTimeLoc = (ListPreference) findPreference(
                             SettingsConstants.KEY_PREF_LOCATION_MIN_TIME);
-                    final EditTextPreference minDistanceLoc = (EditTextPreference) findPreference(
+                    final ListPreference minDistanceLoc = (ListPreference) findPreference(
                             SettingsConstants.KEY_PREF_LOCATION_MIN_DISTANCE);
                     initializeLocationMins(minTimeLoc, minDistanceLoc, false);
                     break;
@@ -122,9 +125,9 @@ public class SettingsActivity
                             SettingsConstants.KEY_PREF_TRACKS_SOURCE + "_str");
                     initializeLocationAccuracy(lpTracksAccuracy, true);
 
-                    final EditTextPreference minTime = (EditTextPreference) findPreference(
+                    final ListPreference minTime = (ListPreference) findPreference(
                             SettingsConstants.KEY_PREF_TRACKS_MIN_TIME);
-                    final EditTextPreference minDistance = (EditTextPreference) findPreference(
+                    final ListPreference minDistance = (ListPreference) findPreference(
                             SettingsConstants.KEY_PREF_TRACKS_MIN_DISTANCE);
                     initializeLocationMins(minTime, minDistance, true);
                     break;
@@ -232,13 +235,13 @@ public class SettingsActivity
 
 
     public static void initializeLocationMins(
-            EditTextPreference minTime,
-            final EditTextPreference minDistance,
+            ListPreference minTime,
+            final ListPreference minDistance,
             final boolean isTracks)
     {
         final Context context = minDistance.getContext();
-        minTime.setSummary(getMinSummary(context, R.string.unit_second, minTime.getText()));
-        minDistance.setSummary(getMinSummary(context, R.string.unit_meter, minDistance.getText()));
+        minTime.setSummary(getMinSummary(context, minTime.getEntry(), minTime.getValue()));
+        minDistance.setSummary(getMinSummary(context, minDistance.getEntry(), minDistance.getValue()));
 
         minTime.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
         {
@@ -247,7 +250,8 @@ public class SettingsActivity
                     Preference preference,
                     Object newValue)
             {
-                preference.setSummary(getMinSummary(context, R.string.unit_second, (String) newValue));
+                int id = ((ListPreference) preference).findIndexOfValue((String) newValue);
+                preference.setSummary(getMinSummary(context, ((ListPreference) preference).getEntries()[id], (String) newValue));
 
                 String preferenceKey = isTracks
                                        ? SettingsConstants.KEY_PREF_TRACKS_MIN_TIME
@@ -270,8 +274,9 @@ public class SettingsActivity
                     Preference preference,
                     Object newValue)
             {
+                int id = ((ListPreference) preference).findIndexOfValue((String) newValue);
                 preference.setSummary(
-                        getMinSummary(context, R.string.unit_meter, (String) newValue));
+                        getMinSummary(context, ((ListPreference) preference).getEntries()[id], (String) newValue));
 
                 String preferenceKey = isTracks
                                        ? SettingsConstants.KEY_PREF_TRACKS_MIN_DISTANCE
@@ -308,7 +313,7 @@ public class SettingsActivity
 
     private static String getMinSummary(
             Context context,
-            int unit,
+            CharSequence newEntry,
             String newValue)
     {
         int value = 0;
@@ -319,10 +324,10 @@ public class SettingsActivity
             e.printStackTrace();
         }
 
-        String addition = context.getString(unit);
+        String addition = newEntry + "";
         addition += value == 0 ? context.getString(R.string.frequentest) : "";
 
-        return value + " " + addition;
+        return addition;
     }
 
     public static void initializeMapPath(final Context context, final SelectMapPathDialogPreference mapPath)
@@ -361,6 +366,24 @@ public class SettingsActivity
                 }
             });
         }
+    }
+
+    public static void initializeShowCurrentLocation(Context context, final ListPreference listPreference)
+    {
+        listPreference.setSummary(listPreference.getEntry());
+
+        listPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+        {
+            @Override
+            public boolean onPreferenceChange(
+                    Preference preference,
+                    Object newValue)
+            {
+                preference.setSummary(listPreference.getEntries()[listPreference.findIndexOfValue((String) newValue)]);
+
+                return true;
+            }
+        });
     }
 
     private static class BackgroundMoveTask extends AsyncTask<Void, Void, Void>

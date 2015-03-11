@@ -61,6 +61,7 @@ import com.nextgis.maplibui.overlay.CurrentTrackOverlay;
 import com.nextgis.maplibui.overlay.EditLayerOverlay;
 import com.nextgis.maplibui.MapViewOverlays;
 import com.nextgis.maplibui.util.ConstantsUI;
+import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.util.SettingsConstants;
 
 import java.io.IOException;
@@ -548,6 +549,8 @@ public class MainActivity
         intentFilter.addAction(ConstantsUI.MESSAGE_INTENT);
         registerReceiver(mMessageReceiver, intentFilter);
         gpsEventSource.addListener(this);
+        mCurrentLocationOverlay.updateMode(PreferenceManager.getDefaultSharedPreferences(this).getString(
+                SettingsConstantsUI.KEY_PREF_SHOW_CURRENT_LOC, "3"));
         mCurrentLocationOverlay.startShowingCurrentLocation();
     }
 

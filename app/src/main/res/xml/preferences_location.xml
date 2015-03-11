@@ -3,6 +3,7 @@
   ~ Project:  NextGIS Mobile
   ~ Purpose:  Mobile GIS for Android.
   ~ Author:   Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
+  ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
   ~ Copyright (c) 2012-2015. NextGIS, info@nextgis.com
   ~
@@ -28,25 +29,25 @@
         android:defaultValue="3"
         />
 
-    <EditTextPreference
+    <ListPreference
         android:key="location_min_time"
         android:title="@string/pref_min_time"
         android:defaultValue="5"
-        android:inputType="number"
-        android:numeric="integer"
+        android:entries="@array/tracker_min_time_between_updates"
+        android:entryValues="@array/tracker_min_time_between_updates_val"
         />
 
-    <EditTextPreference
+    <ListPreference
         android:key="location_min_distance"
         android:title="@string/pref_min_distance"
-        android:defaultValue="2"
-        android:inputType="number|numberDecimal"
-        android:numeric="decimal"
+        android:defaultValue="1"
+        android:entries="@array/tracker_min_dist_update"
+        android:entryValues="@array/tracker_min_dist_update_val"
         />
 
     <!--TODO:
     1) add accuracy,
     2) CE,
-    3) time period and
-    4) minimal distance to pick location -->
+    3) time period and -done
+    4) minimal distance to pick location -done -->
 </PreferenceScreen>

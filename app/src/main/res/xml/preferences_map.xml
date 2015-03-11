@@ -27,6 +27,13 @@
         android:defaultValue="true"
         android:summary="@string/show_status_panel_summary"
         />
+    <ListPreference
+        android:key="show_current_location"
+        android:title="@string/show_current_location"
+        android:defaultValue="3"
+        android:entries="@array/current_location_mode"
+        android:entryValues="@array/current_location_mode_val"
+        />
     <CheckBoxPreference
         android:key="keep_screen_on"
         android:title="@string/keep_screen_on"

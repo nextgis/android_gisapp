@@ -30,6 +30,8 @@ import android.preference.PreferenceFragment;
 import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 
+import static com.nextgis.mobile.SettingsActivity.initializeShowCurrentLocation;
+
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class SettingsFragment extends PreferenceFragment
@@ -55,6 +57,9 @@ public class SettingsFragment extends PreferenceFragment
                         SettingsConstants.KEY_PREF_MAP_PATH);
                 SettingsActivity.initializeMapPath(getActivity(), mapPath);
 
+                final ListPreference showCurrentLocation = (ListPreference) findPreference(
+                        SettingsConstantsUI.KEY_PREF_SHOW_CURRENT_LOC);
+                initializeShowCurrentLocation(getActivity(), showCurrentLocation);
                 break;
             case "location":
                 addPreferencesFromResource(R.xml.preferences_location);
@@ -63,9 +68,9 @@ public class SettingsFragment extends PreferenceFragment
                         SettingsConstants.KEY_PREF_LOCATION_SOURCE + "_str");
                 SettingsActivity.initializeLocationAccuracy(lpLocationAccuracy, false);
 
-                final EditTextPreference minTimeLoc = (EditTextPreference) findPreference(
+                final ListPreference minTimeLoc = (ListPreference) findPreference(
                         SettingsConstants.KEY_PREF_LOCATION_MIN_TIME);
-                final EditTextPreference minDistanceLoc = (EditTextPreference) findPreference(
+                final ListPreference minDistanceLoc = (ListPreference) findPreference(
                         SettingsConstants.KEY_PREF_LOCATION_MIN_DISTANCE);
                 SettingsActivity.initializeLocationMins(minTimeLoc, minDistanceLoc, false);
                 break;
@@ -76,9 +81,9 @@ public class SettingsFragment extends PreferenceFragment
                         SettingsConstants.KEY_PREF_TRACKS_SOURCE + "_str");
                 SettingsActivity.initializeLocationAccuracy(lpTracksAccuracy, true);
 
-                final EditTextPreference minTime = (EditTextPreference) findPreference(
+                final ListPreference minTime = (ListPreference) findPreference(
                         SettingsConstants.KEY_PREF_TRACKS_MIN_TIME);
-                final EditTextPreference minDistance = (EditTextPreference) findPreference(
+                final ListPreference minDistance = (ListPreference) findPreference(
                         SettingsConstants.KEY_PREF_TRACKS_MIN_DISTANCE);
                 SettingsActivity.initializeLocationMins(minTime, minDistance, true);
                 break;
