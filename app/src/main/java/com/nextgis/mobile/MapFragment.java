@@ -103,8 +103,10 @@ public class MapFragment
     protected static final int    MODE_SELECT_ACTION = 1;
     protected static final int    MODE_EDIT          = 2;
     protected static final String KEY_MODE           = "mode";
-    private boolean mShowStatusPanel;
+    protected boolean mShowStatusPanel;
 
+    protected final int ADD_CURRENT_LOC = 1;
+    protected final int ADD_NEW_GEOMETRY = 2;
 
     public MapFragment()
     {
@@ -266,7 +268,7 @@ public class MapFragment
 
         mMainButton = view.findViewById(R.id.multiple_actions);
 
-        View addCurrentLocation = view.findViewById(R.id.add_current_location);
+        final View addCurrentLocation = view.findViewById(R.id.add_current_location);
         if (null != addCurrentLocation) {
             addCurrentLocation.setOnClickListener(new OnClickListener()
             {
@@ -286,6 +288,18 @@ public class MapFragment
                 public void onClick(View v)
                 {
                     addNewGeometry();
+                }
+            });
+        }
+
+        final View addGeometryByWalk = view.findViewById(R.id.add_geometry_by_walk);
+        if(null != addGeometryByWalk){
+            addGeometryByWalk.setOnClickListener(new OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    addGeometryByWalk();
                 }
             });
         }
@@ -394,12 +408,6 @@ public class MapFragment
             GeoPoint center)
     {
         setZoomInEnabled(mMap.canZoomIn());
-
-            //TODO: show select dialog
-            //1. edit_point geometry
-            //2. delete geometry
-            //3. see attributes
-            //Toast.makeText(getActivity(), "cool! geometry is pick", Toast.LENGTH_LONG).show();
         setZoomOutEnabled(mMap.canZoomOut());
     }
 
@@ -551,7 +559,7 @@ public class MapFragment
 
     protected void addNewGeometry(){
         //show select layer dialog if several layers, else start default or custom form
-        List<ILayer> layers = mMap.getVectorLayersByType(GeoConstants.GTMultiPoint | GeoConstants.GTPoint);
+        List<ILayer> layers = mMap.getVectorLayersByType(GeoConstants.GTPointCheck);
         if(layers.isEmpty()){
             Toast.makeText(getActivity(), getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG).show();
         }
@@ -560,21 +568,23 @@ public class MapFragment
             ILayer vectorLayer = layers.get(0);
             mEditLayerOverlay.setFeature((VectorLayer)vectorLayer, null);
             setMode(MODE_EDIT);
+
+            Toast.makeText(getActivity(), String.format(getString(R.string.edit_layer), vectorLayer.getName()), Toast.LENGTH_SHORT).show();
         }
         else{
-            //TODO: open choose edit layer dialog
-            /*
+            //open choose edit layer dialog
             ChooseLayerDialog newChooseLayerDialog = new ChooseLayerDialog();
             newChooseLayerDialog.setTitle(getString(R.string.select_layer))
                                 .setLayerList(layers)
+                                .setCode(ADD_NEW_GEOMETRY)
                                 .show(getActivity().getSupportFragmentManager(), "choose_layer");
-                                */
+
         }
     }
 
     protected void addCurrentLocation(){
         //show select layer dialog if several layers, else start default or custom form
-        List<ILayer> layers = mMap.getVectorLayersByType(GeoConstants.GTMultiPoint | GeoConstants.GTPoint);
+        List<ILayer> layers = mMap.getVectorLayersByType(GeoConstants.GTMultiPointCheck | GeoConstants.GTPointCheck);
         if(layers.isEmpty()){
             Toast.makeText(getActivity(), getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG).show();
         }
@@ -584,6 +594,8 @@ public class MapFragment
             if(vectorLayer instanceof ILayerUI){
                 ILayerUI vectorLayerUI = (ILayerUI)vectorLayer;
                 vectorLayerUI.showEditForm(getActivity(), Constants.NOT_FOUND);
+
+                Toast.makeText(getActivity(), String.format(getString(R.string.edit_layer), vectorLayer.getName()), Toast.LENGTH_SHORT).show();
             }
             else{
                 Toast.makeText(getActivity(), getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG).show();
@@ -594,7 +606,27 @@ public class MapFragment
             ChooseLayerDialog newChooseLayerDialog = new ChooseLayerDialog();
             newChooseLayerDialog.setTitle(getString(R.string.select_layer))
                        .setLayerList(layers)
+                       .setCode(ADD_CURRENT_LOC)
                        .show(getActivity().getSupportFragmentManager(), "choose_layer");
+        }
+    }
+
+    protected void addGeometryByWalk(){
+        Toast.makeText(getActivity(), getString(R.string.warning_not_implemented), Toast.LENGTH_SHORT).show();
+    }
+
+    public void onFinishChooseLayerDialog(
+            int code,
+            ILayer layer){
+        if(code == ADD_CURRENT_LOC){
+            if(layer instanceof ILayerUI ) {
+                ILayerUI layerUI = (ILayerUI) layer;
+                layerUI.showEditForm(getActivity(), Constants.NOT_FOUND);
+            }
+        }
+        else if(code == ADD_NEW_GEOMETRY){
+            mEditLayerOverlay.setFeature((VectorLayer)layer, null);
+            setMode(MODE_EDIT);
         }
     }
 
@@ -615,7 +647,7 @@ public class MapFragment
             return;
 
         //show actions dialog
-        List<ILayer> layers = mMap.getVectorLayersByType(GeoConstants.GTAny);
+        List<ILayer> layers = mMap.getVectorLayersByType(GeoConstants.GTAnyCheck);
         List<VectorCacheItem> items = null;
         VectorLayer vectorLayer = null;
         boolean intersects = false;
@@ -795,14 +827,12 @@ public class MapFragment
     @Override
     public void onStartEditSession()
     {
-        //TODO: hide my place
     }
 
 
     @Override
     public void onFinishEditSession()
     {
-        //TODO: restore my place after the end edit session
         setMode(MODE_NORMAL);
     }
 }

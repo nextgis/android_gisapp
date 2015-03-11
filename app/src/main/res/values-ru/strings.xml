@@ -84,5 +84,6 @@
     <string name="action_edit">Редактировать</string>
     <string name="show_status_panel">Панель статуса</string>
     <string name="show_status_panel_summary">Показать панель статуса внизу экрана</string>
+    <string name="edit_layer">Edit \'%s\' layer</string>
 
 </resources>

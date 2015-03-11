@@ -46,10 +46,8 @@
         />
 
     <!-- TODO: add
-    1) time period and -done
-    2) minimal distance to pick location -done
-    3) account (or accounts?) to send current location
-    4) tracks group rules - daily, weekly, monthly etc.
+    1) account (or accounts?) to send current location
+    2) tracks group rules - daily, weekly, monthly etc.
     -->
 
 </PreferenceScreen>

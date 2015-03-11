@@ -56,6 +56,7 @@ import com.nextgis.maplib.service.TrackerService;
 import com.nextgis.maplib.util.FileUtil;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplibui.BottomToolbar;
+import com.nextgis.maplibui.api.IChooseLayerResult;
 import com.nextgis.maplibui.overlay.CurrentLocationOverlay;
 import com.nextgis.maplibui.overlay.CurrentTrackOverlay;
 import com.nextgis.maplibui.overlay.EditLayerOverlay;
@@ -77,7 +78,7 @@ import static com.nextgis.maplibui.TracksActivity.isTrackerServiceRunning;
 
 public class MainActivity
         extends ActionBarActivity
-        implements GpsEventListener
+        implements GpsEventListener, IChooseLayerResult
 {
 
     protected MapFragment     mMapFragment;
@@ -528,6 +529,17 @@ public class MainActivity
     {
         mMap.addRemoteLayer();
     }
+
+
+    @Override
+    public void onFinishChooseLayerDialog(
+            int code,
+            ILayer layer)
+    {
+        if(null != mMapFragment)
+            mMapFragment.onFinishChooseLayerDialog(code, layer);
+    }
+
 
     protected class MessageReceiver extends BroadcastReceiver
     {
