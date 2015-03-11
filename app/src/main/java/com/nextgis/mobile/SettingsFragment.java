@@ -63,9 +63,9 @@ public class SettingsFragment extends PreferenceFragment
                         SettingsConstants.KEY_PREF_LOCATION_SOURCE + "_str");
                 SettingsActivity.initializeLocationAccuracy(lpLocationAccuracy, false);
 
-                final EditTextPreference minTimeLoc = (EditTextPreference) findPreference(
+                final ListPreference minTimeLoc = (ListPreference) findPreference(
                         SettingsConstants.KEY_PREF_LOCATION_MIN_TIME);
-                final EditTextPreference minDistanceLoc = (EditTextPreference) findPreference(
+                final ListPreference minDistanceLoc = (ListPreference) findPreference(
                         SettingsConstants.KEY_PREF_LOCATION_MIN_DISTANCE);
                 SettingsActivity.initializeLocationMins(minTimeLoc, minDistanceLoc, false);
                 break;
@@ -76,9 +76,9 @@ public class SettingsFragment extends PreferenceFragment
                         SettingsConstants.KEY_PREF_TRACKS_SOURCE + "_str");
                 SettingsActivity.initializeLocationAccuracy(lpTracksAccuracy, true);
 
-                final EditTextPreference minTime = (EditTextPreference) findPreference(
+                final ListPreference minTime = (ListPreference) findPreference(
                         SettingsConstants.KEY_PREF_TRACKS_MIN_TIME);
-                final EditTextPreference minDistance = (EditTextPreference) findPreference(
+                final ListPreference minDistance = (ListPreference) findPreference(
                         SettingsConstants.KEY_PREF_TRACKS_MIN_DISTANCE);
                 SettingsActivity.initializeLocationMins(minTime, minDistance, true);
                 break;
