@@ -84,5 +84,6 @@
     <string name="action_edit">Edit</string>
     <string name="show_status_panel">Status info panel</string>
     <string name="show_status_panel_summary">Show current status info at bottom panel</string>
+    <string name="show_current_location">Show current location</string>
 
 </resources>

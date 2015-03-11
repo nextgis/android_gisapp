@@ -30,6 +30,8 @@ import android.preference.PreferenceFragment;
 import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 
+import static com.nextgis.mobile.SettingsActivity.initializeShowCurrentLocation;
+
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class SettingsFragment extends PreferenceFragment
@@ -55,6 +57,9 @@ public class SettingsFragment extends PreferenceFragment
                         SettingsConstants.KEY_PREF_MAP_PATH);
                 SettingsActivity.initializeMapPath(getActivity(), mapPath);
 
+                final ListPreference showCurrentLocation = (ListPreference) findPreference(
+                        SettingsConstantsUI.KEY_PREF_SHOW_CURRENT_LOC);
+                initializeShowCurrentLocation(getActivity(), showCurrentLocation);
                 break;
             case "location":
                 addPreferencesFromResource(R.xml.preferences_location);

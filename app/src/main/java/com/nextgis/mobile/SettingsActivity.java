@@ -101,6 +101,9 @@ public class SettingsActivity
                             SettingsConstants.KEY_PREF_MAP_PATH);
                     initializeMapPath(this, mapPath);
 
+                    final ListPreference showCurrentLocation = (ListPreference) findPreference(
+                            SettingsConstantsUI.KEY_PREF_SHOW_CURRENT_LOC);
+                    initializeShowCurrentLocation(this, showCurrentLocation);
                     break;
                 case ACTION_PREFS_LOCATION:
                     addPreferencesFromResource(R.xml.preferences_location);
@@ -363,6 +366,24 @@ public class SettingsActivity
                 }
             });
         }
+    }
+
+    public static void initializeShowCurrentLocation(Context context, final ListPreference listPreference)
+    {
+        listPreference.setSummary(listPreference.getEntry());
+
+        listPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+        {
+            @Override
+            public boolean onPreferenceChange(
+                    Preference preference,
+                    Object newValue)
+            {
+                preference.setSummary(listPreference.getEntries()[listPreference.findIndexOfValue((String) newValue)]);
+
+                return true;
+            }
+        });
     }
 
     private static class BackgroundMoveTask extends AsyncTask<Void, Void, Void>
