@@ -46,8 +46,6 @@
         />
 
     <!--TODO:
-    1) add accuracy,
-    2) CE,
-    3) time period and -done
-    4) minimal distance to pick location -done -->
+    1) CE
+    -->
 </PreferenceScreen>

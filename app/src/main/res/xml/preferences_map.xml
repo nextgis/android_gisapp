@@ -63,10 +63,7 @@
         android:negativeButtonText="@string/cancel"/>
 
     <!-- TODO:
-    1) Add checkbox show my location
-    2) Add list preference show coordinates format
-    3) Add checkbox show scale bar/zoom level
-    4) tile size
-    5) drawing canvas size in percent   -->
+    1) tile size
+    2) drawing canvas size in percent   -->
 
 </PreferenceScreen>
