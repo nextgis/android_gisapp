@@ -32,6 +32,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
@@ -232,7 +233,14 @@ public class MainActivity
 
     protected void addLocalLayer()
     {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        // ACTION_OPEN_DOCUMENT is the intent to choose a file via the system's file
+        // browser.
+        // https://developer.android.com/guide/topics/providers/document-provider.html#client
+        Intent intent;
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
+            intent = new Intent(Intent.ACTION_GET_CONTENT);
+        else
+            intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.setType("*/*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
 
