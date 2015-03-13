@@ -559,7 +559,7 @@ public class MapFragment
 
     protected void addNewGeometry(){
         //show select layer dialog if several layers, else start default or custom form
-        List<ILayer> layers = mMap.getVectorLayersByType(GeoConstants.GTPointCheck);
+        List<ILayer> layers = mMap.getVectorLayersByType(GeoConstants.GTPointCheck | GeoConstants.GTMultiPointCheck);
         if(layers.isEmpty()){
             Toast.makeText(getActivity(), getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG).show();
         }
