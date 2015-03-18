@@ -82,15 +82,16 @@ public class MapFragment
         implements MapViewEventListener, GpsEventListener, EditEventListener
 {
 
-    protected final static int mMargins     = 10;
+    private static final   int MIN_SATELLITES_IN_FIX = 3;
+    protected final static int mMargins              = 10;
     protected float mTolerancePX;
 
     protected MapView   mMap;
     protected ImageView mivZoomIn;
     protected ImageView mivZoomOut;
 
-    protected TextView  mStatusSource, mStatusAccuracy, mStatusSpeed,
-            mStatusAltitude, mStatusLatitude, mStatusLongitude;
+    protected TextView mStatusSource, mStatusAccuracy, mStatusSpeed, mStatusAltitude,
+            mStatusLatitude, mStatusLongitude;
     protected FrameLayout mStatusPanel;
 
     protected RelativeLayout   mMapRelativeLayout;
@@ -108,8 +109,9 @@ public class MapFragment
     protected static final String KEY_MODE           = "mode";
     protected boolean mShowStatusPanel;
 
-    protected final int ADD_CURRENT_LOC = 1;
+    protected final int ADD_CURRENT_LOC  = 1;
     protected final int ADD_NEW_GEOMETRY = 2;
+
 
     public MapFragment()
     {
@@ -120,15 +122,16 @@ public class MapFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        mTolerancePX = getActivity().getResources().getDisplayMetrics().density * ConstantsUI.TOLERANCE_DP;
+        mTolerancePX =
+                getActivity().getResources().getDisplayMetrics().density * ConstantsUI.TOLERANCE_DP;
     }
 
 
     protected void setMode(int mode)
     {
-        MainActivity activity = (MainActivity)getActivity();
+        MainActivity activity = (MainActivity) getActivity();
         final BottomToolbar toolbar = activity.getBottomToolbar();
-        switch (mode){
+        switch (mode) {
             case MODE_NORMAL:
                 if (null != toolbar) {
                     toolbar.setVisibility(View.GONE);
@@ -165,7 +168,7 @@ public class MapFragment
                         @Override
                         public void onClick(View view)
                         {
-                            if(null != mEditLayerOverlay) {
+                            if (null != mEditLayerOverlay) {
                                 mEditLayerOverlay.setMode(EditLayerOverlay.MODE_NONE);
                             }
                             setMode(MODE_NORMAL);
@@ -570,10 +573,12 @@ public class MapFragment
 
         if (mShowStatusPanel) {
             mStatusPanel.setVisibility(View.VISIBLE);
-            fillStatusPanel(mGpsEventSource.getLastKnownLocation());
+            fillStatusPanel(null);
+
+            if (mMode != MODE_NORMAL)
+                mStatusPanel.setVisibility(View.INVISIBLE);
         } else {
             mStatusPanel.removeAllViews();
-            mStatusPanel.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -780,15 +785,17 @@ public class MapFragment
 
     private void fillTextViews(Location location) {
         if(null == location){
-            mStatusAccuracy.setText(getString(R.string.n_a));
-            mStatusAltitude.setText(getString(R.string.n_a));
-            mStatusSpeed.setText(getString(R.string.n_a));
-            mStatusLatitude.setText(getString(R.string.n_a));
-            mStatusLongitude.setText(getString(R.string.n_a));
-        }
-        else {
+            setNATextViews();
+        } else {
             if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
-                mStatusSource.setText(location.getExtras().getInt("satellites") + "");
+                int satellites = location.getExtras().getInt("satellites");
+
+                if (satellites < MIN_SATELLITES_IN_FIX) {
+                    setNATextViews();
+                    return;
+                }
+
+                mStatusSource.setText(satellites + "");
                 mStatusSource.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_location),
                                                                       null, null, null);
             } else {
@@ -808,6 +815,16 @@ public class MapFragment
                                      " " +
                                      getString(R.string.longitude_caption_short));
         }
+    }
+
+    private void setNATextViews() {
+        mStatusSource.setCompoundDrawables(null, null, null, null);
+        mStatusSource.setText("");
+        mStatusAccuracy.setText(getString(R.string.n_a));
+        mStatusAltitude.setText(getString(R.string.n_a));
+        mStatusSpeed.setText(getString(R.string.n_a));
+        mStatusLatitude.setText(getString(R.string.n_a));
+        mStatusLongitude.setText(getString(R.string.n_a));
     }
 
     private boolean isFitOneLine() {
