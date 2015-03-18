@@ -90,6 +90,7 @@ public class MainActivity
     protected CurrentLocationOverlay mCurrentLocationOverlay;
     protected CurrentTrackOverlay    mCurrentTrackOverlay;
     protected EditLayerOverlay mEditLayerOverlay;
+    protected Toolbar mToolbar;
 
     protected final static int FILE_SELECT_CODE = 555;
 
@@ -108,9 +109,9 @@ public class MainActivity
 
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
-        toolbar.getBackground().setAlpha(128);
-        setSupportActionBar(toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        mToolbar.getBackground().setAlpha(128);
+        setSupportActionBar(mToolbar);
 
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.primary_dark));
@@ -613,5 +614,14 @@ public class MainActivity
     public EditLayerOverlay getEditLayerOverlay()
     {
         return mEditLayerOverlay;
+    }
+
+    public void setActionBarState(boolean state) {
+        mLayersFragment.setDrawerToggleEnabled(state);
+
+        if (state)
+            mToolbar.getBackground().setAlpha(128);
+        else
+            mToolbar.getBackground().setAlpha(255);
     }
 }

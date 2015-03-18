@@ -22,6 +22,7 @@
 
 package com.nextgis.mobile;
 
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
@@ -30,6 +31,8 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.internal.view.menu.ActionMenuItemView;
 import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
@@ -186,6 +189,23 @@ public class MapFragment
                                     setMode(MODE_NORMAL);
                                     break;
                                 case R.id.menu_info:
+                                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                    AttributesFragment attributesFragment = new AttributesFragment();
+                                    Fragment hide = fragmentManager.findFragmentByTag("MAP");
+                                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+                                    fragmentTransaction.add(R.id.map, attributesFragment,"ATTRIBUTES")
+                                                       .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                                       .hide(hide).addToBackStack(null).commit();
+
+                                    attributesFragment.setSelectedFeature(mEditLayerOverlay.getSelectedLayer(),
+                                            mEditLayerOverlay.getSelectedItemId());
+
+                                    if(null != mEditLayerOverlay) {
+                                        mEditLayerOverlay.setMode(EditLayerOverlay.MODE_NONE);
+                                    }
+                                    setMode(MODE_NORMAL);
+
                                     //TODO: show attributes fragment
                                     // in small displays on map fragment place,
                                     // in large displays - at right side of map.

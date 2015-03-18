@@ -255,6 +255,13 @@ public class LayersFragment
     }
 
 
+    public void setDrawerToggleEnabled(boolean state)
+    {
+        if (mDrawerToggle != null)
+            mDrawerToggle.setDrawerIndicatorEnabled(state);
+    }
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
