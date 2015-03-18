@@ -204,10 +204,10 @@ public class MapFragment
                                     attributesFragment.setSelectedFeature(mEditLayerOverlay.getSelectedLayer(),
                                             mEditLayerOverlay.getSelectedItemId());
 
-                                    if(null != mEditLayerOverlay) {
-                                        mEditLayerOverlay.setMode(EditLayerOverlay.MODE_NONE);
-                                    }
-                                    setMode(MODE_NORMAL);
+//                                    if(null != mEditLayerOverlay) {
+//                                        mEditLayerOverlay.setMode(EditLayerOverlay.MODE_NONE);
+//                                    }
+//                                    setMode(MODE_NORMAL);
 
                                     //TODO: show attributes fragment
                                     // in small displays on map fragment place,
@@ -509,6 +509,18 @@ public class MapFragment
         if(null == mEditLayerOverlay){
             MainActivity activity = (MainActivity) getActivity();
             mEditLayerOverlay = activity.getEditLayerOverlay();
+
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            AttributesFragment attributesFragment =
+                    (AttributesFragment) fragmentManager.findFragmentByTag("ATTRIBUTES");
+
+            if (attributesFragment != null) {
+                Fragment hide = fragmentManager.findFragmentByTag("MAP");
+                fragmentManager.beginTransaction().hide(hide).commit();
+                attributesFragment.setSelectedFeature(mEditLayerOverlay.getSelectedLayer(),
+                                                      mEditLayerOverlay.getSelectedItemId());
+                activity.setActionBarState(false);
+            }
         }
         setMode(mMode);
     }

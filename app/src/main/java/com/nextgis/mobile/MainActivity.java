@@ -42,6 +42,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 import com.nextgis.maplib.api.GpsEventListener;
 import com.nextgis.maplib.api.IGISApplication;
@@ -619,9 +620,14 @@ public class MainActivity
     public void setActionBarState(boolean state) {
         mLayersFragment.setDrawerToggleEnabled(state);
 
-        if (state)
+        if (state) {
             mToolbar.getBackground().setAlpha(128);
-        else
+            mToolbar.setTitle(R.string.app_name);
+            getBottomToolbar().setVisibility(View.VISIBLE);
+        } else {
             mToolbar.getBackground().setAlpha(255);
+            mToolbar.setTitle(R.string.attributes_title);
+            getBottomToolbar().setVisibility(View.INVISIBLE);
+        }
     }
 }

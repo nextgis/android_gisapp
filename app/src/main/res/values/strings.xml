@@ -88,5 +88,7 @@
     <string name="edit_layer">Edit \'%s\' layer</string>
     <string name="attributes_next">Next</string>
     <string name="attributes_prev">Previous</string>
+    <string name="attributes_title">Attributes</string>
+    <string name="attributes_last_item">No more items</string>
 
 </resources>
