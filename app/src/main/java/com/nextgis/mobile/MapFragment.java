@@ -383,21 +383,27 @@ public class MapFragment
             }
         });
 
-        final RelativeLayout.LayoutParams RightParams4 =
-                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-                                                RelativeLayout.LayoutParams.WRAP_CONTENT);
-        RightParams4.setMargins(mMargins + 5, mMargins - 5, mMargins + 5, mMargins - 5);
-        RightParams4.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        RightParams4.addRule(RelativeLayout.CENTER_IN_PARENT);//ALIGN_PARENT_TOP
-        rl.addView(mivZoomIn, RightParams4);
 
-        final RelativeLayout.LayoutParams RightParams2 =
-                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-                                                RelativeLayout.LayoutParams.WRAP_CONTENT);
-        RightParams2.setMargins(mMargins + 5, mMargins - 5, mMargins + 5, mMargins - 5);
-        RightParams2.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        RightParams2.addRule(RelativeLayout.BELOW, R.drawable.ic_plus);
-        rl.addView(mivZoomOut, RightParams2);
+        RelativeLayout buttonsRl = new RelativeLayout(context);
+
+        RelativeLayout.LayoutParams paramsButtonIn = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams paramsButtonOut = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams paramsButtonsRl = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+        paramsButtonIn.setMargins(mMargins + 5, mMargins - 5, mMargins + 5, mMargins - 5);
+        paramsButtonOut.setMargins(mMargins + 5, mMargins - 5, mMargins + 5, mMargins - 5);
+
+        paramsButtonOut.addRule(RelativeLayout.BELOW, mivZoomIn.getId());
+        paramsButtonsRl.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        paramsButtonsRl.addRule(RelativeLayout.CENTER_IN_PARENT);
+
+        buttonsRl.addView(mivZoomIn, paramsButtonIn);
+        buttonsRl.addView(mivZoomOut, paramsButtonOut);
+        rl.addView(buttonsRl, paramsButtonsRl);
+
 
         setZoomInEnabled(mMap.canZoomIn());
         setZoomOutEnabled(mMap.canZoomOut());
