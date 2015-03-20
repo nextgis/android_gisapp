@@ -106,6 +106,7 @@ public class MapFragment
     protected static final int    MODE_NORMAL        = 0;
     protected static final int    MODE_SELECT_ACTION = 1;
     protected static final int    MODE_EDIT          = 2;
+    protected static final int    MODE_HIGHLIGHT     = 3;
     protected static final String KEY_MODE           = "mode";
     protected boolean mShowStatusPanel;
 
@@ -213,10 +214,7 @@ public class MapFragment
                                     attributesFragment.setSelectedFeature(mEditLayerOverlay.getSelectedLayer(),
                                             mEditLayerOverlay.getSelectedItemId());
 
-//                                    if(null != mEditLayerOverlay) {
-//                                        mEditLayerOverlay.setMode(EditLayerOverlay.MODE_NONE);
-//                                    }
-//                                    setMode(MODE_NORMAL);
+                                    setMode(MODE_HIGHLIGHT);
                                     break;
                             }
                             return true;
@@ -228,6 +226,13 @@ public class MapFragment
                         menu.clear();
                     toolbar.inflateMenu(R.menu.select_action);
                     //distributeToolbarItems(toolbar);
+                }
+                break;
+            case MODE_HIGHLIGHT:
+                if (null != toolbar) {
+                    toolbar.setVisibility(View.GONE);
+                    mMainButton.setVisibility(View.GONE);
+                    mStatusPanel.setVisibility(View.INVISIBLE);
                 }
                 break;
         }
@@ -688,7 +693,7 @@ public class MapFragment
     @Override
     public void onLongPress(MotionEvent event)
     {
-        if(mMode == MODE_EDIT)
+        if(mMode == MODE_EDIT || mMode == MODE_HIGHLIGHT)
             return;
 
         double dMinX = event.getX() - mTolerancePX;
@@ -900,5 +905,9 @@ public class MapFragment
     public void onFinishEditSession()
     {
         setMode(MODE_NORMAL);
+    }
+
+    public void restoreBottomBar() {
+        setMode(MODE_SELECT_ACTION);
     }
 }

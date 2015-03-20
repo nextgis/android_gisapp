@@ -57,6 +57,7 @@ import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.service.TrackerService;
 import com.nextgis.maplib.util.FileUtil;
 import com.nextgis.maplib.util.GeoConstants;
+import com.nextgis.maplib.util.VectorCacheItem;
 import com.nextgis.maplibui.BottomToolbar;
 import com.nextgis.maplibui.api.IChooseLayerResult;
 import com.nextgis.maplibui.overlay.CurrentLocationOverlay;
@@ -138,7 +139,7 @@ public class MainActivity
                            .setBackgroundColor(
                                    getResources().getColor(R.color.background_material_light));
             // Set up the drawer.
-            mLayersFragment.setUp(R.id.layers, (DrawerLayout) findViewById(R.id.drawer_layout),
+            mLayersFragment.setUp(R.id.layers, drawerLayout,
                                   (MapDrawable) app.getMap());
         }
 
@@ -617,17 +618,26 @@ public class MainActivity
         return mEditLayerOverlay;
     }
 
+
     public void setActionBarState(boolean state) {
         mLayersFragment.setDrawerToggleEnabled(state);
 
         if (state) {
             mToolbar.getBackground().setAlpha(128);
             mToolbar.setTitle(R.string.app_name);
-            getBottomToolbar().setVisibility(View.VISIBLE);
         } else {
             mToolbar.getBackground().setAlpha(255);
-            mToolbar.setTitle(R.string.attributes_title);
-            getBottomToolbar().setVisibility(View.INVISIBLE);
+            mToolbar.setTitle(R.string.action_attributes);
         }
+    }
+
+
+    public void restoreBottomBar() {
+        mMapFragment.restoreBottomBar();
+    }
+
+
+    public void setEditFeature(VectorCacheItem item) {
+        mEditLayerOverlay.setFeature(mEditLayerOverlay.getSelectedLayer(), item);
     }
 }

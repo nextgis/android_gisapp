@@ -54,7 +54,7 @@ public class AttributesFragment extends Fragment
     private int                   mItemPosition;
     private VectorLayer           mLayer;
     private List<VectorCacheItem> mVectorCacheItems;
-    private boolean mIsTablet;
+    private boolean mIsTablet, mIsReorient = false;
 
 
     @Override
@@ -107,10 +107,14 @@ public class AttributesFragment extends Fragment
 
 
     @Override
-    public void onDestroy()
+    public void onDestroyView()
     {
-        ((MainActivity) getActivity()).setActionBarState(true);
-        super.onDestroy();
+        if (!mIsReorient) {
+            ((MainActivity) getActivity()).setActionBarState(true);
+            ((MainActivity) getActivity()).restoreBottomBar();
+        }
+
+        super.onDestroyView();
     }
 
 
@@ -215,8 +219,10 @@ public class AttributesFragment extends Fragment
         }
 
         if (hasItem) {
-            mItemId = mVectorCacheItems.get(mItemPosition).getId();
+            VectorCacheItem item = mVectorCacheItems.get(mItemPosition);
+            mItemId = item.getId();
             setAttributes();
+            ((MainActivity) getActivity()).setEditFeature(item);
         } else
             Toast.makeText(getActivity(), R.string.attributes_last_item, Toast.LENGTH_SHORT).show();
     }
@@ -228,6 +234,7 @@ public class AttributesFragment extends Fragment
         super.onSaveInstanceState(outState);
         outState.putLong(KEY_ITEM_ID, mItemId);
         outState.putInt(KEY_ITEM_POSITION, mItemPosition);
+        mIsReorient = true;
     }
 
 
