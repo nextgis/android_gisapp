@@ -86,5 +86,9 @@
     <string name="show_status_panel_summary">Show current status info at bottom panel</string>
     <string name="show_current_location">Show current location</string>
     <string name="edit_layer">Edit \'%s\' layer</string>
+    <string name="attributes_next">Next</string>
+    <string name="attributes_prev">Previous</string>
+    <string name="attributes_title">Attributes</string>
+    <string name="attributes_last_item">No more items</string>
 
 </resources>

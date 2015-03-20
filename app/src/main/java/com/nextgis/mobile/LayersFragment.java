@@ -255,6 +255,19 @@ public class LayersFragment
     }
 
 
+    public void setDrawerToggleEnabled(boolean state)
+    {
+        if (mDrawerToggle != null) {
+            mDrawerToggle.setDrawerIndicatorEnabled(state);
+
+            if (state)
+                mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            else
+                mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        }
+    }
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {

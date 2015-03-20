@@ -22,6 +22,7 @@
 
 package com.nextgis.mobile;
 
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
@@ -30,6 +31,8 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.internal.view.menu.ActionMenuItemView;
 import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
@@ -79,15 +82,16 @@ public class MapFragment
         implements MapViewEventListener, GpsEventListener, EditEventListener
 {
 
-    protected final static int mMargins     = 10;
+    private static final   int MIN_SATELLITES_IN_FIX = 3;
+    protected final static int mMargins              = 10;
     protected float mTolerancePX;
 
     protected MapView   mMap;
     protected ImageView mivZoomIn;
     protected ImageView mivZoomOut;
 
-    protected TextView  mStatusSource, mStatusAccuracy, mStatusSpeed,
-            mStatusAltitude, mStatusLatitude, mStatusLongitude;
+    protected TextView mStatusSource, mStatusAccuracy, mStatusSpeed, mStatusAltitude,
+            mStatusLatitude, mStatusLongitude;
     protected FrameLayout mStatusPanel;
 
     protected RelativeLayout   mMapRelativeLayout;
@@ -105,8 +109,9 @@ public class MapFragment
     protected static final String KEY_MODE           = "mode";
     protected boolean mShowStatusPanel;
 
-    protected final int ADD_CURRENT_LOC = 1;
+    protected final int ADD_CURRENT_LOC  = 1;
     protected final int ADD_NEW_GEOMETRY = 2;
+
 
     public MapFragment()
     {
@@ -117,15 +122,16 @@ public class MapFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        mTolerancePX = getActivity().getResources().getDisplayMetrics().density * ConstantsUI.TOLERANCE_DP;
+        mTolerancePX =
+                getActivity().getResources().getDisplayMetrics().density * ConstantsUI.TOLERANCE_DP;
     }
 
 
     protected void setMode(int mode)
     {
-        MainActivity activity = (MainActivity)getActivity();
+        MainActivity activity = (MainActivity) getActivity();
         final BottomToolbar toolbar = activity.getBottomToolbar();
-        switch (mode){
+        switch (mode) {
             case MODE_NORMAL:
                 if (null != toolbar) {
                     toolbar.setVisibility(View.GONE);
@@ -162,7 +168,7 @@ public class MapFragment
                         @Override
                         public void onClick(View view)
                         {
-                            if(null != mEditLayerOverlay) {
+                            if (null != mEditLayerOverlay) {
                                 mEditLayerOverlay.setMode(EditLayerOverlay.MODE_NONE);
                             }
                             setMode(MODE_NORMAL);
@@ -186,6 +192,23 @@ public class MapFragment
                                     setMode(MODE_NORMAL);
                                     break;
                                 case R.id.menu_info:
+                                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                    AttributesFragment attributesFragment = new AttributesFragment();
+                                    Fragment hide = fragmentManager.findFragmentByTag("MAP");
+                                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+                                    fragmentTransaction.add(R.id.map, attributesFragment,"ATTRIBUTES")
+                                                       .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                                       .hide(hide).addToBackStack(null).commit();
+
+                                    attributesFragment.setSelectedFeature(mEditLayerOverlay.getSelectedLayer(),
+                                            mEditLayerOverlay.getSelectedItemId());
+
+//                                    if(null != mEditLayerOverlay) {
+//                                        mEditLayerOverlay.setMode(EditLayerOverlay.MODE_NONE);
+//                                    }
+//                                    setMode(MODE_NORMAL);
+
                                     //TODO: show attributes fragment
                                     // in small displays on map fragment place,
                                     // in large displays - at right side of map.
@@ -360,21 +383,27 @@ public class MapFragment
             }
         });
 
-        final RelativeLayout.LayoutParams RightParams4 =
-                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-                                                RelativeLayout.LayoutParams.WRAP_CONTENT);
-        RightParams4.setMargins(mMargins + 5, mMargins - 5, mMargins + 5, mMargins - 5);
-        RightParams4.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        RightParams4.addRule(RelativeLayout.CENTER_IN_PARENT);//ALIGN_PARENT_TOP
-        rl.addView(mivZoomIn, RightParams4);
 
-        final RelativeLayout.LayoutParams RightParams2 =
-                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-                                                RelativeLayout.LayoutParams.WRAP_CONTENT);
-        RightParams2.setMargins(mMargins + 5, mMargins - 5, mMargins + 5, mMargins - 5);
-        RightParams2.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        RightParams2.addRule(RelativeLayout.BELOW, R.drawable.ic_plus);
-        rl.addView(mivZoomOut, RightParams2);
+        RelativeLayout buttonsRl = new RelativeLayout(context);
+
+        RelativeLayout.LayoutParams paramsButtonIn = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams paramsButtonOut = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams paramsButtonsRl = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+        paramsButtonIn.setMargins(mMargins + 5, mMargins - 5, mMargins + 5, mMargins - 5);
+        paramsButtonOut.setMargins(mMargins + 5, mMargins - 5, mMargins + 5, mMargins - 5);
+
+        paramsButtonOut.addRule(RelativeLayout.BELOW, mivZoomIn.getId());
+        paramsButtonsRl.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        paramsButtonsRl.addRule(RelativeLayout.CENTER_IN_PARENT);
+
+        buttonsRl.addView(mivZoomIn, paramsButtonIn);
+        buttonsRl.addView(mivZoomOut, paramsButtonOut);
+        rl.addView(buttonsRl, paramsButtonsRl);
+
 
         setZoomInEnabled(mMap.canZoomIn());
         setZoomOutEnabled(mMap.canZoomOut());
@@ -486,6 +515,18 @@ public class MapFragment
         if(null == mEditLayerOverlay){
             MainActivity activity = (MainActivity) getActivity();
             mEditLayerOverlay = activity.getEditLayerOverlay();
+
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            AttributesFragment attributesFragment =
+                    (AttributesFragment) fragmentManager.findFragmentByTag("ATTRIBUTES");
+
+            if (attributesFragment != null) {
+                Fragment hide = fragmentManager.findFragmentByTag("MAP");
+                fragmentManager.beginTransaction().hide(hide).commit();
+                attributesFragment.setSelectedFeature(mEditLayerOverlay.getSelectedLayer(),
+                                                      mEditLayerOverlay.getSelectedItemId());
+                activity.setActionBarState(false);
+            }
         }
         setMode(mMode);
     }
@@ -550,10 +591,12 @@ public class MapFragment
 
         if (mShowStatusPanel) {
             mStatusPanel.setVisibility(View.VISIBLE);
-            fillStatusPanel(mGpsEventSource.getLastKnownLocation());
+            fillStatusPanel(null);
+
+            if (mMode != MODE_NORMAL)
+                mStatusPanel.setVisibility(View.INVISIBLE);
         } else {
             mStatusPanel.removeAllViews();
-            mStatusPanel.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -760,15 +803,17 @@ public class MapFragment
 
     private void fillTextViews(Location location) {
         if(null == location){
-            mStatusAccuracy.setText(getString(R.string.n_a));
-            mStatusAltitude.setText(getString(R.string.n_a));
-            mStatusSpeed.setText(getString(R.string.n_a));
-            mStatusLatitude.setText(getString(R.string.n_a));
-            mStatusLongitude.setText(getString(R.string.n_a));
-        }
-        else {
+            setNATextViews();
+        } else {
             if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
-                mStatusSource.setText(location.getExtras().getInt("satellites") + "");
+                int satellites = location.getExtras().getInt("satellites");
+
+                if (satellites < MIN_SATELLITES_IN_FIX) {
+                    setNATextViews();
+                    return;
+                }
+
+                mStatusSource.setText(satellites + "");
                 mStatusSource.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_location),
                                                                       null, null, null);
             } else {
@@ -788,6 +833,16 @@ public class MapFragment
                                      " " +
                                      getString(R.string.longitude_caption_short));
         }
+    }
+
+    private void setNATextViews() {
+        mStatusSource.setCompoundDrawables(null, null, null, null);
+        mStatusSource.setText("");
+        mStatusAccuracy.setText(getString(R.string.n_a));
+        mStatusAltitude.setText(getString(R.string.n_a));
+        mStatusSpeed.setText(getString(R.string.n_a));
+        mStatusLatitude.setText(getString(R.string.n_a));
+        mStatusLongitude.setText(getString(R.string.n_a));
     }
 
     private boolean isFitOneLine() {
