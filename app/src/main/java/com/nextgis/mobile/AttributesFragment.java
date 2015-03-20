@@ -33,6 +33,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,14 +46,15 @@ import java.util.List;
 public class AttributesFragment extends Fragment
         implements View.OnClickListener
 {
-    protected static final String KEY_ITEM_ID          = "item_id";
-    protected static final String KEY_ITEM_POSITION    = "item_pos";
+    protected static final String KEY_ITEM_ID       = "item_id";
+    protected static final String KEY_ITEM_POSITION = "item_pos";
 
     private LinearLayout          mAttributes;
     private long                  mItemId;
     private int                   mItemPosition;
     private VectorLayer           mLayer;
     private List<VectorCacheItem> mVectorCacheItems;
+    private boolean mIsTablet, mIsReorient = false;
 
 
     @Override
@@ -61,15 +63,21 @@ public class AttributesFragment extends Fragment
             ViewGroup container,
             Bundle savedInstanceState)
     {
-        ((MainActivity) getActivity()).setActionBarState(false);
-        setHasOptionsMenu(true);
+        ((MainActivity) getActivity()).setActionBarState(isTablet());
+        setHasOptionsMenu(!isTablet());
 
-        View view = inflater.inflate(R.layout.fragment_attributes, container, false);
+        int resId = isTablet() ? R.layout.fragment_attributes_tab : R.layout.fragment_attributes;
+        View view = inflater.inflate(resId, container, false);
         mAttributes = (LinearLayout) view.findViewById(R.id.ll_attributes);
         setAttributes();
 
         view.findViewById(R.id.btn_attr_next).setOnClickListener(this);
         view.findViewById(R.id.btn_attr_previous).setOnClickListener(this);
+
+        ImageButton ibClose = (ImageButton) view.findViewById(R.id.btn_attr_close);
+
+        if (ibClose != null)
+            ibClose.setOnClickListener(this);
 
         return view;
     }
@@ -99,10 +107,14 @@ public class AttributesFragment extends Fragment
 
 
     @Override
-    public void onDestroy()
+    public void onDestroyView()
     {
-        ((MainActivity) getActivity()).setActionBarState(true);
-        super.onDestroy();
+        if (!mIsReorient) {
+            ((MainActivity) getActivity()).setActionBarState(true);
+            ((MainActivity) getActivity()).restoreBottomBar();
+        }
+
+        super.onDestroyView();
     }
 
 
@@ -177,26 +189,40 @@ public class AttributesFragment extends Fragment
     @Override
     public void onClick(View v)
     {
-        boolean hasItem = false;
-
         switch (v.getId()) {
             case R.id.btn_attr_next:
-                if (mItemPosition < mVectorCacheItems.size() - 1) {
-                    mItemPosition++;
-                    hasItem = true;
-                }
+                selectItem(true);
                 break;
             case R.id.btn_attr_previous:
-                if (mItemPosition > 0) {
-                    mItemPosition--;
-                    hasItem = true;
-                }
+                selectItem(false);
                 break;
+            case R.id.btn_attr_close:
+                getActivity().getSupportFragmentManager().popBackStack();
+                break;
+        }
+    }
+
+
+    private void selectItem(boolean isNext) {
+        boolean hasItem = false;
+
+        if(isNext) {
+            if (mItemPosition < mVectorCacheItems.size() - 1) {
+                mItemPosition++;
+                hasItem = true;
+            }
+        } else {
+            if (mItemPosition > 0) {
+                mItemPosition--;
+                hasItem = true;
+            }
         }
 
         if (hasItem) {
-            mItemId = mVectorCacheItems.get(mItemPosition).getId();
+            VectorCacheItem item = mVectorCacheItems.get(mItemPosition);
+            mItemId = item.getId();
             setAttributes();
+            ((MainActivity) getActivity()).setEditFeature(item);
         } else
             Toast.makeText(getActivity(), R.string.attributes_last_item, Toast.LENGTH_SHORT).show();
     }
@@ -208,6 +234,7 @@ public class AttributesFragment extends Fragment
         super.onSaveInstanceState(outState);
         outState.putLong(KEY_ITEM_ID, mItemId);
         outState.putInt(KEY_ITEM_POSITION, mItemPosition);
+        mIsReorient = true;
     }
 
 
@@ -224,5 +251,17 @@ public class AttributesFragment extends Fragment
         }
 
         setAttributes();
+    }
+
+
+    public void setTablet(boolean tablet)
+    {
+        mIsTablet = tablet;
+    }
+
+
+    public boolean isTablet()
+    {
+        return mIsTablet;
     }
 }
