@@ -192,14 +192,23 @@ public class MapFragment
                                     setMode(MODE_NORMAL);
                                     break;
                                 case R.id.menu_info:
+                                    boolean tabletSize = getResources().getBoolean(R.bool.isTablet);
+
                                     FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                                     AttributesFragment attributesFragment = new AttributesFragment();
-                                    Fragment hide = fragmentManager.findFragmentByTag("MAP");
+                                    attributesFragment.setTablet(tabletSize);
                                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                    int container = R.id.map;
 
-                                    fragmentTransaction.add(R.id.map, attributesFragment,"ATTRIBUTES")
+                                    if (!attributesFragment.isTablet()) {
+                                        Fragment hide = fragmentManager.findFragmentByTag("MAP");
+                                        fragmentTransaction.hide(hide);
+                                    } else
+                                        container = R.id.fl_attributes;
+
+                                    fragmentTransaction.add(container, attributesFragment,"ATTRIBUTES")
                                                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                                       .hide(hide).addToBackStack(null).commit();
+                                                       .addToBackStack(null).commit();
 
                                     attributesFragment.setSelectedFeature(mEditLayerOverlay.getSelectedLayer(),
                                             mEditLayerOverlay.getSelectedItemId());
@@ -208,11 +217,6 @@ public class MapFragment
 //                                        mEditLayerOverlay.setMode(EditLayerOverlay.MODE_NONE);
 //                                    }
 //                                    setMode(MODE_NORMAL);
-
-                                    //TODO: show attributes fragment
-                                    // in small displays on map fragment place,
-                                    // in large displays - at right side of map.
-                                    // Also need the next and prev buttons to navigate throw records
                                     break;
                             }
                             return true;
@@ -521,11 +525,17 @@ public class MapFragment
                     (AttributesFragment) fragmentManager.findFragmentByTag("ATTRIBUTES");
 
             if (attributesFragment != null) {
-                Fragment hide = fragmentManager.findFragmentByTag("MAP");
-                fragmentManager.beginTransaction().hide(hide).commit();
+                boolean tabletSize = getResources().getBoolean(R.bool.isTablet);
+                attributesFragment.setTablet(tabletSize);
+
+                if (!attributesFragment.isTablet()) {
+                    Fragment hide = fragmentManager.findFragmentByTag("MAP");
+                    fragmentManager.beginTransaction().hide(hide).commit();
+                }
+
                 attributesFragment.setSelectedFeature(mEditLayerOverlay.getSelectedLayer(),
                                                       mEditLayerOverlay.getSelectedItemId());
-                activity.setActionBarState(false);
+                activity.setActionBarState(attributesFragment.isTablet());
             }
         }
         setMode(mMode);

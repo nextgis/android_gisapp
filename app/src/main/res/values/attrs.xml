@@ -21,6 +21,7 @@
   -->
 
 <resources>
+    <bool name="isTablet">false</bool>
     <declare-styleable name="FloatingActionButton">
         <attr name="fab_colorPressed" format="color"/>
         <attr name="fab_colorDisabled" format="color"/>
