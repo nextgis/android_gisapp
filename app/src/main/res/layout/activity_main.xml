@@ -39,16 +39,13 @@
         android:layout_height="match_parent"
         >
 
-        <FrameLayout
+        <fragment
             android:id="@+id/map"
+            android:name="com.nextgis.mobile.MapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            >
-
-            <!-- We use a Toolbar so that our drawer can be displayed
-                 in front of the action bar -->
-
-        </FrameLayout>
+            android:fitsSystemWindows="true"
+            />
 
         <include
             layout="@layout/actionbar"/>

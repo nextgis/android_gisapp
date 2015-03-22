@@ -43,6 +43,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import com.nextgis.maplib.api.GpsEventListener;
 import com.nextgis.maplib.api.IGISApplication;
@@ -86,12 +87,7 @@ public class MainActivity
 
     protected MapFragment     mMapFragment;
     protected LayersFragment  mLayersFragment;
-    protected MapViewOverlays mMap;
     protected MessageReceiver mMessageReceiver;
-    protected GpsEventSource  gpsEventSource;
-    protected CurrentLocationOverlay mCurrentLocationOverlay;
-    protected CurrentTrackOverlay    mCurrentTrackOverlay;
-    protected EditLayerOverlay mEditLayerOverlay;
     protected Toolbar mToolbar;
 
     protected final static int FILE_SELECT_CODE = 555;
@@ -105,32 +101,20 @@ public class MainActivity
         // initialize the default settings
         PreferenceManager.setDefaultValues(this, R.xml.preferences_general, false);
 
-        GISApplication app = (GISApplication) getApplication();
-        mMap = new MapViewOverlays(this, (MapDrawable) app.getMap());
-        mMap.setId(777);
-
         setContentView(R.layout.activity_main);
+
 
         mToolbar = (Toolbar) findViewById(R.id.main_toolbar);
         mToolbar.getBackground().setAlpha(128);
         setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.primary_dark));
 
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        mMapFragment = (MapFragment) getSupportFragmentManager().findFragmentByTag("MAP");
+        mMapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
-        if (mMapFragment == null) {
-            mMapFragment = new MapFragment();
-            if (mMapFragment.onInit(mMap)) {
-                fragmentTransaction.add(R.id.map, mMapFragment, "MAP").commit();
-            }
-        } else {
-            mMapFragment.onInit(mMap);
-        }
-
-        getSupportFragmentManager().executePendingTransactions();
+        GISApplication app = (GISApplication) getApplication();
 
         mLayersFragment =
                 (LayersFragment) getSupportFragmentManager().findFragmentById(R.id.layers);
@@ -144,27 +128,13 @@ public class MainActivity
         }
 
         mMessageReceiver = new MessageReceiver();
-
-        gpsEventSource = ((IGISApplication) getApplication()).getGpsEventSource();
-        mCurrentLocationOverlay = new CurrentLocationOverlay(this, mMap);
-        mCurrentLocationOverlay.setStandingMarker(R.drawable.ic_location_standing);
-        mCurrentLocationOverlay.setMovingMarker(R.drawable.ic_location_moving);
-
-        mCurrentTrackOverlay = new CurrentTrackOverlay(this, mMap);
-
-        //add edit_point layer overlay
-        mEditLayerOverlay = new EditLayerOverlay(this, mMap);
-
-        mMap.addOverlay(mCurrentTrackOverlay);
-        mMap.addOverlay(mCurrentLocationOverlay);
-        mMap.addOverlay(mEditLayerOverlay);
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
-        if (!mLayersFragment.isDrawerOpen()) {
+        if (null != mLayersFragment && !mLayersFragment.isDrawerOpen()) {
             // Only show items in the action bar relevant to this screen
             // if the drawer is not showing. Otherwise, let the drawer
             // decide what to show in the action bar.
@@ -274,13 +244,16 @@ public class MainActivity
                     //check the file type from extension
                     String fileName = FileUtil.getFileNameByUri(this, uri, "");
                     if(fileName.endsWith("zip") || fileName.endsWith("ZIP")){ //create local tile layer
-                        mMap.addLocalTMSLayer(uri);
+                        if(null != mMapFragment)
+                            mMapFragment.addLocalTMSLayer(uri);
                     }
                     else if(fileName.endsWith("geojson") || fileName.endsWith("GEOJSON")){ //create local vector layer
-                        mMap.addLocalVectorLayer(uri);
+                        if(null != mMapFragment)
+                            mMapFragment.addLocalVectorLayer(uri);
                     }
                     else if(fileName.endsWith("ngfp") || fileName.endsWith("NGFP")){ //create local vector layer with form
-                        mMap.addLocalVectorLayerWithForm(uri);
+                        if(null != mMapFragment)
+                            mMapFragment.addLocalVectorLayerWithForm(uri);
                     }
                     else{
                         Toast.makeText(this, getString(R.string.error_file_unsupported), Toast.LENGTH_SHORT).show();
@@ -291,18 +264,10 @@ public class MainActivity
     }
 
 
-    private void locateCurrentPosition()
+    protected void locateCurrentPosition()
     {
-        Location location = gpsEventSource.getLastKnownLocation();
-        if(location != null) {
-            GeoPoint center = new GeoPoint(location.getLongitude(), location.getLatitude());
-            center.setCRS(GeoConstants.CRS_WGS84);
-            if(center.project(GeoConstants.CRS_WEB_MERCATOR)) {
-                mMap.panTo(center);
-                //.setZoomAndCenter(mMap.getZoomLevel(), center);
-                //mMap.invalidate();
-            }
-        }
+        if(null != mMapFragment)
+            mMapFragment.locateCurrentPosition();
     }
 
     void testSync(){
@@ -532,13 +497,15 @@ public class MainActivity
 
     protected void addNGWLayer()
     {
-        mMap.addNGWLayer();
+        if(null != mMapFragment)
+            mMapFragment.addNGWLayer();
     }
 
 
     protected void addRemoteLayer()
     {
-        mMap.addRemoteLayer();
+        if(null != mMapFragment)
+            mMapFragment.addRemoteLayer();
     }
 
 
@@ -571,17 +538,13 @@ public class MainActivity
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConstantsUI.MESSAGE_INTENT);
         registerReceiver(mMessageReceiver, intentFilter);
-        gpsEventSource.addListener(this);
-        mCurrentLocationOverlay.updateMode(PreferenceManager.getDefaultSharedPreferences(this).getString(
-                SettingsConstantsUI.KEY_PREF_SHOW_CURRENT_LOC, "3"));
-        mCurrentLocationOverlay.startShowingCurrentLocation();
     }
 
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu)
     {
-        if (!mLayersFragment.isDrawerOpen()) {
+        if (null != mLayersFragment && !mLayersFragment.isDrawerOpen()) {
             int title = isTrackerServiceRunning(this) ? R.string.track_stop : R.string.track_start;
             menu.findItem(R.id.menu_track).setTitle(title);
         }
@@ -593,8 +556,6 @@ public class MainActivity
     @Override
     protected void onPause()
     {
-        mCurrentLocationOverlay.stopShowingCurrentLocation();
-        gpsEventSource.removeListener(this);
         unregisterReceiver(mMessageReceiver);
         super.onPause();
     }
@@ -611,13 +572,6 @@ public class MainActivity
     {
 
     }
-
-
-    public EditLayerOverlay getEditLayerOverlay()
-    {
-        return mEditLayerOverlay;
-    }
-
 
     public void setActionBarState(boolean state) {
         mLayersFragment.setDrawerToggleEnabled(state);
@@ -638,6 +592,7 @@ public class MainActivity
 
 
     public void setEditFeature(VectorCacheItem item) {
-        mEditLayerOverlay.setFeature(mEditLayerOverlay.getSelectedLayer(), item);
+        if(null != mMapFragment)
+            mMapFragment.setEditFeature(item);
     }
 }

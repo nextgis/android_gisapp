@@ -27,6 +27,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -58,13 +59,17 @@ import com.nextgis.maplib.api.ILayerView;
 import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.location.GpsEventSource;
+import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplib.util.LocationUtil;
 import com.nextgis.maplib.util.VectorCacheItem;
 import com.nextgis.maplibui.BottomToolbar;
+import com.nextgis.maplibui.MapViewOverlays;
 import com.nextgis.maplibui.dialog.ChooseLayerDialog;
+import com.nextgis.maplibui.overlay.CurrentLocationOverlay;
+import com.nextgis.maplibui.overlay.CurrentTrackOverlay;
 import com.nextgis.maplibui.overlay.EditLayerOverlay;
 import com.nextgis.maplibui.MapView;
 import com.nextgis.maplibui.api.EditEventListener;
@@ -86,7 +91,7 @@ public class MapFragment
     protected final static int mMargins              = 10;
     protected float mTolerancePX;
 
-    protected MapView   mMap;
+    protected MapViewOverlays mMap;
     protected ImageView mivZoomIn;
     protected ImageView mivZoomOut;
 
@@ -98,6 +103,8 @@ public class MapFragment
     protected GpsEventSource   mGpsEventSource;
     protected View             mMainButton;
     protected int              mMode;
+    protected CurrentLocationOverlay mCurrentLocationOverlay;
+    protected CurrentTrackOverlay    mCurrentTrackOverlay;
     protected EditLayerOverlay mEditLayerOverlay;
 
     protected int mCoordinatesFormat;
@@ -112,12 +119,6 @@ public class MapFragment
 
     protected final int ADD_CURRENT_LOC  = 1;
     protected final int ADD_NEW_GEOMETRY = 2;
-
-
-    public MapFragment()
-    {
-    }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -137,14 +138,16 @@ public class MapFragment
                 if (null != toolbar) {
                     toolbar.setVisibility(View.GONE);
                 }
-                mMainButton.setVisibility(View.VISIBLE);
+                if(null != mMainButton)
+                    mMainButton.setVisibility(View.VISIBLE);
 
                 if (mShowStatusPanel)
                     mStatusPanel.setVisibility(View.VISIBLE);
                 break;
             case MODE_EDIT:
                 if (null != toolbar) {
-                    mMainButton.setVisibility(View.GONE);
+                    if(null != mMainButton)
+                        mMainButton.setVisibility(View.GONE);
                     mStatusPanel.setVisibility(View.INVISIBLE);
                     toolbar.setVisibility(View.VISIBLE);
                     toolbar.getBackground().setAlpha(128);
@@ -161,7 +164,8 @@ public class MapFragment
             case MODE_SELECT_ACTION:
                 //hide FAB, show bottom toolbar
                 if (null != toolbar) {
-                    mMainButton.setVisibility(View.GONE);
+                    if(null != mMainButton)
+                        mMainButton.setVisibility(View.GONE);
                     mStatusPanel.setVisibility(View.INVISIBLE);
                     toolbar.setNavigationIcon(R.drawable.ic_action_cancel);
                     toolbar.setNavigationOnClickListener(new View.OnClickListener()
@@ -202,7 +206,7 @@ public class MapFragment
                                     int container = R.id.map;
 
                                     if (!attributesFragment.isTablet()) {
-                                        Fragment hide = fragmentManager.findFragmentByTag("MAP");
+                                        Fragment hide = fragmentManager.findFragmentById(R.id.map);
                                         fragmentTransaction.hide(hide);
                                     } else
                                         container = R.id.fl_attributes;
@@ -231,7 +235,8 @@ public class MapFragment
             case MODE_HIGHLIGHT:
                 if (null != toolbar) {
                     toolbar.setVisibility(View.GONE);
-                    mMainButton.setVisibility(View.GONE);
+                    if(null != mMainButton)
+                        mMainButton.setVisibility(View.GONE);
                     mStatusPanel.setVisibility(View.INVISIBLE);
                 }
                 break;
@@ -285,18 +290,34 @@ public class MapFragment
             Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
-        FrameLayout layout = (FrameLayout) view.findViewById(R.id.mapholder);
+        GISApplication app = (GISApplication) getActivity().getApplication();
+
+        mMap = new MapViewOverlays(getActivity(), (MapDrawable) app.getMap());
+        mMap.setId(777);
+
+        mGpsEventSource = app.getGpsEventSource();
+        mCurrentLocationOverlay = new CurrentLocationOverlay(getActivity(), mMap);
+        mCurrentLocationOverlay.setStandingMarker(R.drawable.ic_location_standing);
+        mCurrentLocationOverlay.setMovingMarker(R.drawable.ic_location_moving);
+
+        mCurrentTrackOverlay = new CurrentTrackOverlay(getActivity(), mMap);
+
+        //add edit_point layer overlay
+        mEditLayerOverlay = new EditLayerOverlay(getActivity(), mMap);
+
+        mMap.addOverlay(mCurrentTrackOverlay);
+        mMap.addOverlay(mCurrentLocationOverlay);
+        mMap.addOverlay(mEditLayerOverlay);
+
 
         //search relative view of map, if not found - add it
-        if (mMap != null) {
-            mMapRelativeLayout = (RelativeLayout) layout.findViewById(R.id.maprl);
-            if (mMapRelativeLayout != null) {
-                mMapRelativeLayout.addView(mMap, 0, new RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.MATCH_PARENT,
-                        RelativeLayout.LayoutParams.MATCH_PARENT));
-            }
-            mMap.invalidate();
+        mMapRelativeLayout = (RelativeLayout) view.findViewById(R.id.maprl);
+        if (mMapRelativeLayout != null) {
+            mMapRelativeLayout.addView(mMap, 0, new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.MATCH_PARENT,
+                    RelativeLayout.LayoutParams.MATCH_PARENT));
         }
+        mMap.invalidate();
 
         mMainButton = view.findViewById(R.id.multiple_actions);
 
@@ -307,7 +328,8 @@ public class MapFragment
                 @Override
                 public void onClick(View v)
                 {
-                    addCurrentLocation();
+                    if(addCurrentLocation.isEnabled())
+                        addCurrentLocation();
                 }
             });
         }
@@ -319,7 +341,8 @@ public class MapFragment
                 @Override
                 public void onClick(View v)
                 {
-                    addNewGeometry();
+                    if(addNewGeometry.isEnabled())
+                        addNewGeometry();
                 }
             });
         }
@@ -331,14 +354,13 @@ public class MapFragment
                 @Override
                 public void onClick(View v)
                 {
-                    addGeometryByWalk();
+                    if(addGeometryByWalk.isEnabled())
+                        addGeometryByWalk();
                 }
             });
         }
 
-        mGpsEventSource = ((IGISApplication) getActivity().getApplication()).getGpsEventSource();
         mStatusPanel = (FrameLayout) view.findViewById(R.id.fl_status_panel);
-
         return view;
     }
 
@@ -359,6 +381,8 @@ public class MapFragment
 
     protected void removeMapButtons(RelativeLayout rl)
     {
+        if(null == rl)
+            return;
         rl.removeViewInLayout(rl.findViewById(R.drawable.ic_minus));
         rl.removeViewInLayout(rl.findViewById(R.drawable.ic_plus));
         mivZoomIn = null;
@@ -368,54 +392,57 @@ public class MapFragment
 
     protected void addMapButtons(Context context, RelativeLayout rl)
     {
-        mivZoomIn = new ImageView(context);
-        mivZoomIn.setImageResource(R.drawable.ic_plus);
-        mivZoomIn.setId(R.drawable.ic_plus);
+        if(null == rl)
+            return;
+        if(null != mMap) {
+            mivZoomIn = new ImageView(context);
+            mivZoomIn.setImageResource(R.drawable.ic_plus);
+            mivZoomIn.setId(R.drawable.ic_plus);
 
-        mivZoomOut = new ImageView(context);
-        mivZoomOut.setImageResource(R.drawable.ic_minus);
-        mivZoomOut.setId(R.drawable.ic_minus);
+            mivZoomOut = new ImageView(context);
+            mivZoomOut.setImageResource(R.drawable.ic_minus);
+            mivZoomOut.setId(R.drawable.ic_minus);
 
-        mivZoomIn.setOnClickListener(new OnClickListener()
-        {
-            public void onClick(View v)
+            mivZoomIn.setOnClickListener(new OnClickListener()
             {
-                mMap.zoomIn();
-            }
-        });
+                public void onClick(View v)
+                {
+                    mMap.zoomIn();
+                }
+            });
 
-        mivZoomOut.setOnClickListener(new OnClickListener()
-        {
-            public void onClick(View v)
+            mivZoomOut.setOnClickListener(new OnClickListener()
             {
-                mMap.zoomOut();
-            }
-        });
+                public void onClick(View v)
+                {
+                     mMap.zoomOut();
+                }
+            });
 
 
-        RelativeLayout buttonsRl = new RelativeLayout(context);
+            RelativeLayout buttonsRl = new RelativeLayout(context);
 
-        RelativeLayout.LayoutParams paramsButtonIn = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        RelativeLayout.LayoutParams paramsButtonOut = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        RelativeLayout.LayoutParams paramsButtonsRl = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            RelativeLayout.LayoutParams paramsButtonIn = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            RelativeLayout.LayoutParams paramsButtonOut = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            RelativeLayout.LayoutParams paramsButtonsRl = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 
-        paramsButtonIn.setMargins(mMargins + 5, mMargins - 5, mMargins + 5, mMargins - 5);
-        paramsButtonOut.setMargins(mMargins + 5, mMargins - 5, mMargins + 5, mMargins - 5);
+            paramsButtonIn.setMargins(mMargins + 5, mMargins - 5, mMargins + 5, mMargins - 5);
+            paramsButtonOut.setMargins(mMargins + 5, mMargins - 5, mMargins + 5, mMargins - 5);
 
-        paramsButtonOut.addRule(RelativeLayout.BELOW, mivZoomIn.getId());
-        paramsButtonsRl.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        paramsButtonsRl.addRule(RelativeLayout.CENTER_IN_PARENT);
+            paramsButtonOut.addRule(RelativeLayout.BELOW, mivZoomIn.getId());
+            paramsButtonsRl.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            paramsButtonsRl.addRule(RelativeLayout.CENTER_IN_PARENT);
 
-        buttonsRl.addView(mivZoomIn, paramsButtonIn);
-        buttonsRl.addView(mivZoomOut, paramsButtonOut);
-        rl.addView(buttonsRl, paramsButtonsRl);
+            buttonsRl.addView(mivZoomIn, paramsButtonIn);
+            buttonsRl.addView(mivZoomOut, paramsButtonOut);
+            rl.addView(buttonsRl, paramsButtonsRl);
 
-
-        setZoomInEnabled(mMap.canZoomIn());
-        setZoomOutEnabled(mMap.canZoomOut());
+            setZoomInEnabled(mMap.canZoomIn());
+            setZoomOutEnabled(mMap.canZoomOut());
+        }
     }
 
 
@@ -491,15 +518,6 @@ public class MapFragment
         }
     }
 
-
-    public boolean onInit(MapView map)
-    {
-        mMap = map;
-        mMap.addListener(this);
-        return true;
-    }
-
-
     @Override
     public void onSaveInstanceState(Bundle outState)
     {
@@ -521,27 +539,26 @@ public class MapFragment
             mMode = savedInstanceState.getInt(KEY_MODE);
         }
 
-        if(null == mEditLayerOverlay){
-            MainActivity activity = (MainActivity) getActivity();
-            mEditLayerOverlay = activity.getEditLayerOverlay();
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        AttributesFragment attributesFragment =
+                (AttributesFragment) fragmentManager.findFragmentByTag("ATTRIBUTES");
 
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            AttributesFragment attributesFragment =
-                    (AttributesFragment) fragmentManager.findFragmentByTag("ATTRIBUTES");
+        if (attributesFragment != null) {
+            boolean tabletSize = getResources().getBoolean(R.bool.isTablet);
+            attributesFragment.setTablet(tabletSize);
 
-            if (attributesFragment != null) {
-                boolean tabletSize = getResources().getBoolean(R.bool.isTablet);
-                attributesFragment.setTablet(tabletSize);
+            if (!attributesFragment.isTablet()) {
+                Fragment hide = fragmentManager.findFragmentById(R.id.map);
+                fragmentManager.beginTransaction().hide(hide).commit();
+            }
 
-                if (!attributesFragment.isTablet()) {
-                    Fragment hide = fragmentManager.findFragmentByTag("MAP");
-                    fragmentManager.beginTransaction().hide(hide).commit();
-                }
-
+            if(null != mEditLayerOverlay) {
                 attributesFragment.setSelectedFeature(mEditLayerOverlay.getSelectedLayer(),
                                                       mEditLayerOverlay.getSelectedItemId());
-                activity.setActionBarState(attributesFragment.isTablet());
             }
+
+            MainActivity activity = (MainActivity) getActivity();
+            activity.setActionBarState(attributesFragment.isTablet());
         }
         setMode(mMode);
     }
@@ -550,12 +567,13 @@ public class MapFragment
     @Override
     public void onPause()
     {
-        mGpsEventSource.removeListener(this);
-
+        if(null != mCurrentLocationOverlay)
+            mCurrentLocationOverlay.stopShowingCurrentLocation();
+        if(null != mGpsEventSource)
+            mGpsEventSource.removeListener(this);
         if(null != mEditLayerOverlay){
             mEditLayerOverlay.removeListener(this);
         }
-
 
         final SharedPreferences.Editor edit = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
         if(null != mMap) {
@@ -563,6 +581,8 @@ public class MapFragment
             GeoPoint point = mMap.getMapCenter();
             edit.putLong(KEY_PREF_SCROLL_X, Double.doubleToRawLongBits(point.getX()));
             edit.putLong(KEY_PREF_SCROLL_Y, Double.doubleToRawLongBits(point.getY()));
+
+            mMap.removeListener(this);
         }
         edit.commit();
 
@@ -581,6 +601,8 @@ public class MapFragment
             double mMapScrollX = Double.longBitsToDouble(prefs.getLong(KEY_PREF_SCROLL_X, 0));
             double mMapScrollY = Double.longBitsToDouble(prefs.getLong(KEY_PREF_SCROLL_Y, 0));
             mMap.setZoomAndCenter(mMapZoom, new GeoPoint(mMapScrollX, mMapScrollY));
+
+            mMap.addListener(this);
         }
 
         //change zoom controls visibility
@@ -594,24 +616,31 @@ public class MapFragment
         }
 
         mCoordinatesFormat = prefs.getInt(KEY_PREF_COORD_FORMAT + "_int", Location.FORMAT_DEGREES);
-        mGpsEventSource.addListener(this);
 
-        MainActivity activity = (MainActivity) getActivity();
-        mEditLayerOverlay = activity.getEditLayerOverlay();
+        if(null != mCurrentLocationOverlay) {
+            mCurrentLocationOverlay.updateMode(PreferenceManager.getDefaultSharedPreferences(getActivity())
+                            .getString(SettingsConstantsUI.KEY_PREF_SHOW_CURRENT_LOC, "3"));
+            mCurrentLocationOverlay.startShowingCurrentLocation();
+        }
+        if(null != mGpsEventSource) {
+            mGpsEventSource.addListener(this);
+        }
         if(null != mEditLayerOverlay){
             mEditLayerOverlay.addListener(this);
         }
 
         mShowStatusPanel = prefs.getBoolean(SettingsConstantsUI.KEY_PREF_SHOW_STATUS_PANEL, true);
 
-        if (mShowStatusPanel) {
-            mStatusPanel.setVisibility(View.VISIBLE);
-            fillStatusPanel(null);
+        if(null != mStatusPanel) {
+            if (mShowStatusPanel) {
+                mStatusPanel.setVisibility(View.VISIBLE);
+                fillStatusPanel(null);
 
-            if (mMode != MODE_NORMAL)
-                mStatusPanel.setVisibility(View.INVISIBLE);
-        } else {
-            mStatusPanel.removeAllViews();
+                if (mMode != MODE_NORMAL)
+                    mStatusPanel.setVisibility(View.INVISIBLE);
+            } else {
+                mStatusPanel.removeAllViews();
+            }
         }
     }
 
@@ -909,5 +938,62 @@ public class MapFragment
 
     public void restoreBottomBar() {
         setMode(MODE_SELECT_ACTION);
+    }
+
+
+    public void addLocalTMSLayer(Uri uri)
+    {
+        if(null != mMap)
+            mMap.addLocalTMSLayer(uri);
+    }
+
+
+    public void addLocalVectorLayer(Uri uri)
+    {
+        if(null != mMap)
+            mMap.addLocalVectorLayer(uri);
+    }
+
+
+    public void addLocalVectorLayerWithForm(Uri uri)
+    {
+        if(null != mMap)
+            mMap.addLocalVectorLayerWithForm(uri);
+    }
+
+
+    public void locateCurrentPosition()
+    {
+
+        Location location = mGpsEventSource.getLastKnownLocation();
+        if(location != null) {
+            GeoPoint center = new GeoPoint(location.getLongitude(), location.getLatitude());
+            center.setCRS(GeoConstants.CRS_WGS84);
+            if(center.project(GeoConstants.CRS_WEB_MERCATOR)) {
+                mMap.panTo(center);
+                //.setZoomAndCenter(mMap.getZoomLevel(), center);
+                //mMap.invalidate();
+            }
+        }
+    }
+
+
+    public void addNGWLayer()
+    {
+        if(null != mMap)
+            mMap.addNGWLayer();
+    }
+
+    public void addRemoteLayer()
+    {
+        if(null != mMap)
+            mMap.addRemoteLayer();
+    }
+
+
+    public void setEditFeature(VectorCacheItem item)
+    {
+        if(null != mEditLayerOverlay)
+            mEditLayerOverlay.setFeature(mEditLayerOverlay.getSelectedLayer(), item);
     }
 }

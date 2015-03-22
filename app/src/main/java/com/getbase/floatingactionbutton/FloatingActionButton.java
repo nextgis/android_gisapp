@@ -454,10 +454,18 @@ public class FloatingActionButton extends ImageButton {
     @Override
     protected boolean onSetAlpha(int alpha)
     {
-        if(alpha == 0)
-            setVisibility(View.GONE);
-        else
-            setVisibility(View.VISIBLE);
+        if (Build.VERSION.SDK_INT < VERSION_CODES.LOLLIPOP) {
+            if (alpha == 0)
+                setVisibility(View.GONE);
+            else
+                setVisibility(View.VISIBLE);
+        }
+        else{
+            if (alpha == 0)
+                setEnabled(false);
+            else
+                setEnabled(true);
+        }
         return super.onSetAlpha(alpha);
     }
 }
