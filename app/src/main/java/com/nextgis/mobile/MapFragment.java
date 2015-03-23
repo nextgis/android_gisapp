@@ -53,7 +53,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.nextgis.maplib.api.GpsEventListener;
-import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.api.ILayerView;
 import com.nextgis.maplib.datasource.GeoEnvelope;
@@ -67,14 +66,13 @@ import com.nextgis.maplib.util.LocationUtil;
 import com.nextgis.maplib.util.VectorCacheItem;
 import com.nextgis.maplibui.BottomToolbar;
 import com.nextgis.maplibui.MapViewOverlays;
+import com.nextgis.maplibui.api.EditEventListener;
+import com.nextgis.maplibui.api.ILayerUI;
+import com.nextgis.maplibui.api.MapViewEventListener;
 import com.nextgis.maplibui.dialog.ChooseLayerDialog;
 import com.nextgis.maplibui.overlay.CurrentLocationOverlay;
 import com.nextgis.maplibui.overlay.CurrentTrackOverlay;
 import com.nextgis.maplibui.overlay.EditLayerOverlay;
-import com.nextgis.maplibui.MapView;
-import com.nextgis.maplibui.api.EditEventListener;
-import com.nextgis.maplibui.api.ILayerUI;
-import com.nextgis.maplibui.api.MapViewEventListener;
 import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 
@@ -86,8 +84,6 @@ public class MapFragment
         extends Fragment
         implements MapViewEventListener, GpsEventListener, EditEventListener
 {
-
-    private static final   int MIN_SATELLITES_IN_FIX = 3;
     protected final static int mMargins              = 10;
     protected float mTolerancePX;
 
@@ -99,13 +95,14 @@ public class MapFragment
             mStatusLatitude, mStatusLongitude;
     protected FrameLayout mStatusPanel;
 
-    protected RelativeLayout   mMapRelativeLayout;
-    protected GpsEventSource   mGpsEventSource;
-    protected View             mMainButton;
-    protected int              mMode;
+    protected RelativeLayout         mMapRelativeLayout;
+    protected GpsEventSource         mGpsEventSource;
+    protected View                   mMainButton;
+    protected int                    mMode;
     protected CurrentLocationOverlay mCurrentLocationOverlay;
     protected CurrentTrackOverlay    mCurrentTrackOverlay;
-    protected EditLayerOverlay mEditLayerOverlay;
+    protected EditLayerOverlay       mEditLayerOverlay;
+    protected GeoPoint               mCurrentCenter;
 
     protected int mCoordinatesFormat;
 
@@ -119,6 +116,7 @@ public class MapFragment
 
     protected final int ADD_CURRENT_LOC  = 1;
     protected final int ADD_NEW_GEOMETRY = 2;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -138,7 +136,7 @@ public class MapFragment
                 if (null != toolbar) {
                     toolbar.setVisibility(View.GONE);
                 }
-                if(null != mMainButton)
+                if (null != mMainButton)
                     mMainButton.setVisibility(View.VISIBLE);
 
                 if (mShowStatusPanel)
@@ -146,7 +144,7 @@ public class MapFragment
                 break;
             case MODE_EDIT:
                 if (null != toolbar) {
-                    if(null != mMainButton)
+                    if (null != mMainButton)
                         mMainButton.setVisibility(View.GONE);
                     mStatusPanel.setVisibility(View.INVISIBLE);
                     toolbar.setVisibility(View.VISIBLE);
@@ -164,7 +162,7 @@ public class MapFragment
             case MODE_SELECT_ACTION:
                 //hide FAB, show bottom toolbar
                 if (null != toolbar) {
-                    if(null != mMainButton)
+                    if (null != mMainButton)
                         mMainButton.setVisibility(View.GONE);
                     mStatusPanel.setVisibility(View.INVISIBLE);
                     toolbar.setNavigationIcon(R.drawable.ic_action_cancel);
@@ -181,7 +179,8 @@ public class MapFragment
                     });
                     toolbar.setVisibility(View.VISIBLE);
                     toolbar.getBackground().setAlpha(128);
-                    toolbar.setOnMenuItemClickListener(new BottomToolbar.OnMenuItemClickListener() {
+                    toolbar.setOnMenuItemClickListener(new BottomToolbar.OnMenuItemClickListener()
+                    {
                         @Override
                         public boolean onMenuItemClick(MenuItem item)
                         {
@@ -199,8 +198,10 @@ public class MapFragment
                                 case R.id.menu_info:
                                     boolean tabletSize = getResources().getBoolean(R.bool.isTablet);
 
-                                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                                    AttributesFragment attributesFragment = new AttributesFragment();
+                                    FragmentManager fragmentManager =
+                                            getActivity().getSupportFragmentManager();
+                                    AttributesFragment attributesFragment =
+                                            new AttributesFragment();
                                     attributesFragment.setTablet(tabletSize);
                                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                     int container = R.id.mainview;
@@ -642,6 +643,8 @@ public class MapFragment
                 mStatusPanel.removeAllViews();
             }
         }
+
+        mCurrentCenter = null;
     }
 
     protected void addNewGeometry(){
@@ -823,14 +826,25 @@ public class MapFragment
     @Override
     public void onLocationChanged(Location location)
     {
+        if (location != null) {
+            if (mCurrentCenter == null)
+                mCurrentCenter = new GeoPoint();
+
+            mCurrentCenter.setCoordinates(location.getLongitude(), location.getLatitude());
+            mCurrentCenter.setCRS(GeoConstants.CRS_WGS84);
+
+            if (!mCurrentCenter.project(GeoConstants.CRS_WEB_MERCATOR))
+                mCurrentCenter = null;
+        }
+
         fillStatusPanel(location);
     }
 
 
     private void fillStatusPanel(Location location)
     {
-        if (mStatusPanel.getVisibility() == FrameLayout.INVISIBLE)
-            return;
+//        if (mStatusPanel.getVisibility() == FrameLayout.INVISIBLE)
+//            return;
 
         boolean needViewUpdate = true;
         boolean isCurrentOrientationOneLine = mStatusPanel.getChildCount() > 0 &&
@@ -868,12 +882,6 @@ public class MapFragment
         } else {
             if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
                 int satellites = location.getExtras().getInt("satellites");
-
-                if (satellites < MIN_SATELLITES_IN_FIX) {
-                    setNATextViews();
-                    return;
-                }
-
                 mStatusSource.setText(satellites + "");
                 mStatusSource.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_location),
                                                                       null, null, null);
@@ -981,17 +989,10 @@ public class MapFragment
 
     public void locateCurrentPosition()
     {
-
-        Location location = mGpsEventSource.getLastKnownLocation();
-        if(location != null) {
-            GeoPoint center = new GeoPoint(location.getLongitude(), location.getLatitude());
-            center.setCRS(GeoConstants.CRS_WGS84);
-            if(center.project(GeoConstants.CRS_WEB_MERCATOR)) {
-                mMap.panTo(center);
-                //.setZoomAndCenter(mMap.getZoomLevel(), center);
-                //mMap.invalidate();
-            }
-        }
+        if (mCurrentCenter != null) {
+            mMap.panTo(mCurrentCenter);
+        } else
+            Toast.makeText(getActivity(), R.string.error_no_location, Toast.LENGTH_SHORT).show();
     }
 
 
