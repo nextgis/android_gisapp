@@ -131,6 +131,8 @@ public class AttributesFragment extends Fragment
                 mItemPosition = i;
                 break;
             }
+
+        setAttributes();
     }
 
     private void setAttributes() {

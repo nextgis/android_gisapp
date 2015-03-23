@@ -771,13 +771,30 @@ public class MapFragment
     @Override
     public void onSingleTapUp(MotionEvent event)
     {
-        if(mMode == MODE_SELECT_ACTION) {
-            setMode(MODE_NORMAL);
+        switch (mMode) {
+            case MODE_SELECT_ACTION:
+                setMode(MODE_NORMAL);
 
-            if(null != mEditLayerOverlay){
-                mEditLayerOverlay.setFeature(null, null);
-            }
-            mMap.postInvalidate();
+                if(null != mEditLayerOverlay){
+                    mEditLayerOverlay.setFeature(null, null);
+                    mEditLayerOverlay.setMode(EditLayerOverlay.MODE_NONE);
+                }
+                mMap.postInvalidate();
+                break;
+            case MODE_HIGHLIGHT:
+                if(null != mEditLayerOverlay) {
+                    AttributesFragment attributesFragment = (AttributesFragment)
+                            getActivity().getSupportFragmentManager().findFragmentByTag("ATTRIBUTES");
+
+                    if (attributesFragment != null) {
+                        attributesFragment.setSelectedFeature(mEditLayerOverlay.getSelectedLayer(),
+                                                              mEditLayerOverlay.getSelectedItemId());
+                    }
+
+                    mMap.postInvalidate();
+                }
+
+                break;
         }
     }
 
