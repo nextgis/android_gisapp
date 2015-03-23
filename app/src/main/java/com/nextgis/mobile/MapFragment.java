@@ -203,7 +203,7 @@ public class MapFragment
                                     AttributesFragment attributesFragment = new AttributesFragment();
                                     attributesFragment.setTablet(tabletSize);
                                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                    int container = R.id.map;
+                                    int container = R.id.mainview;
 
                                     if (!attributesFragment.isTablet()) {
                                         Fragment hide = fragmentManager.findFragmentById(R.id.map);
