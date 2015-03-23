@@ -72,7 +72,7 @@
     <string name="coordinates_format">Формат координат</string>
     <string name="select_coordinates_format">Выберите формат координат</string>
     <string name="coordinates_format_summary">Выберите текст для координат</string>
-    <string name="map_path">Пусть к картам</string>
+    <string name="map_path">Путь к картам</string>
     <string name="map_path_summary">Путь к папке для карт. Изменение может привести к тому, что папка не будет очищаться при удаление приложения</string>
     <string name="select_map_path">Выберите путь к папке для карт</string>
     <string name="moving">Перемещение…</string>
