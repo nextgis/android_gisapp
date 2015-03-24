@@ -607,6 +607,9 @@ public class MapFragment
             activity.setActionBarState(attributesFragment.isTablet());
         }
         setMode(mMode);
+
+        if (mEditLayerOverlay != null && mEditLayerOverlay.isWalking())
+            mEditLayerOverlay.startGeometryByWalk(GeoConstants.GTNone);
     }
 
 
