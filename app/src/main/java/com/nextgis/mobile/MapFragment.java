@@ -760,9 +760,7 @@ public class MapFragment
             //open form
             ILayer vectorLayer = layers.get(0);
             mEditLayerOverlay.setFeature((VectorLayer) vectorLayer, null);
-
             setMode(MODE_HIGHLIGHT);    // call setMode first
-
             mEditLayerOverlay.startGeometryByWalk(((VectorLayer) vectorLayer).getGeometryType());
 
             Toast.makeText(getActivity(), String.format(getString(R.string.edit_layer), vectorLayer.getName()), Toast.LENGTH_SHORT).show();
@@ -790,6 +788,11 @@ public class MapFragment
         else if(code == ADD_NEW_GEOMETRY){
             mEditLayerOverlay.setFeature((VectorLayer)layer, null);
             setMode(MODE_EDIT);
+        }
+        else if (code == ADD_GEOMETRY_BY_WALK) {
+            mEditLayerOverlay.setFeature((VectorLayer) layer, null);
+            setMode(MODE_HIGHLIGHT);
+            mEditLayerOverlay.startGeometryByWalk(((VectorLayer) layer).getGeometryType());
         }
     }
 
