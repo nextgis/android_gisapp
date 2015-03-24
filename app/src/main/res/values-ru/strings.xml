@@ -87,5 +87,5 @@
     <string name="show_current_location">Show current location</string>
     <string name="edit_layer">Edit \'%s\' layer</string>
     <string name="attributes_title">Атрибуты</string>
-    <string name="attributes_last_item">Не записей</string>
+    <string name="attributes_last_item">Нет записей</string>
 </resources>
