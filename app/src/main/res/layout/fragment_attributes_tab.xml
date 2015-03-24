@@ -26,36 +26,19 @@
               android:layout_height="match_parent"
               android:background="@drawable/abc_popup_background_mtrl_mult"
               android:layout_gravity="end"
+              android:layout_marginBottom="?attr/actionBarSize"
     >
 
-    <LinearLayout
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"
-        >
-
-        <ImageButton
-            android:id="@+id/btn_attr_close"
-            android:layout_width="36dp"
-            android:layout_height="wrap_content"
-            android:src="@drawable/abc_ic_clear_mtrl_alpha"
-            android:background="@null"
-            android:tint="@color/button_material_dark"
-            android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
-            android:contentDescription="@android:string/cancel"
-            />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:singleLine="true"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:text="@string/action_attributes"
-            />
-    </LinearLayout>
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:singleLine="true"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:text="@string/action_attributes"
+        />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -72,31 +55,4 @@
             android:layout_height="wrap_content"
             />
     </ScrollView>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
-
-        <Button
-            android:id="@+id/btn_attr_previous"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/attributes_prev"
-            android:singleLine="true"
-            android:ellipsize="end"
-            />
-
-        <Button
-            android:id="@+id/btn_attr_next"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/attributes_next"
-            android:singleLine="true"
-            android:ellipsize="end"
-            />
-    </LinearLayout>
 </LinearLayout>

@@ -578,9 +578,11 @@ public class MainActivity
 
         if (state) {
             mToolbar.getBackground().setAlpha(128);
+            getBottomToolbar().getBackground().setAlpha(128);
             mToolbar.setTitle(R.string.app_name);
         } else {
             mToolbar.getBackground().setAlpha(255);
+            getBottomToolbar().getBackground().setAlpha(255);
             mToolbar.setTitle(R.string.action_attributes);
         }
     }
