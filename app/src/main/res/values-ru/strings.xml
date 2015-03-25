@@ -86,8 +86,6 @@
     <string name="show_status_panel_summary">Показать панель статуса внизу экрана</string>
     <string name="show_current_location">Show current location</string>
     <string name="edit_layer">Edit \'%s\' layer</string>
-    <string name="attributes_next">Следующий</string>
-    <string name="attributes_prev">Предыдущий</string>
     <string name="attributes_title">Атрибуты</string>
-    <string name="attributes_last_item">Не записей</string>
+    <string name="attributes_last_item">Нет записей</string>
 </resources>

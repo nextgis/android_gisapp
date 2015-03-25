@@ -33,7 +33,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,7 +43,6 @@ import java.util.List;
 
 
 public class AttributesFragment extends Fragment
-        implements View.OnClickListener
 {
     protected static final String KEY_ITEM_ID       = "item_id";
     protected static final String KEY_ITEM_POSITION = "item_pos";
@@ -70,14 +68,6 @@ public class AttributesFragment extends Fragment
         View view = inflater.inflate(resId, container, false);
         mAttributes = (LinearLayout) view.findViewById(R.id.ll_attributes);
         setAttributes();
-
-        view.findViewById(R.id.btn_attr_next).setOnClickListener(this);
-        view.findViewById(R.id.btn_attr_previous).setOnClickListener(this);
-
-        ImageButton ibClose = (ImageButton) view.findViewById(R.id.btn_attr_close);
-
-        if (ibClose != null)
-            ibClose.setOnClickListener(this);
 
         return view;
     }
@@ -124,6 +114,10 @@ public class AttributesFragment extends Fragment
     {
         mItemId = selectedItemId;
         mLayer = selectedLayer;
+
+        if (mLayer == null)
+            getActivity().getSupportFragmentManager().popBackStack();
+
         mVectorCacheItems = mLayer.getVectorCache();
 
         for(int i = 0; i < mVectorCacheItems.size(); i++)
@@ -188,24 +182,7 @@ public class AttributesFragment extends Fragment
     }
 
 
-    @Override
-    public void onClick(View v)
-    {
-        switch (v.getId()) {
-            case R.id.btn_attr_next:
-                selectItem(true);
-                break;
-            case R.id.btn_attr_previous:
-                selectItem(false);
-                break;
-            case R.id.btn_attr_close:
-                getActivity().getSupportFragmentManager().popBackStack();
-                break;
-        }
-    }
-
-
-    private void selectItem(boolean isNext) {
+    public void selectItem(boolean isNext) {
         boolean hasItem = false;
 
         if(isNext) {

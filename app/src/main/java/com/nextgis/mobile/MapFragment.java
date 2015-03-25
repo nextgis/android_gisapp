@@ -52,6 +52,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.nextgis.maplib.api.GpsEventListener;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.api.ILayerView;
@@ -114,8 +115,9 @@ public class MapFragment
     protected static final String KEY_MODE           = "mode";
     protected boolean mShowStatusPanel;
 
-    protected final int ADD_CURRENT_LOC  = 1;
-    protected final int ADD_NEW_GEOMETRY = 2;
+    protected final int ADD_CURRENT_LOC      = 1;
+    protected final int ADD_NEW_GEOMETRY     = 2;
+    protected final int ADD_GEOMETRY_BY_WALK = 3;
 
 
     @Override
@@ -200,7 +202,7 @@ public class MapFragment
 
                                     FragmentManager fragmentManager =
                                             getActivity().getSupportFragmentManager();
-                                    AttributesFragment attributesFragment =
+                                    final AttributesFragment attributesFragment =
                                             new AttributesFragment();
                                     attributesFragment.setTablet(tabletSize);
                                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -219,6 +221,26 @@ public class MapFragment
                                     attributesFragment.setSelectedFeature(mEditLayerOverlay.getSelectedLayer(),
                                             mEditLayerOverlay.getSelectedItemId());
 
+                                    if (mEditLayerOverlay != null) {
+                                        Toolbar.OnMenuItemClickListener menuButtons = new Toolbar.OnMenuItemClickListener() {
+                                            @Override
+                                            public boolean onMenuItemClick(MenuItem menuItem)
+                                            {
+                                                if (menuItem.getItemId() == com.nextgis.maplibui.R.id.menu_next) {
+                                                    attributesFragment.selectItem(true);
+                                                    return true;
+                                                } else if (menuItem.getItemId() == com.nextgis.maplibui.R.id.menu_prev) {
+                                                    attributesFragment.selectItem(false);
+                                                    return true;
+                                                }
+
+                                                return false;
+                                            }
+                                        };
+
+                                        mEditLayerOverlay.setAttributesListeners(menuButtons);
+                                    }
+
                                     setMode(MODE_HIGHLIGHT);
                                     break;
                             }
@@ -235,10 +257,15 @@ public class MapFragment
                 break;
             case MODE_HIGHLIGHT:
                 if (null != toolbar) {
-                    toolbar.setVisibility(View.GONE);
+                    toolbar.setVisibility(View.VISIBLE);
+                    toolbar.getBackground().setAlpha(128);
                     if(null != mMainButton)
                         mMainButton.setVisibility(View.GONE);
                     mStatusPanel.setVisibility(View.INVISIBLE);
+
+                    if (mEditLayerOverlay != null) {
+                        mEditLayerOverlay.setToolbar(toolbar);
+                    }
                 }
                 break;
         }
@@ -541,7 +568,7 @@ public class MapFragment
         }
 
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        AttributesFragment attributesFragment =
+        final AttributesFragment attributesFragment =
                 (AttributesFragment) fragmentManager.findFragmentByTag("ATTRIBUTES");
 
         if (attributesFragment != null) {
@@ -556,12 +583,33 @@ public class MapFragment
             if(null != mEditLayerOverlay) {
                 attributesFragment.setSelectedFeature(mEditLayerOverlay.getSelectedLayer(),
                                                       mEditLayerOverlay.getSelectedItemId());
+
+                Toolbar.OnMenuItemClickListener menuButtons = new Toolbar.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem)
+                    {
+                        if (menuItem.getItemId() == com.nextgis.maplibui.R.id.menu_next) {
+                            attributesFragment.selectItem(true);
+                            return true;
+                        } else if (menuItem.getItemId() == com.nextgis.maplibui.R.id.menu_prev) {
+                            attributesFragment.selectItem(false);
+                            return true;
+                        }
+
+                        return false;
+                    }
+                };
+
+                mEditLayerOverlay.setAttributesListeners(menuButtons);
             }
 
             MainActivity activity = (MainActivity) getActivity();
             activity.setActionBarState(attributesFragment.isTablet());
         }
         setMode(mMode);
+
+        if (mEditLayerOverlay != null && mEditLayerOverlay.isWalking())
+            mEditLayerOverlay.startGeometryByWalk(GeoConstants.GTNone);
     }
 
 
@@ -703,7 +751,29 @@ public class MapFragment
     }
 
     protected void addGeometryByWalk(){
-        Toast.makeText(getActivity(), getString(R.string.warning_not_implemented), Toast.LENGTH_SHORT).show();
+        //show select layer dialog if several layers, else start default or custom form
+        List<ILayer> layers = mMap.getVectorLayersByType(GeoConstants.GTLineStringCheck | GeoConstants.GTPolygonCheck);
+        if(layers.isEmpty()){
+            Toast.makeText(getActivity(), getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG).show();
+        }
+        else if(layers.size() == 1){
+            //open form
+            ILayer vectorLayer = layers.get(0);
+            mEditLayerOverlay.setFeature((VectorLayer) vectorLayer, null);
+            setMode(MODE_HIGHLIGHT);    // call setMode first
+            mEditLayerOverlay.startGeometryByWalk(((VectorLayer) vectorLayer).getGeometryType());
+
+            Toast.makeText(getActivity(), String.format(getString(R.string.edit_layer), vectorLayer.getName()), Toast.LENGTH_SHORT).show();
+        }
+        else{
+            //open choose edit layer dialog
+            ChooseLayerDialog newChooseLayerDialog = new ChooseLayerDialog();
+            newChooseLayerDialog.setTitle(getString(R.string.select_layer))
+                                .setLayerList(layers)
+                                .setCode(ADD_GEOMETRY_BY_WALK)
+                                .show(getActivity().getSupportFragmentManager(), "choose_layer");
+
+        }
     }
 
     public void onFinishChooseLayerDialog(
@@ -718,6 +788,11 @@ public class MapFragment
         else if(code == ADD_NEW_GEOMETRY){
             mEditLayerOverlay.setFeature((VectorLayer)layer, null);
             setMode(MODE_EDIT);
+        }
+        else if (code == ADD_GEOMETRY_BY_WALK) {
+            mEditLayerOverlay.setFeature((VectorLayer) layer, null);
+            setMode(MODE_HIGHLIGHT);
+            mEditLayerOverlay.startGeometryByWalk(((VectorLayer) layer).getGeometryType());
         }
     }
 
@@ -792,9 +867,9 @@ public class MapFragment
                     if (attributesFragment != null) {
                         attributesFragment.setSelectedFeature(mEditLayerOverlay.getSelectedLayer(),
                                                               mEditLayerOverlay.getSelectedItemId());
-                    }
 
-                    mMap.postInvalidate();
+                        mMap.postInvalidate();
+                    }
                 }
 
                 break;
