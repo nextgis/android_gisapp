@@ -60,7 +60,7 @@
     <string name="pref_location_accuracy_cell">Сотовая связь</string>
     <string name="location">Местоположение</string>
     <string name="tracks">Треки</string>
-    <string name="location_summary">Настройки местоположения</string>
+    <string name="location_summary">Настройки местоположения и ввода геометрий обходом</string>
     <string name="tracks_summary">Настройки треков</string>
     <string name="track_start">Начать запись трека</string>
     <string name="track_stop">Завершить запись трека</string>
