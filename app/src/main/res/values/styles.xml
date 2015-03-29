@@ -44,6 +44,7 @@
            parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
         <item name="windowActionBarOverlay">true</item>
+        <item name="actionBarPopupTheme">@style/ThemeOverlay.AppCompat.Light</item>
     </style>
 
     <style name="menu_labels_style">

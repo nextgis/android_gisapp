@@ -85,6 +85,10 @@
                   android:label="@string/action_about"
                   android:theme="@style/AppBaseTheme"/>
 
+        <activity android:name="com.nextgis.maplibui.TracksActivity"
+                  android:label="@string/tracks"
+                  android:theme="@style/AppTheme"/>
+
         <service
             android:name="com.nextgis.maplib.service.NGWSyncService"
             android:exported="true"

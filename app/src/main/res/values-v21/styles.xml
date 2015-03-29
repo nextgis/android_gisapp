@@ -44,6 +44,7 @@
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="windowActionBarOverlay">true</item>
+        <item name="android:actionBarPopupTheme">@style/ThemeOverlay.AppCompat.Light</item>
     </style>
 
 </resources>
