@@ -221,4 +221,12 @@ public class SelectMapPathDialogPreference extends DialogPreference implements I
     protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
         setText(restoreValue ? getPersistedString(mText) : (String) defaultValue);
     }
+
+
+    @Override
+    protected void onPrepareDialogBuilder(AlertDialog.Builder builder)
+    {
+        super.onPrepareDialogBuilder(builder);
+        builder.setInverseBackgroundForced(true);
+    }
 }
