@@ -35,38 +35,28 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 import com.nextgis.maplib.api.GpsEventListener;
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.datasource.GeoMultiPoint;
 import com.nextgis.maplib.datasource.GeoPoint;
-import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.service.TrackerService;
 import com.nextgis.maplib.util.FileUtil;
-import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplib.util.VectorCacheItem;
 import com.nextgis.maplibui.BottomToolbar;
 import com.nextgis.maplibui.api.IChooseLayerResult;
-import com.nextgis.maplibui.overlay.CurrentLocationOverlay;
-import com.nextgis.maplibui.overlay.CurrentTrackOverlay;
-import com.nextgis.maplibui.overlay.EditLayerOverlay;
-import com.nextgis.maplibui.MapViewOverlays;
 import com.nextgis.maplibui.util.ConstantsUI;
-import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.util.SettingsConstants;
 
 import java.io.IOException;
@@ -546,7 +536,9 @@ public class MainActivity
     {
         if (null != mLayersFragment && !mLayersFragment.isDrawerOpen()) {
             int title = isTrackerServiceRunning(this) ? R.string.track_stop : R.string.track_start;
-            menu.findItem(R.id.menu_track).setTitle(title);
+            MenuItem item = menu.findItem(R.id.menu_track);
+            if(null != item)
+                item.setTitle(title);
         }
 
         return super.onPrepareOptionsMenu(menu);
