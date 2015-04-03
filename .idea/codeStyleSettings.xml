@@ -110,18 +110,22 @@
           </indentOptions>
           <arrangement>
             <rules>
-              <rule>
-                <match>
-                  <NAME>xmlns:.*</NAME>
-                </match>
-                <order>BY_NAME</order>
-              </rule>
-              <rule>
-                <match>
-                  <XML_ATTRIBUTE />
-                </match>
-                <order>BY_NAME</order>
-              </rule>
+              <section>
+                <rule>
+                  <match>
+                    <NAME>xmlns:.*</NAME>
+                  </match>
+                  <order>BY_NAME</order>
+                </rule>
+              </section>
+              <section>
+                <rule>
+                  <match>
+                    <XML_ATTRIBUTE />
+                  </match>
+                  <order>BY_NAME</order>
+                </rule>
+              </section>
             </rules>
           </arrangement>
         </codeStyleSettings>
@@ -131,4 +135,3 @@
     <option name="PREFERRED_PROJECT_CODE_STYLE" value="NextGIS" />
   </component>
 </project>
-

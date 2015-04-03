@@ -32,22 +32,20 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-
 import android.widget.TextView;
 import com.nextgis.maplib.datasource.ngw.SyncAdapter;
 import com.nextgis.maplib.map.MapDrawable;
@@ -62,7 +60,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.nextgis.maplib.util.Constants.NGW_ACCOUNT_TYPE;
-import static com.nextgis.mobile.util.SettingsConstants.*;
+import static com.nextgis.mobile.util.SettingsConstants.AUTHORITY;
 
 /**
  * A layers fragment class
@@ -104,7 +102,7 @@ public class LayersFragment
         mSyncButton = (ImageButton) view.findViewById(R.id.sync);
         if(null != mSyncButton){
             final List<Account> accounts = new ArrayList<>();
-            final AccountManager accountManager = AccountManager.get(getActivity());
+            final AccountManager accountManager = AccountManager.get(getActivity().getApplicationContext());
             Collections.addAll(accounts, accountManager.getAccountsByType(NGW_ACCOUNT_TYPE));
             if(accounts.isEmpty())
                 mSyncButton.setEnabled(false);
