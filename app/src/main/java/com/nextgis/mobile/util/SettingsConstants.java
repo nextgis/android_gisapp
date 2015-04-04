@@ -23,55 +23,55 @@ package com.nextgis.mobile.util;
 
 public interface SettingsConstants
 {
-    public final static String AUTHORITY = "com.nextgis.mobile.provider";
+    String AUTHORITY             = "com.nextgis.mobile.provider";
     /**
      * preference pages
      */
-    public final static String ACTION_PREFS_GENERAL  = "com.nextgis.mobile.PREFS_GENERAL";
-    public final static String ACTION_PREFS_MAP      = "com.nextgis.mobile.PREFS_MAP";
-    public final static String ACTION_PREFS_NGW      = "com.nextgis.mobile.PREFS_NGW";
-    public final static String ACTION_PREFS_COMPASS  = "com.nextgis.mobile.PREFS_COMPASS";
-    public final static String ACTION_PREFS_TRACKING = "com.nextgis.mobile.PREFS_TRACKING";
-    public final static String ACTION_PREFS_LOCATION = "com.nextgis.mobile.PREFS_LOCATION";
-    public final static String ACTION_PREFS_EDIT     = "com.nextgis.mobile.PREFS_EDIT";
+    String ACTION_PREFS_GENERAL  = "com.nextgis.mobile.PREFS_GENERAL";
+    String ACTION_PREFS_MAP      = "com.nextgis.mobile.PREFS_MAP";
+    String ACTION_PREFS_NGW      = "com.nextgis.mobile.PREFS_NGW";
+    String ACTION_PREFS_COMPASS  = "com.nextgis.mobile.PREFS_COMPASS";
+    String ACTION_PREFS_TRACKING = "com.nextgis.mobile.PREFS_TRACKING";
+    String ACTION_PREFS_LOCATION = "com.nextgis.mobile.PREFS_LOCATION";
+    String ACTION_PREFS_EDIT     = "com.nextgis.mobile.PREFS_EDIT";
 
     /**
      * map preference
      */
-    public static final String KEY_PREF_COORD_FORMAT = "coordinates_format";
+    String KEY_PREF_COORD_FORMAT = "coordinates_format";
 
     /**
      * Preference key - not UI
      */
-    public static final String KEY_PREF_SCROLL_X      = "map_scroll_x";
-    public static final String KEY_PREF_SCROLL_Y      = "map_scroll_y";
-    public static final String KEY_PREF_ZOOM_LEVEL    = "map_zoom_level";
-    public static final String KEY_PREF_SHOW_LOCATION = "map_show_loc";
-    public static final String KEY_PREF_SHOW_COMPASS  = "map_show_compass";
-    public static final String KEY_PREF_SHOW_INFO     = "map_show_info";
-    public static final String KEY_PREF_APP_FIRST_RUN = "app_first_run";
+    String KEY_PREF_SCROLL_X      = "map_scroll_x";
+    String KEY_PREF_SCROLL_Y      = "map_scroll_y";
+    String KEY_PREF_ZOOM_LEVEL    = "map_zoom_level";
+    String KEY_PREF_SHOW_LOCATION = "map_show_loc";
+    String KEY_PREF_SHOW_COMPASS  = "map_show_compass";
+    String KEY_PREF_SHOW_INFO     = "map_show_info";
+    String KEY_PREF_APP_FIRST_RUN = "app_first_run";
 
     /**
      * Preference keys - in UI
      */
-    public static final String KEY_PREF_STORAGE_SITE         = "storage_site";
-    public static final String KEY_PREF_USER_ID              = "user_id";
-    public static final String KEY_PREF_MIN_DIST_CHNG_UPD    = "min_dist_change_for_update";
-    public static final String KEY_PREF_MIN_TIME_UPD         = "min_time_beetwen_updates";
-    public static final String KEY_PREF_SW_TRACK_SRV         = "sw_track_service";
-    public static final String KEY_PREF_SW_TRACKGPX_SRV      = "sw_trackgpx_service";
-    public static final String KEY_PREF_SHOW_LAYES_LIST      = "show_layers_list";
-    public static final String KEY_PREF_SW_SENDPOS_SRV       = "sw_sendpos_service";
-    public static final String KEY_PREF_SW_ENERGY_ECO        = "sw_energy_economy";
-    public static final String KEY_PREF_TIME_DATASEND        = "time_between_datasend";
-    public static final String KEY_PREF_ACCURATE_LOC         = "accurate_coordinates_pick";
-    public static final String KEY_PREF_ACCURATE_GPSCOUNT    = "accurate_coordinates_pick_count";
-    public static final String KEY_PREF_ACCURATE_CE          = "accurate_type";
-    public static final String KEY_PREF_TILE_SIZE            = "map_tile_size";
-    public static final String KEY_PREF_COMPASS_VIBRO        = "compass_vibration";
-    public static final String KEY_PREF_COMPASS_TRUE_NORTH   = "compass_true_north";
-    public static final String KEY_PREF_COMPASS_SHOW_MAGNET  = "compass_show_magnetic";
-    public static final String KEY_PREF_COMPASS_WAKE_LOCK    = "compass_wake_lock";
-    public static final String KEY_PREF_MAP_NAME             = "map_name";
-    public static final String KEY_PREF_SHOW_ZOOM_CONTROLS   = "show_zoom_controls";
+    String KEY_PREF_STORAGE_SITE        = "storage_site";
+    String KEY_PREF_USER_ID             = "user_id";
+    String KEY_PREF_MIN_DIST_CHNG_UPD   = "min_dist_change_for_update";
+    String KEY_PREF_MIN_TIME_UPD        = "min_time_beetwen_updates";
+    String KEY_PREF_SW_TRACK_SRV        = "sw_track_service";
+    String KEY_PREF_SW_TRACKGPX_SRV     = "sw_trackgpx_service";
+    String KEY_PREF_SHOW_LAYES_LIST     = "show_layers_list";
+    String KEY_PREF_SW_SENDPOS_SRV      = "sw_sendpos_service";
+    String KEY_PREF_SW_ENERGY_ECO       = "sw_energy_economy";
+    String KEY_PREF_TIME_DATASEND       = "time_between_datasend";
+    String KEY_PREF_ACCURATE_LOC        = "accurate_coordinates_pick";
+    String KEY_PREF_ACCURATE_GPSCOUNT   = "accurate_coordinates_pick_count";
+    String KEY_PREF_ACCURATE_CE         = "accurate_type";
+    String KEY_PREF_TILE_SIZE           = "map_tile_size";
+    String KEY_PREF_COMPASS_VIBRO       = "compass_vibration";
+    String KEY_PREF_COMPASS_TRUE_NORTH  = "compass_true_north";
+    String KEY_PREF_COMPASS_SHOW_MAGNET = "compass_show_magnetic";
+    String KEY_PREF_COMPASS_WAKE_LOCK   = "compass_wake_lock";
+    String KEY_PREF_MAP_NAME            = "map_name";
+    String KEY_PREF_SHOW_ZOOM_CONTROLS  = "show_zoom_controls";
 }
