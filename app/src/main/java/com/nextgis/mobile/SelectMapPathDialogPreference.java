@@ -73,6 +73,8 @@ public class SelectMapPathDialogPreference extends DialogPreference implements I
         mListAdapter.setTypeMask(Constants.FILETYPE_FOLDER);
         mListAdapter.setCurrentPath(mPath);
         mListAdapter.setCheckState(new ArrayList<String>());
+        mListAdapter.setCanWrite(true);
+        mListAdapter.setCanSelectMulti(false);
         dialogListView.setAdapter(mListAdapter);
         dialogListView.setOnItemClickListener(mListAdapter);
 

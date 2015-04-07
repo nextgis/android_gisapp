@@ -54,6 +54,9 @@ import static com.nextgis.mobile.util.SettingsConstants.*;
 public class SettingsActivity
         extends PreferenceActivity
 {
+
+    public BackgroundMoveTask mBkTask;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -337,19 +340,13 @@ public class SettingsActivity
 
             mapPath.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
             {
-                private ProgressDialog dialog;
-
                 @Override
                 public boolean onPreferenceChange(
                         Preference preference,
                         Object o)
                 {
-                    Activity parent = (Activity) context;
+                    final SettingsActivity parent = (SettingsActivity) context;
                     if(null == parent)
-                        return false;
-
-                    GISApplication application = (GISApplication) parent.getApplication();
-                    if(null == application)
                         return false;
 
                     File newPath = new File((String)o);
@@ -358,14 +355,23 @@ public class SettingsActivity
                         return false;
                     }
 
-                    ContentResolver.cancelSync(null, application.getAuthority());
-
-                    new BackgroundMoveTask(parent, application.getMap(), new File((String)o)).execute();
+                    parent.moveMap(newPath);
 
                     return true;
                 }
             });
         }
+    }
+
+    public void moveMap(File path){
+        GISApplication application = (GISApplication) getApplication();
+        if(null == application)
+            return;
+
+        ContentResolver.cancelSync(null, application.getAuthority());
+
+        mBkTask = new BackgroundMoveTask(this, application.getMap(), path);
+        mBkTask.execute();
     }
 
     public static void initializeShowCurrentLocation(Context context, final ListPreference listPreference)
@@ -386,7 +392,7 @@ public class SettingsActivity
         });
     }
 
-    private static class BackgroundMoveTask extends AsyncTask<Void, Void, Void>
+    protected static class BackgroundMoveTask extends AsyncTask<Void, Void, Void>
     {
         protected ProgressDialog mProgressDialog;
         protected Activity       mActivity;
