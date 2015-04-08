@@ -96,19 +96,19 @@
         <activity
             android:name=".SettingsActivity"
             android:label="@string/action_settings"
-            android:theme="@style/AppBaseTheme"
+            android:theme="@style/AppTheme"
             />
 
         <activity
             android:name=".NGWSettingsActivityProxy"
             android:label="@string/nextgis_web"
-            android:theme="@style/AppBaseTheme"
+            android:theme="@style/AppTheme"
             />
 
         <activity
             android:name=".AboutActivity"
             android:label="@string/action_about"
-            android:theme="@style/AppBaseTheme"
+            android:theme="@style/AppTheme"
             />
 
         <activity
