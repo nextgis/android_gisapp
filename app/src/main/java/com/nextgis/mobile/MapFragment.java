@@ -500,7 +500,20 @@ public class MapFragment
             int id,
             float percent)
     {
-        //TODO: invalidate map or listen event in map?
+        if(percent >= 1.0 && id == mMap.getTopVisibleLayerId()) {
+            MainActivity activity = (MainActivity) getActivity();
+            if (null != activity)
+                activity.onRefresh(false);
+        }
+    }
+
+
+    @Override
+    public void onLayerDrawStarted()
+    {
+        MainActivity activity = (MainActivity) getActivity();
+        if(null != activity)
+            activity.onRefresh(true);
     }
 
 
@@ -993,7 +1006,7 @@ public class MapFragment
 
     private void fillTextViews(Location location) {
         if(null == location){
-            setNATextViews();
+            setDefaultTextViews();
         } else {
             if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
                 int satellites = location.getExtras().getInt("satellites");
@@ -1009,17 +1022,20 @@ public class MapFragment
             mStatusAccuracy.setText(String.format("%.1f %s", location.getAccuracy(), getString(R.string.unit_meter)));
             mStatusAltitude.setText(String.format("%.1f %s", location.getAltitude(), getString(R.string.unit_meter)));
             mStatusSpeed.setText(String.format("%.1f %s/%s", location.getSpeed() * 3600 / 1000,
-                                               getString(R.string.unit_kilometer), getString(R.string.unit_hour)));
-            mStatusLatitude.setText(LocationUtil.formatCoordinate(location.getLatitude(), mCoordinatesFormat) +
-                                    " " +
-                                    getString(R.string.latitude_caption_short));
-            mStatusLongitude.setText(LocationUtil.formatCoordinate(location.getLongitude(), mCoordinatesFormat) +
-                                     " " +
-                                     getString(R.string.longitude_caption_short));
+                                               getString(R.string.unit_kilometer),
+                                               getString(R.string.unit_hour)));
+            mStatusLatitude.setText(
+                    LocationUtil.formatCoordinate(location.getLatitude(), mCoordinatesFormat) +
+                    " " +
+                    getString(R.string.latitude_caption_short));
+            mStatusLongitude.setText(
+                    LocationUtil.formatCoordinate(location.getLongitude(), mCoordinatesFormat) +
+                    " " +
+                    getString(R.string.longitude_caption_short));
         }
     }
 
-    private void setNATextViews() {
+    private void setDefaultTextViews() {
         mStatusSource.setCompoundDrawables(null, null, null, null);
         mStatusSource.setText("");
         mStatusAccuracy.setText(getString(R.string.n_a));
@@ -1128,5 +1144,10 @@ public class MapFragment
     {
         if(null != mEditLayerOverlay)
             mEditLayerOverlay.setFeature(mEditLayerOverlay.getSelectedLayer(), item);
+    }
+
+    public void refresh(){
+        if(null != mMap)
+            mMap.drawMapDrawable();
     }
 }

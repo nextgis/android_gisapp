@@ -88,4 +88,5 @@
     <string name="edit_layer">Edit \'%s\' layer</string>
     <string name="attributes_title">Атрибуты</string>
     <string name="attributes_last_item">Нет записей</string>
+    <string name="refresh">Refresh</string>
 </resources>
