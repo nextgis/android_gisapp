@@ -60,10 +60,10 @@
                 android:id="@+id/menu_add_remote"
                 android:title="@string/action_add_remote"
                 />
-            <item
+            <!--item
                 android:id="@+id/menu_add_ngw"
                 android:title="@string/action_add_ngw"
-                />
+                /-->
         </menu>
     </item>
 

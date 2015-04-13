@@ -170,9 +170,9 @@ public class MainActivity
             case R.id.menu_add_remote:
                 addRemoteLayer();
                 return true;
-            case R.id.menu_add_ngw:
+            /*case R.id.menu_add_ngw:
                 addNGWLayer();
-                return true;
+                return true;*/
             case R.id.menu_locate:
                 locateCurrentPosition();
                 return true;
@@ -216,13 +216,12 @@ public class MainActivity
             return;
 
         // indeterminate
-        /*progressBar.setIndeterminate(true);
+        progressBar.setIndeterminate(true);
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) progressBar.getLayoutParams();
         int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6,
                                                  getResources().getDisplayMetrics());
         params.topMargin = -px;
         progressBar.setLayoutParams(params);
-        */
 
         if(isRefresh){
             //Make progress bar appear when you need it
