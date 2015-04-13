@@ -49,7 +49,7 @@
             />
 
         <include
-            layout="@layout/progressactionbar"/>
+            layout="@layout/actionbar"/>
 
         <include
             layout="@layout/bottombar"

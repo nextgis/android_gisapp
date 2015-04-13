@@ -502,7 +502,7 @@ public class MapFragment
             int id,
             float percent)
     {
-        if (percent >= 1.0)
+        /*if (percent >= 1.0)
             mLayerDrawn++;
         MainActivity activity = (MainActivity) getActivity();
         if (null != activity){
@@ -512,6 +512,12 @@ public class MapFragment
                 } else {
                     activity.onRefresh(true, (mLayerDrawn * 100) / mMap.getVisibleLayerCount());
                 }
+            }
+        }*/
+        MainActivity activity = (MainActivity) getActivity();
+        if (null != activity) {
+            if (percent >= 1.0 && id == mMap.getTopVisibleLayerId()) {
+                activity.onRefresh(false, 0);
             }
         }
     }

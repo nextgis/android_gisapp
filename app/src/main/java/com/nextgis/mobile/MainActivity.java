@@ -21,7 +21,6 @@
 
 package com.nextgis.mobile;
 
-import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -40,18 +39,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 import com.nextgis.maplib.api.GpsEventListener;
 import com.nextgis.maplib.api.IGISApplication;
@@ -90,6 +79,7 @@ public class MainActivity
     protected LayersFragment  mLayersFragment;
     protected MessageReceiver mMessageReceiver;
     protected Toolbar mToolbar;
+
 
     protected final static int FILE_SELECT_CODE = 555;
 
@@ -210,29 +200,7 @@ public class MainActivity
     }
 
     public void onRefresh(boolean isRefresh, int progress){
-        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_spinner);
-
-        if(null == progressBar)
-            return;
-
-        // indeterminate
-        progressBar.setIndeterminate(true);
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) progressBar.getLayoutParams();
-        int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6,
-                                                 getResources().getDisplayMetrics());
-        params.topMargin = -px;
-        progressBar.setLayoutParams(params);
-
-        if(isRefresh){
-            //Make progress bar appear when you need it
-            if(progress == 0)
-                progressBar.setVisibility(View.VISIBLE);
-            progressBar.setProgress(progress);
-        }
-        else{
-            //Make progress bar disappear
-            progressBar.setVisibility(View.INVISIBLE);
-        }
+        //TODO: some drawing progress
     }
 
     protected void addLocalLayer()
