@@ -121,6 +121,8 @@ public class MapFragment
     protected final int ADD_NEW_GEOMETRY     = 2;
     protected final int ADD_GEOMETRY_BY_WALK = 3;
 
+    protected int mLayerDrawn;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -500,10 +502,17 @@ public class MapFragment
             int id,
             float percent)
     {
-        if(percent >= 1.0 && id == mMap.getTopVisibleLayerId()) {
-            MainActivity activity = (MainActivity) getActivity();
-            if (null != activity)
-                activity.onRefresh(false);
+        if (percent >= 1.0)
+            mLayerDrawn++;
+        MainActivity activity = (MainActivity) getActivity();
+        if (null != activity){
+            if (percent >= 1.0) {
+                if (id == mMap.getTopVisibleLayerId()) {
+                    activity.onRefresh(false, 0);
+                } else {
+                    activity.onRefresh(true, (mLayerDrawn * 100) / mMap.getVisibleLayerCount());
+                }
+            }
         }
     }
 
@@ -511,9 +520,10 @@ public class MapFragment
     @Override
     public void onLayerDrawStarted()
     {
+        mLayerDrawn = 0;
         MainActivity activity = (MainActivity) getActivity();
         if(null != activity)
-            activity.onRefresh(true);
+            activity.onRefresh(true, 0);
     }
 
 
@@ -1148,6 +1158,6 @@ public class MapFragment
 
     public void refresh(){
         if(null != mMap)
-            mMap.drawMapDrawable();
+            mMap.asyncDrawMapDrawable();
     }
 }

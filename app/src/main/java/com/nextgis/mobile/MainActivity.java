@@ -40,15 +40,18 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import com.nextgis.maplib.api.GpsEventListener;
 import com.nextgis.maplib.api.IGISApplication;
@@ -87,7 +90,6 @@ public class MainActivity
     protected LayersFragment  mLayersFragment;
     protected MessageReceiver mMessageReceiver;
     protected Toolbar mToolbar;
-    protected MenuItem mRefreshItem;
 
     protected final static int FILE_SELECT_CODE = 555;
 
@@ -139,10 +141,6 @@ public class MainActivity
             // decide what to show in the action bar.
             getMenuInflater().inflate(R.menu.main, menu);
             //restoreActionBar();
-
-
-            mRefreshItem = menu.findItem(R.id.menu_refresh);
-
             return true;
         }
         return super.onCreateOptionsMenu(menu);
@@ -211,25 +209,30 @@ public class MainActivity
         return super.onOptionsItemSelected(item);
     }
 
-    public void onRefresh(boolean isRefresh){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            if (null != mRefreshItem) {
-                if (isRefresh) {
-                    RotateAnimation rotateAnimation =
-                            new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f,
-                                                Animation.RELATIVE_TO_SELF, 0.5f);
-                    //rotateAnimation.setFillAfter(true);
-                    rotateAnimation.setDuration(1500);
-                    rotateAnimation.setRepeatCount(60);
-                    LayoutInflater inflater = LayoutInflater.from(this);
-                    ImageView iv = (ImageView)inflater.inflate(R.layout.layout_refresh, null);
-                    iv.startAnimation(rotateAnimation);
-                    mRefreshItem.setActionView(iv);
-                } else {
-                    mRefreshItem.getActionView().clearAnimation();
-                    mRefreshItem.setActionView(null);
-                }
-            }
+    public void onRefresh(boolean isRefresh, int progress){
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_spinner);
+
+        if(null == progressBar)
+            return;
+
+        // indeterminate
+        /*progressBar.setIndeterminate(true);
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) progressBar.getLayoutParams();
+        int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6,
+                                                 getResources().getDisplayMetrics());
+        params.topMargin = -px;
+        progressBar.setLayoutParams(params);
+        */
+
+        if(isRefresh){
+            //Make progress bar appear when you need it
+            if(progress == 0)
+                progressBar.setVisibility(View.VISIBLE);
+            progressBar.setProgress(progress);
+        }
+        else{
+            //Make progress bar disappear
+            progressBar.setVisibility(View.INVISIBLE);
         }
     }
 

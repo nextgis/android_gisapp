@@ -20,13 +20,29 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:contentDescription="@string/refresh"
-           android:src="@drawable/ic_action_sync"
-           android:paddingLeft="8dp"
-           android:paddingStart="8dp"
-           android:paddingRight="8dp"
-           android:paddingEnd="8dp"
-    />
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+
+        <include
+           layout="@layout/actionbar"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_below="@+id/main_toolbar"
+            >
+            <ProgressBar
+                android:id="@+id/progress_spinner"
+                style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="12dp"
+                android:layout_marginTop="-4dp"
+            />
+        </LinearLayout>
+    </RelativeLayout>
+</merge>
