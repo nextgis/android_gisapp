@@ -156,7 +156,7 @@ public class GISApplication
     public void showSettings()
     {
         Intent intentSet = new Intent(this, SettingsActivity.class);
-        intentSet.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);//Intent.FLAG_ACTIVITY_CLEAR_TOP |
+        intentSet.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intentSet);
     }
 

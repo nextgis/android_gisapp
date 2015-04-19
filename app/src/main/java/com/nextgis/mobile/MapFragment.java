@@ -24,14 +24,11 @@ package com.nextgis.mobile;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -114,6 +111,8 @@ public class MapFragment
     protected static final int    MODE_SELECT_ACTION = 1;
     protected static final int    MODE_EDIT          = 2;
     protected static final int    MODE_HIGHLIGHT     = 3;
+    protected static final int    MODE_INFO          = 4;
+
     protected static final String KEY_MODE           = "mode";
     protected boolean mShowStatusPanel;
 
@@ -136,6 +135,9 @@ public class MapFragment
     protected void setMode(int mode)
     {
         MainActivity activity = (MainActivity) getActivity();
+        if(null == activity)
+            return;
+
         final BottomToolbar toolbar = activity.getBottomToolbar();
         switch (mode) {
             case MODE_NORMAL:
@@ -202,31 +204,7 @@ public class MapFragment
                                     setMode(MODE_NORMAL);
                                     break;
                                 case R.id.menu_info:
-                                    boolean tabletSize = getResources().getBoolean(R.bool.isTablet);
-
-                                    FragmentManager fragmentManager =
-                                            getActivity().getSupportFragmentManager();
-                                    final AttributesFragment attributesFragment =
-                                            new AttributesFragment();
-                                    attributesFragment.setTablet(tabletSize);
-                                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                    int container = R.id.mainview;
-
-                                    if (!attributesFragment.isTablet()) {
-                                        Fragment hide = fragmentManager.findFragmentById(R.id.map);
-                                        fragmentTransaction.hide(hide);
-                                    } else
-                                        container = R.id.fl_attributes;
-
-                                    fragmentTransaction.add(container, attributesFragment,"ATTRIBUTES")
-                                                       .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                                       .addToBackStack(null).commit();
-
-                                    attributesFragment.setSelectedFeature(mEditLayerOverlay.getSelectedLayer(),
-                                            mEditLayerOverlay.getSelectedItemId());
-
-                                    setHighlightMenuAttributes(attributesFragment);
-                                    setMode(MODE_HIGHLIGHT);
+                                    setMode(MODE_INFO);
                                     break;
                             }
                             return true;
@@ -251,6 +229,51 @@ public class MapFragment
                     if (mEditLayerOverlay != null) {
                         mEditLayerOverlay.setToolbar(toolbar);
                     }
+                }
+                break;
+            case MODE_INFO:
+                boolean tabletSize = getResources().getBoolean(R.bool.isTablet);
+
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                //get or create fragment
+                AttributesFragment attributesFragment =
+                        (AttributesFragment) fragmentManager.findFragmentByTag("ATTRIBUTES");
+                if(null == attributesFragment) {
+                    attributesFragment = new AttributesFragment();
+                    attributesFragment.setTablet(tabletSize);
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    int container = R.id.mainview;
+
+                    if (attributesFragment.isTablet()) {
+                        container = R.id.fl_attributes;
+                    } else {
+                        Fragment hide = fragmentManager.findFragmentById(R.id.map);
+                        fragmentTransaction.hide(hide);
+                    }
+
+                    fragmentTransaction.add(container, attributesFragment, "ATTRIBUTES")
+                                       .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                       .addToBackStack(null)
+                                       .commit();
+                }
+                else{
+                    if (!attributesFragment.isTablet()) {
+                        Fragment hide = fragmentManager.findFragmentById(R.id.map);
+                        fragmentManager.beginTransaction().hide(hide).commit();
+                    }
+                }
+
+                attributesFragment.setSelectedFeature(mEditLayerOverlay.getSelectedLayer(),
+                                                      mEditLayerOverlay.getSelectedItemId());
+
+                if (null != toolbar) {
+                    toolbar.setVisibility(View.VISIBLE);
+                    toolbar.getBackground().setAlpha(128);
+                    if (null != mMainButton)
+                        mMainButton.setVisibility(View.GONE);
+                    mStatusPanel.setVisibility(View.INVISIBLE);
+
+                    attributesFragment.setToolbar(toolbar, mEditLayerOverlay);
                 }
                 break;
         }
@@ -579,30 +602,6 @@ public class MapFragment
             mMode = savedInstanceState.getInt(KEY_MODE);
         }
 
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        final AttributesFragment attributesFragment =
-                (AttributesFragment) fragmentManager.findFragmentByTag("ATTRIBUTES");
-
-        if (attributesFragment != null) {
-            boolean tabletSize = getResources().getBoolean(R.bool.isTablet);
-            attributesFragment.setTablet(tabletSize);
-
-            if (!attributesFragment.isTablet()) {
-                Fragment hide = fragmentManager.findFragmentById(R.id.map);
-                fragmentManager.beginTransaction().hide(hide).commit();
-            }
-
-            if(null != mEditLayerOverlay) {
-                attributesFragment.setSelectedFeature(mEditLayerOverlay.getSelectedLayer(),
-                                                      mEditLayerOverlay.getSelectedItemId());
-
-                setHighlightMenuAttributes(attributesFragment);
-            }
-
-            MainActivity activity = (MainActivity) getActivity();
-            activity.setActionBarState(attributesFragment.isTablet());
-        }
-
         if (mEditLayerOverlay != null && mEditLayerOverlay.isWalking())
             setHighlightMenuByWalk();
 
@@ -674,7 +673,7 @@ public class MapFragment
         if(null != mGpsEventSource) {
             mGpsEventSource.addListener(this);
         }
-        if(null != mEditLayerOverlay){
+        if(null != mEditLayerOverlay) {
             mEditLayerOverlay.addListener(this);
         }
 
@@ -802,6 +801,7 @@ public class MapFragment
     }
 
     private void setHighlightMenuByWalk() {
+ /*
         Toolbar.OnMenuItemClickListener menuButtons = new Toolbar.OnMenuItemClickListener()
         {
             @Override
@@ -837,34 +837,8 @@ public class MapFragment
 
         mEditLayerOverlay.setHighlightToolbarMenu(R.menu.edit_by_walk);
         mEditLayerOverlay.setHighlightToolbarMenuListener(menuButtons);
+        */
     }
-
-
-    private void setHighlightMenuAttributes(final AttributesFragment attributesFragment)
-    {
-        if (mEditLayerOverlay != null) {
-            Toolbar.OnMenuItemClickListener menuButtons = new Toolbar.OnMenuItemClickListener()
-            {
-                @Override
-                public boolean onMenuItemClick(MenuItem menuItem)
-                {
-                    if (menuItem.getItemId() == com.nextgis.maplibui.R.id.menu_next) {
-                        attributesFragment.selectItem(true);
-                        return true;
-                    } else if (menuItem.getItemId() == com.nextgis.maplibui.R.id.menu_prev) {
-                        attributesFragment.selectItem(false);
-                        return true;
-                    }
-
-                    return false;
-                }
-            };
-
-            mEditLayerOverlay.setHighlightToolbarMenu(R.menu.edit_highlight);
-            mEditLayerOverlay.setHighlightToolbarMenuListener(menuButtons);
-        }
-    }
-
 
     public void onFinishChooseLayerDialog(
             int code,
@@ -947,7 +921,7 @@ public class MapFragment
                 }
                 mMap.postInvalidate();
                 break;
-            case MODE_HIGHLIGHT:
+            case MODE_INFO:
                 if(null != mEditLayerOverlay) {
                     AttributesFragment attributesFragment = (AttributesFragment)
                             getActivity().getSupportFragmentManager().findFragmentByTag("ATTRIBUTES");
@@ -1172,13 +1146,6 @@ public class MapFragment
     {
         if(null != mMap)
             mMap.addRemoteLayer();
-    }
-
-
-    public void setEditFeature(VectorCacheItem item)
-    {
-        if(null != mEditLayerOverlay)
-            mEditLayerOverlay.setFeature(mEditLayerOverlay.getSelectedLayer(), item);
     }
 
     public void refresh(){

@@ -2,6 +2,7 @@
  * Project:  NextGIS Mobile
  * Purpose:  Mobile GIS for Android.
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
+ * Author:   Dmitry Baryshnikov aka Bishop, bishop.dev@gmail.com
  * *****************************************************************************
  * Copyright (c) 2015 NextGIS, info@nextgis.com
  *
@@ -26,6 +27,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -38,6 +40,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.VectorCacheItem;
+import com.nextgis.maplibui.BottomToolbar;
+import com.nextgis.maplibui.overlay.EditLayerOverlay;
 
 import java.util.List;
 
@@ -53,6 +57,8 @@ public class AttributesFragment extends Fragment
     private VectorLayer           mLayer;
     private List<VectorCacheItem> mVectorCacheItems;
     private boolean mIsTablet, mIsReorient = false;
+
+    protected EditLayerOverlay mEditLayerOverlay;
 
 
     @Override
@@ -76,9 +82,13 @@ public class AttributesFragment extends Fragment
     @Override
     public void onPrepareOptionsMenu(Menu menu)
     {
-        menu.findItem(R.id.menu_add).setVisible(false);
-        menu.findItem(R.id.menu_locate).setVisible(false);
-        menu.findItem(R.id.menu_track).setVisible(false);
+        for (int i = 0; i < menu.size(); i++) {
+            MenuItem item = menu.getItem(i);
+            if (item.getItemId() == R.id.menu_about || item.getItemId() == R.id.menu_settings) {
+                continue;
+            }
+            item.setVisible(false);
+        }
         super.onPrepareOptionsMenu(menu);
     }
 
@@ -88,10 +98,21 @@ public class AttributesFragment extends Fragment
     {
         switch (item.getItemId()) {
             case android.R.id.home:
-                getActivity().getSupportFragmentManager().popBackStack();
+                finishFragment();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+
+    protected void finishFragment()
+    {
+        MainActivity activity = (MainActivity) getActivity();
+        if (null != activity) {
+            activity.getSupportFragmentManager().popBackStack();
+            activity.setActionBarState(true);
+            activity.restoreBottomBar();
         }
     }
 
@@ -120,7 +141,7 @@ public class AttributesFragment extends Fragment
 
         mVectorCacheItems = mLayer.getVectorCache();
 
-        for(int i = 0; i < mVectorCacheItems.size(); i++)
+        for (int i = 0; i < mVectorCacheItems.size(); i++)
             if (mVectorCacheItems.get(i).getId() == mItemId) {
                 mItemPosition = i;
                 break;
@@ -129,13 +150,18 @@ public class AttributesFragment extends Fragment
         setAttributes();
     }
 
-    private void setAttributes() {
+
+    private void setAttributes()
+    {
         if (mAttributes == null)
             return;
 
         mAttributes.removeAllViews();
 
-        TextView title = new TextView(getActivity());
+        FragmentActivity activity = getActivity();
+        if (null == activity)
+            return;
+        TextView title = new TextView(activity);
         title.setText(mLayer.getName());
         title.setTextSize(24);
         title.setGravity(Gravity.CENTER);
@@ -153,8 +179,7 @@ public class AttributesFragment extends Fragment
             for (int i = 0; i < attributes.getColumnCount(); i++) {
                 LinearLayout row = new LinearLayout(getActivity());
                 row.setOrientation(LinearLayout.HORIZONTAL);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                        0, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
 
                 TextView columnName = new TextView(getActivity());
                 columnName.setLayoutParams(params);
@@ -182,10 +207,11 @@ public class AttributesFragment extends Fragment
     }
 
 
-    public void selectItem(boolean isNext) {
+    public void selectItem(boolean isNext)
+    {
         boolean hasItem = false;
 
-        if(isNext) {
+        if (isNext) {
             if (mItemPosition < mVectorCacheItems.size() - 1) {
                 mItemPosition++;
                 hasItem = true;
@@ -201,9 +227,11 @@ public class AttributesFragment extends Fragment
             VectorCacheItem item = mVectorCacheItems.get(mItemPosition);
             mItemId = item.getId();
             setAttributes();
-            ((MainActivity) getActivity()).setEditFeature(item);
-        } else
+            if(null != mEditLayerOverlay)
+                mEditLayerOverlay.setFeature(mLayer, item);
+        } else {
             Toast.makeText(getActivity(), R.string.attributes_last_item, Toast.LENGTH_SHORT).show();
+        }
     }
 
 
@@ -242,5 +270,51 @@ public class AttributesFragment extends Fragment
     public boolean isTablet()
     {
         return mIsTablet;
+    }
+
+
+    public void setToolbar(final BottomToolbar toolbar, EditLayerOverlay overlay){
+        if (null == toolbar || null == mLayer)
+            return;
+
+        mEditLayerOverlay = overlay;
+
+        if (mEditLayerOverlay != null) {
+            mEditLayerOverlay.setMode(EditLayerOverlay.MODE_HIGHLIGHT);
+        }
+
+        toolbar.setNavigationIcon(R.drawable.ic_action_cancel);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                finishFragment();
+            }
+        });
+
+        if (toolbar.getMenu() != null)
+            toolbar.getMenu().clear();
+
+        toolbar.inflateMenu(R.menu.attributes);
+
+        toolbar.setOnMenuItemClickListener(new BottomToolbar.OnMenuItemClickListener()
+        {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem)
+            {
+                if (null == mLayer)
+                    return false;
+                if (menuItem.getItemId() == R.id.menu_next) {
+                    selectItem(true);
+                    return true;
+                } else if (menuItem.getItemId() == R.id.menu_prev) {
+                    selectItem(false);
+                    return true;
+                }
+
+                return true;
+            }
+        });
     }
 }

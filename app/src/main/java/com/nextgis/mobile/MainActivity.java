@@ -593,9 +593,4 @@ public class MainActivity
         mMapFragment.restoreBottomBar();
     }
 
-
-    public void setEditFeature(VectorCacheItem item) {
-        if(null != mMapFragment)
-            mMapFragment.setEditFeature(item);
-    }
 }
