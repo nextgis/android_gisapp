@@ -699,6 +699,7 @@ public class MapFragment
         //show select layer dialog if several layers, else start default or custom form
         List<ILayer> layers = mMap.getVectorLayersByType(GeoConstants.GTPointCheck |
         GeoConstants.GTMultiPointCheck | GeoConstants.GTLineStringCheck | GeoConstants.GTPolygonCheck);
+        layers = removeHideLayers(layers);
         if(layers.isEmpty()){
             Toast.makeText(getActivity(), getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG).show();
         }
@@ -724,6 +725,7 @@ public class MapFragment
     protected void addCurrentLocation(){
         //show select layer dialog if several layers, else start default or custom form
         List<ILayer> layers = mMap.getVectorLayersByType(GeoConstants.GTMultiPointCheck | GeoConstants.GTPointCheck);
+        layers = removeHideLayers(layers);
         if(layers.isEmpty()){
             Toast.makeText(getActivity(), getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG).show();
         }
@@ -750,9 +752,26 @@ public class MapFragment
         }
     }
 
+    protected List<ILayer> removeHideLayers(List<ILayer> layerList){
+        for(int i = 0; i < layerList.size(); i++){
+            ILayerView layerView = (ILayerView) layerList.get(i);
+            if(null != layerView){
+                if(!layerView.isVisible()){
+                    layerList.remove(i);
+                    i--;
+                }
+            }
+        }
+
+        return layerList;
+    }
+
     protected void addGeometryByWalk(){
         //show select layer dialog if several layers, else start default or custom form
         List<ILayer> layers = mMap.getVectorLayersByType(GeoConstants.GTLineStringCheck | GeoConstants.GTPolygonCheck);
+
+        layers = removeHideLayers(layers);
+
         if(layers.isEmpty()){
             Toast.makeText(getActivity(), getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG).show();
         }
