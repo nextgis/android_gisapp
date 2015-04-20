@@ -24,11 +24,14 @@ package com.nextgis.mobile;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -112,6 +115,7 @@ public class MapFragment
     protected static final int    MODE_EDIT          = 2;
     protected static final int    MODE_HIGHLIGHT     = 3;
     protected static final int    MODE_INFO          = 4;
+    protected static final int    MODE_EDIT_BY_WALK  = 5;
 
     protected static final String KEY_MODE           = "mode";
     protected boolean mShowStatusPanel;
@@ -163,6 +167,57 @@ public class MapFragment
 
                     if (null != mEditLayerOverlay) {
                         mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT);
+                        mEditLayerOverlay.setToolbar(toolbar);
+                    }
+                }
+                break;
+            case MODE_EDIT_BY_WALK:
+                if (null != toolbar) {
+                    if (null != mMainButton)
+                        mMainButton.setVisibility(View.GONE);
+                    mStatusPanel.setVisibility(View.INVISIBLE);
+                    toolbar.setVisibility(View.VISIBLE);
+                    toolbar.getBackground().setAlpha(128);
+                    Menu menu = toolbar.getMenu();
+                    if (null != menu)
+                        menu.clear();
+
+                    toolbar.inflateMenu(R.menu.edit_by_walk);
+
+                    toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener()
+                    {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem menuItem)
+                        {
+                            if (menuItem.getItemId() == R.id.menu_cancel) {
+                                mEditLayerOverlay.stopGeometryByWalk();
+                                mEditLayerOverlay.setFeature(mEditLayerOverlay.getSelectedLayer(), null);
+                                setMode(MODE_EDIT);
+                                return true;
+                            } else if (menuItem.getItemId() == R.id.menu_settings) {
+                                Intent locationSettings = new Intent(getActivity(), SettingsActivity.class);
+
+                                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+                                    locationSettings.setAction(ACTION_PREFS_LOCATION);
+                                } else {
+                                    locationSettings.putExtra("settings", "location");
+                                    locationSettings.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
+                                    locationSettings.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT,
+                                                              SettingsFragment.class.getName());
+                                    locationSettings.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT_ARGUMENTS,
+                                                              locationSettings.getExtras());
+                                }
+
+                                locationSettings.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(locationSettings);
+                                return true;
+                            }
+                            return false;
+                        }
+                    });
+
+                    if (null != mEditLayerOverlay) {
+                        mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT_BY_WALK);
                         mEditLayerOverlay.setToolbar(toolbar);
                     }
                 }
@@ -602,13 +657,7 @@ public class MapFragment
             mMode = savedInstanceState.getInt(KEY_MODE);
         }
 
-        if (mEditLayerOverlay != null && mEditLayerOverlay.isWalking())
-            setHighlightMenuByWalk();
-
         setMode(mMode);
-
-        if (mEditLayerOverlay != null && mEditLayerOverlay.isWalking())
-            mEditLayerOverlay.startGeometryByWalk(GeoConstants.GTNone); // restore geometry state
     }
 
 
@@ -777,7 +826,9 @@ public class MapFragment
         else if(layers.size() == 1){
             //open form
             ILayer vectorLayer = layers.get(0);
-            startNewGeometryByWalk(vectorLayer);
+            mEditLayerOverlay.setFeature((VectorLayer)vectorLayer, null);
+            setMode(MODE_EDIT_BY_WALK);
+
             Toast.makeText(getActivity(), String.format(getString(R.string.edit_layer), vectorLayer.getName()), Toast.LENGTH_SHORT).show();
         }
         else{
@@ -789,55 +840,6 @@ public class MapFragment
                                 .show(getActivity().getSupportFragmentManager(), "choose_layer");
 
         }
-    }
-
-    private void startNewGeometryByWalk(ILayer layer) {
-        if (mEditLayerOverlay != null) {
-            setHighlightMenuByWalk();
-            mEditLayerOverlay.setFeature((VectorLayer) layer, null);
-            setMode(MODE_HIGHLIGHT);
-            mEditLayerOverlay.startGeometryByWalk(((VectorLayer) layer).getGeometryType());
-        }
-    }
-
-    private void setHighlightMenuByWalk() {
- /*
-        Toolbar.OnMenuItemClickListener menuButtons = new Toolbar.OnMenuItemClickListener()
-        {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem)
-            {
-                if (menuItem.getItemId() == com.nextgis.maplibui.R.id.menu_cancel) {
-                    mEditLayerOverlay.stopGeometryByWalk();
-                    mEditLayerOverlay.setFeature(mEditLayerOverlay.getSelectedLayer(), null);
-                    setMode(MODE_EDIT);
-                    return true;
-                } else if (menuItem.getItemId() == com.nextgis.maplibui.R.id.menu_settings) {
-                    Intent locationSettings = new Intent(getActivity(), SettingsActivity.class);
-
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-                        locationSettings.setAction(ACTION_PREFS_LOCATION);
-                    } else {
-                        locationSettings.putExtra("settings", "location");
-                        locationSettings.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
-                        locationSettings.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT,
-                                                  SettingsFragment.class.getName());
-                        locationSettings.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT_ARGUMENTS,
-                                                  locationSettings.getExtras());
-                    }
-
-                    locationSettings.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(locationSettings);
-                    return true;
-                }
-
-                return false;
-            }
-        };
-
-        mEditLayerOverlay.setHighlightToolbarMenu(R.menu.edit_by_walk);
-        mEditLayerOverlay.setHighlightToolbarMenuListener(menuButtons);
-        */
     }
 
     public void onFinishChooseLayerDialog(
@@ -854,7 +856,8 @@ public class MapFragment
             setMode(MODE_EDIT);
         }
         else if (code == ADD_GEOMETRY_BY_WALK) {
-            startNewGeometryByWalk(layer);
+            mEditLayerOverlay.setFeature((VectorLayer)layer, null);
+            setMode(MODE_EDIT_BY_WALK);
         }
     }
 
@@ -862,7 +865,7 @@ public class MapFragment
     @Override
     public void onLongPress(MotionEvent event)
     {
-        if(mMode == MODE_EDIT || mMode == MODE_HIGHLIGHT)
+        if(!(mMode == MODE_NORMAL || mMode == MODE_SELECT_ACTION))
             return;
 
         double dMinX = event.getX() - mTolerancePX;
