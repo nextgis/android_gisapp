@@ -71,6 +71,7 @@ import com.nextgis.maplibui.BottomToolbar;
 import com.nextgis.maplibui.MapViewOverlays;
 import com.nextgis.maplibui.api.EditEventListener;
 import com.nextgis.maplibui.api.ILayerUI;
+import com.nextgis.maplibui.api.IVectorLayerUI;
 import com.nextgis.maplibui.api.MapViewEventListener;
 import com.nextgis.maplibui.dialog.ChooseLayerDialog;
 import com.nextgis.maplibui.overlay.CurrentLocationOverlay;
@@ -781,8 +782,8 @@ public class MapFragment
             //open form
             ILayer vectorLayer = layers.get(0);
             if(vectorLayer instanceof ILayerUI){
-                ILayerUI vectorLayerUI = (ILayerUI)vectorLayer;
-                vectorLayerUI.showEditForm(getActivity(), Constants.NOT_FOUND);
+                IVectorLayerUI vectorLayerUI = (IVectorLayerUI)vectorLayer;
+                vectorLayerUI.showEditForm(getActivity(), Constants.NOT_FOUND, null);
 
                 Toast.makeText(getActivity(), String.format(getString(R.string.edit_layer), vectorLayer.getName()), Toast.LENGTH_SHORT).show();
             }
@@ -847,8 +848,8 @@ public class MapFragment
             ILayer layer){
         if(code == ADD_CURRENT_LOC){
             if(layer instanceof ILayerUI ) {
-                ILayerUI layerUI = (ILayerUI) layer;
-                layerUI.showEditForm(getActivity(), Constants.NOT_FOUND);
+                IVectorLayerUI layerUI = (IVectorLayerUI) layer;
+                layerUI.showEditForm(getActivity(), Constants.NOT_FOUND, null);
             }
         }
         else if(code == ADD_NEW_GEOMETRY){
