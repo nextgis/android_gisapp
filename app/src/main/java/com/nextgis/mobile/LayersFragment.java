@@ -104,20 +104,21 @@ public class LayersFragment
             final List<Account> accounts = new ArrayList<>();
             final AccountManager accountManager = AccountManager.get(getActivity().getApplicationContext());
             Collections.addAll(accounts, accountManager.getAccountsByType(NGW_ACCOUNT_TYPE));
-            if(accounts.isEmpty())
+            if(accounts.isEmpty()) {
                 mSyncButton.setEnabled(false);
+                mSyncButton.setVisibility(View.INVISIBLE);
+            }
             else{
+                mSyncButton.setVisibility(View.VISIBLE);
                 mSyncButton.setOnClickListener(new View.OnClickListener()
                 {
                     @Override
                     public void onClick(View view)
                     {
-                        for(Account account : accounts){
+                        for (Account account : accounts) {
                             Bundle settingsBundle = new Bundle();
-                            settingsBundle.putBoolean(
-                                    ContentResolver.SYNC_EXTRAS_MANUAL, true);
-                            settingsBundle.putBoolean(
-                                    ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+                            settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+                            settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
 
                             ContentResolver.requestSync(account, AUTHORITY, settingsBundle);
                         }
