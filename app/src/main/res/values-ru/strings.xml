@@ -84,9 +84,9 @@
     <string name="action_edit">Редактировать</string>
     <string name="show_status_panel">Панель статуса</string>
     <string name="show_status_panel_summary">Показать панель статуса внизу экрана</string>
-    <string name="show_current_location">Show current location</string>
-    <string name="edit_layer">Edit \'%s\' layer</string>
+    <string name="show_current_location">Показать текущее местоположение</string>
+    <string name="edit_layer">Отредактировать слой \'%s\'</string>
     <string name="attributes_title">Атрибуты</string>
     <string name="attributes_last_item">Нет записей</string>
-    <string name="refresh">Refresh</string>
+    <string name="refresh">Обновить</string>
 </resources>
