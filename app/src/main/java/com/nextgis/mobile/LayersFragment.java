@@ -100,15 +100,30 @@ public class LayersFragment
         }
 
         mSyncButton = (ImageButton) view.findViewById(R.id.sync);
-        if(null != mSyncButton){
-            final List<Account> accounts = new ArrayList<>();
-            final AccountManager accountManager = AccountManager.get(getActivity().getApplicationContext());
-            Collections.addAll(accounts, accountManager.getAccountsByType(NGW_ACCOUNT_TYPE));
-            if(accounts.isEmpty()) {
+        mInfoText = (TextView)view.findViewById(R.id.info);
+
+        setupSyncOptions();
+
+        updateInfo();
+        return view;
+    }
+
+    protected void setupSyncOptions(){
+
+        final List<Account> accounts = new ArrayList<>();
+        final AccountManager accountManager = AccountManager.get(getActivity().getApplicationContext());
+        Collections.addAll(accounts, accountManager.getAccountsByType(NGW_ACCOUNT_TYPE));
+        if(accounts.isEmpty()) {
+            if(null != mSyncButton) {
                 mSyncButton.setEnabled(false);
                 mSyncButton.setVisibility(View.INVISIBLE);
             }
-            else{
+            if(null != mInfoText) {
+                mInfoText.setVisibility(View.INVISIBLE);
+            }
+        }
+        else{
+            if(null != mSyncButton) {
                 mSyncButton.setVisibility(View.VISIBLE);
                 mSyncButton.setOnClickListener(new View.OnClickListener()
                 {
@@ -127,11 +142,10 @@ public class LayersFragment
                     }
                 });
             }
+            if(null != mInfoText) {
+                mInfoText.setVisibility(View.VISIBLE);
+            }
         }
-
-        mInfoText = (TextView)view.findViewById(R.id.info);
-        updateInfo();
-        return view;
     }
 
     protected void updateInfo(){
@@ -236,6 +250,7 @@ public class LayersFragment
                     return;
                 }
 
+                setupSyncOptions();
                 getActivity().supportInvalidateOptionsMenu(); // calls onPrepareOptionsMenu()
             }
         };
