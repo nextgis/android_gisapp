@@ -1154,6 +1154,6 @@ public class MapFragment
 
     public void refresh(){
         if(null != mMap)
-            mMap.asyncDrawMapDrawable();
+            mMap.drawMapDrawable();
     }
 }
