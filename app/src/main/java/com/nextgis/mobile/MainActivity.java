@@ -39,8 +39,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
+import android.widget.ImageView;
 import android.widget.Toast;
 import com.nextgis.maplib.api.GpsEventListener;
 import com.nextgis.maplib.api.IGISApplication;
@@ -79,7 +83,7 @@ public class MainActivity
     protected LayersFragment  mLayersFragment;
     protected MessageReceiver mMessageReceiver;
     protected Toolbar mToolbar;
-
+    protected MenuItem mRefreshItem;
 
     protected final static int FILE_SELECT_CODE = 555;
 
@@ -131,6 +135,9 @@ public class MainActivity
             // decide what to show in the action bar.
             getMenuInflater().inflate(R.menu.main, menu);
             //restoreActionBar();
+
+            mRefreshItem = menu.findItem(R.id.menu_refresh);
+
             return true;
         }
         return super.onCreateOptionsMenu(menu);
@@ -200,7 +207,26 @@ public class MainActivity
     }
 
     public void onRefresh(boolean isRefresh, int progress){
-        //TODO: some drawing progress
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            if (null != mRefreshItem) {
+                if (isRefresh) {
+                    if(mRefreshItem.getActionView() == null) {
+                        RotateAnimation rotateAnimation =
+                                new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f,
+                                                    Animation.RELATIVE_TO_SELF, 0.5f);
+                        rotateAnimation.setDuration(1500);
+                        rotateAnimation.setRepeatCount(60);
+                        LayoutInflater inflater = LayoutInflater.from(this);
+                        ImageView iv = (ImageView) inflater.inflate(R.layout.layout_refresh, null);
+                        iv.startAnimation(rotateAnimation);
+                        mRefreshItem.setActionView(iv);
+                    }
+                } else {
+                    mRefreshItem.getActionView().clearAnimation();
+                    mRefreshItem.setActionView(null);
+                }
+            }
+        }
     }
 
     protected void addLocalLayer()
@@ -594,5 +620,4 @@ public class MainActivity
     public void restoreBottomBar() {
         mMapFragment.restoreBottomBar();
     }
-
 }
