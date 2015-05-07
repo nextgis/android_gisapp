@@ -41,6 +41,7 @@ import android.support.v7.internal.view.menu.ActionMenuItemView;
 import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -471,14 +472,26 @@ public class MapFragment
     }
 
 
-    protected void removeMapButtons(RelativeLayout rl)
+    protected void showMapButtons(boolean show, RelativeLayout rl)
     {
         if(null == rl)
             return;
-        rl.removeViewInLayout(rl.findViewById(R.drawable.ic_minus));
-        rl.removeViewInLayout(rl.findViewById(R.drawable.ic_plus));
-        mivZoomIn = null;
-        mivZoomOut = null;
+        View v = rl.findViewById(R.drawable.ic_minus);
+        if(null != v){
+            if(show)
+                v.setVisibility(View.VISIBLE);
+            else
+                v.setVisibility(View.GONE);
+        }
+
+        v = rl.findViewById(R.drawable.ic_plus);
+        if(null != v){
+            if(show)
+                v.setVisibility(View.VISIBLE);
+            else
+                v.setVisibility(View.GONE);
+        }
+
         rl.invalidate();
     }
 
@@ -531,6 +544,8 @@ public class MapFragment
             buttonsRl.addView(mivZoomIn, paramsButtonIn);
             buttonsRl.addView(mivZoomOut, paramsButtonOut);
             rl.addView(buttonsRl, paramsButtonsRl);
+
+            rl.invalidate();
 
             setZoomInEnabled(mMap.canZoomIn());
             setZoomOutEnabled(mMap.canZoomOut());
@@ -694,6 +709,16 @@ public class MapFragment
         super.onResume();
 
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        //change zoom controls visibility
+        if (mivZoomIn == null || mivZoomOut == null)
+            addMapButtons(getActivity(), mMapRelativeLayout);
+
+        boolean showControls = prefs.getBoolean(KEY_PREF_SHOW_ZOOM_CONTROLS, false);
+        showMapButtons(showControls, mMapRelativeLayout);
+
+        Log.d(Constants.TAG, "KEY_PREF_SHOW_ZOOM_CONTROLS: " + (showControls ? "ON" : "OFF"));
+
         if (null != mMap) {
             float mMapZoom = prefs.getFloat(KEY_PREF_ZOOM_LEVEL, mMap.getMinZoom());
             double mMapScrollX = Double.longBitsToDouble(prefs.getLong(KEY_PREF_SCROLL_X, 0));
@@ -701,16 +726,6 @@ public class MapFragment
             mMap.setZoomAndCenter(mMapZoom, new GeoPoint(mMapScrollX, mMapScrollY));
 
             mMap.addListener(this);
-        }
-
-        //change zoom controls visibility
-        boolean showControls = prefs.getBoolean(KEY_PREF_SHOW_ZOOM_CONTROLS, false);
-        if (showControls) {
-            if (mivZoomIn == null || mivZoomOut == null)
-                addMapButtons(getActivity(), mMapRelativeLayout);
-        }
-        else {
-            removeMapButtons(mMapRelativeLayout);
         }
 
         mCoordinatesFormat = prefs.getInt(KEY_PREF_COORD_FORMAT + "_int", Location.FORMAT_DEGREES);
