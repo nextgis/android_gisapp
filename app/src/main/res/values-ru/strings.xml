@@ -46,8 +46,8 @@
     <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2012–2015]]></string>
     <string name="action_about">О программе</string>
     <string name="add_current_place">Добавить текущую точку</string>
-    <string name="add_new_geometry">Добавить новый объект</string>
-    <string name="add_geometry_by_walk">Добавить новый объект обходом</string>
+    <string name="add_new_geometry">Добавить объект</string>
+    <string name="add_geometry_by_walk">Добавить объект обходом</string>
     <string name="warning_no_edit_layers">Нет редактируемых слоёв</string>
     <string name="select_layer">Выберите слой для редактирования</string>
     <string name="menu_locate">Найти</string>
