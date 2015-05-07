@@ -57,7 +57,6 @@ import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.service.TrackerService;
 import com.nextgis.maplib.util.FileUtil;
-import com.nextgis.maplib.util.VectorCacheItem;
 import com.nextgis.maplibui.BottomToolbar;
 import com.nextgis.maplibui.api.IChooseLayerResult;
 import com.nextgis.maplibui.util.ConstantsUI;
@@ -222,8 +221,10 @@ public class MainActivity
                         mRefreshItem.setActionView(iv);
                     }
                 } else {
-                    mRefreshItem.getActionView().clearAnimation();
-                    mRefreshItem.setActionView(null);
+                    if(mRefreshItem.getActionView() != null) {
+                        mRefreshItem.getActionView().clearAnimation();
+                        mRefreshItem.setActionView(null);
+                    }
                 }
             }
         }
