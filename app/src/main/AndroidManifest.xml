@@ -114,7 +114,7 @@
         <activity
             android:name="com.nextgis.maplibui.TracksActivity"
             android:label="@string/tracks"
-            android:theme="@style/AppTheme"
+            android:theme="@style/AppActionModeTheme"
             />
 
         <service
