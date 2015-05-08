@@ -999,8 +999,8 @@ public class MapFragment
 
     private void fillStatusPanel(Location location)
     {
-//        if (mStatusPanel.getVisibility() == FrameLayout.INVISIBLE)
-//            return;
+        if (!mShowStatusPanel) //mStatusPanel.getVisibility() == FrameLayout.INVISIBLE)
+            return;
 
         boolean needViewUpdate = true;
         boolean isCurrentOrientationOneLine = mStatusPanel.getChildCount() > 0 &&
