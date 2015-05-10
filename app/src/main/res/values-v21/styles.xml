@@ -43,6 +43,7 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="windowActionBarOverlay">true</item>
+        <item name="android:textColor">@color/primary_text_default_material_light</item>
         <item name="android:actionOverflowMenuStyle">@style/Theme.AppCompat.Light</item>
         <item name="android:actionModeStyle">@style/ThemeOverlay.AppCompat.ActionBar</item>
     </style>

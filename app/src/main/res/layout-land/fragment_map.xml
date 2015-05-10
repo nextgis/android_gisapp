@@ -41,20 +41,36 @@
             android:minHeight="16dp"
             />
 
-        <!--com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/action_add_current_location"
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/action_zoom_in"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_centerVertical="true"
+            fab:fab_size="mini"
             fab:fab_addButtonColorNormal="@color/primary"
             fab:fab_addButtonColorPressed="@color/accent"
             fab:fab_addButtonPlusIconColor="@android:color/white"
-            android:layout_above="@+id/fl_status_panel"
-            android:layout_marginRight="16dp"
-            android:layout_marginEnd="16dp"
-            fab:fab_icon="@drawable/ic_action_maps_place"
-            /-->
+            fab:fab_icon="@drawable/ic_plus"
+            />
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/action_zoom_out"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_below="@+id/action_zoom_in"
+            fab:fab_size="mini"
+            fab:fab_addButtonColorNormal="@color/primary"
+            fab:fab_addButtonColorPressed="@color/accent"
+            fab:fab_addButtonPlusIconColor="@android:color/white"
+            fab:fab_icon="@drawable/ic_minus"
+            />
 
         <com.getbase.floatingactionbutton.FloatingActionsMenu
             android:id="@+id/multiple_actions"

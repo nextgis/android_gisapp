@@ -56,6 +56,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.nextgis.maplib.api.GpsEventListener;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.api.ILayerView;
@@ -89,12 +90,12 @@ public class MapFragment
         extends Fragment
         implements MapViewEventListener, GpsEventListener, EditEventListener
 {
-    protected final static int mMargins              = 10;
+    protected final static int mMargins = 10;
     protected float mTolerancePX;
 
-    protected MapViewOverlays mMap;
-    protected ImageView mivZoomIn;
-    protected ImageView mivZoomOut;
+    protected MapViewOverlays      mMap;
+    protected FloatingActionButton mivZoomIn;
+    protected FloatingActionButton mivZoomOut;
 
     protected TextView mStatusSource, mStatusAccuracy, mStatusSpeed, mStatusAltitude,
             mStatusLatitude, mStatusLongitude;
@@ -112,14 +113,14 @@ public class MapFragment
     protected int mCoordinatesFormat;
 
 
-    protected static final int    MODE_NORMAL        = 0;
-    protected static final int    MODE_SELECT_ACTION = 1;
-    protected static final int    MODE_EDIT          = 2;
-    protected static final int    MODE_HIGHLIGHT     = 3;
-    protected static final int    MODE_INFO          = 4;
-    protected static final int    MODE_EDIT_BY_WALK  = 5;
+    protected static final int MODE_NORMAL        = 0;
+    protected static final int MODE_SELECT_ACTION = 1;
+    protected static final int MODE_EDIT          = 2;
+    protected static final int MODE_HIGHLIGHT     = 3;
+    protected static final int MODE_INFO          = 4;
+    protected static final int MODE_EDIT_BY_WALK  = 5;
 
-    protected static final String KEY_MODE           = "mode";
+    protected static final String KEY_MODE = "mode";
     protected boolean mShowStatusPanel;
 
     protected final int ADD_CURRENT_LOC      = 1;
@@ -141,7 +142,7 @@ public class MapFragment
     protected void setMode(int mode)
     {
         MainActivity activity = (MainActivity) getActivity();
-        if(null == activity)
+        if (null == activity)
             return;
 
         final BottomToolbar toolbar = activity.getBottomToolbar();
@@ -453,6 +454,32 @@ public class MapFragment
             });
         }
 
+        mivZoomIn = (FloatingActionButton) view.findViewById(R.id.action_zoom_in);
+        if(null != mivZoomIn){
+            mivZoomIn.setOnClickListener(new OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    if(mivZoomIn.isEnabled())
+                        mMap.zoomIn();
+                }
+            });
+        }
+
+        mivZoomOut = (FloatingActionButton) view.findViewById(R.id.action_zoom_out);
+        if(null != mivZoomOut){
+            mivZoomOut.setOnClickListener(new OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    if(mivZoomOut.isEnabled())
+                        mMap.zoomOut();
+                }
+            });
+        }
+
         mStatusPanel = (FrameLayout) view.findViewById(R.id.fl_status_panel);
         return view;
     }
@@ -476,7 +503,7 @@ public class MapFragment
     {
         if(null == rl)
             return;
-        View v = rl.findViewById(R.drawable.ic_minus);
+        View v = rl.findViewById(R.id.action_zoom_out);
         if(null != v){
             if(show)
                 v.setVisibility(View.VISIBLE);
@@ -484,7 +511,7 @@ public class MapFragment
                 v.setVisibility(View.GONE);
         }
 
-        v = rl.findViewById(R.drawable.ic_plus);
+        v = rl.findViewById(R.id.action_zoom_in);
         if(null != v){
             if(show)
                 v.setVisibility(View.VISIBLE);
@@ -494,64 +521,6 @@ public class MapFragment
 
         rl.invalidate();
     }
-
-    protected void addMapButtons(Context context, RelativeLayout rl)
-    {
-        if(null == rl)
-            return;
-        if(null != mMap) {
-            mivZoomIn = new ImageView(context);
-            mivZoomIn.setImageResource(R.drawable.ic_plus);
-            mivZoomIn.setId(R.drawable.ic_plus);
-
-            mivZoomOut = new ImageView(context);
-            mivZoomOut.setImageResource(R.drawable.ic_minus);
-            mivZoomOut.setId(R.drawable.ic_minus);
-
-            mivZoomIn.setOnClickListener(new OnClickListener()
-            {
-                public void onClick(View v)
-                {
-                    mMap.zoomIn();
-                }
-            });
-
-            mivZoomOut.setOnClickListener(new OnClickListener()
-            {
-                public void onClick(View v)
-                {
-                     mMap.zoomOut();
-                }
-            });
-
-
-            RelativeLayout buttonsRl = new RelativeLayout(context);
-
-            RelativeLayout.LayoutParams paramsButtonIn = new RelativeLayout.LayoutParams(
-                    RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            RelativeLayout.LayoutParams paramsButtonOut = new RelativeLayout.LayoutParams(
-                    RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            RelativeLayout.LayoutParams paramsButtonsRl = new RelativeLayout.LayoutParams(
-                    RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-            paramsButtonIn.setMargins(mMargins + 5, mMargins - 5, mMargins + 5, mMargins - 5);
-            paramsButtonOut.setMargins(mMargins + 5, mMargins - 5, mMargins + 5, mMargins - 5);
-
-            paramsButtonOut.addRule(RelativeLayout.BELOW, mivZoomIn.getId());
-            paramsButtonsRl.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-            paramsButtonsRl.addRule(RelativeLayout.CENTER_IN_PARENT);
-
-            buttonsRl.addView(mivZoomIn, paramsButtonIn);
-            buttonsRl.addView(mivZoomOut, paramsButtonOut);
-            rl.addView(buttonsRl, paramsButtonsRl);
-
-            rl.invalidate();
-
-            setZoomInEnabled(mMap.canZoomIn());
-            setZoomOutEnabled(mMap.canZoomOut());
-        }
-    }
-
 
     @Override
     public void onLayerAdded(int id)
@@ -632,11 +601,8 @@ public class MapFragment
         if (mivZoomIn == null) {
             return;
         }
-        if (bEnabled) {
-            mivZoomIn.getDrawable().setAlpha(255);
-        } else {
-            mivZoomIn.getDrawable().setAlpha(50);
-        }
+
+        mivZoomIn.setEnabled(bEnabled);
     }
 
 
@@ -645,11 +611,7 @@ public class MapFragment
         if (mivZoomOut == null) {
             return;
         }
-        if (bEnabled) {
-            mivZoomOut.getDrawable().setAlpha(255);
-        } else {
-            mivZoomOut.getDrawable().setAlpha(50);
-        }
+        mivZoomOut.setEnabled(bEnabled);
     }
 
     @Override
@@ -709,10 +671,6 @@ public class MapFragment
         super.onResume();
 
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
-        //change zoom controls visibility
-        if (mivZoomIn == null || mivZoomOut == null)
-            addMapButtons(getActivity(), mMapRelativeLayout);
 
         boolean showControls = prefs.getBoolean(KEY_PREF_SHOW_ZOOM_CONTROLS, false);
         showMapButtons(showControls, mMapRelativeLayout);
