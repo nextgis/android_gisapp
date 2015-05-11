@@ -25,8 +25,7 @@
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
-    <style name="AppBaseTheme"
-           parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppBaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
@@ -35,17 +34,15 @@
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
+        <item name="undoBarStyle">@style/UndoBarMaterialStyle</item>
     </style>
 
     <!-- Application theme. -->
-    <style name="AppTheme"
-           parent="AppBaseTheme">
+    <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="windowActionBarOverlay">true</item>
-        <item name="android:textColor">@color/primary_text_default_material_light</item>
-        <item name="android:actionOverflowMenuStyle">@style/Theme.AppCompat.Light</item>
-        <item name="android:actionModeStyle">@style/ThemeOverlay.AppCompat.ActionBar</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowActionModeOverlay">false</item>
     </style>
 
 </resources>

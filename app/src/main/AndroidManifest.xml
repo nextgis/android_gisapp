@@ -96,25 +96,25 @@
         <activity
             android:name=".SettingsActivity"
             android:label="@string/action_settings"
-            android:theme="@style/AppTheme"
+            android:theme="@style/AppBlackTextTheme"
             />
 
         <activity
             android:name=".NGWSettingsActivityProxy"
             android:label="@string/nextgis_web"
-            android:theme="@style/AppTheme"
+            android:theme="@style/AppBlackTextTheme"
             />
 
         <activity
             android:name=".AboutActivity"
             android:label="@string/action_about"
-            android:theme="@style/AppTheme"
+            android:theme="@style/AppBlackTextTheme"
             />
 
         <activity
             android:name="com.nextgis.maplibui.TracksActivity"
             android:label="@string/tracks"
-            android:theme="@style/AppActionModeTheme"
+            android:theme="@style/AppTheme"
             />
 
         <service

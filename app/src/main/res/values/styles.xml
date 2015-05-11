@@ -35,18 +35,17 @@
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
         <item name="undoBarStyle">@style/UndoBarMaterialStyle</item>
-        <item name="actionModeBackground">@color/actionBarColor</item>
     </style>
 
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
         <item name="windowActionBarOverlay">true</item>
-        <item name="android:textColor">@color/primary_text_default_material_light</item>
+        <item name="windowActionModeOverlay">false</item>
     </style>
 
-    <style name="AppActionModeTheme" parent="AppTheme">
-        <item name="actionBarPopupTheme">@style/Theme.AppCompat.Light</item>
+    <style name="AppBlackTextTheme" parent="AppTheme">
+        <item name="android:textColor">@color/primary_text_default_material_light</item>
     </style>
 
     <style name="menu_labels_style">
