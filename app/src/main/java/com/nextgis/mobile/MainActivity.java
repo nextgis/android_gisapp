@@ -57,6 +57,7 @@ import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.service.TrackerService;
+import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.FileUtil;
 import com.nextgis.maplibui.BottomToolbar;
 import com.nextgis.maplibui.api.IChooseLayerResult;
@@ -343,7 +344,7 @@ public class MainActivity
                 pt.project(CRS_WEB_MERCATOR);
                 GeoMultiPoint mpt = new GeoMultiPoint();
                 mpt.add(pt);
-                values.put(VectorLayer.FIELD_GEOM, mpt.toBlob());
+                values.put(Constants.FIELD_GEOM, mpt.toBlob());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -482,7 +483,7 @@ public class MainActivity
                 pt.project(CRS_WEB_MERCATOR);
                 GeoMultiPoint mpt = new GeoMultiPoint();
                 mpt.add(pt);
-                values.put(VectorLayer.FIELD_GEOM, mpt.toBlob());
+                values.put(Constants.FIELD_GEOM, mpt.toBlob());
             } catch (IOException e) {
                 e.printStackTrace();
             }

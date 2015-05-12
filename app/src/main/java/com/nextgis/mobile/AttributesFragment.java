@@ -39,6 +39,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.nextgis.maplib.map.VectorLayer;
+import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.VectorCacheItem;
 import com.nextgis.maplibui.BottomToolbar;
 import com.nextgis.maplibui.overlay.EditLayerOverlay;
@@ -172,7 +173,7 @@ public class AttributesFragment extends Fragment
         title.setPadding(0, 0, 0, px);
         mAttributes.addView(title);
 
-        String selection = VectorLayer.FIELD_ID + " = ?";
+        String selection = Constants.FIELD_ID + " = ?";
         Cursor attributes = mLayer.query(null, selection, new String[] {mItemId + ""}, null);
 
         if (attributes.moveToFirst()) {
@@ -186,7 +187,7 @@ public class AttributesFragment extends Fragment
 
                 String column = attributes.getColumnName(i);
 
-                if (column.equals(VectorLayer.FIELD_GEOM))
+                if (column.equals(Constants.FIELD_GEOM))
                     continue;
 
                 columnName.setText(column);
