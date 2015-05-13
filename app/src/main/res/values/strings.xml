@@ -57,7 +57,7 @@
     <string name="warning_not_implemented">Not implemented yet</string>
     <string name="pref_location_accuracy">Location accuracy</string>
     <string name="pref_location_accuracy_gps">GPS</string>
-    <string name="pref_location_accuracy_cell">Cellular</string>
+    <string name="pref_location_accuracy_cell">Other networks</string>
     <string name="location">Location</string>
     <string name="tracks">Tracks</string>
     <string name="location_summary">Location and geometry by walking settings</string>
