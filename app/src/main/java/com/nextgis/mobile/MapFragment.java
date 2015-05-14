@@ -996,14 +996,20 @@ public class MapFragment
         } else {
             if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
                 int satellites = location.getExtras().getInt("satellites");
-                //TODO: if(satellites < GpsEventSource.MIN_SATELLITES_IN_FIX) show no fix
-                mStatusSource.setText(satellites + "");
-                mStatusSource.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_location),
-                                                                      null, null, null);
+                if(satellites < GpsEventSource.MIN_SATELLITES_IN_FIX) {
+                    mStatusSource.setText("");
+                    mStatusSource.setCompoundDrawablesWithIntrinsicBounds(
+                            getResources().getDrawable(R.drawable.ic_signal_wifi), null, null, null);
+                }
+                else {
+                    mStatusSource.setText(satellites + "");
+                    mStatusSource.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_location),
+                                                                          null, null, null);
+                }
             } else {
                 mStatusSource.setText("");
-                mStatusSource.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_signal_wifi),
-                                                                      null, null, null);
+                mStatusSource.setCompoundDrawablesWithIntrinsicBounds(
+                        getResources().getDrawable(R.drawable.ic_signal_wifi), null, null, null);
             }
 
             mStatusAccuracy.setText(String.format("%.1f %s", location.getAccuracy(), getString(R.string.unit_meter)));

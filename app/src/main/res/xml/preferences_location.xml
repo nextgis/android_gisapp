@@ -32,7 +32,7 @@
     <ListPreference
         android:key="location_min_time"
         android:title="@string/pref_min_time"
-        android:defaultValue="20"
+        android:defaultValue="3"
         android:entries="@array/tracker_min_time_between_updates"
         android:entryValues="@array/tracker_min_time_between_updates_val"
         />
@@ -40,7 +40,7 @@
     <ListPreference
         android:key="location_min_distance"
         android:title="@string/pref_min_distance"
-        android:defaultValue="25"
+        android:defaultValue="10"
         android:entries="@array/tracker_min_dist_update"
         android:entryValues="@array/tracker_min_dist_update_val"
         />
