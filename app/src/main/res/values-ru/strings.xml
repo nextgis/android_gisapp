@@ -57,7 +57,7 @@
     <string name="warning_not_implemented">Еще не реализовано</string>
     <string name="pref_location_accuracy">Точность определения местоположения</string>
     <string name="pref_location_accuracy_gps">GPS</string>
-    <string name="pref_location_accuracy_cell">Сотовая связь</string>
+    <string name="pref_location_accuracy_cell">Другие сети</string>
     <string name="location">Местоположение</string>
     <string name="tracks">Треки</string>
     <string name="location_summary">Настройки местоположения и ввода геометрий обходом</string>
