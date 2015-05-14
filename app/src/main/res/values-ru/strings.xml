@@ -89,4 +89,8 @@
     <string name="attributes_title">Атрибуты</string>
     <string name="attributes_last_item">Нет записей</string>
     <string name="refresh">Обновить</string>
+    <string name="points_for_edit">Точки (можно редактировать)</string>
+    <string name="lines_for_edit">Линии (можно редактировать)</string>
+    <string name="polygons_for_edit">Полигоны (можно редактировать)</string>
+
 </resources>
