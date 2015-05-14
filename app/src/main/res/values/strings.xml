@@ -89,5 +89,8 @@
     <string name="attributes_title">Attributes</string>
     <string name="attributes_last_item">No more items</string>
     <string name="refresh">Refresh</string>
+    <string name="points_for_edit">Points (can be edited)</string>
+    <string name="lines_for_edit">Lines (can be edited)</string>
+    <string name="polygons_for_edit">Polygons (can be edited)</string>
 
 </resources>

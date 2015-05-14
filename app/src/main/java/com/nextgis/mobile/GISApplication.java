@@ -31,17 +31,19 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
+import com.nextgis.maplib.datasource.Feature;
+import com.nextgis.maplib.datasource.Field;
 import com.nextgis.maplib.datasource.ngw.SyncAdapter;
 import com.nextgis.maplib.location.GpsEventSource;
-import com.nextgis.maplib.map.Layer;
 import com.nextgis.maplib.map.LayerGroup;
 import com.nextgis.maplib.map.MapBase;
-import com.nextgis.maplib.map.MapContentProviderHelper;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.util.Constants;
+import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplibui.mapui.LayerFactoryUI;
 import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
 import com.nextgis.maplibui.mapui.TrackLayerUI;
+import com.nextgis.maplibui.mapui.VectorLayerUI;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -174,7 +176,37 @@ public class GISApplication
 
         mMap.addLayer(layer);
         mMap.moveLayer(0, layer);
+
+        // create empty layers for first experimental editing
+        VectorLayerUI vectorLayer =
+                createEmptyVectorLayerUI(getString(R.string.points_for_edit), GeoConstants.GTPoint);
+        mMap.addLayer(vectorLayer);
+
+        vectorLayer = createEmptyVectorLayerUI(getString(R.string.lines_for_edit),
+                                               GeoConstants.GTLineString);
+        mMap.addLayer(vectorLayer);
+
+        vectorLayer = createEmptyVectorLayerUI(getString(R.string.polygons_for_edit),
+                                               GeoConstants.GTPolygon);
+        mMap.addLayer(vectorLayer);
+
         mMap.save();
     }
 
+
+    protected VectorLayerUI createEmptyVectorLayerUI(
+            String layerName,
+            int layerType)
+    {
+        VectorLayerUI vectorLayer = new VectorLayerUI(this, mMap.createLayerStorage());
+        vectorLayer.setName(layerName);
+        vectorLayer.setVisible(true);
+
+        List<Field> fields = new ArrayList<>();
+        fields.add(new Field(GeoConstants.FTInteger, "ID", null));
+        fields.add(new Field(GeoConstants.FTString, "TEXT", null));
+
+        vectorLayer.initialize(fields, new ArrayList<Feature>(), layerType);
+        return vectorLayer;
+    }
 }
