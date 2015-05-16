@@ -999,12 +999,12 @@ public class MapFragment
                 if(satellites < GpsEventSource.MIN_SATELLITES_IN_FIX) {
                     mStatusSource.setText("");
                     mStatusSource.setCompoundDrawablesWithIntrinsicBounds(
-                            getResources().getDrawable(R.drawable.ic_signal_wifi), null, null, null);
+                            getResources().getDrawable(R.drawable.ic_location), null, null, null);
                 }
                 else {
                     mStatusSource.setText(satellites + "");
-                    mStatusSource.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_location),
-                                                                          null, null, null);
+                    mStatusSource.setCompoundDrawablesWithIntrinsicBounds(
+                            getResources().getDrawable(R.drawable.ic_location), null, null, null);
                 }
             } else {
                 mStatusSource.setText("");
