@@ -163,6 +163,30 @@ public class GISApplication
 
 
     @Override
+    public String getAccountUrl(Account account)
+    {
+        AccountManager accountManager = AccountManager.get(this);
+        return accountManager.getUserData(account, "url");
+    }
+
+
+    @Override
+    public String getAccountLogin(Account account)
+    {
+        AccountManager accountManager = AccountManager.get(this);
+        return accountManager.getUserData(account, "login");
+    }
+
+
+    @Override
+    public String getAccountPassword(Account account)
+    {
+        AccountManager accountManager = AccountManager.get(this);
+        return accountManager.getPassword(account);
+    }
+
+
+    @Override
     public GpsEventSource getGpsEventSource()
     {
         return mGpsEventSource;
