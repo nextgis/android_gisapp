@@ -21,6 +21,7 @@
 
 package com.nextgis.mobile;
 
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -105,7 +106,8 @@ public class MainActivity
         mToolbar = (Toolbar) findViewById(R.id.main_toolbar);
         mToolbar.getBackground().setAlpha(128);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(null != getSupportActionBar())
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.primary_dark));
@@ -116,7 +118,7 @@ public class MainActivity
 
         mLayersFragment =
                 (LayersFragment) getSupportFragmentManager().findFragmentById(R.id.layers);
-        if (mLayersFragment != null) {
+        if (mLayersFragment != null && null != mLayersFragment.getView()) {
             mLayersFragment.getView()
                            .setBackgroundColor(
                                    getResources().getColor(R.color.background_material_light));
@@ -228,12 +230,11 @@ public class MainActivity
                     if(mRefreshItem.getActionView() != null) {
                         Handler handler = new Handler(Looper.getMainLooper());
                         final Runnable r = new Runnable() {
+                            @TargetApi(Build.VERSION_CODES.HONEYCOMB)
                             public void run() {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                                    //do your stuff here after DELAY sec
-                                    mRefreshItem.getActionView().clearAnimation();
-                                    mRefreshItem.setActionView(null);
-                                }
+                                //do your stuff here after DELAY sec
+                                mRefreshItem.getActionView().clearAnimation();
+                                mRefreshItem.setActionView(null);
                             }
                         };
                         handler.postDelayed(r, 650);
@@ -312,7 +313,7 @@ public class MainActivity
     void testSync(){
         IGISApplication application = (IGISApplication)getApplication();
         MapBase map = application.getMap();
-        NGWVectorLayer ngwVectorLayer = null;
+        NGWVectorLayer ngwVectorLayer;
         for(int i = 0; i < map.getLayerCount(); i++){
             ILayer layer = map.getLayer(i);
             if(layer instanceof NGWVectorLayer)
