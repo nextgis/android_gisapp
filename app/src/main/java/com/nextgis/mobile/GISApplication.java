@@ -21,6 +21,8 @@
 
 package com.nextgis.mobile;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Application;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -144,6 +146,43 @@ public class GISApplication
     public String getAuthority()
     {
         return AUTHORITY;
+    }
+
+
+    @Override
+    public Account getAccount(String accountName)
+    {
+        AccountManager accountManager = AccountManager.get(this);
+        for (Account account : accountManager.getAccountsByType(Constants.NGW_ACCOUNT_TYPE)) {
+            if (account.name.equals(accountName)) {
+                return account;
+            }
+        }
+        return null;
+    }
+
+
+    @Override
+    public String getAccountUrl(Account account)
+    {
+        AccountManager accountManager = AccountManager.get(this);
+        return accountManager.getUserData(account, "url");
+    }
+
+
+    @Override
+    public String getAccountLogin(Account account)
+    {
+        AccountManager accountManager = AccountManager.get(this);
+        return accountManager.getUserData(account, "login");
+    }
+
+
+    @Override
+    public String getAccountPassword(Account account)
+    {
+        AccountManager accountManager = AccountManager.get(this);
+        return accountManager.getPassword(account);
     }
 
 
