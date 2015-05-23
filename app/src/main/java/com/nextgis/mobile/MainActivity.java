@@ -34,6 +34,8 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -224,8 +226,17 @@ public class MainActivity
                     }
                 } else {
                     if(mRefreshItem.getActionView() != null) {
-                        mRefreshItem.getActionView().clearAnimation();
-                        mRefreshItem.setActionView(null);
+                        Handler handler = new Handler(Looper.getMainLooper());
+                        final Runnable r = new Runnable() {
+                            public void run() {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                                    //do your stuff here after DELAY sec
+                                    mRefreshItem.getActionView().clearAnimation();
+                                    mRefreshItem.setActionView(null);
+                                }
+                            }
+                        };
+                        handler.postDelayed(r, 650);
                     }
                 }
             }
