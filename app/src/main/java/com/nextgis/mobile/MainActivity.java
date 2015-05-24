@@ -227,18 +227,18 @@ public class MainActivity
                         mRefreshItem.setActionView(iv);
                     }
                 } else {
-                    if(mRefreshItem.getActionView() != null) {
-                        Handler handler = new Handler(Looper.getMainLooper());
-                        final Runnable r = new Runnable() {
-                            @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-                            public void run() {
-                                //do your stuff here after DELAY sec
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    final Runnable r = new Runnable() {
+                        @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+                        public void run() {
+                            if(mRefreshItem.getActionView() != null) {
+
                                 mRefreshItem.getActionView().clearAnimation();
                                 mRefreshItem.setActionView(null);
                             }
-                        };
-                        handler.postDelayed(r, 650);
-                    }
+                        }
+                    };
+                    handler.postDelayed(r, 650);
                 }
             }
         }
