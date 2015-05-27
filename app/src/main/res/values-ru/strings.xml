@@ -59,7 +59,6 @@
     <string name="pref_location_accuracy_gps">GPS</string>
     <string name="pref_location_accuracy_cell">Другие сети</string>
     <string name="location">Местоположение</string>
-    <string name="tracks">Треки</string>
     <string name="location_summary">Настройки местоположения и ввода геометрий обходом</string>
     <string name="tracks_summary">Настройки треков</string>
     <string name="track_start">Начать запись трека</string>

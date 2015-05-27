@@ -59,7 +59,6 @@
     <string name="pref_location_accuracy_gps">GPS</string>
     <string name="pref_location_accuracy_cell">Other networks</string>
     <string name="location">Location</string>
-    <string name="tracks">Tracks</string>
     <string name="location_summary">Location and geometry by walking settings</string>
     <string name="tracks_summary">Tracks settings</string>
     <string name="track_start">Start new track</string>
