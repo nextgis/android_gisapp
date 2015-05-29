@@ -172,9 +172,9 @@ public class MainActivity
             case R.id.menu_add_remote:
                 addRemoteLayer();
                 return true;
-            /*case R.id.menu_add_ngw:
+            case R.id.menu_add_ngw:
                 addNGWLayer();
-                return true;*/
+                return true;
             case R.id.menu_locate:
                 locateCurrentPosition();
                 return true;
