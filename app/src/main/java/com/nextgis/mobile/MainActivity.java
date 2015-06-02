@@ -42,7 +42,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -86,8 +85,8 @@ public class MainActivity
     protected MapFragment     mMapFragment;
     protected LayersFragment  mLayersFragment;
     protected MessageReceiver mMessageReceiver;
-    protected Toolbar mToolbar;
-    protected MenuItem mRefreshItem;
+    protected Toolbar         mToolbar;
+    protected MenuItem        mRefreshItem;
 
     protected final static int FILE_SELECT_CODE = 555;
 
@@ -106,8 +105,9 @@ public class MainActivity
         mToolbar = (Toolbar) findViewById(R.id.main_toolbar);
         mToolbar.getBackground().setAlpha(128);
         setSupportActionBar(mToolbar);
-        if(null != getSupportActionBar())
+        if (null != getSupportActionBar()) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.primary_dark));
@@ -119,12 +119,10 @@ public class MainActivity
         mLayersFragment =
                 (LayersFragment) getSupportFragmentManager().findFragmentById(R.id.layers);
         if (mLayersFragment != null && null != mLayersFragment.getView()) {
-            mLayersFragment.getView()
-                           .setBackgroundColor(
-                                   getResources().getColor(R.color.background_material_light));
+            mLayersFragment.getView().setBackgroundColor(
+                    getResources().getColor(R.color.background_material_light));
             // Set up the drawer.
-            mLayersFragment.setUp(R.id.layers, drawerLayout,
-                                  (MapDrawable) app.getMap());
+            mLayersFragment.setUp(R.id.layers, drawerLayout, (MapDrawable) app.getMap());
         }
 
         mMessageReceiver = new MessageReceiver();
@@ -148,7 +146,9 @@ public class MainActivity
         return super.onCreateOptionsMenu(menu);
     }
 
-    public BottomToolbar getBottomToolbar(){
+
+    public BottomToolbar getBottomToolbar()
+    {
         return (BottomToolbar) findViewById(R.id.bottom_toolbar);
     }
 
@@ -191,7 +191,7 @@ public class MainActivity
                 }
                 return true;
             case R.id.menu_refresh:
-                if(null != mMapFragment) {
+                if (null != mMapFragment) {
                     mMapFragment.refresh();
                 }
                 return true;
@@ -211,14 +211,18 @@ public class MainActivity
         return super.onOptionsItemSelected(item);
     }
 
-    public void onRefresh(boolean isRefresh, int progress){
+
+    public void onRefresh(
+            boolean isRefresh,
+            int progress)
+    {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             if (null != mRefreshItem) {
                 if (isRefresh) {
-                    if(mRefreshItem.getActionView() == null) {
-                        RotateAnimation rotateAnimation =
-                                new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f,
-                                                    Animation.RELATIVE_TO_SELF, 0.5f);
+                    if (mRefreshItem.getActionView() == null) {
+                        RotateAnimation rotateAnimation = new RotateAnimation(
+                                0, 360, Animation.RELATIVE_TO_SELF, 0.5f,
+                                Animation.RELATIVE_TO_SELF, 0.5f);
                         rotateAnimation.setDuration(1500);
                         rotateAnimation.setRepeatCount(60);
                         LayoutInflater inflater = LayoutInflater.from(this);
@@ -228,10 +232,12 @@ public class MainActivity
                     }
                 } else {
                     Handler handler = new Handler(Looper.getMainLooper());
-                    final Runnable r = new Runnable() {
+                    final Runnable r = new Runnable()
+                    {
                         @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-                        public void run() {
-                            if(mRefreshItem.getActionView() != null) {
+                        public void run()
+                        {
+                            if (mRefreshItem.getActionView() != null) {
 
                                 mRefreshItem.getActionView().clearAnimation();
                                 mRefreshItem.setActionView(null);
@@ -244,16 +250,18 @@ public class MainActivity
         }
     }
 
+
     protected void addLocalLayer()
     {
         // ACTION_OPEN_DOCUMENT is the intent to choose a file via the system's file
         // browser.
         // https://developer.android.com/guide/topics/providers/document-provider.html#client
         Intent intent;
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             intent = new Intent(Intent.ACTION_GET_CONTENT);
-        else
+        } else {
             intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        }
         intent.setType("*/*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
 
@@ -264,13 +272,19 @@ public class MainActivity
         } catch (android.content.ActivityNotFoundException ex) {
             //TODO: open select local resource dialog
             // Potentially direct the user to the Market with a Dialog
-            Toast.makeText(this, getString(R.string.warning_install_file_manager),
-                           Toast.LENGTH_SHORT).show();
+            Toast.makeText(
+                    this, getString(R.string.warning_install_file_manager), Toast.LENGTH_SHORT)
+                    .show();
         }
     }
 
+
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(
+            int requestCode,
+            int resultCode,
+            Intent data)
+    {
         //http://stackoverflow.com/questions/10114324/show-dialogfragment-from-onactivityresult
         //http://stackoverflow.com/questions/16265733/failure-delivering-result-onactivityforresult/18345899
         super.onActivityResult(requestCode, resultCode, data);
@@ -283,20 +297,25 @@ public class MainActivity
                     Log.d(TAG, "File Uri: " + uri.toString());
                     //check the file type from extension
                     String fileName = FileUtil.getFileNameByUri(this, uri, "");
-                    if(fileName.endsWith("zip") || fileName.endsWith("ZIP")){ //create local tile layer
-                        if(null != mMapFragment)
+                    if (fileName.endsWith("zip") ||
+                        fileName.endsWith("ZIP")) { //create local tile layer
+                        if (null != mMapFragment) {
                             mMapFragment.addLocalTMSLayer(uri);
-                    }
-                    else if(fileName.endsWith("geojson") || fileName.endsWith("GEOJSON")){ //create local vector layer
-                        if(null != mMapFragment)
+                        }
+                    } else if (fileName.endsWith("geojson") ||
+                               fileName.endsWith("GEOJSON")) { //create local vector layer
+                        if (null != mMapFragment) {
                             mMapFragment.addLocalVectorLayer(uri);
-                    }
-                    else if(fileName.endsWith("ngfp") || fileName.endsWith("NGFP")){ //create local vector layer with form
-                        if(null != mMapFragment)
+                        }
+                    } else if (fileName.endsWith("ngfp") ||
+                               fileName.endsWith("NGFP")) { //create local vector layer with form
+                        if (null != mMapFragment) {
                             mMapFragment.addLocalVectorLayerWithForm(uri);
-                    }
-                    else{
-                        Toast.makeText(this, getString(R.string.error_file_unsupported), Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(
+                                this, getString(R.string.error_file_unsupported),
+                                Toast.LENGTH_SHORT).show();
                     }
                 }
                 break;
@@ -306,41 +325,44 @@ public class MainActivity
 
     protected void locateCurrentPosition()
     {
-        if(null != mMapFragment)
+        if (null != mMapFragment) {
             mMapFragment.locateCurrentPosition();
+        }
     }
 
-    void testSync(){
-        IGISApplication application = (IGISApplication)getApplication();
+
+    void testSync()
+    {
+        IGISApplication application = (IGISApplication) getApplication();
         MapBase map = application.getMap();
         NGWVectorLayer ngwVectorLayer;
-        for(int i = 0; i < map.getLayerCount(); i++){
+        for (int i = 0; i < map.getLayerCount(); i++) {
             ILayer layer = map.getLayer(i);
-            if(layer instanceof NGWVectorLayer)
-            {
-                ngwVectorLayer = (NGWVectorLayer)layer;
+            if (layer instanceof NGWVectorLayer) {
+                ngwVectorLayer = (NGWVectorLayer) layer;
                 ngwVectorLayer.sync(application.getAuthority(), new SyncResult());
             }
         }
     }
 
 
-    void testUpdate(){
+    void testUpdate()
+    {
         //test sync
-        IGISApplication application = (IGISApplication)getApplication();
+        IGISApplication application = (IGISApplication) getApplication();
         MapBase map = application.getMap();
         NGWVectorLayer ngwVectorLayer = null;
-        for(int i = 0; i < map.getLayerCount(); i++){
+        for (int i = 0; i < map.getLayerCount(); i++) {
             ILayer layer = map.getLayer(i);
-            if(layer instanceof NGWVectorLayer)
-            {
-                ngwVectorLayer = (NGWVectorLayer)layer;
+            if (layer instanceof NGWVectorLayer) {
+                ngwVectorLayer = (NGWVectorLayer) layer;
             }
         }
-        if(null != ngwVectorLayer) {
-            Uri uri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/" + ngwVectorLayer.getPath().getName());
-            Uri updateUri =
-                    ContentUris.withAppendedId(uri, 29);
+        if (null != ngwVectorLayer) {
+            Uri uri = Uri.parse(
+                    "content://" + SettingsConstants.AUTHORITY + "/" +
+                    ngwVectorLayer.getPath().getName());
+            Uri updateUri = ContentUris.withAppendedId(uri, 29);
             ContentValues values = new ContentValues();
             values.put("width", 4);
             values.put("azimuth", 8.0);
@@ -363,15 +385,16 @@ public class MainActivity
             int result = getContentResolver().update(updateUri, values, null, null);
             if (result == 0) {
                 Log.d(TAG, "update failed");
-            }
-            else{
+            } else {
                 Log.d(TAG, "" + result);
             }
         }
     }
 
-    void testAttachUpdate(){
-        IGISApplication application = (IGISApplication)getApplication();
+
+    void testAttachUpdate()
+    {
+        IGISApplication application = (IGISApplication) getApplication();
         /*MapBase map = application.getMap();
         NGWVectorLayer ngwVectorLayer = null;
         for(int i = 0; i < map.getLayerCount(); i++){
@@ -385,23 +408,27 @@ public class MainActivity
             Uri updateUri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/" +
                                       ngwVectorLayer.getPath().getName() + "/36/attach/1000");
         */
-            Uri updateUri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/layer_20150210140455993/36/attach/2");
+        Uri updateUri = Uri.parse(
+                "content://" + SettingsConstants.AUTHORITY +
+                "/layer_20150210140455993/36/attach/2");
 
-            ContentValues values = new ContentValues();
-            values.put(VectorLayer.ATTACH_DISPLAY_NAME, "no_image.jpg");
-            values.put(VectorLayer.ATTACH_DESCRIPTION, "simple update description");
+        ContentValues values = new ContentValues();
+        values.put(VectorLayer.ATTACH_DISPLAY_NAME, "no_image.jpg");
+        values.put(VectorLayer.ATTACH_DESCRIPTION, "simple update description");
         //    values.put(VectorLayer.ATTACH_ID, 999);
-            int result = getContentResolver().update(updateUri, values, null, null);
-            if (result == 0) {
-                Log.d(TAG, "update failed");
-            } else {
-                Log.d(TAG, "" + result);
-            }
+        int result = getContentResolver().update(updateUri, values, null, null);
+        if (result == 0) {
+            Log.d(TAG, "update failed");
+        } else {
+            Log.d(TAG, "" + result);
+        }
         //}
     }
 
-    void testAttachDelete(){
-        IGISApplication application = (IGISApplication)getApplication();
+
+    void testAttachDelete()
+    {
+        IGISApplication application = (IGISApplication) getApplication();
         /*MapBase map = application.getMap();
         NGWVectorLayer ngwVectorLayer = null;
         for(int i = 0; i < map.getLayerCount(); i++){
@@ -415,18 +442,22 @@ public class MainActivity
             Uri deleteUri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/" +
                                 ngwVectorLayer.getPath().getName() + "/36/attach/1000");
         */
-            Uri deleteUri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/layer_20150210140455993/36/attach/1");
-            int result = getContentResolver().delete(deleteUri, null, null);
-            if (result == 0) {
-                Log.d(TAG, "delete failed");
-            } else {
-                Log.d(TAG, "" + result);
-            }
+        Uri deleteUri = Uri.parse(
+                "content://" + SettingsConstants.AUTHORITY +
+                "/layer_20150210140455993/36/attach/1");
+        int result = getContentResolver().delete(deleteUri, null, null);
+        if (result == 0) {
+            Log.d(TAG, "delete failed");
+        } else {
+            Log.d(TAG, "" + result);
+        }
         //}
     }
 
-    void testAttachInsert(){
-        IGISApplication application = (IGISApplication)getApplication();
+
+    void testAttachInsert()
+    {
+        IGISApplication application = (IGISApplication) getApplication();
         /*MapBase map = application.getMap();
         NGWVectorLayer ngwVectorLayer = null;
         for(int i = 0; i < map.getLayerCount(); i++){
@@ -439,45 +470,49 @@ public class MainActivity
         if(null != ngwVectorLayer) {
             Uri uri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/" + ngwVectorLayer.getPath().getName() + "/36/attach");
         */
-            Uri uri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/layer_20150210140455993/36/attach");
-            ContentValues values = new ContentValues();
-            values.put(VectorLayer.ATTACH_DISPLAY_NAME, "test_image.jpg");
-            values.put(VectorLayer.ATTACH_MIME_TYPE, "image/jpeg");
-            values.put(VectorLayer.ATTACH_DESCRIPTION, "test image description");
+        Uri uri = Uri.parse(
+                "content://" + SettingsConstants.AUTHORITY + "/layer_20150210140455993/36/attach");
+        ContentValues values = new ContentValues();
+        values.put(VectorLayer.ATTACH_DISPLAY_NAME, "test_image.jpg");
+        values.put(VectorLayer.ATTACH_MIME_TYPE, "image/jpeg");
+        values.put(VectorLayer.ATTACH_DESCRIPTION, "test image description");
 
-            Uri result = getContentResolver().insert(uri, values);
-            if (result == null) {
-                Log.d(TAG, "insert failed");
+        Uri result = getContentResolver().insert(uri, values);
+        if (result == null) {
+            Log.d(TAG, "insert failed");
+        } else {
+            try {
+                OutputStream outStream = getContentResolver().openOutputStream(result);
+                Bitmap sourceBitmap = BitmapFactory.decodeResource(
+                        getResources(), com.nextgis.maplibui.R.drawable.bk_tile);
+                sourceBitmap.compress(Bitmap.CompressFormat.JPEG, 75, outStream);
+                outStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            else{
-                try {
-                    OutputStream outStream = getContentResolver().openOutputStream(result);
-                    Bitmap sourceBitmap = BitmapFactory.decodeResource(getResources(), com.nextgis.maplibui.R.drawable.bk_tile);
-                    sourceBitmap.compress(Bitmap.CompressFormat.JPEG, 75, outStream);
-                    outStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
 
-                Log.d(TAG, result.toString());
-            }
+            Log.d(TAG, result.toString());
+        }
         //}
     }
 
-    void testInsert(){
+
+    void testInsert()
+    {
         //test sync
-        IGISApplication application = (IGISApplication)getApplication();
+        IGISApplication application = (IGISApplication) getApplication();
         MapBase map = application.getMap();
         NGWVectorLayer ngwVectorLayer = null;
-        for(int i = 0; i < map.getLayerCount(); i++){
+        for (int i = 0; i < map.getLayerCount(); i++) {
             ILayer layer = map.getLayer(i);
-            if(layer instanceof NGWVectorLayer)
-            {
-                ngwVectorLayer = (NGWVectorLayer)layer;
+            if (layer instanceof NGWVectorLayer) {
+                ngwVectorLayer = (NGWVectorLayer) layer;
             }
         }
-        if(null != ngwVectorLayer) {
-            Uri uri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/" + ngwVectorLayer.getPath().getName());
+        if (null != ngwVectorLayer) {
+            Uri uri = Uri.parse(
+                    "content://" + SettingsConstants.AUTHORITY + "/" +
+                    ngwVectorLayer.getPath().getName());
             ContentValues values = new ContentValues();
             //values.put(VectorLayer.FIELD_ID, 26);
             values.put("width", 1);
@@ -502,34 +537,34 @@ public class MainActivity
             Uri result = getContentResolver().insert(uri, values);
             if (result == null) {
                 Log.d(TAG, "insert failed");
-            }
-            else{
+            } else {
                 Log.d(TAG, result.toString());
             }
         }
     }
 
-    void testDelete(){
-        IGISApplication application = (IGISApplication)getApplication();
+
+    void testDelete()
+    {
+        IGISApplication application = (IGISApplication) getApplication();
         MapBase map = application.getMap();
         NGWVectorLayer ngwVectorLayer = null;
-        for(int i = 0; i < map.getLayerCount(); i++){
+        for (int i = 0; i < map.getLayerCount(); i++) {
             ILayer layer = map.getLayer(i);
-            if(layer instanceof NGWVectorLayer)
-            {
-                ngwVectorLayer = (NGWVectorLayer)layer;
+            if (layer instanceof NGWVectorLayer) {
+                ngwVectorLayer = (NGWVectorLayer) layer;
             }
         }
-        if(null != ngwVectorLayer) {
-            Uri uri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/" +
-                                ngwVectorLayer.getPath().getName());
-            Uri deleteUri =
-                    ContentUris.withAppendedId(uri, 27);
+        if (null != ngwVectorLayer) {
+            Uri uri = Uri.parse(
+                    "content://" + SettingsConstants.AUTHORITY + "/" +
+                    ngwVectorLayer.getPath().getName());
+            Uri deleteUri = ContentUris.withAppendedId(uri, 27);
             int result = getContentResolver().delete(deleteUri, null, null);
             if (result == 0) {
                 Log.d(TAG, "delete failed");
             } else {
-                Log.d(TAG, ""+result);
+                Log.d(TAG, "" + result);
             }
         }
     }
@@ -537,15 +572,17 @@ public class MainActivity
 
     protected void addNGWLayer()
     {
-        if(null != mMapFragment)
+        if (null != mMapFragment) {
             mMapFragment.addNGWLayer();
+        }
     }
 
 
     protected void addRemoteLayer()
     {
-        if(null != mMapFragment)
+        if (null != mMapFragment) {
             mMapFragment.addRemoteLayer();
+        }
     }
 
 
@@ -554,18 +591,24 @@ public class MainActivity
             int code,
             ILayer layer)
     {
-        if(null != mMapFragment)
+        if (null != mMapFragment) {
             mMapFragment.onFinishChooseLayerDialog(code, layer);
+        }
     }
 
 
-    protected class MessageReceiver extends BroadcastReceiver
+    protected class MessageReceiver
+            extends BroadcastReceiver
     {
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(
+                Context context,
+                Intent intent)
+        {
             if (intent.getAction().equals(ConstantsUI.MESSAGE_INTENT)) {
-                Toast.makeText(MainActivity.this, intent.getExtras().getString(
-                        ConstantsUI.KEY_MESSAGE), Toast.LENGTH_SHORT).show();
+                Toast.makeText(
+                        MainActivity.this, intent.getExtras().getString(
+                                ConstantsUI.KEY_MESSAGE), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -589,8 +632,9 @@ public class MainActivity
         if (null != mLayersFragment && !mLayersFragment.isDrawerOpen()) {
             int title = isTrackerServiceRunning(this) ? R.string.track_stop : R.string.track_start;
             MenuItem item = menu.findItem(R.id.menu_track);
-            if(null != item)
+            if (null != item) {
                 item.setTitle(title);
+            }
         }
 
         return super.onPrepareOptionsMenu(menu);
@@ -603,6 +647,7 @@ public class MainActivity
         unregisterReceiver(mMessageReceiver);
         super.onPause();
     }
+
 
     @Override
     public void onLocationChanged(Location location)
@@ -617,7 +662,9 @@ public class MainActivity
 
     }
 
-    public void setActionBarState(boolean state) {
+
+    public void setActionBarState(boolean state)
+    {
         mLayersFragment.setDrawerToggleEnabled(state);
 
         if (state) {
@@ -632,7 +679,8 @@ public class MainActivity
     }
 
 
-    public void restoreBottomBar() {
+    public void restoreBottomBar()
+    {
         mMapFragment.restoreBottomBar();
     }
 }

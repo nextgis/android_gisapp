@@ -21,6 +21,8 @@
   -->
 
 <resources>
-    <item name="fab_expand_menu_button" type="id"/>
-    <item name="fab_label" type="id"/>
+    <item name="fab_expand_menu_button"
+          type="id"/>
+    <item name="fab_label"
+          type="id"/>
 </resources>

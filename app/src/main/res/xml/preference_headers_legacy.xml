@@ -31,35 +31,43 @@
     </Preference-->
     <Preference
         android:title="@string/map"
-        android:summary="@string/map_summary" >
+        android:summary="@string/map_summary"
+        >
         <intent
             android:targetPackage="com.nextgis.mobile"
             android:targetClass="com.nextgis.mobile.SettingsActivity"
-            android:action="com.nextgis.mobile.PREFS_MAP" />
+            android:action="com.nextgis.mobile.PREFS_MAP"
+            />
     </Preference>
     <Preference
         android:title="@string/location"
-        android:summary="@string/location_summary" >
+        android:summary="@string/location_summary"
+        >
         <intent
             android:targetPackage="com.nextgis.mobile"
             android:targetClass="com.nextgis.mobile.SettingsActivity"
-            android:action="com.nextgis.mobile.PREFS_LOCATION" />
+            android:action="com.nextgis.mobile.PREFS_LOCATION"
+            />
     </Preference>
     <Preference
         android:title="@string/tracks"
-        android:summary="@string/tracks_summary" >
+        android:summary="@string/tracks_summary"
+        >
         <intent
             android:targetPackage="com.nextgis.mobile"
             android:targetClass="com.nextgis.mobile.SettingsActivity"
-            android:action="com.nextgis.mobile.PREFS_TRACKING" />
+            android:action="com.nextgis.mobile.PREFS_TRACKING"
+            />
     </Preference>
     <Preference
         android:title="@string/ngw"
-        android:summary="@string/ngw_summary" >
+        android:summary="@string/ngw_summary"
+        >
         <intent
             android:targetPackage="com.nextgis.mobile"
             android:targetClass="com.nextgis.mobile.NGWSettingsActivityProxy"
-            android:action="com.nextgis.mobile.PREFS_NGW" />
+            android:action="com.nextgis.mobile.PREFS_NGW"
+            />
     </Preference>
 
 </PreferenceScreen>

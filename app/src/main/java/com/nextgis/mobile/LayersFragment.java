@@ -62,6 +62,7 @@ import java.util.List;
 import static com.nextgis.maplib.util.Constants.NGW_ACCOUNT_TYPE;
 import static com.nextgis.mobile.util.SettingsConstants.AUTHORITY;
 
+
 /**
  * A layers fragment class
  */
@@ -73,9 +74,10 @@ public class LayersFragment
     protected ListView              mLayersListView;
     protected View                  mFragmentContainerView;
     protected LayersListAdapter     mListAdapter;
-    protected TextView mInfoText;
-    protected SyncReceiver mSyncReceiver;
-    protected ImageButton mSyncButton;
+    protected TextView              mInfoText;
+    protected SyncReceiver          mSyncReceiver;
+    protected ImageButton           mSyncButton;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -94,13 +96,13 @@ public class LayersFragment
     {
         View view = inflater.inflate(R.layout.fragment_layers, container, false);
 
-        LinearLayout linearLayout = (LinearLayout)view.findViewById(R.id.action_space);
-        if(null != linearLayout){
+        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.action_space);
+        if (null != linearLayout) {
             linearLayout.setBackgroundColor(getResources().getColor(R.color.primary));
         }
 
         mSyncButton = (ImageButton) view.findViewById(R.id.sync);
-        mInfoText = (TextView)view.findViewById(R.id.info);
+        mInfoText = (TextView) view.findViewById(R.id.info);
 
         setupSyncOptions();
 
@@ -108,55 +110,66 @@ public class LayersFragment
         return view;
     }
 
-    protected void setupSyncOptions(){
+
+    protected void setupSyncOptions()
+    {
 
         final List<Account> accounts = new ArrayList<>();
-        final AccountManager accountManager = AccountManager.get(getActivity().getApplicationContext());
+        final AccountManager accountManager =
+                AccountManager.get(getActivity().getApplicationContext());
         Collections.addAll(accounts, accountManager.getAccountsByType(NGW_ACCOUNT_TYPE));
-        if(accounts.isEmpty()) {
-            if(null != mSyncButton) {
+        if (accounts.isEmpty()) {
+            if (null != mSyncButton) {
                 mSyncButton.setEnabled(false);
                 mSyncButton.setVisibility(View.INVISIBLE);
             }
-            if(null != mInfoText) {
+            if (null != mInfoText) {
                 mInfoText.setVisibility(View.INVISIBLE);
             }
-        }
-        else{
-            if(null != mSyncButton) {
+        } else {
+            if (null != mSyncButton) {
                 mSyncButton.setVisibility(View.VISIBLE);
-                mSyncButton.setOnClickListener(new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View view)
-                    {
-                        for (Account account : accounts) {
-                            Bundle settingsBundle = new Bundle();
-                            settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-                            settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+                mSyncButton.setOnClickListener(
+                        new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View view)
+                            {
+                                for (Account account : accounts) {
+                                    Bundle settingsBundle = new Bundle();
+                                    settingsBundle.putBoolean(
+                                            ContentResolver.SYNC_EXTRAS_MANUAL, true);
+                                    settingsBundle.putBoolean(
+                                            ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
 
-                            ContentResolver.requestSync(account, AUTHORITY, settingsBundle);
-                        }
+                                    ContentResolver.requestSync(account, AUTHORITY, settingsBundle);
+                                }
 
-                        updateInfo();
-                    }
-                });
+                                updateInfo();
+                            }
+                        });
             }
-            if(null != mInfoText) {
+            if (null != mInfoText) {
                 mInfoText.setVisibility(View.VISIBLE);
             }
         }
     }
 
-    protected void updateInfo(){
-        if(null == mInfoText)
+
+    protected void updateInfo()
+    {
+        if (null == mInfoText) {
             return;
+        }
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
                 Constants.PREFERENCES, Context.MODE_MULTI_PROCESS);
-        long timeStamp = sharedPreferences.getLong(SettingsConstants.KEY_PREF_LAST_SYNC_TIMESTAMP, 0);
-        if(timeStamp > 0){
-            mInfoText.setText(getString(R.string.last_sync_time) + ": " + new SimpleDateFormat().format(new Date(timeStamp)));
+        long timeStamp =
+                sharedPreferences.getLong(SettingsConstants.KEY_PREF_LAST_SYNC_TIMESTAMP, 0);
+        if (timeStamp > 0) {
+            mInfoText.setText(
+                    getString(R.string.last_sync_time) + ": " +
+                    new SimpleDateFormat().format(new Date(timeStamp)));
         }
     }
 
@@ -221,13 +234,14 @@ public class LayersFragment
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the navigation drawer and the action bar app icon.
 
-        mDrawerToggle = new ActionBarDrawerToggle(getActivity(),                    // host Activity
-                                                  mDrawerLayout,// DrawerLayout object
+        mDrawerToggle = new ActionBarDrawerToggle(
+                getActivity(),                    // host Activity
+                mDrawerLayout,// DrawerLayout object
 //                R.drawable.ic_drawer,             // nav drawer image to replace 'Up' caret
-                                                  R.string.layers_drawer_open,
-                                                  // "open drawer" description for accessibility
-                                                  R.string.layers_drawer_close
-                                                  // "close drawer" description for accessibility
+                R.string.layers_drawer_open,
+                // "open drawer" description for accessibility
+                R.string.layers_drawer_close
+                // "close drawer" description for accessibility
         )
         {
             @Override
@@ -256,14 +270,15 @@ public class LayersFragment
         };
 
         // Defer code dependent on restoration of previous instance state.
-        mDrawerLayout.post(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                mDrawerToggle.syncState();
-            }
-        });
+        mDrawerLayout.post(
+                new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        mDrawerToggle.syncState();
+                    }
+                });
 
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
@@ -274,10 +289,11 @@ public class LayersFragment
         if (mDrawerToggle != null) {
             mDrawerToggle.setDrawerIndicatorEnabled(state);
 
-            if (state)
+            if (state) {
                 mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-            else
+            } else {
                 mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            }
         }
     }
 
@@ -297,13 +313,15 @@ public class LayersFragment
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
+
     public void refresh(boolean start)
     {
-        if (mSyncButton == null)
+        if (mSyncButton == null) {
             return;
+        }
         if (start) {
-            RotateAnimation rotateAnimation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
-                                                                  0.5f);
+            RotateAnimation rotateAnimation = new RotateAnimation(
+                    0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
             rotateAnimation.setFillAfter(true);
             rotateAnimation.setDuration(700);
             rotateAnimation.setRepeatCount(500);
@@ -313,6 +331,7 @@ public class LayersFragment
             mSyncButton.clearAnimation();
         }
     }
+
 
     @Override
     public void onResume()
@@ -334,14 +353,18 @@ public class LayersFragment
     }
 
 
-    protected class SyncReceiver extends BroadcastReceiver {
+    protected class SyncReceiver
+            extends BroadcastReceiver
+    {
 
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(
+                Context context,
+                Intent intent)
+        {
             if (intent.getAction().equals(SyncAdapter.SYNC_START)) {
                 refresh(true);
-            }
-            else if (intent.getAction().equals(SyncAdapter.SYNC_FINISH)) {
+            } else if (intent.getAction().equals(SyncAdapter.SYNC_FINISH)) {
                 refresh(false);
                 updateInfo();
             }

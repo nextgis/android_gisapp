@@ -44,7 +44,9 @@ import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.view.animation.AnimatorProxy;
 
 
-public class FloatingActionsMenu extends ViewGroup {
+public class FloatingActionsMenu
+        extends ViewGroup
+{
     public static final int EXPAND_UP    = 0;
     public static final int EXPAND_DOWN  = 1;
     public static final int EXPAND_LEFT  = 2;
@@ -117,316 +119,409 @@ public class FloatingActionsMenu extends ViewGroup {
             AttributeSet attributeSet)
     {
         mButtonSpacing = (int) (getResources().getDimension(R.dimen.fab_actions_spacing) -
-                                getResources().getDimension(R.dimen.fab_shadow_radius) - getResources().getDimension(R.dimen.fab_shadow_offset));
-    mLabelsMargin = getResources().getDimensionPixelSize(R.dimen.fab_labels_margin);
-    mLabelsVerticalOffset = getResources().getDimensionPixelSize(R.dimen.fab_shadow_offset);
+                                getResources().getDimension(R.dimen.fab_shadow_radius) -
+                                getResources().getDimension(R.dimen.fab_shadow_offset));
+        mLabelsMargin = getResources().getDimensionPixelSize(R.dimen.fab_labels_margin);
+        mLabelsVerticalOffset = getResources().getDimensionPixelSize(R.dimen.fab_shadow_offset);
 
-    TypedArray attr = context.obtainStyledAttributes(attributeSet, R.styleable.FloatingActionsMenu, 0, 0);
-    mAddButtonPlusColor = attr.getColor(R.styleable.FloatingActionsMenu_fab_addButtonPlusIconColor, getColor(android.R.color.white));
-    mAddButtonColorNormal = attr.getColor(R.styleable.FloatingActionsMenu_fab_addButtonColorNormal, getColor(R.color.primary));
-    mAddButtonColorPressed = attr.getColor(R.styleable.FloatingActionsMenu_fab_addButtonColorPressed, getColor(R.color.accent));
-    mAddButtonSize = attr.getInt(R.styleable.FloatingActionsMenu_fab_addButtonSize, FloatingActionButton.SIZE_NORMAL);
-    mAddButtonStrokeVisible = attr.getBoolean(R.styleable.FloatingActionsMenu_fab_addButtonStrokeVisible, true);
-    mExpandDirection = attr.getInt(R.styleable.FloatingActionsMenu_fab_expandDirection, EXPAND_UP);
-    mLabelsStyle = attr.getResourceId(R.styleable.FloatingActionsMenu_fab_labelStyle, 0);
-    attr.recycle();
+        TypedArray attr =
+                context.obtainStyledAttributes(attributeSet, R.styleable.FloatingActionsMenu, 0, 0);
+        mAddButtonPlusColor = attr.getColor(
+                R.styleable.FloatingActionsMenu_fab_addButtonPlusIconColor,
+                getColor(android.R.color.white));
+        mAddButtonColorNormal = attr.getColor(
+                R.styleable.FloatingActionsMenu_fab_addButtonColorNormal,
+                getColor(R.color.primary));
+        mAddButtonColorPressed = attr.getColor(
+                R.styleable.FloatingActionsMenu_fab_addButtonColorPressed,
+                getColor(R.color.accent));
+        mAddButtonSize = attr.getInt(
+                R.styleable.FloatingActionsMenu_fab_addButtonSize,
+                FloatingActionButton.SIZE_NORMAL);
+        mAddButtonStrokeVisible =
+                attr.getBoolean(R.styleable.FloatingActionsMenu_fab_addButtonStrokeVisible, true);
+        mExpandDirection =
+                attr.getInt(R.styleable.FloatingActionsMenu_fab_expandDirection, EXPAND_UP);
+        mLabelsStyle = attr.getResourceId(R.styleable.FloatingActionsMenu_fab_labelStyle, 0);
+        attr.recycle();
 
-    if (mLabelsStyle != 0 && expandsHorizontally()) {
-      throw new IllegalStateException("Action labels in horizontal expand orientation is not supported.");
+        if (mLabelsStyle != 0 && expandsHorizontally()) {
+            throw new IllegalStateException(
+                    "Action labels in horizontal expand orientation is not supported.");
+        }
+
+        createAddButton(context);
     }
 
-    createAddButton(context);
-  }
 
-  public void setOnFloatingActionsMenuUpdateListener(OnFloatingActionsMenuUpdateListener listener) {
-    mListener = listener;
-  }
-
-  private boolean expandsHorizontally() {
-    return mExpandDirection == EXPAND_LEFT || mExpandDirection == EXPAND_RIGHT;
-  }
-
-  private static class RotatingDrawable extends LayerDrawable {
-    public RotatingDrawable(Drawable drawable) {
-      super(new Drawable[] { drawable });
+    public void setOnFloatingActionsMenuUpdateListener(OnFloatingActionsMenuUpdateListener listener)
+    {
+        mListener = listener;
     }
 
-    private float mRotation;
 
-    @SuppressWarnings("UnusedDeclaration")
-    public float getRotation() {
-      return mRotation;
+    private boolean expandsHorizontally()
+    {
+        return mExpandDirection == EXPAND_LEFT || mExpandDirection == EXPAND_RIGHT;
     }
 
-    @SuppressWarnings("UnusedDeclaration")
-    public void setRotation(float rotation) {
-      mRotation = rotation;
-      invalidateSelf();
+
+    private static class RotatingDrawable
+            extends LayerDrawable
+    {
+        public RotatingDrawable(Drawable drawable)
+        {
+            super(new Drawable[] {drawable});
+        }
+
+
+        private float mRotation;
+
+
+        @SuppressWarnings("UnusedDeclaration")
+        public float getRotation()
+        {
+            return mRotation;
+        }
+
+
+        @SuppressWarnings("UnusedDeclaration")
+        public void setRotation(float rotation)
+        {
+            mRotation = rotation;
+            invalidateSelf();
+        }
+
+
+        @Override
+        public void draw(Canvas canvas)
+        {
+            canvas.save();
+            canvas.rotate(mRotation, getBounds().centerX(), getBounds().centerY());
+            super.draw(canvas);
+            canvas.restore();
+        }
     }
+
+
+    private void createAddButton(Context context)
+    {
+        mAddButton = new AddFloatingActionButton(context)
+        {
+            @Override
+            void updateBackground()
+            {
+                mPlusColor = mAddButtonPlusColor;
+                mColorNormal = mAddButtonColorNormal;
+                mColorPressed = mAddButtonColorPressed;
+                mStrokeVisible = mAddButtonStrokeVisible;
+                super.updateBackground();
+            }
+
+
+            @Override
+            Drawable getIconDrawable()
+            {
+                final RotatingDrawable rotatingDrawable =
+                        new RotatingDrawable(super.getIconDrawable());
+                mRotatingDrawable = rotatingDrawable;
+
+                final OvershootInterpolator interpolator = new OvershootInterpolator();
+
+                final ObjectAnimator collapseAnimator = ObjectAnimator.ofFloat(
+                        rotatingDrawable, "rotation", EXPANDED_PLUS_ROTATION,
+                        COLLAPSED_PLUS_ROTATION);
+                final ObjectAnimator expandAnimator = ObjectAnimator.ofFloat(
+                        rotatingDrawable, "rotation", COLLAPSED_PLUS_ROTATION,
+                        EXPANDED_PLUS_ROTATION);
+
+                collapseAnimator.setInterpolator(interpolator);
+                expandAnimator.setInterpolator(interpolator);
+
+                mExpandAnimation.play(expandAnimator);
+                mCollapseAnimation.play(collapseAnimator);
+
+                return rotatingDrawable;
+            }
+        };
+
+        mAddButton.setId(R.id.fab_expand_menu_button);
+        mAddButton.setSize(mAddButtonSize);
+        mAddButton.setOnClickListener(
+                new OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        toggle();
+                    }
+                });
+
+        addView(mAddButton, super.generateDefaultLayoutParams());
+    }
+
+
+    public void addButton(FloatingActionButton button)
+    {
+        addView(button, mButtonsCount - 1);
+        mButtonsCount++;
+
+        if (mLabelsStyle != 0) {
+            createLabels();
+        }
+    }
+
+
+    public void removeButton(FloatingActionButton button)
+    {
+        removeView(button.getLabelView());
+        removeView(button);
+        mButtonsCount--;
+    }
+
+
+    private int getColor(
+            @ColorRes
+            int id)
+    {
+        return getResources().getColor(id);
+    }
+
 
     @Override
-    public void draw(Canvas canvas) {
-      canvas.save();
-      canvas.rotate(mRotation, getBounds().centerX(), getBounds().centerY());
-      super.draw(canvas);
-      canvas.restore();
-    }
-  }
+    protected void onMeasure(
+            int widthMeasureSpec,
+            int heightMeasureSpec)
+    {
+        measureChildren(widthMeasureSpec, heightMeasureSpec);
 
-  private void createAddButton(Context context) {
-    mAddButton = new AddFloatingActionButton(context) {
-      @Override
-      void updateBackground() {
-        mPlusColor = mAddButtonPlusColor;
-        mColorNormal = mAddButtonColorNormal;
-        mColorPressed = mAddButtonColorPressed;
-        mStrokeVisible = mAddButtonStrokeVisible;
-        super.updateBackground();
-      }
+        int width = 0;
+        int height = 0;
 
-      @Override
-      Drawable getIconDrawable() {
-        final RotatingDrawable rotatingDrawable = new RotatingDrawable(super.getIconDrawable());
-        mRotatingDrawable = rotatingDrawable;
+        mMaxButtonWidth = 0;
+        mMaxButtonHeight = 0;
+        int maxLabelWidth = 0;
 
-        final OvershootInterpolator interpolator = new OvershootInterpolator();
+        for (int i = 0; i < mButtonsCount; i++) {
+            View child = getChildAt(i);
 
-        final ObjectAnimator collapseAnimator = ObjectAnimator.ofFloat(rotatingDrawable, "rotation", EXPANDED_PLUS_ROTATION, COLLAPSED_PLUS_ROTATION);
-        final ObjectAnimator expandAnimator = ObjectAnimator.ofFloat(rotatingDrawable, "rotation", COLLAPSED_PLUS_ROTATION, EXPANDED_PLUS_ROTATION);
+            if (child.getVisibility() == GONE) {
+                continue;
+            }
 
-        collapseAnimator.setInterpolator(interpolator);
-        expandAnimator.setInterpolator(interpolator);
+            switch (mExpandDirection) {
+                case EXPAND_UP:
+                case EXPAND_DOWN:
+                    mMaxButtonWidth = Math.max(mMaxButtonWidth, child.getMeasuredWidth());
+                    height += child.getMeasuredHeight();
+                    break;
+                case EXPAND_LEFT:
+                case EXPAND_RIGHT:
+                    width += child.getMeasuredWidth();
+                    mMaxButtonHeight = Math.max(mMaxButtonHeight, child.getMeasuredHeight());
+                    break;
+            }
 
-        mExpandAnimation.play(expandAnimator);
-        mCollapseAnimation.play(collapseAnimator);
-
-        return rotatingDrawable;
-      }
-    };
-
-    mAddButton.setId(R.id.fab_expand_menu_button);
-    mAddButton.setSize(mAddButtonSize);
-    mAddButton.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        toggle();
-      }
-    });
-
-    addView(mAddButton, super.generateDefaultLayoutParams());
-  }
-
-  public void addButton(FloatingActionButton button) {
-    addView(button, mButtonsCount - 1);
-    mButtonsCount++;
-
-    if (mLabelsStyle != 0) {
-      createLabels();
-    }
-  }
-
-  public void removeButton(FloatingActionButton button) {
-    removeView(button.getLabelView());
-    removeView(button);
-    mButtonsCount--;
-  }
-
-  private int getColor(@ColorRes int id) {
-    return getResources().getColor(id);
-  }
-
-  @Override
-  protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-    measureChildren(widthMeasureSpec, heightMeasureSpec);
-
-    int width = 0;
-    int height = 0;
-
-    mMaxButtonWidth = 0;
-    mMaxButtonHeight = 0;
-    int maxLabelWidth = 0;
-
-    for (int i = 0; i < mButtonsCount; i++) {
-      View child = getChildAt(i);
-
-      if (child.getVisibility() == GONE) {
-        continue;
-      }
-
-      switch (mExpandDirection) {
-      case EXPAND_UP:
-      case EXPAND_DOWN:
-        mMaxButtonWidth = Math.max(mMaxButtonWidth, child.getMeasuredWidth());
-        height += child.getMeasuredHeight();
-        break;
-      case EXPAND_LEFT:
-      case EXPAND_RIGHT:
-        width += child.getMeasuredWidth();
-        mMaxButtonHeight = Math.max(mMaxButtonHeight, child.getMeasuredHeight());
-        break;
-      }
-
-      if (!expandsHorizontally()) {
-        TextView label = (TextView) child.getTag(R.id.fab_label);
-        if (label != null) {
-          maxLabelWidth = Math.max(maxLabelWidth, label.getMeasuredWidth());
-        }
-      }
-    }
-
-    if (!expandsHorizontally()) {
-      width = mMaxButtonWidth + (maxLabelWidth > 0 ? maxLabelWidth + mLabelsMargin : 0);
-    } else {
-      height = mMaxButtonHeight;
-    }
-
-    switch (mExpandDirection) {
-    case EXPAND_UP:
-    case EXPAND_DOWN:
-      height += mButtonSpacing * (getChildCount() - 1);
-      height = adjustForOvershoot(height);
-      break;
-    case EXPAND_LEFT:
-    case EXPAND_RIGHT:
-      width += mButtonSpacing * (getChildCount() - 1);
-      width = adjustForOvershoot(width);
-      break;
-    }
-
-    setMeasuredDimension(width, height);
-  }
-
-  private int adjustForOvershoot(int dimension) {
-    return dimension * 12 / 10;
-  }
-
-  @Override
-  protected void onLayout(boolean changed, int l, int t, int r, int b) {
-    switch (mExpandDirection) {
-    case EXPAND_UP:
-    case EXPAND_DOWN:
-      boolean expandUp = mExpandDirection == EXPAND_UP;
-
-      int addButtonY = expandUp ? b - t - mAddButton.getMeasuredHeight() : 0;
-      // Ensure mAddButton is centered on the line where the buttons should be
-      int addButtonLeft = r - l - mMaxButtonWidth + (mMaxButtonWidth - mAddButton.getMeasuredWidth()) / 2;
-      mAddButton.layout(addButtonLeft, addButtonY, addButtonLeft + mAddButton.getMeasuredWidth(), addButtonY + mAddButton.getMeasuredHeight());
-
-      int labelsRight = r - l - mMaxButtonWidth - mLabelsMargin;
-
-      int nextY = expandUp ?
-          addButtonY - mButtonSpacing :
-          addButtonY + mAddButton.getMeasuredHeight() + mButtonSpacing;
-
-      for (int i = mButtonsCount - 1; i >= 0; i--) {
-        final View child = getChildAt(i);
-
-        if (child == mAddButton || child.getVisibility() == GONE) continue;
-
-        AnimatorProxy proxy = AnimatorProxy.wrap(child);
-
-        int childX = addButtonLeft + (mAddButton.getMeasuredWidth() - child.getMeasuredWidth()) / 2;
-        int childY = expandUp ? nextY - child.getMeasuredHeight() : nextY;
-
-        float collapsedTranslation = addButtonY - childY;
-        float expandedTranslation = 0f;
-
-        proxy.setTranslationY(mExpanded ? expandedTranslation : collapsedTranslation);
-        proxy.setAlpha(mExpanded ? 1f : 0f);
-
-        child.layout(childX, childY, childX + child.getMeasuredWidth(), childY + child.getMeasuredHeight());
-
-        LayoutParams params = (LayoutParams) child.getLayoutParams();
-        params.mCollapseDir.setFloatValues(expandedTranslation, collapsedTranslation);
-        params.mExpandDir.setFloatValues(collapsedTranslation, expandedTranslation);
-        params.setAnimationsTarget(proxy);
-
-        View label = (View) child.getTag(R.id.fab_label);
-        if (label != null) {
-          int labelLeft = labelsRight - label.getMeasuredWidth();
-          int labelTop = childY - mLabelsVerticalOffset + (child.getMeasuredHeight() - label.getMeasuredHeight()) / 2;
-
-          AnimatorProxy proxyLabel = AnimatorProxy.wrap(label);
-
-          proxyLabel.setTranslationY(mExpanded ? expandedTranslation : collapsedTranslation);
-          proxyLabel.setAlpha(mExpanded ? 1f : 0f);
-          label.layout(labelLeft, labelTop, labelsRight, labelTop + label.getMeasuredHeight());
-
-          LayoutParams labelParams = (LayoutParams) label.getLayoutParams();
-          labelParams.mCollapseDir.setFloatValues(expandedTranslation, collapsedTranslation);
-          labelParams.mExpandDir.setFloatValues(collapsedTranslation, expandedTranslation);
-          labelParams.setAnimationsTarget(proxyLabel);
+            if (!expandsHorizontally()) {
+                TextView label = (TextView) child.getTag(R.id.fab_label);
+                if (label != null) {
+                    maxLabelWidth = Math.max(maxLabelWidth, label.getMeasuredWidth());
+                }
+            }
         }
 
-        nextY = expandUp ?
-            childY - mButtonSpacing :
-            childY + child.getMeasuredHeight() + mButtonSpacing;
-      }
-      break;
+        if (!expandsHorizontally()) {
+            width = mMaxButtonWidth + (maxLabelWidth > 0 ? maxLabelWidth + mLabelsMargin : 0);
+        } else {
+            height = mMaxButtonHeight;
+        }
 
-    case EXPAND_LEFT:
-    case EXPAND_RIGHT:
-      boolean expandLeft = mExpandDirection == EXPAND_LEFT;
+        switch (mExpandDirection) {
+            case EXPAND_UP:
+            case EXPAND_DOWN:
+                height += mButtonSpacing * (getChildCount() - 1);
+                height = adjustForOvershoot(height);
+                break;
+            case EXPAND_LEFT:
+            case EXPAND_RIGHT:
+                width += mButtonSpacing * (getChildCount() - 1);
+                width = adjustForOvershoot(width);
+                break;
+        }
 
-      int addButtonX = expandLeft ? r - l - mAddButton.getMeasuredWidth() : 0;
-      // Ensure mAddButton is centered on the line where the buttons should be
-      int addButtonTop = b - t - mMaxButtonHeight + (mMaxButtonHeight - mAddButton.getMeasuredHeight()) / 2;
-      mAddButton.layout(addButtonX, addButtonTop, addButtonX + mAddButton.getMeasuredWidth(), addButtonTop + mAddButton.getMeasuredHeight());
-
-      int nextX = expandLeft ?
-          addButtonX - mButtonSpacing :
-          addButtonX + mAddButton.getMeasuredWidth() + mButtonSpacing;
-
-      for (int i = mButtonsCount - 1; i >= 0; i--) {
-        final View child = getChildAt(i);
-
-        if (child == mAddButton || child.getVisibility() == GONE) continue;
-
-        AnimatorProxy proxy = AnimatorProxy.wrap(child);
-        int childX = expandLeft ? nextX - child.getMeasuredWidth() : nextX;
-        int childY = addButtonTop + (mAddButton.getMeasuredHeight() - child.getMeasuredHeight()) / 2;
-
-        float collapsedTranslation = addButtonX - childX;
-        float expandedTranslation = 0f;
-
-
-        proxy.setTranslationX(mExpanded ? expandedTranslation : collapsedTranslation);
-        proxy.setAlpha(mExpanded ? 1f : 0f);
-        child.layout(childX, childY, childX + child.getMeasuredWidth(), childY + child.getMeasuredHeight());
-
-        LayoutParams params = (LayoutParams) child.getLayoutParams();
-        params.mCollapseDir.setFloatValues(expandedTranslation, collapsedTranslation);
-        params.mExpandDir.setFloatValues(collapsedTranslation, expandedTranslation);
-        params.setAnimationsTarget(proxy);
-
-        nextX = expandLeft ?
-            childX - mButtonSpacing :
-            childX + child.getMeasuredWidth() + mButtonSpacing;
-      }
-
-      break;
+        setMeasuredDimension(width, height);
     }
-  }
 
-  @Override
-  protected ViewGroup.LayoutParams generateDefaultLayoutParams() {
-    return new LayoutParams(super.generateDefaultLayoutParams());
-  }
 
-  @Override
-  public ViewGroup.LayoutParams generateLayoutParams(AttributeSet attrs) {
-    return new LayoutParams(super.generateLayoutParams(attrs));
-  }
+    private int adjustForOvershoot(int dimension)
+    {
+        return dimension * 12 / 10;
+    }
 
-  @Override
-  protected ViewGroup.LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
-    return new LayoutParams(super.generateLayoutParams(p));
-  }
 
-  @Override
-  protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
-    return super.checkLayoutParams(p);
-  }
+    @Override
+    protected void onLayout(
+            boolean changed,
+            int l,
+            int t,
+            int r,
+            int b)
+    {
+        switch (mExpandDirection) {
+            case EXPAND_UP:
+            case EXPAND_DOWN:
+                boolean expandUp = mExpandDirection == EXPAND_UP;
+
+                int addButtonY = expandUp ? b - t - mAddButton.getMeasuredHeight() : 0;
+                // Ensure mAddButton is centered on the line where the buttons should be
+                int addButtonLeft = r - l - mMaxButtonWidth +
+                                    (mMaxButtonWidth - mAddButton.getMeasuredWidth()) / 2;
+                mAddButton.layout(
+                        addButtonLeft, addButtonY, addButtonLeft + mAddButton.getMeasuredWidth(),
+                        addButtonY + mAddButton.getMeasuredHeight());
+
+                int labelsRight = r - l - mMaxButtonWidth - mLabelsMargin;
+
+                int nextY = expandUp
+                            ? addButtonY - mButtonSpacing
+                            : addButtonY + mAddButton.getMeasuredHeight() + mButtonSpacing;
+
+                for (int i = mButtonsCount - 1; i >= 0; i--) {
+                    final View child = getChildAt(i);
+
+                    if (child == mAddButton || child.getVisibility() == GONE) {
+                        continue;
+                    }
+
+                    AnimatorProxy proxy = AnimatorProxy.wrap(child);
+
+                    int childX = addButtonLeft +
+                                 (mAddButton.getMeasuredWidth() - child.getMeasuredWidth()) / 2;
+                    int childY = expandUp ? nextY - child.getMeasuredHeight() : nextY;
+
+                    float collapsedTranslation = addButtonY - childY;
+                    float expandedTranslation = 0f;
+
+                    proxy.setTranslationY(mExpanded ? expandedTranslation : collapsedTranslation);
+                    proxy.setAlpha(mExpanded ? 1f : 0f);
+
+                    child.layout(
+                            childX, childY, childX + child.getMeasuredWidth(),
+                            childY + child.getMeasuredHeight());
+
+                    LayoutParams params = (LayoutParams) child.getLayoutParams();
+                    params.mCollapseDir.setFloatValues(expandedTranslation, collapsedTranslation);
+                    params.mExpandDir.setFloatValues(collapsedTranslation, expandedTranslation);
+                    params.setAnimationsTarget(proxy);
+
+                    View label = (View) child.getTag(R.id.fab_label);
+                    if (label != null) {
+                        int labelLeft = labelsRight - label.getMeasuredWidth();
+                        int labelTop = childY - mLabelsVerticalOffset +
+                                       (child.getMeasuredHeight() - label.getMeasuredHeight()) / 2;
+
+                        AnimatorProxy proxyLabel = AnimatorProxy.wrap(label);
+
+                        proxyLabel.setTranslationY(
+                                mExpanded ? expandedTranslation : collapsedTranslation);
+                        proxyLabel.setAlpha(mExpanded ? 1f : 0f);
+                        label.layout(
+                                labelLeft, labelTop, labelsRight,
+                                labelTop + label.getMeasuredHeight());
+
+                        LayoutParams labelParams = (LayoutParams) label.getLayoutParams();
+                        labelParams.mCollapseDir.setFloatValues(
+                                expandedTranslation, collapsedTranslation);
+                        labelParams.mExpandDir.setFloatValues(
+                                collapsedTranslation, expandedTranslation);
+                        labelParams.setAnimationsTarget(proxyLabel);
+                    }
+
+                    nextY = expandUp
+                            ? childY - mButtonSpacing
+                            : childY + child.getMeasuredHeight() + mButtonSpacing;
+                }
+                break;
+
+            case EXPAND_LEFT:
+            case EXPAND_RIGHT:
+                boolean expandLeft = mExpandDirection == EXPAND_LEFT;
+
+                int addButtonX = expandLeft ? r - l - mAddButton.getMeasuredWidth() : 0;
+                // Ensure mAddButton is centered on the line where the buttons should be
+                int addButtonTop = b - t - mMaxButtonHeight +
+                                   (mMaxButtonHeight - mAddButton.getMeasuredHeight()) / 2;
+                mAddButton.layout(
+                        addButtonX, addButtonTop, addButtonX + mAddButton.getMeasuredWidth(),
+                        addButtonTop + mAddButton.getMeasuredHeight());
+
+                int nextX = expandLeft
+                            ? addButtonX - mButtonSpacing
+                            : addButtonX + mAddButton.getMeasuredWidth() + mButtonSpacing;
+
+                for (int i = mButtonsCount - 1; i >= 0; i--) {
+                    final View child = getChildAt(i);
+
+                    if (child == mAddButton || child.getVisibility() == GONE) {
+                        continue;
+                    }
+
+                    AnimatorProxy proxy = AnimatorProxy.wrap(child);
+                    int childX = expandLeft ? nextX - child.getMeasuredWidth() : nextX;
+                    int childY = addButtonTop +
+                                 (mAddButton.getMeasuredHeight() - child.getMeasuredHeight()) / 2;
+
+                    float collapsedTranslation = addButtonX - childX;
+                    float expandedTranslation = 0f;
+
+
+                    proxy.setTranslationX(mExpanded ? expandedTranslation : collapsedTranslation);
+                    proxy.setAlpha(mExpanded ? 1f : 0f);
+                    child.layout(
+                            childX, childY, childX + child.getMeasuredWidth(),
+                            childY + child.getMeasuredHeight());
+
+                    LayoutParams params = (LayoutParams) child.getLayoutParams();
+                    params.mCollapseDir.setFloatValues(expandedTranslation, collapsedTranslation);
+                    params.mExpandDir.setFloatValues(collapsedTranslation, expandedTranslation);
+                    params.setAnimationsTarget(proxy);
+
+                    nextX = expandLeft
+                            ? childX - mButtonSpacing
+                            : childX + child.getMeasuredWidth() + mButtonSpacing;
+                }
+
+                break;
+        }
+    }
+
+
+    @Override
+    protected ViewGroup.LayoutParams generateDefaultLayoutParams()
+    {
+        return new LayoutParams(super.generateDefaultLayoutParams());
+    }
+
+
+    @Override
+    public ViewGroup.LayoutParams generateLayoutParams(AttributeSet attrs)
+    {
+        return new LayoutParams(super.generateLayoutParams(attrs));
+    }
+
+
+    @Override
+    protected ViewGroup.LayoutParams generateLayoutParams(ViewGroup.LayoutParams p)
+    {
+        return new LayoutParams(super.generateLayoutParams(p));
+    }
+
+
+    @Override
+    protected boolean checkLayoutParams(ViewGroup.LayoutParams p)
+    {
+        return super.checkLayoutParams(p);
+    }
 
 
     private static Interpolator sExpandInterpolator      = new OvershootInterpolator();
@@ -517,8 +612,9 @@ public class FloatingActionsMenu extends ViewGroup {
             String title = button.getTitle();
 
             if (button == mAddButton || title == null ||
-                button.getTag(R.id.fab_label) != null)
+                button.getTag(R.id.fab_label) != null) {
                 continue;
+            }
 
             TextView label = new TextView(context);
             label.setText(button.getTitle());

@@ -24,7 +24,6 @@ package com.nextgis.mobile;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
 import com.nextgis.maplib.util.SettingsConstants;
@@ -34,12 +33,15 @@ import static com.nextgis.mobile.SettingsActivity.initializeShowCurrentLocation;
 
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public class SettingsFragment extends PreferenceFragment
+public class SettingsFragment
+        extends PreferenceFragment
 {
     //protected SettingsSupport support;
 
+
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         String settings = getArguments().getString("settings");
         switch (settings) {
@@ -53,8 +55,9 @@ public class SettingsFragment extends PreferenceFragment
                         SettingsConstantsUI.KEY_PREF_COORD_FORMAT);
                 SettingsActivity.initializeCoordinateFormat(lpCoordinateFormat);
 
-                final SelectMapPathDialogPreference mapPath = (SelectMapPathDialogPreference) findPreference(
-                        SettingsConstants.KEY_PREF_MAP_PATH);
+                final SelectMapPathDialogPreference mapPath =
+                        (SelectMapPathDialogPreference) findPreference(
+                                SettingsConstants.KEY_PREF_MAP_PATH);
                 SettingsActivity.initializeMapPath(getActivity(), mapPath);
 
                 final ListPreference showCurrentLocation = (ListPreference) findPreference(

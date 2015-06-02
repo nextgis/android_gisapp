@@ -21,6 +21,8 @@
   -->
 
 <resources>
-    <item name="fragment_map" type="layout">@layout/fragment_map_tab</item>
+    <item name="fragment_map"
+          type="layout">@layout/fragment_map_tab
+    </item>
     <bool name="isTablet">true</bool>
 </resources>

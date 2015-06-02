@@ -25,7 +25,8 @@
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
-    <style name="AppBaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppBaseTheme"
+           parent="Theme.AppCompat.Light.NoActionBar">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
@@ -37,14 +38,15 @@
         <item name="undoBarStyle">@style/UndoBarMaterialStyle</item>
     </style>
 
-    <!-- Application theme. -->
-    <style name="AppTheme" parent="AppBaseTheme">
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
-        <item name="windowActionBarOverlay">true</item>
-        <item name="windowActionModeOverlay">false</item>
-    </style>
+    <!-- Application theme. --><style name="AppTheme"
+                                      parent="AppBaseTheme">
+    <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    <item name="windowActionBarOverlay">true</item>
+    <item name="windowActionModeOverlay">false</item>
+</style>
 
-    <style name="AppBlackTextTheme" parent="AppTheme">
+    <style name="AppBlackTextTheme"
+           parent="AppTheme">
         <item name="android:textColor">@color/primary_text_default_material_light</item>
     </style>
 
@@ -57,7 +59,8 @@
         <item name="android:textViewStyle">@style/status_panel_text</item>
     </style>
 
-    <style name="status_panel_text" parent="android:Widget.TextView">
+    <style name="status_panel_text"
+           parent="android:Widget.TextView">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:drawablePadding">2dp</item>
@@ -67,7 +70,8 @@
         <item name="android:gravity">center_vertical</item>
     </style>
 
-    <style name="status_panel_text_land" parent="status_panel_text">
+    <style name="status_panel_text_land"
+           parent="status_panel_text">
         <item name="android:singleLine">true</item>
     </style>
 

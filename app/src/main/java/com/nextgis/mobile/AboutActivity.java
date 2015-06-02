@@ -50,7 +50,8 @@ public class AboutActivity
             String pkgName = this.getPackageName();
             PackageManager pm = this.getPackageManager();
             String versionName = pm.getPackageInfo(pkgName, 0).versionName;
-            String versionCode = Integer.toString(pm.getPackageInfo(this.getPackageName(), 0).versionCode);
+            String versionCode =
+                    Integer.toString(pm.getPackageInfo(this.getPackageName(), 0).versionCode);
             txtVersion.setText("v. " + versionName + " (rev. " + versionCode + ")");
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
@@ -65,12 +66,16 @@ public class AboutActivity
         txtCopyrightText.setText(Html.fromHtml(getString(R.string.copyright)));
         txtCopyrightText.setMovementMethod(LinkMovementMethod.getInstance());
 
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (null != getSupportActionBar()) {
+            getSupportActionBar().setHomeButtonEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
+
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();

@@ -23,7 +23,6 @@
 package com.nextgis.mobile;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
@@ -51,7 +50,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -85,6 +83,7 @@ import com.nextgis.maplibui.util.SettingsConstantsUI;
 import java.util.List;
 
 import static com.nextgis.mobile.util.SettingsConstants.*;
+
 
 public class MapFragment
         extends Fragment
@@ -142,8 +141,9 @@ public class MapFragment
     protected void setMode(int mode)
     {
         MainActivity activity = (MainActivity) getActivity();
-        if (null == activity)
+        if (null == activity) {
             return;
+        }
 
         final BottomToolbar toolbar = activity.getBottomToolbar();
         switch (mode) {
@@ -151,22 +151,26 @@ public class MapFragment
                 if (null != toolbar) {
                     toolbar.setVisibility(View.GONE);
                 }
-                if (null != mMainButton)
+                if (null != mMainButton) {
                     mMainButton.setVisibility(View.VISIBLE);
+                }
 
-                if (mShowStatusPanel)
+                if (mShowStatusPanel) {
                     mStatusPanel.setVisibility(View.VISIBLE);
+                }
                 break;
             case MODE_EDIT:
                 if (null != toolbar) {
-                    if (null != mMainButton)
+                    if (null != mMainButton) {
                         mMainButton.setVisibility(View.GONE);
+                    }
                     mStatusPanel.setVisibility(View.INVISIBLE);
                     toolbar.setVisibility(View.VISIBLE);
                     toolbar.getBackground().setAlpha(128);
                     Menu menu = toolbar.getMenu();
-                    if (null != menu)
+                    if (null != menu) {
                         menu.clear();
+                    }
 
                     if (null != mEditLayerOverlay) {
                         mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT);
@@ -176,48 +180,56 @@ public class MapFragment
                 break;
             case MODE_EDIT_BY_WALK:
                 if (null != toolbar) {
-                    if (null != mMainButton)
+                    if (null != mMainButton) {
                         mMainButton.setVisibility(View.GONE);
+                    }
                     mStatusPanel.setVisibility(View.INVISIBLE);
                     toolbar.setVisibility(View.VISIBLE);
                     toolbar.getBackground().setAlpha(128);
                     Menu menu = toolbar.getMenu();
-                    if (null != menu)
+                    if (null != menu) {
                         menu.clear();
+                    }
 
                     toolbar.inflateMenu(R.menu.edit_by_walk);
 
-                    toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener()
-                    {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem menuItem)
-                        {
-                            if (menuItem.getItemId() == R.id.menu_cancel) {
-                                mEditLayerOverlay.stopGeometryByWalk();
-                                mEditLayerOverlay.setFeature(mEditLayerOverlay.getSelectedLayer(), null);
-                                setMode(MODE_EDIT);
-                                return true;
-                            } else if (menuItem.getItemId() == R.id.menu_settings) {
-                                Intent locationSettings = new Intent(getActivity(), SettingsActivity.class);
+                    toolbar.setOnMenuItemClickListener(
+                            new Toolbar.OnMenuItemClickListener()
+                            {
+                                @Override
+                                public boolean onMenuItemClick(MenuItem menuItem)
+                                {
+                                    if (menuItem.getItemId() == R.id.menu_cancel) {
+                                        mEditLayerOverlay.stopGeometryByWalk();
+                                        mEditLayerOverlay.setFeature(
+                                                mEditLayerOverlay.getSelectedLayer(), null);
+                                        setMode(MODE_EDIT);
+                                        return true;
+                                    } else if (menuItem.getItemId() == R.id.menu_settings) {
+                                        Intent locationSettings =
+                                                new Intent(getActivity(), SettingsActivity.class);
 
-                                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-                                    locationSettings.setAction(ACTION_PREFS_LOCATION);
-                                } else {
-                                    locationSettings.putExtra("settings", "location");
-                                    locationSettings.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
-                                    locationSettings.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT,
-                                                              SettingsFragment.class.getName());
-                                    locationSettings.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT_ARGUMENTS,
-                                                              locationSettings.getExtras());
+                                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+                                            locationSettings.setAction(ACTION_PREFS_LOCATION);
+                                        } else {
+                                            locationSettings.putExtra("settings", "location");
+                                            locationSettings.putExtra(
+                                                    PreferenceActivity.EXTRA_NO_HEADERS, true);
+                                            locationSettings.putExtra(
+                                                    PreferenceActivity.EXTRA_SHOW_FRAGMENT,
+                                                    SettingsFragment.class.getName());
+                                            locationSettings.putExtra(
+                                                    PreferenceActivity.EXTRA_SHOW_FRAGMENT_ARGUMENTS,
+                                                    locationSettings.getExtras());
+                                        }
+
+                                        locationSettings.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        startActivity(locationSettings);
+                                        return true;
+                                    }
+                                    return false;
                                 }
-
-                                locationSettings.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(locationSettings);
-                                return true;
-                            }
-                            return false;
-                        }
-                    });
+                            });
 
                     if (null != mEditLayerOverlay) {
                         mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT_BY_WALK);
@@ -228,50 +240,54 @@ public class MapFragment
             case MODE_SELECT_ACTION:
                 //hide FAB, show bottom toolbar
                 if (null != toolbar) {
-                    if (null != mMainButton)
+                    if (null != mMainButton) {
                         mMainButton.setVisibility(View.GONE);
+                    }
                     mStatusPanel.setVisibility(View.INVISIBLE);
                     toolbar.setNavigationIcon(R.drawable.ic_action_cancel);
-                    toolbar.setNavigationOnClickListener(new View.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(View view)
-                        {
-                            if (null != mEditLayerOverlay) {
-                                mEditLayerOverlay.setMode(EditLayerOverlay.MODE_NONE);
-                            }
-                            setMode(MODE_NORMAL);
-                        }
-                    });
+                    toolbar.setNavigationOnClickListener(
+                            new View.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(View view)
+                                {
+                                    if (null != mEditLayerOverlay) {
+                                        mEditLayerOverlay.setMode(EditLayerOverlay.MODE_NONE);
+                                    }
+                                    setMode(MODE_NORMAL);
+                                }
+                            });
                     toolbar.setVisibility(View.VISIBLE);
                     toolbar.getBackground().setAlpha(128);
-                    toolbar.setOnMenuItemClickListener(new BottomToolbar.OnMenuItemClickListener()
-                    {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem item)
-                        {
-                            switch (item.getItemId()) {
-                                case R.id.menu_edit:
-                                    setMode(MODE_EDIT);
-                                    break;
-                                case R.id.menu_delete:
-                                    if (null != mEditLayerOverlay) {
-                                        mEditLayerOverlay.deleteItem();
-                                    }
+                    toolbar.setOnMenuItemClickListener(
+                            new BottomToolbar.OnMenuItemClickListener()
+                            {
+                                @Override
+                                public boolean onMenuItemClick(MenuItem item)
+                                {
+                                    switch (item.getItemId()) {
+                                        case R.id.menu_edit:
+                                            setMode(MODE_EDIT);
+                                            break;
+                                        case R.id.menu_delete:
+                                            if (null != mEditLayerOverlay) {
+                                                mEditLayerOverlay.deleteItem();
+                                            }
 
-                                    setMode(MODE_NORMAL);
-                                    break;
-                                case R.id.menu_info:
-                                    setMode(MODE_INFO);
-                                    break;
-                            }
-                            return true;
-                        }
-                    });
+                                            setMode(MODE_NORMAL);
+                                            break;
+                                        case R.id.menu_info:
+                                            setMode(MODE_INFO);
+                                            break;
+                                    }
+                                    return true;
+                                }
+                            });
                     // Inflate a menu to be displayed in the toolbar
                     Menu menu = toolbar.getMenu();
-                    if (null != menu)
+                    if (null != menu) {
                         menu.clear();
+                    }
                     toolbar.inflateMenu(R.menu.select_action);
                     //distributeToolbarItems(toolbar);
                 }
@@ -280,8 +296,9 @@ public class MapFragment
                 if (null != toolbar) {
                     toolbar.setVisibility(View.VISIBLE);
                     toolbar.getBackground().setAlpha(128);
-                    if(null != mMainButton)
+                    if (null != mMainButton) {
                         mMainButton.setVisibility(View.GONE);
+                    }
                     mStatusPanel.setVisibility(View.INVISIBLE);
 
                     if (mEditLayerOverlay != null) {
@@ -296,7 +313,7 @@ public class MapFragment
                 //get or create fragment
                 AttributesFragment attributesFragment =
                         (AttributesFragment) fragmentManager.findFragmentByTag("ATTRIBUTES");
-                if(null == attributesFragment) {
+                if (null == attributesFragment) {
                     attributesFragment = new AttributesFragment();
                     attributesFragment.setTablet(tabletSize);
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -310,25 +327,26 @@ public class MapFragment
                     }
 
                     fragmentTransaction.add(container, attributesFragment, "ATTRIBUTES")
-                                       .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                       .addToBackStack(null)
-                                       .commit();
-                }
-                else{
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                            .addToBackStack(null)
+                            .commit();
+                } else {
                     if (!attributesFragment.isTablet()) {
                         Fragment hide = fragmentManager.findFragmentById(R.id.map);
                         fragmentManager.beginTransaction().hide(hide).commit();
                     }
                 }
 
-                attributesFragment.setSelectedFeature(mEditLayerOverlay.getSelectedLayer(),
-                                                      mEditLayerOverlay.getSelectedItemId());
+                attributesFragment.setSelectedFeature(
+                        mEditLayerOverlay.getSelectedLayer(),
+                        mEditLayerOverlay.getSelectedItemId());
 
                 if (null != toolbar) {
                     toolbar.setVisibility(View.VISIBLE);
                     toolbar.getBackground().setAlpha(128);
-                    if (null != mMainButton)
+                    if (null != mMainButton) {
                         mMainButton.setVisibility(View.GONE);
+                    }
                     mStatusPanel.setVisibility(View.INVISIBLE);
 
                     attributesFragment.setToolbar(toolbar, mEditLayerOverlay);
@@ -338,8 +356,10 @@ public class MapFragment
         mMode = mode;
     }
 
-    protected void distributeToolbarItems(Toolbar toolbar){
-        toolbar.setContentInsetsAbsolute(0,0);
+
+    protected void distributeToolbarItems(Toolbar toolbar)
+    {
+        toolbar.setContentInsetsAbsolute(0, 0);
         // Get the ChildCount of your Toolbar, this should only be 1
         int childCount = toolbar.getChildCount();
         // Get the Screen Width in pixels
@@ -349,25 +369,27 @@ public class MapFragment
         int screenWidth = metrics.widthPixels;
 
         // Create the Toolbar Params based on the screenWidth
-        Toolbar.LayoutParams toolbarParams = new Toolbar.LayoutParams(screenWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
+        Toolbar.LayoutParams toolbarParams =
+                new Toolbar.LayoutParams(screenWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         // Loop through the child Items
-        for(int i = 0; i < childCount; i++){
+        for (int i = 0; i < childCount; i++) {
             // Get the item at the current index
             View childView = toolbar.getChildAt(i);
             // If its a ViewGroup
-            if(childView instanceof ViewGroup){
+            if (childView instanceof ViewGroup) {
                 // Set its layout params
                 childView.setLayoutParams(toolbarParams);
                 // Get the child count of this view group, and compute the item widths based on this count & screen size
                 int innerChildCount = ((ViewGroup) childView).getChildCount();
-                int itemWidth  = (screenWidth / innerChildCount);
+                int itemWidth = (screenWidth / innerChildCount);
                 // Create layout params for the ActionMenuView
-                ActionMenuView.LayoutParams params = new ActionMenuView.LayoutParams(itemWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
+                ActionMenuView.LayoutParams params = new ActionMenuView.LayoutParams(
+                        itemWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
                 // Loop through the children
-                for(int j = 0; j < innerChildCount; j++){
+                for (int j = 0; j < innerChildCount; j++) {
                     View grandChild = ((ViewGroup) childView).getChildAt(j);
-                    if(grandChild instanceof ActionMenuItemView){
+                    if (grandChild instanceof ActionMenuItemView) {
                         // set the layout parameters on each View
                         grandChild.setLayoutParams(params);
                     }
@@ -407,9 +429,10 @@ public class MapFragment
         //search relative view of map, if not found - add it
         mMapRelativeLayout = (RelativeLayout) view.findViewById(R.id.maprl);
         if (mMapRelativeLayout != null) {
-            mMapRelativeLayout.addView(mMap, 0, new RelativeLayout.LayoutParams(
-                    RelativeLayout.LayoutParams.MATCH_PARENT,
-                    RelativeLayout.LayoutParams.MATCH_PARENT));
+            mMapRelativeLayout.addView(
+                    mMap, 0, new RelativeLayout.LayoutParams(
+                            RelativeLayout.LayoutParams.MATCH_PARENT,
+                            RelativeLayout.LayoutParams.MATCH_PARENT));
         }
         mMap.invalidate();
 
@@ -417,67 +440,77 @@ public class MapFragment
 
         final View addCurrentLocation = view.findViewById(R.id.add_current_location);
         if (null != addCurrentLocation) {
-            addCurrentLocation.setOnClickListener(new OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    if(addCurrentLocation.isEnabled())
-                        addCurrentLocation();
-                }
-            });
+            addCurrentLocation.setOnClickListener(
+                    new OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View v)
+                        {
+                            if (addCurrentLocation.isEnabled()) {
+                                addCurrentLocation();
+                            }
+                        }
+                    });
         }
 
         final View addNewGeometry = view.findViewById(R.id.add_new_geometry);
-        if(null != addNewGeometry){
-            addNewGeometry.setOnClickListener(new OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    if(addNewGeometry.isEnabled())
-                        addNewGeometry();
-                }
-            });
+        if (null != addNewGeometry) {
+            addNewGeometry.setOnClickListener(
+                    new OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View v)
+                        {
+                            if (addNewGeometry.isEnabled()) {
+                                addNewGeometry();
+                            }
+                        }
+                    });
         }
 
         final View addGeometryByWalk = view.findViewById(R.id.add_geometry_by_walk);
-        if(null != addGeometryByWalk){
-            addGeometryByWalk.setOnClickListener(new OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    if(addGeometryByWalk.isEnabled())
-                        addGeometryByWalk();
-                }
-            });
+        if (null != addGeometryByWalk) {
+            addGeometryByWalk.setOnClickListener(
+                    new OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View v)
+                        {
+                            if (addGeometryByWalk.isEnabled()) {
+                                addGeometryByWalk();
+                            }
+                        }
+                    });
         }
 
         mivZoomIn = (FloatingActionButton) view.findViewById(R.id.action_zoom_in);
-        if(null != mivZoomIn){
-            mivZoomIn.setOnClickListener(new OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    if(mivZoomIn.isEnabled())
-                        mMap.zoomIn();
-                }
-            });
+        if (null != mivZoomIn) {
+            mivZoomIn.setOnClickListener(
+                    new OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View v)
+                        {
+                            if (mivZoomIn.isEnabled()) {
+                                mMap.zoomIn();
+                            }
+                        }
+                    });
         }
 
         mivZoomOut = (FloatingActionButton) view.findViewById(R.id.action_zoom_out);
-        if(null != mivZoomOut){
-            mivZoomOut.setOnClickListener(new OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    if(mivZoomOut.isEnabled())
-                        mMap.zoomOut();
-                }
-            });
+        if (null != mivZoomOut) {
+            mivZoomOut.setOnClickListener(
+                    new OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View v)
+                        {
+                            if (mivZoomOut.isEnabled()) {
+                                mMap.zoomOut();
+                            }
+                        }
+                    });
         }
 
         mStatusPanel = (FrameLayout) view.findViewById(R.id.fl_status_panel);
@@ -499,28 +532,34 @@ public class MapFragment
     }
 
 
-    protected void showMapButtons(boolean show, RelativeLayout rl)
+    protected void showMapButtons(
+            boolean show,
+            RelativeLayout rl)
     {
-        if(null == rl)
+        if (null == rl) {
             return;
+        }
         View v = rl.findViewById(R.id.action_zoom_out);
-        if(null != v){
-            if(show)
+        if (null != v) {
+            if (show) {
                 v.setVisibility(View.VISIBLE);
-            else
+            } else {
                 v.setVisibility(View.GONE);
+            }
         }
 
         v = rl.findViewById(R.id.action_zoom_in);
-        if(null != v){
-            if(show)
+        if (null != v) {
+            if (show) {
                 v.setVisibility(View.VISIBLE);
-            else
+            } else {
                 v.setVisibility(View.GONE);
+            }
         }
 
         rl.invalidate();
     }
+
 
     @Override
     public void onLayerAdded(int id)
@@ -591,8 +630,9 @@ public class MapFragment
     {
         mLayerDrawn = 0;
         MainActivity activity = (MainActivity) getActivity();
-        if(null != activity)
+        if (null != activity) {
             activity.onRefresh(true, 0);
+        }
     }
 
 
@@ -614,6 +654,7 @@ public class MapFragment
         mivZoomOut.setEnabled(bEnabled);
     }
 
+
     @Override
     public void onSaveInstanceState(Bundle outState)
     {
@@ -628,10 +669,9 @@ public class MapFragment
             Bundle savedInstanceState)
     {
         super.onViewStateRestored(savedInstanceState);
-        if(null == savedInstanceState) {
+        if (null == savedInstanceState) {
             mMode = MODE_NORMAL;
-        }
-        else{
+        } else {
             mMode = savedInstanceState.getInt(KEY_MODE);
         }
 
@@ -642,16 +682,19 @@ public class MapFragment
     @Override
     public void onPause()
     {
-        if(null != mCurrentLocationOverlay)
+        if (null != mCurrentLocationOverlay) {
             mCurrentLocationOverlay.stopShowingCurrentLocation();
-        if(null != mGpsEventSource)
+        }
+        if (null != mGpsEventSource) {
             mGpsEventSource.removeListener(this);
-        if(null != mEditLayerOverlay){
+        }
+        if (null != mEditLayerOverlay) {
             mEditLayerOverlay.removeListener(this);
         }
 
-        final SharedPreferences.Editor edit = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
-        if(null != mMap) {
+        final SharedPreferences.Editor edit =
+                PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
+        if (null != mMap) {
             edit.putFloat(KEY_PREF_ZOOM_LEVEL, mMap.getZoomLevel());
             GeoPoint point = mMap.getMapCenter();
             edit.putLong(KEY_PREF_SCROLL_X, Double.doubleToRawLongBits(point.getX()));
@@ -670,7 +713,8 @@ public class MapFragment
     {
         super.onResume();
 
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        final SharedPreferences prefs =
+                PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         boolean showControls = prefs.getBoolean(KEY_PREF_SHOW_ZOOM_CONTROLS, false);
         showMapButtons(showControls, mMapRelativeLayout);
@@ -681,8 +725,7 @@ public class MapFragment
             float mMapZoom;
             try {
                 mMapZoom = prefs.getFloat(KEY_PREF_ZOOM_LEVEL, mMap.getMinZoom());
-            }
-            catch (ClassCastException e){
+            } catch (ClassCastException e) {
                 mMapZoom = mMap.getMinZoom();
             }
 
@@ -691,8 +734,7 @@ public class MapFragment
             try {
                 mMapScrollX = Double.longBitsToDouble(prefs.getLong(KEY_PREF_SCROLL_X, 0));
                 mMapScrollY = Double.longBitsToDouble(prefs.getLong(KEY_PREF_SCROLL_Y, 0));
-            }
-            catch (ClassCastException e){
+            } catch (ClassCastException e) {
                 mMapScrollX = 0;
                 mMapScrollY = 0;
             }
@@ -703,27 +745,29 @@ public class MapFragment
 
         mCoordinatesFormat = prefs.getInt(KEY_PREF_COORD_FORMAT + "_int", Location.FORMAT_DEGREES);
 
-        if(null != mCurrentLocationOverlay) {
-            mCurrentLocationOverlay.updateMode(PreferenceManager.getDefaultSharedPreferences(getActivity())
+        if (null != mCurrentLocationOverlay) {
+            mCurrentLocationOverlay.updateMode(
+                    PreferenceManager.getDefaultSharedPreferences(getActivity())
                             .getString(SettingsConstantsUI.KEY_PREF_SHOW_CURRENT_LOC, "3"));
             mCurrentLocationOverlay.startShowingCurrentLocation();
         }
-        if(null != mGpsEventSource) {
+        if (null != mGpsEventSource) {
             mGpsEventSource.addListener(this);
         }
-        if(null != mEditLayerOverlay) {
+        if (null != mEditLayerOverlay) {
             mEditLayerOverlay.addListener(this);
         }
 
         mShowStatusPanel = prefs.getBoolean(SettingsConstantsUI.KEY_PREF_SHOW_STATUS_PANEL, true);
 
-        if(null != mStatusPanel) {
+        if (null != mStatusPanel) {
             if (mShowStatusPanel) {
                 mStatusPanel.setVisibility(View.VISIBLE);
                 fillStatusPanel(null);
 
-                if (mMode != MODE_NORMAL)
+                if (mMode != MODE_NORMAL) {
                     mStatusPanel.setVisibility(View.INVISIBLE);
+                }
             } else {
                 mStatusPanel.removeAllViews();
             }
@@ -732,68 +776,84 @@ public class MapFragment
         mCurrentCenter = null;
     }
 
-    protected void addNewGeometry(){
+
+    protected void addNewGeometry()
+    {
         //show select layer dialog if several layers, else start default or custom form
-        List<ILayer> layers = mMap.getVectorLayersByType(GeoConstants.GTPointCheck |
-        GeoConstants.GTMultiPointCheck | GeoConstants.GTLineStringCheck | GeoConstants.GTPolygonCheck);
+        List<ILayer> layers = mMap.getVectorLayersByType(
+                GeoConstants.GTPointCheck |
+                GeoConstants.GTMultiPointCheck | GeoConstants.GTLineStringCheck |
+                GeoConstants.GTPolygonCheck);
         layers = removeHideLayers(layers);
-        if(layers.isEmpty()){
-            Toast.makeText(getActivity(), getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG).show();
-        }
-        else if(layers.size() == 1){
+        if (layers.isEmpty()) {
+            Toast.makeText(
+                    getActivity(), getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG)
+                    .show();
+        } else if (layers.size() == 1) {
             //open form
             ILayer vectorLayer = layers.get(0);
-            mEditLayerOverlay.setFeature((VectorLayer)vectorLayer, null);
+            mEditLayerOverlay.setFeature((VectorLayer) vectorLayer, null);
             setMode(MODE_EDIT);
 
-            Toast.makeText(getActivity(), String.format(getString(R.string.edit_layer), vectorLayer.getName()), Toast.LENGTH_SHORT).show();
-        }
-        else{
+            Toast.makeText(
+                    getActivity(),
+                    String.format(getString(R.string.edit_layer), vectorLayer.getName()),
+                    Toast.LENGTH_SHORT).show();
+        } else {
             //open choose edit layer dialog
             ChooseLayerDialog newChooseLayerDialog = new ChooseLayerDialog();
             newChooseLayerDialog.setTitle(getString(R.string.select_layer))
-                                .setLayerList(layers)
-                                .setCode(ADD_NEW_GEOMETRY)
-                                .show(getActivity().getSupportFragmentManager(), "choose_layer");
+                    .setLayerList(layers)
+                    .setCode(ADD_NEW_GEOMETRY)
+                    .show(getActivity().getSupportFragmentManager(), "choose_layer");
 
         }
     }
 
-    protected void addCurrentLocation(){
+
+    protected void addCurrentLocation()
+    {
         //show select layer dialog if several layers, else start default or custom form
-        List<ILayer> layers = mMap.getVectorLayersByType(GeoConstants.GTMultiPointCheck | GeoConstants.GTPointCheck);
+        List<ILayer> layers = mMap.getVectorLayersByType(
+                GeoConstants.GTMultiPointCheck | GeoConstants.GTPointCheck);
         layers = removeHideLayers(layers);
-        if(layers.isEmpty()){
-            Toast.makeText(getActivity(), getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG).show();
-        }
-        else if(layers.size() == 1){
+        if (layers.isEmpty()) {
+            Toast.makeText(
+                    getActivity(), getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG)
+                    .show();
+        } else if (layers.size() == 1) {
             //open form
             ILayer vectorLayer = layers.get(0);
-            if(vectorLayer instanceof ILayerUI){
-                IVectorLayerUI vectorLayerUI = (IVectorLayerUI)vectorLayer;
+            if (vectorLayer instanceof ILayerUI) {
+                IVectorLayerUI vectorLayerUI = (IVectorLayerUI) vectorLayer;
                 vectorLayerUI.showEditForm(getActivity(), Constants.NOT_FOUND, null);
 
-                Toast.makeText(getActivity(), String.format(getString(R.string.edit_layer), vectorLayer.getName()), Toast.LENGTH_SHORT).show();
+                Toast.makeText(
+                        getActivity(),
+                        String.format(getString(R.string.edit_layer), vectorLayer.getName()),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(
+                        getActivity(), getString(R.string.warning_no_edit_layers),
+                        Toast.LENGTH_LONG).show();
             }
-            else{
-                Toast.makeText(getActivity(), getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG).show();
-            }
-        }
-        else{
+        } else {
             //open choose dialog
             ChooseLayerDialog newChooseLayerDialog = new ChooseLayerDialog();
             newChooseLayerDialog.setTitle(getString(R.string.select_layer))
-                       .setLayerList(layers)
-                       .setCode(ADD_CURRENT_LOC)
-                       .show(getActivity().getSupportFragmentManager(), "choose_layer");
+                    .setLayerList(layers)
+                    .setCode(ADD_CURRENT_LOC)
+                    .show(getActivity().getSupportFragmentManager(), "choose_layer");
         }
     }
 
-    protected List<ILayer> removeHideLayers(List<ILayer> layerList){
-        for(int i = 0; i < layerList.size(); i++){
+
+    protected List<ILayer> removeHideLayers(List<ILayer> layerList)
+    {
+        for (int i = 0; i < layerList.size(); i++) {
             ILayerView layerView = (ILayerView) layerList.get(i);
-            if(null != layerView){
-                if(!layerView.isVisible()){
+            if (null != layerView) {
+                if (!layerView.isVisible()) {
                     layerList.remove(i);
                     i--;
                 }
@@ -803,49 +863,55 @@ public class MapFragment
         return layerList;
     }
 
-    protected void addGeometryByWalk(){
+
+    protected void addGeometryByWalk()
+    {
         //show select layer dialog if several layers, else start default or custom form
-        List<ILayer> layers = mMap.getVectorLayersByType(GeoConstants.GTLineStringCheck | GeoConstants.GTPolygonCheck);
+        List<ILayer> layers = mMap.getVectorLayersByType(
+                GeoConstants.GTLineStringCheck | GeoConstants.GTPolygonCheck);
 
         layers = removeHideLayers(layers);
 
-        if(layers.isEmpty()){
-            Toast.makeText(getActivity(), getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG).show();
-        }
-        else if(layers.size() == 1){
+        if (layers.isEmpty()) {
+            Toast.makeText(
+                    getActivity(), getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG)
+                    .show();
+        } else if (layers.size() == 1) {
             //open form
             ILayer vectorLayer = layers.get(0);
-            mEditLayerOverlay.setFeature((VectorLayer)vectorLayer, null);
+            mEditLayerOverlay.setFeature((VectorLayer) vectorLayer, null);
             setMode(MODE_EDIT_BY_WALK);
 
-            Toast.makeText(getActivity(), String.format(getString(R.string.edit_layer), vectorLayer.getName()), Toast.LENGTH_SHORT).show();
-        }
-        else{
+            Toast.makeText(
+                    getActivity(),
+                    String.format(getString(R.string.edit_layer), vectorLayer.getName()),
+                    Toast.LENGTH_SHORT).show();
+        } else {
             //open choose edit layer dialog
             ChooseLayerDialog newChooseLayerDialog = new ChooseLayerDialog();
             newChooseLayerDialog.setTitle(getString(R.string.select_layer))
-                                .setLayerList(layers)
-                                .setCode(ADD_GEOMETRY_BY_WALK)
-                                .show(getActivity().getSupportFragmentManager(), "choose_layer");
+                    .setLayerList(layers)
+                    .setCode(ADD_GEOMETRY_BY_WALK)
+                    .show(getActivity().getSupportFragmentManager(), "choose_layer");
 
         }
     }
 
+
     public void onFinishChooseLayerDialog(
             int code,
-            ILayer layer){
-        if(code == ADD_CURRENT_LOC){
-            if(layer instanceof ILayerUI ) {
+            ILayer layer)
+    {
+        if (code == ADD_CURRENT_LOC) {
+            if (layer instanceof ILayerUI) {
                 IVectorLayerUI layerUI = (IVectorLayerUI) layer;
                 layerUI.showEditForm(getActivity(), Constants.NOT_FOUND, null);
             }
-        }
-        else if(code == ADD_NEW_GEOMETRY){
-            mEditLayerOverlay.setFeature((VectorLayer)layer, null);
+        } else if (code == ADD_NEW_GEOMETRY) {
+            mEditLayerOverlay.setFeature((VectorLayer) layer, null);
             setMode(MODE_EDIT);
-        }
-        else if (code == ADD_GEOMETRY_BY_WALK) {
-            mEditLayerOverlay.setFeature((VectorLayer)layer, null);
+        } else if (code == ADD_GEOMETRY_BY_WALK) {
+            mEditLayerOverlay.setFeature((VectorLayer) layer, null);
             setMode(MODE_EDIT_BY_WALK);
         }
     }
@@ -854,8 +920,9 @@ public class MapFragment
     @Override
     public void onLongPress(MotionEvent event)
     {
-        if(!(mMode == MODE_NORMAL || mMode == MODE_SELECT_ACTION))
+        if (!(mMode == MODE_NORMAL || mMode == MODE_SELECT_ACTION)) {
             return;
+        }
 
         double dMinX = event.getX() - mTolerancePX;
         double dMaxX = event.getX() + mTolerancePX;
@@ -863,33 +930,36 @@ public class MapFragment
         double dMaxY = event.getY() + mTolerancePX;
 
         GeoEnvelope mapEnv = mMap.screenToMap(new GeoEnvelope(dMinX, dMaxX, dMinY, dMaxY));
-        if(null == mapEnv)
+        if (null == mapEnv) {
             return;
+        }
 
         //show actions dialog
         List<ILayer> layers = mMap.getVectorLayersByType(GeoConstants.GTAnyCheck);
         List<VectorCacheItem> items = null;
         VectorLayer vectorLayer = null;
         boolean intersects = false;
-        for(ILayer layer : layers){
-            if(!layer.isValid())
+        for (ILayer layer : layers) {
+            if (!layer.isValid()) {
                 continue;
-            ILayerView layerView = (ILayerView)layer;
-            if(!layerView.isVisible())
+            }
+            ILayerView layerView = (ILayerView) layer;
+            if (!layerView.isVisible()) {
                 continue;
+            }
 
-            vectorLayer = (VectorLayer)layer;
+            vectorLayer = (VectorLayer) layer;
             items = vectorLayer.query(mapEnv);
-            if(!items.isEmpty()){
+            if (!items.isEmpty()) {
                 intersects = true;
                 break;
             }
         }
 
-        if(intersects){
+        if (intersects) {
             //add geometry to overlay
 
-            if(null != mEditLayerOverlay) {
+            if (null != mEditLayerOverlay) {
                 mEditLayerOverlay.setFeature(vectorLayer, items.get(0));
                 mEditLayerOverlay.setMode(EditLayerOverlay.MODE_HIGHLIGHT);
             }
@@ -907,20 +977,22 @@ public class MapFragment
             case MODE_SELECT_ACTION:
                 setMode(MODE_NORMAL);
 
-                if(null != mEditLayerOverlay){
+                if (null != mEditLayerOverlay) {
                     mEditLayerOverlay.setFeature(null, null);
                     mEditLayerOverlay.setMode(EditLayerOverlay.MODE_NONE);
                 }
                 mMap.postInvalidate();
                 break;
             case MODE_INFO:
-                if(null != mEditLayerOverlay) {
-                    AttributesFragment attributesFragment = (AttributesFragment)
-                            getActivity().getSupportFragmentManager().findFragmentByTag("ATTRIBUTES");
+                if (null != mEditLayerOverlay) {
+                    AttributesFragment attributesFragment =
+                            (AttributesFragment) getActivity().getSupportFragmentManager()
+                                    .findFragmentByTag("ATTRIBUTES");
 
                     if (attributesFragment != null) {
-                        attributesFragment.setSelectedFeature(mEditLayerOverlay.getSelectedLayer(),
-                                                              mEditLayerOverlay.getSelectedItemId());
+                        attributesFragment.setSelectedFeature(
+                                mEditLayerOverlay.getSelectedLayer(),
+                                mEditLayerOverlay.getSelectedItemId());
 
                         mMap.postInvalidate();
                     }
@@ -956,14 +1028,16 @@ public class MapFragment
     public void onLocationChanged(Location location)
     {
         if (location != null) {
-            if (mCurrentCenter == null)
+            if (mCurrentCenter == null) {
                 mCurrentCenter = new GeoPoint();
+            }
 
             mCurrentCenter.setCoordinates(location.getLongitude(), location.getLatitude());
             mCurrentCenter.setCRS(GeoConstants.CRS_WGS84);
 
-            if (!mCurrentCenter.project(GeoConstants.CRS_WEB_MERCATOR))
+            if (!mCurrentCenter.project(GeoConstants.CRS_WEB_MERCATOR)) {
                 mCurrentCenter = null;
+            }
         }
 
         fillStatusPanel(location);
@@ -973,16 +1047,20 @@ public class MapFragment
     private void fillStatusPanel(Location location)
     {
         if (!mShowStatusPanel) //mStatusPanel.getVisibility() == FrameLayout.INVISIBLE)
+        {
             return;
+        }
 
         boolean needViewUpdate = true;
         boolean isCurrentOrientationOneLine = mStatusPanel.getChildCount() > 0 &&
-                ((LinearLayout) mStatusPanel.getChildAt(0)).getOrientation() == LinearLayout.HORIZONTAL;
+                                              ((LinearLayout) mStatusPanel.getChildAt(
+                                                      0)).getOrientation() ==
+                                              LinearLayout.HORIZONTAL;
 
         View panel;
         if (!isCurrentOrientationOneLine) {
             panel = getActivity().getLayoutInflater()
-                                 .inflate(R.layout.status_panel_land, mStatusPanel, false);
+                    .inflate(R.layout.status_panel_land, mStatusPanel, false);
             defineTextViews(panel);
         } else {
             panel = mStatusPanel.getChildAt(0);
@@ -992,7 +1070,8 @@ public class MapFragment
         fillTextViews(location);
 
         if (!isFitOneLine()) {
-            panel = getActivity().getLayoutInflater().inflate(R.layout.status_panel, mStatusPanel, false);
+            panel = getActivity().getLayoutInflater()
+                    .inflate(R.layout.status_panel, mStatusPanel, false);
             defineTextViews(panel);
             fillTextViews(location);
             needViewUpdate = true;
@@ -1005,18 +1084,19 @@ public class MapFragment
         }
     }
 
-    private void fillTextViews(Location location) {
-        if(null == location){
+
+    private void fillTextViews(Location location)
+    {
+        if (null == location) {
             setDefaultTextViews();
         } else {
             if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
                 int satellites = location.getExtras().getInt("satellites");
-                if(satellites < GpsEventSource.MIN_SATELLITES_IN_FIX) {
+                if (satellites < GpsEventSource.MIN_SATELLITES_IN_FIX) {
                     mStatusSource.setText("");
                     mStatusSource.setCompoundDrawablesWithIntrinsicBounds(
                             getResources().getDrawable(R.drawable.ic_location), null, null, null);
-                }
-                else {
+                } else {
                     mStatusSource.setText(satellites + "");
                     mStatusSource.setCompoundDrawablesWithIntrinsicBounds(
                             getResources().getDrawable(R.drawable.ic_location), null, null, null);
@@ -1027,11 +1107,16 @@ public class MapFragment
                         getResources().getDrawable(R.drawable.ic_signal_wifi), null, null, null);
             }
 
-            mStatusAccuracy.setText(String.format("%.1f %s", location.getAccuracy(), getString(R.string.unit_meter)));
-            mStatusAltitude.setText(String.format("%.1f %s", location.getAltitude(), getString(R.string.unit_meter)));
-            mStatusSpeed.setText(String.format("%.1f %s/%s", location.getSpeed() * 3600 / 1000,
-                                               getString(R.string.unit_kilometer),
-                                               getString(R.string.unit_hour)));
+            mStatusAccuracy.setText(
+                    String.format(
+                            "%.1f %s", location.getAccuracy(), getString(R.string.unit_meter)));
+            mStatusAltitude.setText(
+                    String.format(
+                            "%.1f %s", location.getAltitude(), getString(R.string.unit_meter)));
+            mStatusSpeed.setText(
+                    String.format(
+                            "%.1f %s/%s", location.getSpeed() * 3600 / 1000,
+                            getString(R.string.unit_kilometer), getString(R.string.unit_hour)));
             mStatusLatitude.setText(
                     LocationUtil.formatCoordinate(location.getLatitude(), mCoordinatesFormat) +
                     " " +
@@ -1043,7 +1128,9 @@ public class MapFragment
         }
     }
 
-    private void setDefaultTextViews() {
+
+    private void setDefaultTextViews()
+    {
         mStatusSource.setCompoundDrawables(null, null, null, null);
         mStatusSource.setText("");
         mStatusAccuracy.setText(getString(R.string.n_a));
@@ -1053,7 +1140,9 @@ public class MapFragment
         mStatusLongitude.setText(getString(R.string.n_a));
     }
 
-    private boolean isFitOneLine() {
+
+    private boolean isFitOneLine()
+    {
         mStatusLongitude.measure(0, 0);
         mStatusLatitude.measure(0, 0);
         mStatusAltitude.measure(0, 0);
@@ -1072,7 +1161,9 @@ public class MapFragment
 //        return totalWidth < mStatusPanel.getWidth();
     }
 
-    private void defineTextViews(View panel) {
+
+    private void defineTextViews(View panel)
+    {
         mStatusSource = (TextView) panel.findViewById(R.id.tv_source);
         mStatusAccuracy = (TextView) panel.findViewById(R.id.tv_accuracy);
         mStatusSpeed = (TextView) panel.findViewById(R.id.tv_speed);
@@ -1080,6 +1171,7 @@ public class MapFragment
         mStatusLatitude = (TextView) panel.findViewById(R.id.tv_latitude);
         mStatusLongitude = (TextView) panel.findViewById(R.id.tv_longitude);
     }
+
 
     @Override
     public void onGpsStatusChanged(int event)
@@ -1100,29 +1192,34 @@ public class MapFragment
         setMode(MODE_NORMAL);
     }
 
-    public void restoreBottomBar() {
+
+    public void restoreBottomBar()
+    {
         setMode(MODE_SELECT_ACTION);
     }
 
 
     public void addLocalTMSLayer(Uri uri)
     {
-        if(null != mMap)
+        if (null != mMap) {
             mMap.addLocalTMSLayer(uri);
+        }
     }
 
 
     public void addLocalVectorLayer(Uri uri)
     {
-        if(null != mMap)
+        if (null != mMap) {
             mMap.addLocalVectorLayer(uri);
+        }
     }
 
 
     public void addLocalVectorLayerWithForm(Uri uri)
     {
-        if(null != mMap)
+        if (null != mMap) {
             mMap.addLocalVectorLayerWithForm(uri);
+        }
     }
 
 
@@ -1130,25 +1227,32 @@ public class MapFragment
     {
         if (mCurrentCenter != null) {
             mMap.panTo(mCurrentCenter);
-        } else
+        } else {
             Toast.makeText(getActivity(), R.string.error_no_location, Toast.LENGTH_SHORT).show();
+        }
     }
 
 
     public void addNGWLayer()
     {
-        if(null != mMap)
+        if (null != mMap) {
             mMap.addNGWLayer();
+        }
     }
+
 
     public void addRemoteLayer()
     {
-        if(null != mMap)
+        if (null != mMap) {
             mMap.addRemoteLayer();
+        }
     }
 
-    public void refresh(){
-        if(null != mMap)
+
+    public void refresh()
+    {
+        if (null != mMap) {
             mMap.drawMapDrawable();
+        }
     }
 }

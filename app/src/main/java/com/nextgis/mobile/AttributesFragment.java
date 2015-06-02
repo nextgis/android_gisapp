@@ -47,7 +47,8 @@ import com.nextgis.maplibui.overlay.EditLayerOverlay;
 import java.util.List;
 
 
-public class AttributesFragment extends Fragment
+public class AttributesFragment
+        extends Fragment
 {
     protected static final String KEY_ITEM_ID       = "item_id";
     protected static final String KEY_ITEM_POSITION = "item_pos";
@@ -137,16 +138,18 @@ public class AttributesFragment extends Fragment
         mItemId = selectedItemId;
         mLayer = selectedLayer;
 
-        if (mLayer == null)
+        if (mLayer == null) {
             getActivity().getSupportFragmentManager().popBackStack();
+        }
 
         mVectorCacheItems = mLayer.getVectorCache();
 
-        for (int i = 0; i < mVectorCacheItems.size(); i++)
+        for (int i = 0; i < mVectorCacheItems.size(); i++) {
             if (mVectorCacheItems.get(i).getId() == mItemId) {
                 mItemPosition = i;
                 break;
             }
+        }
 
         setAttributes();
     }
@@ -154,21 +157,24 @@ public class AttributesFragment extends Fragment
 
     private void setAttributes()
     {
-        if (mAttributes == null)
+        if (mAttributes == null) {
             return;
+        }
 
         mAttributes.removeAllViews();
 
         FragmentActivity activity = getActivity();
-        if (null == activity)
+        if (null == activity) {
             return;
+        }
         TextView title = new TextView(activity);
         title.setText(mLayer.getName());
         title.setTextSize(24);
         title.setGravity(Gravity.CENTER);
 
         Resources r = getResources();
-        int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, r.getDisplayMetrics());
+        int px = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, 24, r.getDisplayMetrics());
 
         title.setPadding(0, 0, 0, px);
         mAttributes.addView(title);
@@ -180,15 +186,17 @@ public class AttributesFragment extends Fragment
             for (int i = 0; i < attributes.getColumnCount(); i++) {
                 LinearLayout row = new LinearLayout(getActivity());
                 row.setOrientation(LinearLayout.HORIZONTAL);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
+                LinearLayout.LayoutParams params =
+                        new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
 
                 TextView columnName = new TextView(getActivity());
                 columnName.setLayoutParams(params);
 
                 String column = attributes.getColumnName(i);
 
-                if (column.equals(Constants.FIELD_GEOM))
+                if (column.equals(Constants.FIELD_GEOM)) {
                     continue;
+                }
 
                 columnName.setText(column);
                 TextView data = new TextView(getActivity());
@@ -228,8 +236,9 @@ public class AttributesFragment extends Fragment
             VectorCacheItem item = mVectorCacheItems.get(mItemPosition);
             mItemId = item.getId();
             setAttributes();
-            if(null != mEditLayerOverlay)
+            if (null != mEditLayerOverlay) {
                 mEditLayerOverlay.setFeature(mLayer, item);
+            }
         } else {
             Toast.makeText(getActivity(), R.string.attributes_last_item, Toast.LENGTH_SHORT).show();
         }
@@ -274,9 +283,13 @@ public class AttributesFragment extends Fragment
     }
 
 
-    public void setToolbar(final BottomToolbar toolbar, EditLayerOverlay overlay){
-        if (null == toolbar || null == mLayer)
+    public void setToolbar(
+            final BottomToolbar toolbar,
+            EditLayerOverlay overlay)
+    {
+        if (null == toolbar || null == mLayer) {
             return;
+        }
 
         mEditLayerOverlay = overlay;
 
@@ -285,37 +298,41 @@ public class AttributesFragment extends Fragment
         }
 
         toolbar.setNavigationIcon(R.drawable.ic_action_cancel);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                finishFragment();
-            }
-        });
+        toolbar.setNavigationOnClickListener(
+                new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        finishFragment();
+                    }
+                });
 
-        if (toolbar.getMenu() != null)
+        if (toolbar.getMenu() != null) {
             toolbar.getMenu().clear();
+        }
 
         toolbar.inflateMenu(R.menu.attributes);
 
-        toolbar.setOnMenuItemClickListener(new BottomToolbar.OnMenuItemClickListener()
-        {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem)
-            {
-                if (null == mLayer)
-                    return false;
-                if (menuItem.getItemId() == R.id.menu_next) {
-                    selectItem(true);
-                    return true;
-                } else if (menuItem.getItemId() == R.id.menu_prev) {
-                    selectItem(false);
-                    return true;
-                }
+        toolbar.setOnMenuItemClickListener(
+                new BottomToolbar.OnMenuItemClickListener()
+                {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem)
+                    {
+                        if (null == mLayer) {
+                            return false;
+                        }
+                        if (menuItem.getItemId() == R.id.menu_next) {
+                            selectItem(true);
+                            return true;
+                        } else if (menuItem.getItemId() == R.id.menu_prev) {
+                            selectItem(false);
+                            return true;
+                        }
 
-                return true;
-            }
-        });
+                        return true;
+                    }
+                });
     }
 }

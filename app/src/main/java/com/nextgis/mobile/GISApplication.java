@@ -54,14 +54,18 @@ import java.util.List;
 import static com.nextgis.maplib.util.Constants.MAP_EXT;
 import static com.nextgis.maplib.util.Constants.NOT_FOUND;
 import static com.nextgis.maplib.util.GeoConstants.TMSTYPE_OSM;
+import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_MAP;
+import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_MAP_PATH;
+import static com.nextgis.maplibui.util.SettingsConstantsUI.KEY_PREF_SYNC_PERIODICALLY;
+import static com.nextgis.maplibui.util.SettingsConstantsUI.KEY_PREF_SYNC_PERIOD_SEC_LONG;
 import static com.nextgis.mobile.util.SettingsConstants.*;
-import static com.nextgis.maplibui.util.SettingsConstantsUI.*;
-import static com.nextgis.maplib.util.SettingsConstants.*;
+
 
 public class GISApplication
-        extends Application implements IGISApplication
+        extends Application
+        implements IGISApplication
 {
-    protected MapDrawable mMap;
+    protected MapDrawable    mMap;
     protected GpsEventSource mGpsEventSource;
 
 
@@ -84,8 +88,9 @@ public class GISApplication
 
         //turn on periodic sync. Can be set for each layer individually, but this is simpler
         if (sharedPreferences.getBoolean(KEY_PREF_SYNC_PERIODICALLY, true)) {
-            long period = sharedPreferences.getLong(KEY_PREF_SYNC_PERIOD_SEC_LONG, NOT_FOUND); //10 min
-            if(period != NOT_FOUND){
+            long period =
+                    sharedPreferences.getLong(KEY_PREF_SYNC_PERIOD_SEC_LONG, NOT_FOUND); //10 min
+            if (period != NOT_FOUND) {
                 Bundle params = new Bundle();
                 params.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, false);
                 params.putBoolean(ContentResolver.SYNC_EXTRAS_DO_NOT_RETRY, false);
@@ -100,12 +105,13 @@ public class GISApplication
     @Override
     public MapBase getMap()
     {
-        if (null != mMap)
+        if (null != mMap) {
             return mMap;
+        }
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         File defaultPath = getExternalFilesDir(KEY_PREF_MAP);
-        if(defaultPath == null){
+        if (defaultPath == null) {
             defaultPath = new File(getFilesDir(), KEY_PREF_MAP);
         }
         if (defaultPath != null) {
@@ -114,8 +120,8 @@ public class GISApplication
 
             File mapFullPath = new File(mapPath, mapName + MAP_EXT);
 
-            final Bitmap bkBitmap = BitmapFactory.decodeResource(getResources(),
-                                                                 com.nextgis.maplibui.R.drawable.bk_tile);
+            final Bitmap bkBitmap = BitmapFactory.decodeResource(
+                    getResources(), com.nextgis.maplibui.R.drawable.bk_tile);
             mMap = new MapDrawable(bkBitmap, this, mapFullPath, new LayerFactoryUI());
             mMap.setName(mapName);
             mMap.load();
@@ -126,13 +132,15 @@ public class GISApplication
         return mMap;
     }
 
-    protected void checkTracksLayerExist(){
+
+    protected void checkTracksLayerExist()
+    {
         List<ILayer> tracks = new ArrayList<>();
         LayerGroup.getLayersByType(mMap, Constants.LAYERTYPE_TRACKS, tracks);
-        if(tracks.isEmpty()){
+        if (tracks.isEmpty()) {
             String trackLayerName = getString(R.string.tracks);
-            TrackLayerUI
-                    trackLayer = new TrackLayerUI(getApplicationContext(), mMap.createLayerStorage());
+            TrackLayerUI trackLayer =
+                    new TrackLayerUI(getApplicationContext(), mMap.createLayerStorage());
             trackLayer.setName(trackLayerName);
             trackLayer.setVisible(true);
             mMap.addLayer(trackLayer);
@@ -207,7 +215,8 @@ public class GISApplication
         //add OpenStreetMap layer on application first run
         String layerName = getString(R.string.osm);
         String layerURL = getString(R.string.osm_url);
-        RemoteTMSLayerUI layer = new RemoteTMSLayerUI(getApplicationContext(), mMap.createLayerStorage());
+        RemoteTMSLayerUI layer =
+                new RemoteTMSLayerUI(getApplicationContext(), mMap.createLayerStorage());
         layer.setName(layerName);
         layer.setURL(layerURL);
         layer.setTMSType(TMSTYPE_OSM);
@@ -221,12 +230,12 @@ public class GISApplication
                 createEmptyVectorLayerUI(getString(R.string.points_for_edit), GeoConstants.GTPoint);
         mMap.addLayer(vectorLayer);
 
-        vectorLayer = createEmptyVectorLayerUI(getString(R.string.lines_for_edit),
-                                               GeoConstants.GTLineString);
+        vectorLayer = createEmptyVectorLayerUI(
+                getString(R.string.lines_for_edit), GeoConstants.GTLineString);
         mMap.addLayer(vectorLayer);
 
-        vectorLayer = createEmptyVectorLayerUI(getString(R.string.polygons_for_edit),
-                                               GeoConstants.GTPolygon);
+        vectorLayer = createEmptyVectorLayerUI(
+                getString(R.string.polygons_for_edit), GeoConstants.GTPolygon);
         mMap.addLayer(vectorLayer);
 
         mMap.save();

@@ -35,8 +35,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import com.nextgis.maplib.util.Constants;
-import com.nextgis.maplibui.dialog.LocalResourcesListAdapter;
 import com.nextgis.maplibui.api.ISelectResourceDialog;
+import com.nextgis.maplibui.dialog.LocalResourcesListAdapter;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -46,11 +46,13 @@ import java.util.List;
 /**
  * A dialog to select map path from settings
  */
-public class SelectMapPathDialogPreference extends DialogPreference implements ISelectResourceDialog
+public class SelectMapPathDialogPreference
+        extends DialogPreference
+        implements ISelectResourceDialog
 {
     protected LocalResourcesListAdapter mListAdapter;
     protected File                      mPath;
-    private String mText;
+    private   String                    mText;
 
 
     public SelectMapPathDialogPreference(
@@ -99,8 +101,10 @@ public class SelectMapPathDialogPreference extends DialogPreference implements I
         return myState;
     }
 
+
     @Override
-    protected void onRestoreInstanceState(Parcelable state) {
+    protected void onRestoreInstanceState(Parcelable state)
+    {
         if (state == null || !state.getClass().equals(SavedState.class)) {
             // Didn't save state for us in onSaveInstanceState
             super.onRestoreInstanceState(state);
@@ -116,10 +120,10 @@ public class SelectMapPathDialogPreference extends DialogPreference implements I
     @Override
     public void updateButtons()
     {
-        AlertDialog dialog = (AlertDialog)getDialog();
-        if(null != dialog) {
+        AlertDialog dialog = (AlertDialog) getDialog();
+        if (null != dialog) {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                  .setEnabled(mListAdapter.getCheckState().size() > 0);
+                    .setEnabled(mListAdapter.getCheckState().size() > 0);
         }
     }
 
@@ -131,13 +135,16 @@ public class SelectMapPathDialogPreference extends DialogPreference implements I
         updateButtons();
     }
 
+
     private static class SavedState
             extends BaseSavedState
     {
         public File mCurrentFile;
         public List<String> mChoices;
 
-        public SavedState(Parcel source) {
+
+        public SavedState(Parcel source)
+        {
             super(source);
 
             mCurrentFile = (File) source.readSerializable();
@@ -145,26 +152,37 @@ public class SelectMapPathDialogPreference extends DialogPreference implements I
             source.readStringList(mChoices);
         }
 
+
         @Override
         public void writeToParcel(
                 @NonNull
-                Parcel dest, int flags) {
+                Parcel dest,
+                int flags)
+        {
             super.writeToParcel(dest, flags);
 
             dest.writeSerializable(mCurrentFile);
             dest.writeStringList(mChoices);
         }
 
-        public SavedState(Parcelable superState) {
+
+        public SavedState(Parcelable superState)
+        {
             super(superState);
         }
 
+
         public static final Parcelable.Creator<SavedState> CREATOR =
-                new Parcelable.Creator<SavedState>() {
-                    public SavedState createFromParcel(Parcel in) {
+                new Parcelable.Creator<SavedState>()
+                {
+                    public SavedState createFromParcel(Parcel in)
+                    {
                         return new SavedState(in);
                     }
-                    public SavedState[] newArray(int size) {
+
+
+                    public SavedState[] newArray(int size)
+                    {
                         return new SavedState[size];
                     }
                 };
@@ -175,7 +193,7 @@ public class SelectMapPathDialogPreference extends DialogPreference implements I
     protected void onDialogClosed(boolean positiveResult)
     {
         super.onDialogClosed(positiveResult);
-        if (positiveResult && mListAdapter.getCheckState().size() > 0){
+        if (positiveResult && mListAdapter.getCheckState().size() > 0) {
             String value = mListAdapter.getCheckState().get(0);
             if (callChangeListener(value)) {
                 setText(value);
@@ -188,9 +206,11 @@ public class SelectMapPathDialogPreference extends DialogPreference implements I
     /**
      * Saves the text to the {@link SharedPreferences}.
      *
-     * @param text The text to save
+     * @param text
+     *         The text to save
      */
-    public void setText(String text) {
+    public void setText(String text)
+    {
         final boolean wasBlocking = shouldDisableDependents();
         mText = text;
         persistString(text);
@@ -200,27 +220,39 @@ public class SelectMapPathDialogPreference extends DialogPreference implements I
         }
     }
 
+
     /**
      * Gets the text from the {@link SharedPreferences}.
      *
      * @return The current preference value.
      */
-    public String getText() {
+    public String getText()
+    {
         return mText;
     }
 
+
     @Override
-    public boolean shouldDisableDependents() {
+    public boolean shouldDisableDependents()
+    {
         return TextUtils.isEmpty(mText) || super.shouldDisableDependents();
     }
 
+
     @Override
-    protected Object onGetDefaultValue(TypedArray a, int index) {
+    protected Object onGetDefaultValue(
+            TypedArray a,
+            int index)
+    {
         return a.getString(index);
     }
 
+
     @Override
-    protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
+    protected void onSetInitialValue(
+            boolean restoreValue,
+            Object defaultValue)
+    {
         setText(restoreValue ? getPersistedString(mText) : (String) defaultValue);
     }
 

@@ -57,16 +57,18 @@ public class SettingsActivity
 
     public BackgroundMoveTask mBkTask;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
         ViewGroup root = ((ViewGroup) findViewById(android.R.id.content));
-        if(null != root) {
+        if (null != root) {
             View content = root.getChildAt(0);
             if (null != content) {
-                LinearLayout toolbarContainer = (LinearLayout) View.inflate(this, R.layout.activity_settings, null);
+                LinearLayout toolbarContainer =
+                        (LinearLayout) View.inflate(this, R.layout.activity_settings, null);
 
                 root.removeAllViews();
                 toolbarContainer.addView(content);
@@ -76,14 +78,15 @@ public class SettingsActivity
                 toolbar.getBackground().setAlpha(255);
                 toolbar.setTitle(getTitle());
                 toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-                toolbar.setNavigationOnClickListener(new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        SettingsActivity.this.finish();
-                    }
-                });
+                toolbar.setNavigationOnClickListener(
+                        new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View v)
+                            {
+                                SettingsActivity.this.finish();
+                            }
+                        });
             }
         }
 
@@ -100,8 +103,9 @@ public class SettingsActivity
                             SettingsConstantsUI.KEY_PREF_COORD_FORMAT);
                     initializeCoordinateFormat(lpCoordinateFormat);
 
-                    final SelectMapPathDialogPreference mapPath = (SelectMapPathDialogPreference) findPreference(
-                            SettingsConstants.KEY_PREF_MAP_PATH);
+                    final SelectMapPathDialogPreference mapPath =
+                            (SelectMapPathDialogPreference) findPreference(
+                                    SettingsConstants.KEY_PREF_MAP_PATH);
                     initializeMapPath(this, mapPath);
 
                     final ListPreference showCurrentLocation = (ListPreference) findPreference(
@@ -141,28 +145,34 @@ public class SettingsActivity
         }
     }
 
+
     public static void initializeCoordinateFormat(ListPreference lpCoordinateFormat)
     {
-        if(null != lpCoordinateFormat){
+        if (null != lpCoordinateFormat) {
             lpCoordinateFormat.setSummary(lpCoordinateFormat.getEntry());
 
-            lpCoordinateFormat.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-            {
-                @Override
-                public boolean onPreferenceChange(
-                        Preference preference,
-                        Object newValue)
-                {
-                    int value = Integer.parseInt(newValue.toString());
-                    CharSequence summary = ((ListPreference) preference).getEntries()[value];
-                    preference.setSummary(summary);
+            lpCoordinateFormat.setOnPreferenceChangeListener(
+                    new Preference.OnPreferenceChangeListener()
+                    {
+                        @Override
+                        public boolean onPreferenceChange(
+                                Preference preference,
+                                Object newValue)
+                        {
+                            int value = Integer.parseInt(newValue.toString());
+                            CharSequence summary =
+                                    ((ListPreference) preference).getEntries()[value];
+                            preference.setSummary(summary);
 
-                    String preferenceKey = preference.getKey() + "_int";
-                    preference.getSharedPreferences().edit().putInt(preferenceKey, value).commit();
+                            String preferenceKey = preference.getKey() + "_int";
+                            preference.getSharedPreferences()
+                                    .edit()
+                                    .putInt(preferenceKey, value)
+                                    .commit();
 
-                    return true;
-                }
-            });
+                            return true;
+                        }
+                    });
         }
     }
 
@@ -212,27 +222,32 @@ public class SettingsActivity
             listPreference.setEntries(entries);
             listPreference.setSummary(listPreference.getEntry());
 
-            listPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-            {
-                @Override
-                public boolean onPreferenceChange(
-                        Preference preference,
-                        Object newValue)
-                {
-                    int value = Integer.parseInt(newValue.toString());
-                    CharSequence summary = ((ListPreference) preference).getEntries()[value - 1];
-                    preference.setSummary(summary);
+            listPreference.setOnPreferenceChangeListener(
+                    new Preference.OnPreferenceChangeListener()
+                    {
+                        @Override
+                        public boolean onPreferenceChange(
+                                Preference preference,
+                                Object newValue)
+                        {
+                            int value = Integer.parseInt(newValue.toString());
+                            CharSequence summary =
+                                    ((ListPreference) preference).getEntries()[value - 1];
+                            preference.setSummary(summary);
 
-                    String preferenceKey = isTracks
-                                           ? SettingsConstants.KEY_PREF_TRACKS_SOURCE
-                                           : SettingsConstants.KEY_PREF_LOCATION_SOURCE;
-                    preference.getSharedPreferences().edit().putInt(preferenceKey, value).commit();
+                            String preferenceKey = isTracks
+                                                   ? SettingsConstants.KEY_PREF_TRACKS_SOURCE
+                                                   : SettingsConstants.KEY_PREF_LOCATION_SOURCE;
+                            preference.getSharedPreferences()
+                                    .edit()
+                                    .putInt(preferenceKey, value)
+                                    .commit();
 
-                    sectionWork(preference.getContext(), isTracks);
+                            sectionWork(preference.getContext(), isTracks);
 
-                    return true;
-                }
-            });
+                            return true;
+                        }
+                    });
         }
     }
 
@@ -244,56 +259,64 @@ public class SettingsActivity
     {
         final Context context = minDistance.getContext();
         minTime.setSummary(getMinSummary(context, minTime.getEntry(), minTime.getValue()));
-        minDistance.setSummary(getMinSummary(context, minDistance.getEntry(), minDistance.getValue()));
+        minDistance.setSummary(
+                getMinSummary(context, minDistance.getEntry(), minDistance.getValue()));
 
-        minTime.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-        {
-            @Override
-            public boolean onPreferenceChange(
-                    Preference preference,
-                    Object newValue)
-            {
-                int id = ((ListPreference) preference).findIndexOfValue((String) newValue);
-                preference.setSummary(getMinSummary(context, ((ListPreference) preference).getEntries()[id], (String) newValue));
+        minTime.setOnPreferenceChangeListener(
+                new Preference.OnPreferenceChangeListener()
+                {
+                    @Override
+                    public boolean onPreferenceChange(
+                            Preference preference,
+                            Object newValue)
+                    {
+                        int id = ((ListPreference) preference).findIndexOfValue((String) newValue);
+                        preference.setSummary(
+                                getMinSummary(
+                                        context, ((ListPreference) preference).getEntries()[id],
+                                        (String) newValue));
 
-                String preferenceKey = isTracks
-                                       ? SettingsConstants.KEY_PREF_TRACKS_MIN_TIME
-                                       : SettingsConstants.KEY_PREF_LOCATION_MIN_TIME;
-                preference.getSharedPreferences()
-                          .edit()
-                          .putString(preferenceKey, (String) newValue)
-                          .commit();
+                        String preferenceKey = isTracks
+                                               ? SettingsConstants.KEY_PREF_TRACKS_MIN_TIME
+                                               : SettingsConstants.KEY_PREF_LOCATION_MIN_TIME;
+                        preference.getSharedPreferences()
+                                .edit()
+                                .putString(preferenceKey, (String) newValue)
+                                .commit();
 
-                sectionWork(preference.getContext(), isTracks);
+                        sectionWork(preference.getContext(), isTracks);
 
-                return true;
-            }
-        });
+                        return true;
+                    }
+                });
 
-        minDistance.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-        {
-            @Override
-            public boolean onPreferenceChange(
-                    Preference preference,
-                    Object newValue)
-            {
-                int id = ((ListPreference) preference).findIndexOfValue((String) newValue);
-                preference.setSummary(
-                        getMinSummary(context, ((ListPreference) preference).getEntries()[id], (String) newValue));
+        minDistance.setOnPreferenceChangeListener(
+                new Preference.OnPreferenceChangeListener()
+                {
+                    @Override
+                    public boolean onPreferenceChange(
+                            Preference preference,
+                            Object newValue)
+                    {
+                        int id = ((ListPreference) preference).findIndexOfValue((String) newValue);
+                        preference.setSummary(
+                                getMinSummary(
+                                        context, ((ListPreference) preference).getEntries()[id],
+                                        (String) newValue));
 
-                String preferenceKey = isTracks
-                                       ? SettingsConstants.KEY_PREF_TRACKS_MIN_DISTANCE
-                                       : SettingsConstants.KEY_PREF_LOCATION_MIN_DISTANCE;
-                preference.getSharedPreferences()
-                          .edit()
-                          .putString(preferenceKey, (String) newValue)
-                          .commit();
+                        String preferenceKey = isTracks
+                                               ? SettingsConstants.KEY_PREF_TRACKS_MIN_DISTANCE
+                                               : SettingsConstants.KEY_PREF_LOCATION_MIN_DISTANCE;
+                        preference.getSharedPreferences()
+                                .edit()
+                                .putString(preferenceKey, (String) newValue)
+                                .commit();
 
-                sectionWork(preference.getContext(), isTracks);
+                        sectionWork(preference.getContext(), isTracks);
 
-                return true;
-            }
-        });
+                        return true;
+                    }
+                });
     }
 
 
@@ -307,8 +330,9 @@ public class SettingsActivity
             application.getGpsEventSource().updateActiveListeners();
         } else {
             if (isTrackerServiceRunning(context)) {
-                Toast.makeText(context, context.getString(R.string.tracks_reload),
-                               Toast.LENGTH_SHORT).show();
+                Toast.makeText(
+                        context, context.getString(R.string.tracks_reload), Toast.LENGTH_SHORT)
+                        .show();
             }
         }
     }
@@ -333,40 +357,51 @@ public class SettingsActivity
         return addition;
     }
 
-    public static void initializeMapPath(final Context context, final SelectMapPathDialogPreference mapPath)
+
+    public static void initializeMapPath(
+            final Context context,
+            final SelectMapPathDialogPreference mapPath)
     {
-        if(null != mapPath){
+        if (null != mapPath) {
             mapPath.setSummary(mapPath.getText());
 
-            mapPath.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-            {
-                @Override
-                public boolean onPreferenceChange(
-                        Preference preference,
-                        Object o)
-                {
-                    final SettingsActivity parent = (SettingsActivity) context;
-                    if(null == parent)
-                        return false;
+            mapPath.setOnPreferenceChangeListener(
+                    new Preference.OnPreferenceChangeListener()
+                    {
+                        @Override
+                        public boolean onPreferenceChange(
+                                Preference preference,
+                                Object o)
+                        {
+                            final SettingsActivity parent = (SettingsActivity) context;
+                            if (null == parent) {
+                                return false;
+                            }
 
-                    File newPath = new File((String)o);
-                    if(newPath.listFiles().length != 0){
-                        Toast.makeText(context, context.getString(R.string.warning_folder_should_be_empty), Toast.LENGTH_SHORT).show();
-                        return false;
-                    }
+                            File newPath = new File((String) o);
+                            if (newPath.listFiles().length != 0) {
+                                Toast.makeText(
+                                        context, context.getString(
+                                                R.string.warning_folder_should_be_empty),
+                                        Toast.LENGTH_SHORT).show();
+                                return false;
+                            }
 
-                    parent.moveMap(newPath);
+                            parent.moveMap(newPath);
 
-                    return true;
-                }
-            });
+                            return true;
+                        }
+                    });
         }
     }
 
-    public void moveMap(File path){
+
+    public void moveMap(File path)
+    {
         GISApplication application = (GISApplication) getApplication();
-        if(null == application)
+        if (null == application) {
             return;
+        }
 
         ContentResolver.cancelSync(null, application.getAuthority());
 
@@ -374,25 +409,33 @@ public class SettingsActivity
         mBkTask.execute();
     }
 
-    public static void initializeShowCurrentLocation(Context context, final ListPreference listPreference)
+
+    public static void initializeShowCurrentLocation(
+            Context context,
+            final ListPreference listPreference)
     {
         listPreference.setSummary(listPreference.getEntry());
 
-        listPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-        {
-            @Override
-            public boolean onPreferenceChange(
-                    Preference preference,
-                    Object newValue)
-            {
-                preference.setSummary(listPreference.getEntries()[listPreference.findIndexOfValue((String) newValue)]);
+        listPreference.setOnPreferenceChangeListener(
+                new Preference.OnPreferenceChangeListener()
+                {
+                    @Override
+                    public boolean onPreferenceChange(
+                            Preference preference,
+                            Object newValue)
+                    {
+                        preference.setSummary(
+                                listPreference.getEntries()[listPreference.findIndexOfValue(
+                                        (String) newValue)]);
 
-                return true;
-            }
-        });
+                        return true;
+                    }
+                });
     }
 
-    protected static class BackgroundMoveTask extends AsyncTask<Void, Void, Void>
+
+    protected static class BackgroundMoveTask
+            extends AsyncTask<Void, Void, Void>
     {
         protected ProgressDialog mProgressDialog;
         protected Activity       mActivity;
@@ -424,10 +467,12 @@ public class SettingsActivity
         {
             //not good solution but rare used so let it be
             lockScreenOrientation();
-            mProgressDialog =
-                    ProgressDialog.show(mActivity, mActivity.getString(R.string.moving), mActivity.getString(R.string.warning_map_moving), true);
+            mProgressDialog = ProgressDialog.show(
+                    mActivity, mActivity.getString(R.string.moving),
+                    mActivity.getString(R.string.warning_map_moving), true);
             mProgressDialog.setCancelable(false);
-            mProgressDialog.setIcon(mActivity.getResources().getDrawable(R.drawable.ic_action_warning));
+            mProgressDialog.setIcon(
+                    mActivity.getResources().getDrawable(R.drawable.ic_action_warning));
         }
 
 

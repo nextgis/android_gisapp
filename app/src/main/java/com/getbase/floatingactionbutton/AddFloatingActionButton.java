@@ -69,11 +69,11 @@ public class AddFloatingActionButton
             Context context,
             AttributeSet attributeSet)
     {
-        TypedArray attr =
-                context.obtainStyledAttributes(attributeSet, R.styleable.AddFloatingActionButton, 0,
-                                               0);
-        mPlusColor = attr.getColor(R.styleable.AddFloatingActionButton_fab_plusIconColor,
-                                   getColor(android.R.color.white));
+        TypedArray attr = context.obtainStyledAttributes(
+                attributeSet, R.styleable.AddFloatingActionButton, 0, 0);
+        mPlusColor = attr.getColor(
+                R.styleable.AddFloatingActionButton_fab_plusIconColor,
+                getColor(android.R.color.white));
         attr.recycle();
 
         super.init(context, attributeSet);
@@ -97,10 +97,12 @@ public class AddFloatingActionButton
                     Canvas canvas,
                     Paint paint)
             {
-                canvas.drawRect(plusOffset, iconHalfSize - plusHalfStroke, iconSize - plusOffset,
-                                iconHalfSize + plusHalfStroke, paint);
-                canvas.drawRect(iconHalfSize - plusHalfStroke, plusOffset,
-                                iconHalfSize + plusHalfStroke, iconSize - plusOffset, paint);
+                canvas.drawRect(
+                        plusOffset, iconHalfSize - plusHalfStroke, iconSize - plusOffset,
+                        iconHalfSize + plusHalfStroke, paint);
+                canvas.drawRect(
+                        iconHalfSize - plusHalfStroke, plusOffset, iconHalfSize + plusHalfStroke,
+                        iconSize - plusOffset, paint);
             }
         };
 

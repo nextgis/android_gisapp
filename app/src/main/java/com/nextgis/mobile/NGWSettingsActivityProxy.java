@@ -26,7 +26,8 @@ import android.os.Build;
 import com.nextgis.maplibui.NGWSettingsActivity;
 
 
-public class NGWSettingsActivityProxy extends NGWSettingsActivity
+public class NGWSettingsActivityProxy
+        extends NGWSettingsActivity
 {
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override

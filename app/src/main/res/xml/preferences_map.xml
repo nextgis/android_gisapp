@@ -53,14 +53,16 @@
         android:defaultValue="0"
         android:entries="@array/coordinates_format"
         android:entryValues="@array/coordinates_format_val"
-        android:dialogTitle="@string/select_coordinates_format" />
+        android:dialogTitle="@string/select_coordinates_format"
+        />
     <com.nextgis.mobile.SelectMapPathDialogPreference
         android:key="map_path"
         android:title="@string/map_path"
         android:summary="@string/map_path_summary"
-        android:dialogTitle ="@string/select_map_path"
+        android:dialogTitle="@string/select_map_path"
         android:positiveButtonText="@string/select"
-        android:negativeButtonText="@string/cancel"/>
+        android:negativeButtonText="@string/cancel"
+        />
 
     <!-- TODO:
     1) tile size

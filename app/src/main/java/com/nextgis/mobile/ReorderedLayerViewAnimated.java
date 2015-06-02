@@ -25,21 +25,11 @@ package com.nextgis.mobile;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import com.nextgis.maplibui.LayersListAdapter;
 import com.nextgis.maplibui.ReorderedLayerView;
 import com.nineoldandroids.animation.Animator;
@@ -56,6 +46,7 @@ public class ReorderedLayerViewAnimated
         extends ReorderedLayerView
 {
     private final int MOVE_DURATION = 150;
+
 
     public ReorderedLayerViewAnimated(Context context)
     {
@@ -90,8 +81,10 @@ public class ReorderedLayerViewAnimated
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
+
     @Override
-    protected void handleCellSwitch() {
+    protected void handleCellSwitch()
+    {
         final int deltaY = mLastEventY - mDownY;
         int deltaYTotal = mHoverCellOriginalBounds.top + mTotalOffset + deltaY;
 
@@ -113,9 +106,10 @@ public class ReorderedLayerViewAnimated
                 return;
             }
 
-            LayersListAdapter adapter = (LayersListAdapter)getAdapter();
-            if(null != adapter)
+            LayersListAdapter adapter = (LayersListAdapter) getAdapter();
+            if (null != adapter) {
                 adapter.swapElements(originalItem, getPositionForView(switchView));
+            }
 
             mDownY = mLastEventY;
 
@@ -127,37 +121,43 @@ public class ReorderedLayerViewAnimated
             updateNeighborViewsForID(mMobileItemId);
 
             final ViewTreeObserver observer = getViewTreeObserver();
-            observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                public boolean onPreDraw() {
-                    observer.removeOnPreDrawListener(this);
+            observer.addOnPreDrawListener(
+                    new ViewTreeObserver.OnPreDrawListener()
+                    {
+                        public boolean onPreDraw()
+                        {
+                            observer.removeOnPreDrawListener(this);
 
-                    View switchView = getViewForID(switchItemID);
-                    AnimatorProxy switchViewProxy = AnimatorProxy.wrap(switchView);
+                            View switchView = getViewForID(switchItemID);
+                            AnimatorProxy switchViewProxy = AnimatorProxy.wrap(switchView);
 
-                    mTotalOffset += deltaY;
+                            mTotalOffset += deltaY;
 
-                    int switchViewNewTop = switchView.getTop();
-                    int delta = switchViewStartTop - switchViewNewTop;
+                            int switchViewNewTop = switchView.getTop();
+                            int delta = switchViewStartTop - switchViewNewTop;
 
-                    switchViewProxy.setTranslationY(delta);
+                            switchViewProxy.setTranslationY(delta);
 
-                    ObjectAnimator animator = ObjectAnimator.ofFloat(switchViewProxy, "translationY", 0);
-                    animator.setDuration(MOVE_DURATION);
-                    animator.start();
+                            ObjectAnimator animator =
+                                    ObjectAnimator.ofFloat(switchViewProxy, "translationY", 0);
+                            animator.setDuration(MOVE_DURATION);
+                            animator.start();
 
-                    return true;
-                }
-            });
+                            return true;
+                        }
+                    });
         }
     }
 
+
     @Override
-    protected void touchEventsEnded () {
+    protected void touchEventsEnded()
+    {
 
         final View mobileView = getViewForID(mMobileItemId);
         if (mCellIsMobile || mIsWaitingForScrollFinish) {
 
-            LayersListAdapter adapter = (LayersListAdapter)getAdapter();
+            LayersListAdapter adapter = (LayersListAdapter) getAdapter();
             adapter.endDrag();
 
             mCellIsMobile = false;
@@ -175,41 +175,49 @@ public class ReorderedLayerViewAnimated
 
             mHoverCellCurrentBounds.offsetTo(mHoverCellOriginalBounds.left, mobileView.getTop());
 
-            ObjectAnimator hoverViewAnimator = ObjectAnimator.ofObject(mHoverCell, "bounds",
-                                                                       sBoundEvaluator, mHoverCellCurrentBounds);
-            hoverViewAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    invalidate();
-                }
-            });
-            hoverViewAnimator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    setEnabled(false);
-                }
+            ObjectAnimator hoverViewAnimator = ObjectAnimator.ofObject(
+                    mHoverCell, "bounds", sBoundEvaluator, mHoverCellCurrentBounds);
+            hoverViewAnimator.addUpdateListener(
+                    new ValueAnimator.AnimatorUpdateListener()
+                    {
+                        @Override
+                        public void onAnimationUpdate(ValueAnimator valueAnimator)
+                        {
+                            invalidate();
+                        }
+                    });
+            hoverViewAnimator.addListener(
+                    new AnimatorListenerAdapter()
+                    {
+                        @Override
+                        public void onAnimationStart(Animator animation)
+                        {
+                            setEnabled(false);
+                        }
 
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mAboveItemId = NOT_FOUND;
-                    mMobileItemId = NOT_FOUND;
-                    mBelowItemId = NOT_FOUND;
-                    mobileView.setVisibility(VISIBLE);
-                    mHoverCell = null;
-                    setEnabled(true);
-                    invalidate();
-                }
-            });
+
+                        @Override
+                        public void onAnimationEnd(Animator animation)
+                        {
+                            mAboveItemId = NOT_FOUND;
+                            mMobileItemId = NOT_FOUND;
+                            mBelowItemId = NOT_FOUND;
+                            mobileView.setVisibility(VISIBLE);
+                            mHoverCell = null;
+                            setEnabled(true);
+                            invalidate();
+                        }
+                    });
             hoverViewAnimator.start();
         } else {
             touchEventsCancelled();
         }
     }
 
+
     /**
-     * This TypeEvaluator is used to animate the BitmapDrawable back to its
-     * final location when the user lifts his finger by modifying the
-     * BitmapDrawable's bounds.
+     * This TypeEvaluator is used to animate the BitmapDrawable back to its final location when the
+     * user lifts his finger by modifying the BitmapDrawable's bounds.
      */
     private final static TypeEvaluator<Rect> sBoundEvaluator = new TypeEvaluator<Rect>()
     {
@@ -218,10 +226,11 @@ public class ReorderedLayerViewAnimated
                 Rect startValue,
                 Rect endValue)
         {
-            return new Rect(interpolate(startValue.left, endValue.left, fraction),
-                            interpolate(startValue.top, endValue.top, fraction),
-                            interpolate(startValue.right, endValue.right, fraction),
-                            interpolate(startValue.bottom, endValue.bottom, fraction));
+            return new Rect(
+                    interpolate(startValue.left, endValue.left, fraction),
+                    interpolate(startValue.top, endValue.top, fraction),
+                    interpolate(startValue.right, endValue.right, fraction),
+                    interpolate(startValue.bottom, endValue.bottom, fraction));
         }
 
 

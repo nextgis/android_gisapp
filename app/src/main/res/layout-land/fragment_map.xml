@@ -56,6 +56,7 @@
             fab:fab_addButtonPlusIconColor="@android:color/white"
             fab:fab_icon="@drawable/ic_plus"
             />
+
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/action_zoom_out"
             android:layout_width="wrap_content"
@@ -84,7 +85,8 @@
             fab:fab_addButtonPlusIconColor="@android:color/white"
             android:layout_marginRight="16dp"
             android:layout_marginEnd="16dp"
-            fab:fab_expandDirection="left">
+            fab:fab_expandDirection="left"
+            >
 
             <com.getbase.floatingactionbutton.FloatingActionButton
                 android:id="@+id/add_geometry_by_walk"
@@ -93,7 +95,8 @@
                 fab:fab_colorNormal="@color/primary"
                 fab:fab_size="mini"
                 fab:fab_icon="@drawable/ic_action_maps_directions_walk"
-                fab:fab_colorPressed="@color/accent"/>
+                fab:fab_colorPressed="@color/accent"
+                />
 
             <com.getbase.floatingactionbutton.FloatingActionButton
                 android:id="@+id/add_new_geometry"
@@ -102,7 +105,8 @@
                 fab:fab_colorNormal="@color/primary"
                 fab:fab_size="mini"
                 fab:fab_icon="@drawable/ic_action_edit_light"
-                fab:fab_colorPressed="@color/accent"/>
+                fab:fab_colorPressed="@color/accent"
+                />
 
             <com.getbase.floatingactionbutton.FloatingActionButton
                 android:id="@+id/add_current_location"
@@ -111,7 +115,8 @@
                 fab:fab_colorNormal="@color/primary"
                 fab:fab_size="mini"
                 fab:fab_icon="@drawable/ic_action_maps_place"
-                fab:fab_colorPressed="@color/accent"/>
+                fab:fab_colorPressed="@color/accent"
+                />
 
         </com.getbase.floatingactionbutton.FloatingActionsMenu>
     </RelativeLayout>
