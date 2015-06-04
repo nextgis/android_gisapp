@@ -119,6 +119,19 @@
             android:theme="@style/AppTheme"
             />
 
+        <activity
+            android:name="com.nextgis.maplibui.activity.ModifyAttributesActivity"
+            android:label="@string/set_attributes"
+            android:theme="@style/AppBlackTextTheme"
+            />
+
+        <activity
+            android:name="com.nextgis.maplibui.activity.CustomModifyAttributesActivity"
+            android:label="@string/set_attributes"
+            android:theme="@style/AppBlackTextTheme"
+            />
+
+
         <service
             android:process=":tracks"
             android:name="com.nextgis.maplib.service.TrackerService"
