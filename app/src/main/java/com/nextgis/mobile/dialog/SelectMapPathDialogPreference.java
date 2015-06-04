@@ -142,7 +142,7 @@ public class SelectMapPathDialogPreference
     private static class SavedState
             extends BaseSavedState
     {
-        public File mCurrentFile;
+        public File         mCurrentFile;
         public List<String> mChoices;
 
 

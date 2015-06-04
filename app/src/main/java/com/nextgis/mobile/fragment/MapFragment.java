@@ -1057,10 +1057,9 @@ public class MapFragment
         }
 
         boolean needViewUpdate = true;
-        boolean isCurrentOrientationOneLine = mStatusPanel.getChildCount() > 0 &&
-                                              ((LinearLayout) mStatusPanel.getChildAt(
-                                                      0)).getOrientation() ==
-                                              LinearLayout.HORIZONTAL;
+        boolean isCurrentOrientationOneLine =
+                mStatusPanel.getChildCount() > 0 && ((LinearLayout) mStatusPanel.getChildAt(
+                        0)).getOrientation() == LinearLayout.HORIZONTAL;
 
         View panel;
         if (!isCurrentOrientationOneLine) {
