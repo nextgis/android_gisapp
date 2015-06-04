@@ -1,11 +1,11 @@
 /*
  * Project:  NextGIS Mobile
  * Purpose:  Mobile GIS for Android.
- * Author:   Daniel Olshansky
  * Author:   Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
- * Original code: http://developer.android.com/shareables/devbytes/ListViewDraggingAnimation.zip
+ * Author:   NikitaFeodonit, nfeodonit@yandex.com
+ * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (C) 2013 The Android Open Source Project
+ * Copyright (c) 2012-2015. NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
