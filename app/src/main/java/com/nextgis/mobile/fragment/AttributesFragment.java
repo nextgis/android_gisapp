@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextgis.mobile;
+package com.nextgis.mobile.fragment;
 
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -41,8 +41,10 @@ import android.widget.Toast;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.VectorCacheItem;
-import com.nextgis.maplibui.BottomToolbar;
+import com.nextgis.maplibui.fragment.BottomToolbar;
 import com.nextgis.maplibui.overlay.EditLayerOverlay;
+import com.nextgis.mobile.R;
+import com.nextgis.mobile.activity.MainActivity;
 
 import java.util.List;
 

@@ -55,7 +55,7 @@
         android:entryValues="@array/coordinates_format_val"
         android:dialogTitle="@string/select_coordinates_format"
         />
-    <com.nextgis.mobile.SelectMapPathDialogPreference
+    <com.nextgis.mobile.dialog.SelectMapPathDialogPreference
         android:key="map_path"
         android:title="@string/map_path"
         android:summary="@string/map_path_summary"

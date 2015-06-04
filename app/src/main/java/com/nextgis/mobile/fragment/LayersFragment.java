@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextgis.mobile;
+package com.nextgis.mobile.fragment;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -51,7 +51,8 @@ import com.nextgis.maplib.datasource.ngw.SyncAdapter;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.SettingsConstants;
-import com.nextgis.maplibui.LayersListAdapter;
+import com.nextgis.maplibui.fragment.LayersListAdapter;
+import com.nextgis.mobile.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextgis.mobile;
+package com.nextgis.mobile.fragment;
 
 import android.annotation.TargetApi;
 import android.os.Build;
@@ -28,8 +28,11 @@ import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
 import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
+import com.nextgis.mobile.R;
+import com.nextgis.mobile.activity.SettingsActivity;
+import com.nextgis.mobile.dialog.SelectMapPathDialogPreference;
 
-import static com.nextgis.mobile.SettingsActivity.initializeShowCurrentLocation;
+import static com.nextgis.mobile.activity.SettingsActivity.initializeShowCurrentLocation;
 
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)

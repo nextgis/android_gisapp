@@ -21,7 +21,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextgis.mobile;
+package com.nextgis.mobile.fragment;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -30,8 +30,8 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import com.nextgis.maplibui.LayersListAdapter;
-import com.nextgis.maplibui.ReorderedLayerView;
+import com.nextgis.maplibui.fragment.LayersListAdapter;
+import com.nextgis.maplibui.fragment.ReorderedLayerView;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorListenerAdapter;
 import com.nineoldandroids.animation.ObjectAnimator;

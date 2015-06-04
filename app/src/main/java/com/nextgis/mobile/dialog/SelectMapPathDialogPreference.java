@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextgis.mobile;
+package com.nextgis.mobile.dialog;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -37,6 +37,7 @@ import android.widget.ListView;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplibui.api.ISelectResourceDialog;
 import com.nextgis.maplibui.dialog.LocalResourcesListAdapter;
+import com.nextgis.mobile.R;
 
 import java.io.File;
 import java.util.ArrayList;

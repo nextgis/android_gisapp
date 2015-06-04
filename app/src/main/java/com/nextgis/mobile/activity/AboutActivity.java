@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextgis.mobile;
+package com.nextgis.mobile.activity;
 
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -29,6 +29,7 @@ import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.MenuItem;
 import android.widget.TextView;
+import com.nextgis.mobile.R;
 
 
 public class AboutActivity

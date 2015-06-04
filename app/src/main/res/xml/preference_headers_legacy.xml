@@ -26,7 +26,7 @@
         android:summary="@string/general_summary" >
         <intent
             android:targetPackage="com.nextgis.mobile"
-            android:targetClass="com.nextgis.mobile.SettingsActivity"
+            android:targetClass="com.nextgis.mobile.activity.SettingsActivity"
             android:action="com.nextgis.mobile.PREFS_GENERAL" />
     </Preference-->
     <Preference

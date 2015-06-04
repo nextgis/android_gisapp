@@ -19,7 +19,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.nextgis.mobile;
+package com.nextgis.mobile.activity;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -43,11 +43,15 @@ import android.widget.Toast;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
+import com.nextgis.mobile.GISApplication;
+import com.nextgis.mobile.R;
+import com.nextgis.mobile.dialog.SelectMapPathDialogPreference;
+import com.nextgis.mobile.fragment.SettingsFragment;
 
 import java.io.File;
 import java.util.List;
 
-import static com.nextgis.maplibui.TracksActivity.isTrackerServiceRunning;
+import static com.nextgis.maplibui.activity.TracksActivity.isTrackerServiceRunning;
 import static com.nextgis.mobile.util.SettingsConstants.*;
 
 

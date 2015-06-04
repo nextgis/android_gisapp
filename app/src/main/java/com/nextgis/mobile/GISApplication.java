@@ -46,6 +46,7 @@ import com.nextgis.maplibui.mapui.LayerFactoryUI;
 import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
 import com.nextgis.maplibui.mapui.TrackLayerUI;
 import com.nextgis.maplibui.mapui.VectorLayerUI;
+import com.nextgis.mobile.activity.SettingsActivity;
 
 import java.io.File;
 import java.util.ArrayList;

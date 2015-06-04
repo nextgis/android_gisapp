@@ -63,7 +63,7 @@
             />
     </LinearLayout>
 
-    <com.nextgis.mobile.ReorderedLayerViewAnimated
+    <com.nextgis.mobile.fragment.ReorderedLayerViewAnimated
         android:id="@+id/layer_list"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

@@ -19,11 +19,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextgis.mobile;
+package com.nextgis.mobile.activity;
 
 import android.annotation.TargetApi;
 import android.os.Build;
-import com.nextgis.maplibui.NGWSettingsActivity;
+import com.nextgis.maplibui.activity.NGWSettingsActivity;
 
 
 public class NGWSettingsActivityProxy

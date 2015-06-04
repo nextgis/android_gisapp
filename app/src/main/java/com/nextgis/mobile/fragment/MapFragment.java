@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextgis.mobile;
+package com.nextgis.mobile.fragment;
 
 
 import android.content.Intent;
@@ -67,18 +67,22 @@ import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplib.util.LocationUtil;
 import com.nextgis.maplib.util.VectorCacheItem;
-import com.nextgis.maplibui.BottomToolbar;
-import com.nextgis.maplibui.MapViewOverlays;
 import com.nextgis.maplibui.api.EditEventListener;
 import com.nextgis.maplibui.api.ILayerUI;
 import com.nextgis.maplibui.api.IVectorLayerUI;
 import com.nextgis.maplibui.api.MapViewEventListener;
 import com.nextgis.maplibui.dialog.ChooseLayerDialog;
+import com.nextgis.maplibui.fragment.BottomToolbar;
+import com.nextgis.maplibui.mapui.MapViewOverlays;
 import com.nextgis.maplibui.overlay.CurrentLocationOverlay;
 import com.nextgis.maplibui.overlay.CurrentTrackOverlay;
 import com.nextgis.maplibui.overlay.EditLayerOverlay;
 import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
+import com.nextgis.mobile.GISApplication;
+import com.nextgis.mobile.R;
+import com.nextgis.mobile.activity.MainActivity;
+import com.nextgis.mobile.activity.SettingsActivity;
 
 import java.util.List;
 

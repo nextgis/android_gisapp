@@ -26,7 +26,7 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.nextgis.mobile.MainActivity"
+    tools:context="com.nextgis.mobile.activity.MainActivity"
     android:fitsSystemWindows="true"
     >
 
@@ -42,7 +42,7 @@
 
         <fragment
             android:id="@+id/map"
-            android:name="com.nextgis.mobile.MapFragment"
+            android:name="com.nextgis.mobile.fragment.MapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
@@ -70,7 +70,7 @@
 
     <fragment
         android:id="@+id/layers"
-        android:name="com.nextgis.mobile.LayersFragment"
+        android:name="com.nextgis.mobile.fragment.LayersFragment"
         android:layout_width="@dimen/navigation_drawer_width"
         android:layout_height="match_parent"
         android:layout_gravity="left|start"

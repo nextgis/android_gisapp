@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextgis.mobile;
+package com.nextgis.mobile.activity;
 
 import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
@@ -61,9 +61,13 @@ import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.service.TrackerService;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.FileUtil;
-import com.nextgis.maplibui.BottomToolbar;
 import com.nextgis.maplibui.api.IChooseLayerResult;
+import com.nextgis.maplibui.fragment.BottomToolbar;
 import com.nextgis.maplibui.util.ConstantsUI;
+import com.nextgis.mobile.GISApplication;
+import com.nextgis.mobile.R;
+import com.nextgis.mobile.fragment.LayersFragment;
+import com.nextgis.mobile.fragment.MapFragment;
 import com.nextgis.mobile.util.SettingsConstants;
 
 import java.io.IOException;
@@ -74,7 +78,7 @@ import java.util.GregorianCalendar;
 import static com.nextgis.maplib.util.Constants.TAG;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WEB_MERCATOR;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
-import static com.nextgis.maplibui.TracksActivity.isTrackerServiceRunning;
+import static com.nextgis.maplibui.activity.TracksActivity.isTrackerServiceRunning;
 
 
 public class MainActivity
