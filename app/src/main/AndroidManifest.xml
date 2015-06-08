@@ -126,7 +126,7 @@
             />
 
         <activity
-            android:name="com.nextgis.maplibui.activity.CustomModifyAttributesActivity"
+            android:name="com.nextgis.maplibui.activity.FormBuilderModifyAttributesActivity"
             android:label="@string/set_attributes"
             android:theme="@style/AppBlackTextTheme"
             />
