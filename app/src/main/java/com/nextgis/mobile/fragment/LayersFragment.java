@@ -38,6 +38,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.internal.widget.ThemeUtils;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -101,7 +102,8 @@ public class LayersFragment
 
         LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.action_space);
         if (null != linearLayout) {
-            linearLayout.setBackgroundColor(getResources().getColor(R.color.primary));
+            linearLayout.setBackgroundColor(ThemeUtils.getThemeAttrColor(view.getContext(),
+                                                                         R.attr.colorPrimary));
         }
 
         mSyncButton = (ImageButton) view.findViewById(R.id.sync);

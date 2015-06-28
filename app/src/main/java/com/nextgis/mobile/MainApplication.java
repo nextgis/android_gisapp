@@ -23,27 +23,21 @@
 
 package com.nextgis.mobile;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
-import android.app.Application;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Bundle;
 import android.preference.PreferenceManager;
-import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.datasource.Feature;
 import com.nextgis.maplib.datasource.Field;
-import com.nextgis.maplib.datasource.ngw.SyncAdapter;
-import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.maplib.map.LayerGroup;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.GeoConstants;
+import com.nextgis.maplib.util.SettingsConstants;
+import com.nextgis.maplibui.GISApplication;
 import com.nextgis.maplibui.mapui.LayerFactoryUI;
 import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
 import com.nextgis.maplibui.mapui.TrackLayerUI;
@@ -56,56 +50,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.nextgis.maplib.util.Constants.MAP_EXT;
-import static com.nextgis.maplib.util.Constants.NOT_FOUND;
 import static com.nextgis.maplib.util.GeoConstants.TMSTYPE_OSM;
 import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_MAP;
-import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_MAP_PATH;
-import static com.nextgis.maplibui.util.SettingsConstantsUI.KEY_PREF_SYNC_PERIODICALLY;
-import static com.nextgis.maplibui.util.SettingsConstantsUI.KEY_PREF_SYNC_PERIOD_SEC_LONG;
-import static com.nextgis.mobile.util.SettingsConstants.*;
+import static com.nextgis.mobile.util.SettingsConstants.AUTHORITY;
 
 
-public class GISApplication
-        extends Application
-        implements IGISApplication
+public class MainApplication extends GISApplication
 {
-    protected MapDrawable    mMap;
-    protected GpsEventSource mGpsEventSource;
-
-
-    @Override
-    public void onCreate()
-    {
-        super.onCreate();
-
-        mGpsEventSource = new GpsEventSource(this);
-
-        getMap();
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        if (sharedPreferences.getBoolean(SettingsConstantsUI.KEY_PREF_APP_FIRST_RUN, true)) {
-            onFirstRun();
-            SharedPreferences.Editor edit = sharedPreferences.edit();
-            edit.putBoolean(SettingsConstantsUI.KEY_PREF_APP_FIRST_RUN, false);
-            edit.commit();
-        }
-
-        //turn on periodic sync. Can be set for each layer individually, but this is simpler
-        if (sharedPreferences.getBoolean(KEY_PREF_SYNC_PERIODICALLY, true)) {
-            long period =
-                    sharedPreferences.getLong(KEY_PREF_SYNC_PERIOD_SEC_LONG, NOT_FOUND); //10 min
-            if (period != NOT_FOUND) {
-                Bundle params = new Bundle();
-                params.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, false);
-                params.putBoolean(ContentResolver.SYNC_EXTRAS_DO_NOT_RETRY, false);
-                params.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, false);
-
-                SyncAdapter.setSyncPeriod(this, params, period);
-            }
-        }
-    }
-
-
     @Override
     public MapBase getMap()
     {
@@ -119,8 +70,8 @@ public class GISApplication
             defaultPath = new File(getFilesDir(), KEY_PREF_MAP);
         }
         if (defaultPath != null) {
-            String mapPath = sharedPreferences.getString(KEY_PREF_MAP_PATH, defaultPath.getPath());
-            String mapName = sharedPreferences.getString(KEY_PREF_MAP_NAME, "default");
+            String mapPath = sharedPreferences.getString(SettingsConstants.KEY_PREF_MAP_PATH, defaultPath.getPath());
+            String mapName = sharedPreferences.getString(SettingsConstantsUI.KEY_PREF_MAP_NAME, "default");
 
             File mapFullPath = new File(mapPath, mapName + MAP_EXT);
 
@@ -159,51 +110,6 @@ public class GISApplication
     {
         return AUTHORITY;
     }
-
-
-    @Override
-    public Account getAccount(String accountName)
-    {
-        AccountManager accountManager = AccountManager.get(this);
-        for (Account account : accountManager.getAccountsByType(Constants.NGW_ACCOUNT_TYPE)) {
-            if (account.name.equals(accountName)) {
-                return account;
-            }
-        }
-        return null;
-    }
-
-
-    @Override
-    public String getAccountUrl(Account account)
-    {
-        AccountManager accountManager = AccountManager.get(this);
-        return accountManager.getUserData(account, "url");
-    }
-
-
-    @Override
-    public String getAccountLogin(Account account)
-    {
-        AccountManager accountManager = AccountManager.get(this);
-        return accountManager.getUserData(account, "login");
-    }
-
-
-    @Override
-    public String getAccountPassword(Account account)
-    {
-        AccountManager accountManager = AccountManager.get(this);
-        return accountManager.getPassword(account);
-    }
-
-
-    @Override
-    public GpsEventSource getGpsEventSource()
-    {
-        return mGpsEventSource;
-    }
-
 
     @Override
     public void showSettings()

@@ -48,6 +48,7 @@ import android.support.annotation.DimenRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
+import android.support.v7.internal.widget.ThemeUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageButton;
@@ -121,9 +122,11 @@ public class FloatingActionButton
         TypedArray attr = context.obtainStyledAttributes(
                 attributeSet, R.styleable.FloatingActionButton, 0, 0);
         mColorNormal = attr.getColor(
-                R.styleable.FloatingActionButton_fab_colorNormal, getColor(R.color.primary));
+                R.styleable.FloatingActionButton_fab_colorNormal, ThemeUtils.getThemeAttrColor(
+                        context, R.attr.colorPrimary));
         mColorPressed = attr.getColor(
-                R.styleable.FloatingActionButton_fab_colorPressed, getColor(R.color.accent));
+                R.styleable.FloatingActionButton_fab_colorPressed, ThemeUtils.getThemeAttrColor(
+                        context, R.attr.colorAccent));
         mColorDisabled = attr.getColor(
                 R.styleable.FloatingActionButton_fab_colorDisabled,
                 getColor(android.R.color.darker_gray));

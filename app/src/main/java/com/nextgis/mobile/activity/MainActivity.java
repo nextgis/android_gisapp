@@ -42,6 +42,7 @@ import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.internal.widget.ThemeUtils;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -63,10 +64,11 @@ import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.service.TrackerService;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.FileUtil;
+import com.nextgis.maplibui.activity.NGActivity;
 import com.nextgis.maplibui.api.IChooseLayerResult;
 import com.nextgis.maplibui.fragment.BottomToolbar;
 import com.nextgis.maplibui.util.ConstantsUI;
-import com.nextgis.mobile.GISApplication;
+import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.fragment.LayersFragment;
 import com.nextgis.mobile.fragment.MapFragment;
@@ -83,8 +85,7 @@ import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
 import static com.nextgis.maplibui.activity.TracksActivity.isTrackerServiceRunning;
 
 
-public class MainActivity
-        extends AppCompatActivity
+public class MainActivity extends NGActivity
         implements GpsEventListener, IChooseLayerResult
 {
 
@@ -116,11 +117,12 @@ public class MainActivity
         }
 
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.primary_dark));
+        drawerLayout.setStatusBarBackgroundColor(ThemeUtils.getThemeAttrColor(
+                                                         this, R.attr.colorPrimaryDark));
 
         mMapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
-        GISApplication app = (GISApplication) getApplication();
+        MainApplication app = (MainApplication) getApplication();
 
         mLayersFragment =
                 (LayersFragment) getSupportFragmentManager().findFragmentById(R.id.layers);

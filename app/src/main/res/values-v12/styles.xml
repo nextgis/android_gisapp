@@ -26,7 +26,6 @@
 
     <style name="AppBlackTextTheme"
            parent="AppTheme">
-        <item name="android:textColor">@color/primary_text_default_material_light</item>
         <item name="android:textCursorDrawable">@null</item>
     </style>
 </resources>

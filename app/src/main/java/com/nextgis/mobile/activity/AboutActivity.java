@@ -31,11 +31,12 @@ import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.MenuItem;
 import android.widget.TextView;
+import com.nextgis.maplibui.activity.NGActivity;
 import com.nextgis.mobile.R;
 
 
 public class AboutActivity
-        extends AppCompatActivity
+        extends NGActivity
 {
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -43,10 +44,7 @@ public class AboutActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_about);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
-        toolbar.getBackground().setAlpha(255);
-        setSupportActionBar(toolbar);
+        setToolbar(R.id.main_toolbar);
 
         TextView txtVersion = (TextView) findViewById(R.id.app_version);
         try {
@@ -68,23 +66,6 @@ public class AboutActivity
         TextView txtCopyrightText = (TextView) findViewById(R.id.copyright);
         txtCopyrightText.setText(Html.fromHtml(getString(R.string.copyright)));
         txtCopyrightText.setMovementMethod(LinkMovementMethod.getInstance());
-
-        if (null != getSupportActionBar()) {
-            getSupportActionBar().setHomeButtonEnabled(true);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
     }
 
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 }

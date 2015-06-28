@@ -35,6 +35,7 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,7 +45,7 @@ import android.widget.Toast;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
-import com.nextgis.mobile.GISApplication;
+import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.dialog.SelectMapPathDialogPreference;
 import com.nextgis.mobile.fragment.SettingsFragment;
@@ -66,6 +67,10 @@ public class SettingsActivity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        boolean bDarkTheme = PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean(SettingsConstantsUI.KEY_PREF_DARKTHEME, false);
+        setTheme(getThemeId(bDarkTheme));
+
         super.onCreate(savedInstanceState);
 
         ViewGroup root = ((ViewGroup) findViewById(android.R.id.content));
@@ -83,6 +88,7 @@ public class SettingsActivity
                 toolbar.getBackground().setAlpha(255);
                 toolbar.setTitle(getTitle());
                 toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+
                 toolbar.setNavigationOnClickListener(
                         new View.OnClickListener()
                         {
@@ -150,6 +156,12 @@ public class SettingsActivity
         }
     }
 
+    protected int getThemeId(boolean isDark){
+        if(isDark)
+            return com.nextgis.maplibui.R.style.Theme_NextGIS_AppCompat_Dark;
+        else
+            return com.nextgis.maplibui.R.style.Theme_NextGIS_AppCompat_Light;
+    }
 
     public static void initializeCoordinateFormat(ListPreference lpCoordinateFormat)
     {
@@ -331,7 +343,7 @@ public class SettingsActivity
     {
         if (!isTracks) {
             Activity parent = (Activity) context;
-            GISApplication application = (GISApplication) parent.getApplication();
+            MainApplication application = (MainApplication) parent.getApplication();
             application.getGpsEventSource().updateActiveListeners();
         } else {
             if (isTrackerServiceRunning(context)) {
@@ -403,7 +415,7 @@ public class SettingsActivity
 
     public void moveMap(File path)
     {
-        GISApplication application = (GISApplication) getApplication();
+        MainApplication application = (MainApplication) getApplication();
         if (null == application) {
             return;
         }

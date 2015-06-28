@@ -32,6 +32,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
+import android.support.v7.internal.widget.ThemeUtils;
 import android.util.AttributeSet;
 import android.view.ContextThemeWrapper;
 import android.view.View;
@@ -133,10 +134,10 @@ public class FloatingActionsMenu
                 getColor(android.R.color.white));
         mAddButtonColorNormal = attr.getColor(
                 R.styleable.FloatingActionsMenu_fab_addButtonColorNormal,
-                getColor(R.color.primary));
+                ThemeUtils.getThemeAttrColor(context, R.attr.colorPrimary));
         mAddButtonColorPressed = attr.getColor(
                 R.styleable.FloatingActionsMenu_fab_addButtonColorPressed,
-                getColor(R.color.accent));
+                ThemeUtils.getThemeAttrColor(context, R.attr.colorAccent));
         mAddButtonSize = attr.getInt(
                 R.styleable.FloatingActionsMenu_fab_addButtonSize,
                 FloatingActionButton.SIZE_NORMAL);

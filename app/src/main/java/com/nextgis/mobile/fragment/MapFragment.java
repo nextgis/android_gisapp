@@ -80,7 +80,7 @@ import com.nextgis.maplibui.overlay.CurrentTrackOverlay;
 import com.nextgis.maplibui.overlay.EditLayerOverlay;
 import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
-import com.nextgis.mobile.GISApplication;
+import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
 import com.nextgis.mobile.activity.SettingsActivity;
@@ -411,7 +411,7 @@ public class MapFragment
             Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
-        GISApplication app = (GISApplication) getActivity().getApplication();
+        MainApplication app = (MainApplication) getActivity().getApplication();
 
         mMap = new MapViewOverlays(getActivity(), (MapDrawable) app.getMap());
         mMap.setId(777);
