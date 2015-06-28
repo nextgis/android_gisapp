@@ -220,6 +220,13 @@ public class MainActivity extends NGActivity
     }
 
 
+    @Override
+    protected boolean isHomeEnabled()
+    {
+        return false;
+    }
+
+
     public void onRefresh(
             boolean isRefresh,
             int progress)

@@ -81,13 +81,11 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
         android:name=".MainApplication"
         >
         <activity
             android:name=".activity.MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -98,37 +96,31 @@
         <activity
             android:name=".activity.SettingsActivity"
             android:label="@string/action_settings"
-            android:theme="@style/AppBlackTextTheme"
             />
 
         <activity
             android:name=".activity.NGWSettingsActivityProxy"
             android:label="@string/nextgis_web"
-            android:theme="@style/AppBlackTextTheme"
             />
 
         <activity
             android:name=".activity.AboutActivity"
             android:label="@string/action_about"
-            android:theme="@style/AppBlackTextTheme"
             />
 
         <activity
             android:name="com.nextgis.maplibui.activity.TracksActivity"
             android:label="@string/tracks"
-            android:theme="@style/AppTheme"
             />
 
         <activity
             android:name="com.nextgis.maplibui.activity.ModifyAttributesActivity"
             android:label="@string/set_attributes"
-            android:theme="@style/AppBlackTextTheme"
             />
 
         <activity
             android:name="com.nextgis.maplibui.activity.FormBuilderModifyAttributesActivity"
             android:label="@string/set_attributes"
-            android:theme="@style/AppBlackTextTheme"
             />
 
 

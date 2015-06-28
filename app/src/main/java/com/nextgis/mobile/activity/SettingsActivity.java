@@ -29,6 +29,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -36,7 +37,9 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.support.v7.internal.view.ContextThemeWrapper;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +47,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.util.SettingsConstants;
+import com.nextgis.maplibui.activity.NGPreferenceActivity;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
@@ -58,7 +62,7 @@ import static com.nextgis.mobile.util.SettingsConstants.*;
 
 
 public class SettingsActivity
-        extends PreferenceActivity
+        extends NGPreferenceActivity
 {
 
     public BackgroundMoveTask mBkTask;
@@ -67,39 +71,7 @@ public class SettingsActivity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        boolean bDarkTheme = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean(SettingsConstantsUI.KEY_PREF_DARKTHEME, false);
-        setTheme(getThemeId(bDarkTheme));
-
         super.onCreate(savedInstanceState);
-
-        ViewGroup root = ((ViewGroup) findViewById(android.R.id.content));
-        if (null != root) {
-            View content = root.getChildAt(0);
-            if (null != content) {
-                LinearLayout toolbarContainer =
-                        (LinearLayout) View.inflate(this, R.layout.activity_settings, null);
-
-                root.removeAllViews();
-                toolbarContainer.addView(content);
-                root.addView(toolbarContainer);
-
-                Toolbar toolbar = (Toolbar) toolbarContainer.findViewById(R.id.main_toolbar);
-                toolbar.getBackground().setAlpha(255);
-                toolbar.setTitle(getTitle());
-                toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-
-                toolbar.setNavigationOnClickListener(
-                        new View.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(View v)
-                            {
-                                SettingsActivity.this.finish();
-                            }
-                        });
-            }
-        }
 
         String action = getIntent().getAction();
         if (action != null) {
@@ -156,13 +128,6 @@ public class SettingsActivity
         }
     }
 
-    protected int getThemeId(boolean isDark){
-        if(isDark)
-            return com.nextgis.maplibui.R.style.Theme_NextGIS_AppCompat_Dark;
-        else
-            return com.nextgis.maplibui.R.style.Theme_NextGIS_AppCompat_Light;
-    }
-
     public static void initializeCoordinateFormat(ListPreference lpCoordinateFormat)
     {
         if (null != lpCoordinateFormat) {
@@ -192,20 +157,6 @@ public class SettingsActivity
                     });
         }
     }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
