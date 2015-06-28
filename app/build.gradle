@@ -52,5 +52,5 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':maplibui')
     compile 'com.nineoldandroids:library:2.4.0'
-    compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.android.support:appcompat-v7:22.1.1'
 }
