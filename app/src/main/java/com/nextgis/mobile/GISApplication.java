@@ -48,6 +48,7 @@ import com.nextgis.maplibui.mapui.LayerFactoryUI;
 import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
 import com.nextgis.maplibui.mapui.TrackLayerUI;
 import com.nextgis.maplibui.mapui.VectorLayerUI;
+import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.activity.SettingsActivity;
 
 import java.io.File;
@@ -82,10 +83,10 @@ public class GISApplication
         getMap();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        if (sharedPreferences.getBoolean(KEY_PREF_APP_FIRST_RUN, true)) {
+        if (sharedPreferences.getBoolean(SettingsConstantsUI.KEY_PREF_APP_FIRST_RUN, true)) {
             onFirstRun();
             SharedPreferences.Editor edit = sharedPreferences.edit();
-            edit.putBoolean(KEY_PREF_APP_FIRST_RUN, false);
+            edit.putBoolean(SettingsConstantsUI.KEY_PREF_APP_FIRST_RUN, false);
             edit.commit();
         }
 

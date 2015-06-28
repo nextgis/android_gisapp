@@ -51,7 +51,6 @@ public interface SettingsConstants
     String KEY_PREF_SHOW_LOCATION = "map_show_loc";
     String KEY_PREF_SHOW_COMPASS  = "map_show_compass";
     String KEY_PREF_SHOW_INFO     = "map_show_info";
-    String KEY_PREF_APP_FIRST_RUN = "app_first_run";
 
     /**
      * Preference keys - in UI
@@ -74,6 +73,5 @@ public interface SettingsConstants
     String KEY_PREF_COMPASS_TRUE_NORTH  = "compass_true_north";
     String KEY_PREF_COMPASS_SHOW_MAGNET = "compass_show_magnetic";
     String KEY_PREF_COMPASS_WAKE_LOCK   = "compass_wake_lock";
-    String KEY_PREF_MAP_NAME            = "map_name";
     String KEY_PREF_SHOW_ZOOM_CONTROLS  = "show_zoom_controls";
 }
