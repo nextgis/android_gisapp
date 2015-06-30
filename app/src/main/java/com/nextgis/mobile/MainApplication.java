@@ -119,7 +119,7 @@ public class MainApplication extends GISApplication
         startActivity(intentSet);
     }
 
-
+    @Override
     protected void onFirstRun()
     {
         //add OpenStreetMap layer on application first run
