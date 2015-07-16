@@ -27,9 +27,10 @@
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
-    <style name="AppBaseTheme"
-           parent="Theme.NextGIS.AppCompat.Light">
+    <style name="AppTheme" parent="Theme.NextGIS.AppCompat.Light">
+    </style>
 
+    <style name="AppTheme.Dark" parent="Theme.NextGIS.AppCompat.Dark">
     </style>
 
     <style name="menu_labels_style">

@@ -183,7 +183,7 @@ public class AttributesFragment
         mAttributes.addView(title);
 
         String selection = Constants.FIELD_ID + " = ?";
-        Cursor attributes = mLayer.query(null, selection, new String[] {mItemId + ""}, null);
+        Cursor attributes = mLayer.query(null, selection, new String[] {mItemId + ""}, null, null);
 
         if (attributes.moveToFirst()) {
             for (int i = 0; i < attributes.getColumnCount(); i++) {
