@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="ngm app" pattern="src[app]:*..*||test[app]:*..*||src[android_gisapp]:*..*" />
+</component>
