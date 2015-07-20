@@ -108,27 +108,6 @@
             android:label="@string/action_about"
             />
 
-        <activity
-            android:name="com.nextgis.maplibui.activity.TracksActivity"
-            android:label="@string/tracks"
-            />
-
-        <activity
-            android:name="com.nextgis.maplibui.activity.ModifyAttributesActivity"
-            android:label="@string/set_attributes"
-            />
-
-        <activity
-            android:name="com.nextgis.maplibui.activity.FormBuilderModifyAttributesActivity"
-            android:label="@string/set_attributes"
-            />
-
-
-        <service
-            android:process=":tracks"
-            android:name="com.nextgis.maplib.service.TrackerService"
-            />
-
         <service
             android:name="com.nextgis.maplib.service.NGWSyncService"
             android:exported="true"
