@@ -1048,6 +1048,11 @@ public class MapFragment
         fillStatusPanel(location);
     }
 
+    @Override
+    public void onBestLocationChanged(Location location) {
+
+    }
+
 
     private void fillStatusPanel(Location location)
     {

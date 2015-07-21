@@ -41,7 +41,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.internal.widget.ThemeUtils;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -61,7 +60,7 @@ import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.map.VectorLayer;
-import com.nextgis.maplib.service.TrackerService;
+import com.nextgis.maplibui.service.TrackerService;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.FileUtil;
 import com.nextgis.maplibui.activity.NGActivity;
@@ -667,6 +666,11 @@ public class MainActivity extends NGActivity
     @Override
     public void onLocationChanged(Location location)
     {
+
+    }
+
+    @Override
+    public void onBestLocationChanged(Location location) {
 
     }
 
