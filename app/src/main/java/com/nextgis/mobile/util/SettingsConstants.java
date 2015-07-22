@@ -74,4 +74,6 @@ public interface SettingsConstants
     String KEY_PREF_COMPASS_SHOW_MAGNET = "compass_show_magnetic";
     String KEY_PREF_COMPASS_WAKE_LOCK   = "compass_wake_lock";
     String KEY_PREF_SHOW_ZOOM_CONTROLS  = "show_zoom_controls";
+
+    int FIRSTSTART_DOWNLOADZOOM = 5;
 }

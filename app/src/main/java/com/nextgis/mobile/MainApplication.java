@@ -23,14 +23,19 @@
 
 package com.nextgis.mobile;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.IBinder;
 import android.preference.PreferenceManager;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.datasource.Feature;
 import com.nextgis.maplib.datasource.Field;
+import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplib.map.LayerGroup;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapDrawable;
@@ -42,6 +47,7 @@ import com.nextgis.maplibui.mapui.LayerFactoryUI;
 import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
 import com.nextgis.maplibui.mapui.TrackLayerUI;
 import com.nextgis.maplibui.mapui.VectorLayerUI;
+import com.nextgis.maplibui.service.TileDownloadService;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.activity.SettingsActivity;
 
@@ -53,6 +59,7 @@ import static com.nextgis.maplib.util.Constants.MAP_EXT;
 import static com.nextgis.maplib.util.GeoConstants.TMSTYPE_OSM;
 import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_MAP;
 import static com.nextgis.mobile.util.SettingsConstants.AUTHORITY;
+import static com.nextgis.mobile.util.SettingsConstants.FIRSTSTART_DOWNLOADZOOM;
 
 
 public class MainApplication extends GISApplication
@@ -134,6 +141,25 @@ public class MainApplication extends GISApplication
 
         mMap.addLayer(layer);
         mMap.moveLayer(0, layer);
+
+        //start tiles download
+        final int zoomFrom = (int) mMap.getMinZoom();
+        final int zoomTo = FIRSTSTART_DOWNLOADZOOM > zoomFrom ? FIRSTSTART_DOWNLOADZOOM : zoomFrom;
+        final short layerId = layer.getId();
+        final GeoEnvelope env = mMap.getFullBounds();
+
+        //start download service
+        Intent intent = new Intent(this, TileDownloadService.class);
+        intent.setAction(TileDownloadService.ACTION_ADD_TASK);
+        intent.putExtra(TileDownloadService.KEY_LAYER_ID, layerId);
+        intent.putExtra(TileDownloadService.KEY_ZOOM_FROM, zoomFrom);
+        intent.putExtra(TileDownloadService.KEY_ZOOM_TO, zoomTo);
+        intent.putExtra(TileDownloadService.KEY_MINX, env.getMinX());
+        intent.putExtra(TileDownloadService.KEY_MAXX, env.getMaxX());
+        intent.putExtra(TileDownloadService.KEY_MINY, env.getMinY());
+        intent.putExtra(TileDownloadService.KEY_MAXY, env.getMaxY());
+
+        startService(intent);
 
         // create empty layers for first experimental editing
         VectorLayerUI vectorLayer =

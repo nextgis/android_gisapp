@@ -110,7 +110,6 @@
 
         <service
             android:name="com.nextgis.maplib.service.NGWSyncService"
-            android:exported="true"
             android:process=":sync"
             >
             <intent-filter>
