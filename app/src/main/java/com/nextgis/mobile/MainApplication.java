@@ -23,14 +23,10 @@
 
 package com.nextgis.mobile;
 
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.IBinder;
 import android.preference.PreferenceManager;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.datasource.Feature;
@@ -145,7 +141,7 @@ public class MainApplication extends GISApplication
         //start tiles download
         final int zoomFrom = (int) mMap.getMinZoom();
         final int zoomTo = FIRSTSTART_DOWNLOADZOOM > zoomFrom ? FIRSTSTART_DOWNLOADZOOM : zoomFrom;
-        final short layerId = layer.getId();
+        final long layerId = layer.getId();
         final GeoEnvelope env = mMap.getFullBounds();
 
         //start download service

@@ -567,21 +567,21 @@ public class MapFragment
 
 
     @Override
-    public void onLayerAdded(int id)
+    public void onLayerAdded(long id)
     {
 
     }
 
 
     @Override
-    public void onLayerDeleted(int id)
+    public void onLayerDeleted(long id)
     {
 
     }
 
 
     @Override
-    public void onLayerChanged(int id)
+    public void onLayerChanged(long id)
     {
 
     }
@@ -606,7 +606,7 @@ public class MapFragment
 
     @Override
     public void onLayerDrawFinished(
-            int id,
+            long id,
             float percent)
     {
         /*if (percent >= 1.0)
@@ -623,7 +623,7 @@ public class MapFragment
         }*/
         MainActivity activity = (MainActivity) getActivity();
         if (null != activity) {
-            if (percent >= 1.0 && id == mMap.getTopVisibleLayerId()) {
+            if (percent >= 1.0 && id == mMap.getMap().getTopVisibleLayerId()) {
                 activity.onRefresh(false, 0);
             }
         }
