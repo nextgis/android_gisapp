@@ -28,6 +28,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.preference.PreferenceManager;
+
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.datasource.Feature;
 import com.nextgis.maplib.datasource.Field;
@@ -44,6 +45,7 @@ import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
 import com.nextgis.maplibui.mapui.TrackLayerUI;
 import com.nextgis.maplibui.mapui.VectorLayerUI;
 import com.nextgis.maplibui.service.TileDownloadService;
+import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.activity.SettingsActivity;
 
@@ -141,13 +143,13 @@ public class MainApplication extends GISApplication
         //start tiles download
         final int zoomFrom = (int) mMap.getMinZoom();
         final int zoomTo = FIRSTSTART_DOWNLOADZOOM > zoomFrom ? FIRSTSTART_DOWNLOADZOOM : zoomFrom;
-        final long layerId = layer.getId();
+        final int layerId = layer.getId();
         final GeoEnvelope env = mMap.getFullBounds();
 
         //start download service
         Intent intent = new Intent(this, TileDownloadService.class);
         intent.setAction(TileDownloadService.ACTION_ADD_TASK);
-        intent.putExtra(TileDownloadService.KEY_LAYER_ID, layerId);
+        intent.putExtra(ConstantsUI.KEY_LAYER_ID, layerId);
         intent.putExtra(TileDownloadService.KEY_ZOOM_FROM, zoomFrom);
         intent.putExtra(TileDownloadService.KEY_ZOOM_TO, zoomTo);
         intent.putExtra(TileDownloadService.KEY_MINX, env.getMinX());

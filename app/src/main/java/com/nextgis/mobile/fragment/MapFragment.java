@@ -55,6 +55,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.nextgis.maplib.api.GpsEventListener;
 import com.nextgis.maplib.api.ILayer;
@@ -87,7 +88,12 @@ import com.nextgis.mobile.activity.SettingsActivity;
 
 import java.util.List;
 
-import static com.nextgis.mobile.util.SettingsConstants.*;
+import static com.nextgis.mobile.util.SettingsConstants.ACTION_PREFS_LOCATION;
+import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_COORD_FORMAT;
+import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SCROLL_X;
+import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SCROLL_Y;
+import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_ZOOM_CONTROLS;
+import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_ZOOM_LEVEL;
 
 
 public class MapFragment
@@ -567,21 +573,21 @@ public class MapFragment
 
 
     @Override
-    public void onLayerAdded(long id)
+    public void onLayerAdded(int id)
     {
 
     }
 
 
     @Override
-    public void onLayerDeleted(long id)
+    public void onLayerDeleted(int id)
     {
 
     }
 
 
     @Override
-    public void onLayerChanged(long id)
+    public void onLayerChanged(int id)
     {
 
     }
@@ -606,7 +612,7 @@ public class MapFragment
 
     @Override
     public void onLayerDrawFinished(
-            long id,
+            int id,
             float percent)
     {
         /*if (percent >= 1.0)
