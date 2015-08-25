@@ -58,6 +58,7 @@ import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.nextgis.maplib.api.GpsEventListener;
+import com.nextgis.maplib.api.IGeometryCacheItem;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.api.ILayerView;
 import com.nextgis.maplib.datasource.GeoEnvelope;
@@ -68,7 +69,6 @@ import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplib.util.LocationUtil;
-import com.nextgis.maplib.util.VectorCacheItem;
 import com.nextgis.maplibui.api.EditEventListener;
 import com.nextgis.maplibui.api.ILayerUI;
 import com.nextgis.maplibui.api.IVectorLayerUI;
@@ -945,7 +945,7 @@ public class MapFragment
 
         //show actions dialog
         List<ILayer> layers = mMap.getVectorLayersByType(GeoConstants.GTAnyCheck);
-        List<VectorCacheItem> items = null;
+        List<IGeometryCacheItem> items = null;
         VectorLayer vectorLayer = null;
         boolean intersects = false;
         for (ILayer layer : layers) {

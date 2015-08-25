@@ -39,9 +39,11 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.nextgis.maplib.api.IGeometryCache;
+import com.nextgis.maplib.api.IGeometryCacheItem;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.Constants;
-import com.nextgis.maplib.util.VectorCacheItem;
 import com.nextgis.maplibui.fragment.BottomToolbar;
 import com.nextgis.maplibui.overlay.EditLayerOverlay;
 import com.nextgis.mobile.R;
@@ -60,7 +62,7 @@ public class AttributesFragment
     private long                  mItemId;
     private int                   mItemPosition;
     private VectorLayer           mLayer;
-    private List<VectorCacheItem> mVectorCacheItems;
+    private IGeometryCache mVectorCacheItems;
     private boolean mIsTablet, mIsReorient = false;
 
     protected EditLayerOverlay mEditLayerOverlay;
@@ -145,10 +147,11 @@ public class AttributesFragment
             getActivity().getSupportFragmentManager().popBackStack();
         }
 
-        mVectorCacheItems = mLayer.getVectorCache();
+        mVectorCacheItems = mLayer.getGeometryCache();
 
-        for (int i = 0; i < mVectorCacheItems.size(); i++) {
-            if (mVectorCacheItems.get(i).getId() == mItemId) {
+        List<IGeometryCacheItem> cacheItems = mVectorCacheItems.getAll();
+        for (int i = 0; i < cacheItems.size(); i++) {
+            if (cacheItems.get(i).getFeatureId() == mItemId) {
                 mItemPosition = i;
                 break;
             }
@@ -236,8 +239,8 @@ public class AttributesFragment
         }
 
         if (hasItem) {
-            VectorCacheItem item = mVectorCacheItems.get(mItemPosition);
-            mItemId = item.getId();
+            IGeometryCacheItem item = mVectorCacheItems.getAll().get(mItemPosition);
+            mItemId = item.getFeatureId();
             setAttributes();
             if (null != mEditLayerOverlay) {
                 mEditLayerOverlay.setFeature(mLayer, item);
