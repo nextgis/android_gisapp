@@ -29,7 +29,7 @@ android {
     defaultConfig {
         applicationId 'com.nextgis.mobile'
         minSdkVersion 8
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionCode 10
         versionName '2.2'
     }
