@@ -48,13 +48,13 @@ import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import com.nextgis.maplib.datasource.ngw.SyncAdapter;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.maplibui.fragment.LayersListAdapter;
+import com.nextgis.maplibui.fragment.ReorderedLayerView;
 import com.nextgis.mobile.R;
 
 import java.text.SimpleDateFormat;
@@ -75,7 +75,7 @@ public class LayersFragment
 {
     protected ActionBarDrawerToggle mDrawerToggle;
     protected DrawerLayout          mDrawerLayout;
-    protected ListView              mLayersListView;
+    protected ReorderedLayerView    mLayersListView;
     protected View                  mFragmentContainerView;
     protected LayersListAdapter     mListAdapter;
     protected TextView              mInfoText;
@@ -226,9 +226,10 @@ public class LayersFragment
         }
         mFragmentContainerView.setLayoutParams(params);
 
-        mLayersListView = (ListView) mFragmentContainerView.findViewById(R.id.layer_list);
+        mLayersListView = (ReorderedLayerView) mFragmentContainerView.findViewById(R.id.layer_list);
         mListAdapter = new LayersListAdapter(getActivity(), map);
         mLayersListView.setAdapter(mListAdapter);
+        mLayersListView.setDrawer(drawerLayout);
 
         mDrawerLayout = drawerLayout;
 
