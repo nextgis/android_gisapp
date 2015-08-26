@@ -424,6 +424,7 @@ public class MapFragment
         mCurrentLocationOverlay = new CurrentLocationOverlay(getActivity(), mMap);
         mCurrentLocationOverlay.setStandingMarker(R.drawable.ic_location_standing);
         mCurrentLocationOverlay.setMovingMarker(R.drawable.ic_location_moving);
+        mCurrentLocationOverlay.setAutopanningEnabled(true);
 
         mCurrentTrackOverlay = new CurrentTrackOverlay(getActivity(), mMap);
 
