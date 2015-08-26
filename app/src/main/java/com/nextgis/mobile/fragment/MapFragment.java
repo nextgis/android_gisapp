@@ -121,7 +121,7 @@ public class MapFragment
     protected GeoPoint               mCurrentCenter;
 
     protected int mCoordinatesFormat;
-
+    protected ChooseLayerDialog mChooseLayerDialog;
 
     protected static final int MODE_NORMAL        = 0;
     protected static final int MODE_SELECT_ACTION = 1;
@@ -810,13 +810,14 @@ public class MapFragment
                     String.format(getString(R.string.edit_layer), vectorLayer.getName()),
                     Toast.LENGTH_SHORT).show();
         } else {
+            if (isDialogShown())
+                return;
             //open choose edit layer dialog
-            ChooseLayerDialog newChooseLayerDialog = new ChooseLayerDialog();
-            newChooseLayerDialog.setTitle(getString(R.string.select_layer))
+            mChooseLayerDialog = new ChooseLayerDialog();
+            mChooseLayerDialog.setTitle(getString(R.string.select_layer))
                     .setLayerList(layers)
                     .setCode(ADD_NEW_GEOMETRY)
                     .show(getActivity().getSupportFragmentManager(), "choose_layer");
-
         }
     }
 
@@ -848,9 +849,11 @@ public class MapFragment
                         Toast.LENGTH_LONG).show();
             }
         } else {
+            if (isDialogShown())
+                return;
             //open choose dialog
-            ChooseLayerDialog newChooseLayerDialog = new ChooseLayerDialog();
-            newChooseLayerDialog.setTitle(getString(R.string.select_layer))
+            mChooseLayerDialog = new ChooseLayerDialog();
+            mChooseLayerDialog.setTitle(getString(R.string.select_layer))
                     .setLayerList(layers)
                     .setCode(ADD_CURRENT_LOC)
                     .show(getActivity().getSupportFragmentManager(), "choose_layer");
@@ -897,13 +900,14 @@ public class MapFragment
                     String.format(getString(R.string.edit_layer), vectorLayer.getName()),
                     Toast.LENGTH_SHORT).show();
         } else {
+            if (isDialogShown())
+                return;
             //open choose edit layer dialog
-            ChooseLayerDialog newChooseLayerDialog = new ChooseLayerDialog();
-            newChooseLayerDialog.setTitle(getString(R.string.select_layer))
+            mChooseLayerDialog = new ChooseLayerDialog();
+            mChooseLayerDialog.setTitle(getString(R.string.select_layer))
                     .setLayerList(layers)
                     .setCode(ADD_GEOMETRY_BY_WALK)
                     .show(getActivity().getSupportFragmentManager(), "choose_layer");
-
         }
     }
 
@@ -1133,12 +1137,12 @@ public class MapFragment
                             getString(R.string.unit_kilometer), getString(R.string.unit_hour)));
             mStatusLatitude.setText(
                     LocationUtil.formatCoordinate(location.getLatitude(), mCoordinatesFormat) +
-                    " " +
-                    getString(R.string.latitude_caption_short));
+                            " " +
+                            getString(R.string.latitude_caption_short));
             mStatusLongitude.setText(
                     LocationUtil.formatCoordinate(location.getLongitude(), mCoordinatesFormat) +
-                    " " +
-                    getString(R.string.longitude_caption_short));
+                            " " +
+                            getString(R.string.longitude_caption_short));
         }
     }
 
@@ -1268,5 +1272,9 @@ public class MapFragment
         if (null != mMap) {
             mMap.drawMapDrawable();
         }
+    }
+
+    public boolean isDialogShown() {
+        return mChooseLayerDialog != null && mChooseLayerDialog.isResumed();
     }
 }
