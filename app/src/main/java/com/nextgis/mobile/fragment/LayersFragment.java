@@ -168,7 +168,7 @@ public class LayersFragment
         }
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
-                Constants.PREFERENCES, Context.MODE_MULTI_PROCESS);
+                Constants.PREFERENCES, Constants.MODE_MULTI_PROCESS);
         long timeStamp =
                 sharedPreferences.getLong(SettingsConstants.KEY_PREF_LAST_SYNC_TIMESTAMP, 0);
         if (timeStamp > 0) {
