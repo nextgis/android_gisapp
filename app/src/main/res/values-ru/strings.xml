@@ -80,6 +80,7 @@
     <string name="warning_map_moving">Внимание! Не отменяйте операцию и не останавливайте приложение в процессе перемещения данных в новое место. Может привести к потере данных!</string>
     <string name="warning_folder_should_be_empty">Папка должна быть пустой. Операция отменена.</string>
     <string name="frequentest">, так часто, как возможно</string>
+    <string name="accurate_measures_count">Количество замеров GPS</string>
     <string name="action_delete">Удалить</string>
     <string name="action_attributes">Атрибуты</string>
     <string name="action_edit">Редактировать</string>

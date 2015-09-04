@@ -26,6 +26,7 @@ package com.nextgis.mobile.fragment;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
 import com.nextgis.maplib.util.SettingsConstants;
@@ -81,6 +82,10 @@ public class SettingsFragment
                 final ListPreference minDistanceLoc = (ListPreference) findPreference(
                         SettingsConstants.KEY_PREF_LOCATION_MIN_DISTANCE);
                 SettingsActivity.initializeLocationMins(minTimeLoc, minDistanceLoc, false);
+
+                final EditTextPreference accurateMaxCount = (EditTextPreference) findPreference(
+                        SettingsConstants.KEY_PREF_LOCATION_ACCURATE_COUNT);
+                SettingsActivity.initializeAccurateTaking(accurateMaxCount);
                 break;
             case "tracks":
                 addPreferencesFromResource(R.xml.preferences_tracks);

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Project:  NextGIS Mobile
   ~ Purpose:  Mobile GIS for Android.
   ~ Author:   Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
@@ -24,29 +23,29 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <ListPreference
-        android:key="location_source_str"
-        android:title="@string/pref_location_accuracy"
-        android:entryValues="@array/location_accuracy_val"
         android:defaultValue="3"
-        />
+        android:entryValues="@array/location_accuracy_val"
+        android:key="location_source_str"
+        android:title="@string/pref_location_accuracy" />
 
     <ListPreference
-        android:key="location_min_time"
-        android:title="@string/pref_min_time"
         android:defaultValue="2"
         android:entries="@array/tracker_min_time_between_updates"
         android:entryValues="@array/tracker_min_time_between_updates_val"
-        />
+        android:key="location_min_time"
+        android:title="@string/pref_min_time" />
 
     <ListPreference
-        android:key="location_min_distance"
-        android:title="@string/pref_min_distance"
         android:defaultValue="10"
         android:entries="@array/tracker_min_dist_update"
         android:entryValues="@array/tracker_min_dist_update_val"
-        />
+        android:key="location_min_distance"
+        android:title="@string/pref_min_distance" />
 
-    <!--TODO:
-    1) CE
-    -->
+    <EditTextPreference
+        android:defaultValue="20"
+        android:inputType="numberDecimal"
+        android:key="accurate_max_count"
+        android:title="@string/accurate_measures_count" />
+
 </PreferenceScreen>

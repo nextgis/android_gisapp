@@ -29,22 +29,14 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
-import android.preference.PreferenceActivity;
-import android.preference.PreferenceManager;
-import android.support.v7.internal.view.ContextThemeWrapper;
-import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.Toast;
+
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.maplibui.activity.NGPreferenceActivity;
@@ -58,7 +50,9 @@ import java.io.File;
 import java.util.List;
 
 import static com.nextgis.maplibui.activity.TracksActivity.isTrackerServiceRunning;
-import static com.nextgis.mobile.util.SettingsConstants.*;
+import static com.nextgis.mobile.util.SettingsConstants.ACTION_PREFS_LOCATION;
+import static com.nextgis.mobile.util.SettingsConstants.ACTION_PREFS_MAP;
+import static com.nextgis.mobile.util.SettingsConstants.ACTION_PREFS_TRACKING;
 
 
 public class SettingsActivity
@@ -107,6 +101,10 @@ public class SettingsActivity
                     final ListPreference minDistanceLoc = (ListPreference) findPreference(
                             SettingsConstants.KEY_PREF_LOCATION_MIN_DISTANCE);
                     initializeLocationMins(minTimeLoc, minDistanceLoc, false);
+
+                    final EditTextPreference accurateMaxCount = (EditTextPreference) findPreference(
+                            SettingsConstants.KEY_PREF_LOCATION_ACCURATE_COUNT);
+                    initializeAccurateTaking(accurateMaxCount);
                     break;
                 case ACTION_PREFS_TRACKING:
                     addPreferencesFromResource(R.xml.preferences_tracks);
@@ -126,6 +124,18 @@ public class SettingsActivity
             // Load the legacy preferences headers
             addPreferencesFromResource(R.xml.preference_headers_legacy);
         }
+    }
+
+    public static void initializeAccurateTaking(EditTextPreference accurateMaxCount) {
+        accurateMaxCount.setSummary(accurateMaxCount.getText());
+
+        accurateMaxCount.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                preference.setSummary((CharSequence) newValue);
+                return true;
+            }
+        });
     }
 
     public static void initializeCoordinateFormat(ListPreference lpCoordinateFormat)
