@@ -96,6 +96,8 @@ public class MainActivity extends NGActivity
 
     protected final static int FILE_SELECT_CODE = 555;
 
+    protected long mBackPressed;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -662,6 +664,15 @@ public class MainActivity extends NGActivity
         super.onPause();
     }
 
+    @Override
+    public void onBackPressed() {
+        if (mBackPressed + 2000 > System.currentTimeMillis())
+            super.onBackPressed();
+        else
+            Toast.makeText(this, R.string.press_aback_again, Toast.LENGTH_SHORT).show();
+
+        mBackPressed = System.currentTimeMillis();
+    }
 
     @Override
     public void onLocationChanged(Location location)

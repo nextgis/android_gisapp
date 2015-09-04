@@ -94,5 +94,6 @@
     <string name="points_for_edit">Points (can be edited)</string>
     <string name="lines_for_edit">Lines (can be edited)</string>
     <string name="polygons_for_edit">Polygons (can be edited)</string>
+    <string name="press_aback_again">Press back again to exit</string>
 
 </resources>
