@@ -1,7 +1,12 @@
-.gradle
-/local.properties
-/.idea/workspace.xml
-/.idea/libraries
-.DS_Store
-/build
-/captures
+# Android studio
+.idea/
+.gradle/
+build/
+local.properties
+captures/
+*.iml
+*.iws
+*.ipr
+
+# Temp files
+*~
