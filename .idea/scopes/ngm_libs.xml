@@ -1,3 +1,0 @@
-<component name="DependencyValidationManager">
-  <scope name="ngm libs" pattern="src[maplib]:*..*||src[maplibui]:*..*||test[maplib]:*..*||test[maplibui]:*..*" />
-</component>
