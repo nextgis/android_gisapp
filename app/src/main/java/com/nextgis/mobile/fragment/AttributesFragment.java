@@ -40,8 +40,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.nextgis.maplib.api.IGeometryCache;
-import com.nextgis.maplib.api.IGeometryCacheItem;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplibui.fragment.BottomToolbar;
@@ -62,7 +60,7 @@ public class AttributesFragment
     private long                  mItemId;
     private int                   mItemPosition;
     private VectorLayer           mLayer;
-    private IGeometryCache mVectorCacheItems;
+    private List<Long> mFeatureIDs;
     private boolean mIsTablet, mIsReorient = false;
 
     protected EditLayerOverlay mEditLayerOverlay;
@@ -147,11 +145,10 @@ public class AttributesFragment
             getActivity().getSupportFragmentManager().popBackStack();
         }
 
-        mVectorCacheItems = mLayer.getGeometryCache();
+        mFeatureIDs = mLayer.query(null); // get all feature IDs
 
-        List<IGeometryCacheItem> cacheItems = mVectorCacheItems.getAll();
-        for (int i = 0; i < cacheItems.size(); i++) {
-            if (cacheItems.get(i).getFeatureId() == mItemId) {
+        for (int i = 0; i < mFeatureIDs.size(); i++) {
+            if (mFeatureIDs.get(i) == mItemId) {
                 mItemPosition = i;
                 break;
             }
@@ -227,7 +224,7 @@ public class AttributesFragment
         boolean hasItem = false;
 
         if (isNext) {
-            if (mItemPosition < mVectorCacheItems.size() - 1) {
+            if (mItemPosition < mFeatureIDs.size() - 1) {
                 mItemPosition++;
                 hasItem = true;
             }
@@ -239,11 +236,10 @@ public class AttributesFragment
         }
 
         if (hasItem) {
-            IGeometryCacheItem item = mVectorCacheItems.getAll().get(mItemPosition);
-            mItemId = item.getFeatureId();
+            mItemId = mFeatureIDs.get(mItemPosition);
             setAttributes();
             if (null != mEditLayerOverlay) {
-                mEditLayerOverlay.setFeature(mLayer, item);
+                mEditLayerOverlay.setFeature(mLayer, mItemId);
             }
         } else {
             Toast.makeText(getActivity(), R.string.attributes_last_item, Toast.LENGTH_SHORT).show();

@@ -30,7 +30,6 @@ import android.graphics.BitmapFactory;
 import android.preference.PreferenceManager;
 
 import com.nextgis.maplib.api.ILayer;
-import com.nextgis.maplib.datasource.Feature;
 import com.nextgis.maplib.datasource.Field;
 import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplib.map.LayerGroup;
@@ -74,20 +73,19 @@ public class MainApplication extends GISApplication
         if (defaultPath == null) {
             defaultPath = new File(getFilesDir(), KEY_PREF_MAP);
         }
-        if (defaultPath != null) {
-            String mapPath = sharedPreferences.getString(SettingsConstants.KEY_PREF_MAP_PATH, defaultPath.getPath());
-            String mapName = sharedPreferences.getString(SettingsConstantsUI.KEY_PREF_MAP_NAME, "default");
 
-            File mapFullPath = new File(mapPath, mapName + MAP_EXT);
+        String mapPath = sharedPreferences.getString(SettingsConstants.KEY_PREF_MAP_PATH, defaultPath.getPath());
+        String mapName = sharedPreferences.getString(SettingsConstantsUI.KEY_PREF_MAP_NAME, "default");
 
-            final Bitmap bkBitmap = BitmapFactory.decodeResource(
-                    getResources(), com.nextgis.maplibui.R.drawable.bk_tile);
-            mMap = new MapDrawable(bkBitmap, this, mapFullPath, new LayerFactoryUI());
-            mMap.setName(mapName);
-            mMap.load();
+        File mapFullPath = new File(mapPath, mapName + MAP_EXT);
 
-            checkTracksLayerExist();
-        }
+        final Bitmap bkBitmap = BitmapFactory.decodeResource(
+                getResources(), com.nextgis.maplibui.R.drawable.bk_tile);
+        mMap = new MapDrawable(bkBitmap, this, mapFullPath, new LayerFactoryUI());
+        mMap.setName(mapName);
+        mMap.load();
+
+        checkTracksLayerExist();
 
         return mMap;
     }
@@ -100,7 +98,7 @@ public class MainApplication extends GISApplication
         if (tracks.isEmpty()) {
             String trackLayerName = getString(R.string.tracks);
             TrackLayerUI trackLayer =
-                    new TrackLayerUI(getApplicationContext(), mMap.createLayerStorage());
+                    new TrackLayerUI(getApplicationContext(), mMap.createLayerStorage("tracks"));
             trackLayer.setName(trackLayerName);
             trackLayer.setVisible(true);
             mMap.addLayer(trackLayer);
@@ -131,11 +129,13 @@ public class MainApplication extends GISApplication
         String layerName = getString(R.string.osm);
         String layerURL = SettingsConstantsUI.OSM_URL;
         RemoteTMSLayerUI layer =
-                new RemoteTMSLayerUI(getApplicationContext(), mMap.createLayerStorage());
+                new RemoteTMSLayerUI(getApplicationContext(), mMap.createLayerStorage("osm"));
         layer.setName(layerName);
         layer.setURL(layerURL);
         layer.setTMSType(TMSTYPE_OSM);
         layer.setVisible(true);
+        layer.setMinZoom(0);
+        layer.setMaxZoom(18);
 
         mMap.addLayer(layer);
         mMap.moveLayer(0, layer);
@@ -183,12 +183,14 @@ public class MainApplication extends GISApplication
         VectorLayerUI vectorLayer = new VectorLayerUI(this, mMap.createLayerStorage());
         vectorLayer.setName(layerName);
         vectorLayer.setVisible(true);
+        vectorLayer.setMinZoom(0);
+        vectorLayer.setMaxZoom(25);
 
-        List<Field> fields = new ArrayList<>();
-        fields.add(new Field(GeoConstants.FTInteger, "ID", null));
+        List<Field> fields = new ArrayList<>(2);
+        fields.add(new Field(GeoConstants.FTInteger, "FID", null));
         fields.add(new Field(GeoConstants.FTString, "TEXT", null));
 
-        vectorLayer.initialize(fields, new ArrayList<Feature>(), layerType);
+        vectorLayer.create(layerType, fields);
         return vectorLayer;
     }
 }

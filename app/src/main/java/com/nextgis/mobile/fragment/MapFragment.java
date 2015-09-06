@@ -58,7 +58,6 @@ import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.nextgis.maplib.api.GpsEventListener;
-import com.nextgis.maplib.api.IGeometryCacheItem;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.api.ILayerView;
 import com.nextgis.maplib.datasource.GeoEnvelope;
@@ -211,7 +210,7 @@ public class MapFragment
                                     if (menuItem.getItemId() == R.id.menu_cancel) {
                                         mEditLayerOverlay.stopGeometryByWalk();
                                         mEditLayerOverlay.setFeature(
-                                                mEditLayerOverlay.getSelectedLayer(), null);
+                                                mEditLayerOverlay.getSelectedLayer(), Constants.NOT_FOUND);
                                         setMode(MODE_EDIT);
                                         return true;
                                     } else if (menuItem.getItemId() == R.id.menu_settings) {
@@ -422,8 +421,8 @@ public class MapFragment
 
         mGpsEventSource = app.getGpsEventSource();
         mCurrentLocationOverlay = new CurrentLocationOverlay(getActivity(), mMap);
-        mCurrentLocationOverlay.setStandingMarker(R.drawable.ic_location_standing);
-        mCurrentLocationOverlay.setMovingMarker(R.drawable.ic_location_moving);
+        mCurrentLocationOverlay.setStandingMarker(R.mipmap.ic_location_standing);
+        mCurrentLocationOverlay.setMovingMarker(R.mipmap.ic_location_moving);
         mCurrentLocationOverlay.setAutopanningEnabled(true);
 
         mCurrentTrackOverlay = new CurrentTrackOverlay(getActivity(), mMap);
@@ -802,7 +801,7 @@ public class MapFragment
         } else if (layers.size() == 1) {
             //open form
             ILayer vectorLayer = layers.get(0);
-            mEditLayerOverlay.setFeature((VectorLayer) vectorLayer, null);
+            mEditLayerOverlay.setFeature((VectorLayer) vectorLayer, Constants.NOT_FOUND);
             setMode(MODE_EDIT);
 
             Toast.makeText(
@@ -892,7 +891,7 @@ public class MapFragment
         } else if (layers.size() == 1) {
             //open form
             ILayer vectorLayer = layers.get(0);
-            mEditLayerOverlay.setFeature((VectorLayer) vectorLayer, null);
+            mEditLayerOverlay.setFeature((VectorLayer) vectorLayer, Constants.NOT_FOUND);
             setMode(MODE_EDIT_BY_WALK);
 
             Toast.makeText(
@@ -922,10 +921,10 @@ public class MapFragment
                 layerUI.showEditForm(getActivity(), Constants.NOT_FOUND, null);
             }
         } else if (code == ADD_NEW_GEOMETRY) {
-            mEditLayerOverlay.setFeature((VectorLayer) layer, null);
+            mEditLayerOverlay.setFeature((VectorLayer) layer, Constants.NOT_FOUND);
             setMode(MODE_EDIT);
         } else if (code == ADD_GEOMETRY_BY_WALK) {
-            mEditLayerOverlay.setFeature((VectorLayer) layer, null);
+            mEditLayerOverlay.setFeature((VectorLayer) layer, Constants.NOT_FOUND);
             setMode(MODE_EDIT_BY_WALK);
         }
     }
@@ -950,7 +949,7 @@ public class MapFragment
 
         //show actions dialog
         List<ILayer> layers = mMap.getVectorLayersByType(GeoConstants.GTAnyCheck);
-        List<IGeometryCacheItem> items = null;
+        List<Long> items = null;
         VectorLayer vectorLayer = null;
         boolean intersects = false;
         for (ILayer layer : layers) {
@@ -992,7 +991,7 @@ public class MapFragment
                 setMode(MODE_NORMAL);
 
                 if (null != mEditLayerOverlay) {
-                    mEditLayerOverlay.setFeature(null, null);
+                    mEditLayerOverlay.setFeature(null, Constants.NOT_FOUND);
                     mEditLayerOverlay.setMode(EditLayerOverlay.MODE_NONE);
                 }
                 mMap.postInvalidate();
