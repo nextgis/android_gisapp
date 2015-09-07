@@ -134,7 +134,7 @@ public class MainApplication extends GISApplication
         layer.setURL(layerURL);
         layer.setTMSType(TMSTYPE_OSM);
         layer.setVisible(true);
-        layer.setMinZoom(0);
+        layer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
         layer.setMaxZoom(18);
 
         mMap.addLayer(layer);
@@ -160,35 +160,28 @@ public class MainApplication extends GISApplication
         startService(intent);
 
         // create empty layers for first experimental editing
-        VectorLayerUI vectorLayer =
-                createEmptyVectorLayerUI(getString(R.string.points_for_edit), GeoConstants.GTPoint);
-        mMap.addLayer(vectorLayer);
-
-        vectorLayer = createEmptyVectorLayerUI(
-                getString(R.string.lines_for_edit), GeoConstants.GTLineString);
-        mMap.addLayer(vectorLayer);
-
-        vectorLayer = createEmptyVectorLayerUI(
-                getString(R.string.polygons_for_edit), GeoConstants.GTPolygon);
-        mMap.addLayer(vectorLayer);
+        mMap.addLayer(createEmptyVectorLayer(getString(R.string.points_for_edit),   "vector_a", GeoConstants.GTPoint));
+        mMap.addLayer(createEmptyVectorLayer(getString(R.string.lines_for_edit),    "vector_b", GeoConstants.GTLineString));
+        mMap.addLayer(createEmptyVectorLayer(getString(R.string.polygons_for_edit), "vector_c", GeoConstants.GTPolygon));
 
         mMap.save();
     }
 
 
-    protected VectorLayerUI createEmptyVectorLayerUI(
+    protected ILayer createEmptyVectorLayer(
             String layerName,
+            String layerPath,
             int layerType)
     {
-        VectorLayerUI vectorLayer = new VectorLayerUI(this, mMap.createLayerStorage());
+        VectorLayerUI vectorLayer = new VectorLayerUI(this, mMap.createLayerStorage(layerPath));
         vectorLayer.setName(layerName);
         vectorLayer.setVisible(true);
-        vectorLayer.setMinZoom(0);
-        vectorLayer.setMaxZoom(25);
+        vectorLayer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
+        vectorLayer.setMaxZoom(GeoConstants.DEFAULT_MAX_ZOOM);
 
         List<Field> fields = new ArrayList<>(2);
-        fields.add(new Field(GeoConstants.FTInteger, "FID", null));
-        fields.add(new Field(GeoConstants.FTString, "TEXT", null));
+        fields.add(new Field(GeoConstants.FTInteger, "FID", "FID"));
+        fields.add(new Field(GeoConstants.FTString, "TEXT", "TEXT"));
 
         vectorLayer.create(layerType, fields);
         return vectorLayer;
