@@ -921,11 +921,17 @@ public class MapFragment
                 layerUI.showEditForm(getActivity(), Constants.NOT_FOUND, null);
             }
         } else if (code == ADD_NEW_GEOMETRY) {
-            mEditLayerOverlay.setFeature((VectorLayer) layer, Constants.NOT_FOUND);
-            setMode(MODE_EDIT);
+            VectorLayer vectorLayer = (VectorLayer) layer;
+            if(null != vectorLayer) {
+                mEditLayerOverlay.setFeature(vectorLayer, Constants.NOT_FOUND);
+                setMode(MODE_EDIT);
+            }
         } else if (code == ADD_GEOMETRY_BY_WALK) {
-            mEditLayerOverlay.setFeature((VectorLayer) layer, Constants.NOT_FOUND);
-            setMode(MODE_EDIT_BY_WALK);
+            VectorLayer vectorLayer = (VectorLayer) layer;
+            if(null != vectorLayer) {
+                mEditLayerOverlay.setFeature(vectorLayer, Constants.NOT_FOUND);
+                setMode(MODE_EDIT_BY_WALK);
+            }
         }
     }
 
