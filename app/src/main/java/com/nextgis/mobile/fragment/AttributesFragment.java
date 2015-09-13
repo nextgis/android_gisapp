@@ -299,7 +299,7 @@ public class AttributesFragment
             mEditLayerOverlay.setMode(EditLayerOverlay.MODE_HIGHLIGHT);
         }
 
-        toolbar.setNavigationIcon(R.drawable.ic_action_cancel);
+        toolbar.setNavigationIcon(R.drawable.ic_action_cancel_dark);
         toolbar.setNavigationOnClickListener(
                 new View.OnClickListener()
                 {

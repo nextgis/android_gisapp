@@ -252,7 +252,7 @@ public class MapFragment
                         mMainButton.setVisibility(View.GONE);
                     }
                     mStatusPanel.setVisibility(View.INVISIBLE);
-                    toolbar.setNavigationIcon(R.drawable.ic_action_cancel);
+                    toolbar.setNavigationIcon(R.drawable.ic_action_cancel_dark);
                     toolbar.setNavigationOnClickListener(
                             new View.OnClickListener()
                             {
