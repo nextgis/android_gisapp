@@ -637,8 +637,6 @@ public class MainActivity extends NGActivity
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConstantsUI.MESSAGE_INTENT);
         registerReceiver(mMessageReceiver, intentFilter);
-
-        setActionBarState(true);
     }
 
 

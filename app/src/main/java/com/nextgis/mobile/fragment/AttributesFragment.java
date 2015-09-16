@@ -24,18 +24,22 @@
 package com.nextgis.mobile.fragment;
 
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -64,11 +68,14 @@ public class AttributesFragment
     protected static final String KEY_ITEM_POSITION = "item_pos";
 
     private LinearLayout          mAttributes;
-    private long                  mItemId;
-    private int                   mItemPosition;
     private VectorLayer           mLayer;
     private List<Long> mFeatureIDs;
-    private boolean mIsTablet, mIsReorient = false;
+
+    private long                  mItemId;
+    private int                   mItemPosition;
+    private boolean mIsTablet;
+    private boolean mIsFinished;
+    private boolean mIsReorient = false;
 
     protected EditLayerOverlay mEditLayerOverlay;
 
@@ -79,15 +86,37 @@ public class AttributesFragment
             ViewGroup container,
             Bundle savedInstanceState)
     {
-        ((MainActivity) getActivity()).setActionBarState(isTablet());
         setHasOptionsMenu(!isTablet());
 
         int resId = isTablet() ? R.layout.fragment_attributes_tab : R.layout.fragment_attributes;
         View view = inflater.inflate(resId, container, false);
+
+        if (isTablet()) {
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(view.getLayoutParams());
+            Display display = getActivity().getWindowManager().getDefaultDisplay();
+            DisplayMetrics metrics = new DisplayMetrics();
+            display.getMetrics(metrics);
+            lp.width = metrics.widthPixels / 2;
+
+            int[] attrs = {R.attr.actionBarSize};
+            TypedArray ta = getActivity().obtainStyledAttributes(attrs);
+            lp.bottomMargin = ta.getDimensionPixelSize(0, 0);
+            ta.recycle();
+
+            view.setLayoutParams(lp);
+        }
+
         mAttributes = (LinearLayout) view.findViewById(R.id.ll_attributes);
         setAttributes();
 
         return view;
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((MainActivity) getActivity()).setActionBarState(isTablet());
     }
 
 
@@ -123,8 +152,7 @@ public class AttributesFragment
         MainActivity activity = (MainActivity) getActivity();
         if (null != activity) {
             activity.getSupportFragmentManager().popBackStack();
-            activity.setActionBarState(true);
-            activity.restoreBottomBar();
+            mIsFinished = true;
         }
     }
 
@@ -311,6 +339,11 @@ public class AttributesFragment
     public boolean isTablet()
     {
         return mIsTablet;
+    }
+
+
+    public boolean isFinished() {
+        return mIsFinished;
     }
 
 
