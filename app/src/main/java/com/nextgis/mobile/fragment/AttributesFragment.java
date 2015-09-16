@@ -40,14 +40,21 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.keenfin.easypicker.PhotoPicker;
+import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.Constants;
+import com.nextgis.maplibui.GISApplication;
+import com.nextgis.maplibui.control.PhotoGallery;
 import com.nextgis.maplibui.fragment.BottomToolbar;
 import com.nextgis.maplibui.overlay.EditLayerOverlay;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class AttributesFragment
@@ -183,10 +190,14 @@ public class AttributesFragment
         mAttributes.addView(title);
 
         String selection = Constants.FIELD_ID + " = ?";
-        Cursor attributes = mLayer.query(null, selection, new String[] {mItemId + ""}, null, null);
+        Cursor attributes = mLayer.query(null, selection, new String[]{mItemId + ""}, null, null);
 
         if (attributes.moveToFirst()) {
             for (int i = 0; i < attributes.getColumnCount(); i++) {
+                String column = attributes.getColumnName(i);
+                if (column.startsWith(Constants.FIELD_GEOM))
+                    continue;
+
                 LinearLayout row = new LinearLayout(getActivity());
                 row.setOrientation(LinearLayout.HORIZONTAL);
                 LinearLayout.LayoutParams params =
@@ -195,7 +206,7 @@ public class AttributesFragment
                 TextView columnName = new TextView(getActivity());
                 columnName.setLayoutParams(params);
 
-                String column = attributes.getColumnName(i);
+
 
                 if (column.equals(Constants.FIELD_GEOM)) {
                     continue;
@@ -215,7 +226,25 @@ public class AttributesFragment
                 row.addView(data);
                 mAttributes.addView(row);
             }
+
+            IGISApplication app = (GISApplication) getActivity().getApplication();
+            final Map<String, Integer> mAttaches = new HashMap<>();
+            PhotoGallery.getAttaches(app, mLayer, mItemId, mAttaches);
+
+            if (mAttaches.size() > 0) {
+                final PhotoPicker gallery = new PhotoPicker(getActivity(), true);
+                gallery.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        gallery.restoreImages(new ArrayList<>(mAttaches.keySet()));
+                    }
+                });
+
+                mAttributes.addView(gallery);
+            }
         }
+
+        attributes.close();
     }
 
 
