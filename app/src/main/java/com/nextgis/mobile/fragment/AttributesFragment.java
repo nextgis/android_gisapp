@@ -75,7 +75,6 @@ public class AttributesFragment
     private int                   mItemPosition;
     private boolean mIsTablet;
     private boolean mIsFinished;
-    private boolean mIsReorient = false;
 
     protected EditLayerOverlay mEditLayerOverlay;
 
@@ -160,11 +159,8 @@ public class AttributesFragment
     @Override
     public void onDestroyView()
     {
-        if (!mIsReorient) {
-            ((MainActivity) getActivity()).setActionBarState(true);
-            ((MainActivity) getActivity()).restoreBottomBar();
-        }
-
+        ((MainActivity) getActivity()).setActionBarState(true);
+        ((MainActivity) getActivity()).restoreBottomBar();
         super.onDestroyView();
     }
 
@@ -310,7 +306,6 @@ public class AttributesFragment
         super.onSaveInstanceState(outState);
         outState.putLong(KEY_ITEM_ID, mItemId);
         outState.putInt(KEY_ITEM_POSITION, mItemPosition);
-        mIsReorient = true;
     }
 
 
