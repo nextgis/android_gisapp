@@ -316,34 +316,35 @@ public class MapFragment
                 break;
             case MODE_INFO:
                 boolean tabletSize = getResources().getBoolean(R.bool.isTablet);
-
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 //get or create fragment
                 AttributesFragment attributesFragment =
                         (AttributesFragment) fragmentManager.findFragmentByTag("ATTRIBUTES");
-                if (null == attributesFragment) {
+
+                if (null == attributesFragment || attributesFragment.isFinished())
                     attributesFragment = new AttributesFragment();
-                    attributesFragment.setTablet(tabletSize);
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    int container = R.id.mainview;
 
-                    if (attributesFragment.isTablet()) {
-                        container = R.id.fl_attributes;
-                    } else {
-                        Fragment hide = fragmentManager.findFragmentById(R.id.map);
-                        fragmentTransaction.hide(hide);
-                    }
+                attributesFragment.setTablet(tabletSize);
+                int container = R.id.mainview;
 
+                if (attributesFragment.isTablet()) {
+                    container = R.id.fl_attributes;
+                } else {
+                    Fragment hide = fragmentManager.findFragmentById(R.id.map);
+                    fragmentTransaction.hide(hide);
+                }
+
+                if (!attributesFragment.isAdded())
                     fragmentTransaction.add(container, attributesFragment, "ATTRIBUTES")
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                            .addToBackStack(null)
-                            .commit();
-                } else {
-                    if (!attributesFragment.isTablet()) {
-                        Fragment hide = fragmentManager.findFragmentById(R.id.map);
-                        fragmentManager.beginTransaction().hide(hide).commit();
-                    }
+                            .addToBackStack(null);
+
+                if (!attributesFragment.isVisible()) {
+                    fragmentTransaction.show(attributesFragment);
                 }
+
+                fragmentTransaction.commit();
 
                 attributesFragment.setSelectedFeature(
                         mEditLayerOverlay.getSelectedLayer(),
@@ -351,7 +352,6 @@ public class MapFragment
 
                 if (null != toolbar) {
                     toolbar.setVisibility(View.VISIBLE);
-                    toolbar.getBackground().setAlpha(128);
                     if (null != mMainButton) {
                         mMainButton.setVisibility(View.GONE);
                     }

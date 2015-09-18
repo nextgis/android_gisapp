@@ -25,10 +25,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="wrap_content"
-              android:layout_height="match_parent"
+              android:layout_height="wrap_content"
               android:background="@drawable/abc_popup_background_mtrl_mult"
               android:layout_gravity="end"
-              android:layout_marginBottom="?attr/actionBarSize"
     >
 
     <TextView
