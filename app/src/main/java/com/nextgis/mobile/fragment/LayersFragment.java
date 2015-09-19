@@ -228,6 +228,7 @@ public class LayersFragment
 
         mLayersListView = (ReorderedLayerView) mFragmentContainerView.findViewById(R.id.layer_list);
         mListAdapter = new LayersListAdapter(getActivity(), map);
+        mListAdapter.setDrawer(drawerLayout);
         mLayersListView.setAdapter(mListAdapter);
         mLayersListView.setDrawer(drawerLayout);
 
