@@ -1114,16 +1114,14 @@ public class MapFragment
             setDefaultTextViews();
         } else {
             if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
+                String text = "";
                 int satellites = location.getExtras().getInt("satellites");
-                if (satellites < GpsEventSource.MIN_SATELLITES_IN_FIX) {
-                    mStatusSource.setText("");
-                    mStatusSource.setCompoundDrawablesWithIntrinsicBounds(
-                            getResources().getDrawable(R.drawable.ic_location), null, null, null);
-                } else {
-                    mStatusSource.setText(satellites + "");
-                    mStatusSource.setCompoundDrawablesWithIntrinsicBounds(
-                            getResources().getDrawable(R.drawable.ic_location), null, null, null);
-                }
+                if (satellites > 0)
+                    text += satellites;
+
+                mStatusSource.setText(text);
+                mStatusSource.setCompoundDrawablesWithIntrinsicBounds(
+                        getResources().getDrawable(R.drawable.ic_location), null, null, null);
             } else {
                 mStatusSource.setText("");
                 mStatusSource.setCompoundDrawablesWithIntrinsicBounds(
