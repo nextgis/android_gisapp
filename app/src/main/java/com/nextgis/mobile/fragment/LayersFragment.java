@@ -348,6 +348,7 @@ public class LayersFragment
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(SyncAdapter.SYNC_START);
         intentFilter.addAction(SyncAdapter.SYNC_FINISH);
+        intentFilter.addAction(SyncAdapter.SYNC_CANCELED);
         getActivity().registerReceiver(mSyncReceiver, intentFilter);
     }
 
@@ -371,7 +372,8 @@ public class LayersFragment
         {
             if (intent.getAction().equals(SyncAdapter.SYNC_START)) {
                 refresh(true);
-            } else if (intent.getAction().equals(SyncAdapter.SYNC_FINISH)) {
+            } else if (intent.getAction().equals(SyncAdapter.SYNC_FINISH) ||
+                    intent.getAction().equals(SyncAdapter.SYNC_CANCELED)) {
                 refresh(false);
                 updateInfo();
             }
