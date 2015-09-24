@@ -51,6 +51,7 @@ import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.Toast;
+
 import com.nextgis.maplib.api.GpsEventListener;
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
@@ -60,12 +61,12 @@ import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.map.VectorLayer;
-import com.nextgis.maplibui.service.TrackerService;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.FileUtil;
 import com.nextgis.maplibui.activity.NGActivity;
 import com.nextgis.maplibui.api.IChooseLayerResult;
 import com.nextgis.maplibui.fragment.BottomToolbar;
+import com.nextgis.maplibui.service.TrackerService;
 import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
@@ -81,7 +82,8 @@ import java.util.GregorianCalendar;
 import static com.nextgis.maplib.util.Constants.TAG;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WEB_MERCATOR;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
-import static com.nextgis.maplibui.activity.TracksActivity.isTrackerServiceRunning;
+import static com.nextgis.maplibui.service.TrackerService.hasUnfinishedTracks;
+import static com.nextgis.maplibui.service.TrackerService.isTrackerServiceRunning;
 
 
 public class MainActivity extends NGActivity
@@ -165,10 +167,10 @@ public class MainActivity extends NGActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
+        final IGISApplication app = (IGISApplication) getApplication();
 
         switch (item.getItemId()) {
             case R.id.menu_settings:
-                final IGISApplication app = (IGISApplication) getApplication();
                 app.showSettings();
                 return true;
             case R.id.menu_about:
@@ -193,6 +195,9 @@ public class MainActivity extends NGActivity
 
                 if (isTrackerServiceRunning(this)) {
                     stopService(trackerService);
+                    item.setTitle(R.string.track_start);
+                } else if (hasUnfinishedTracks(this)) {
+                    TrackerService.closeTracks(this, app);
                     item.setTitle(R.string.track_start);
                 } else {
                     startService(trackerService);
@@ -644,7 +649,7 @@ public class MainActivity extends NGActivity
     public boolean onPrepareOptionsMenu(Menu menu)
     {
         if (null != mLayersFragment && !mLayersFragment.isDrawerOpen()) {
-            int title = isTrackerServiceRunning(this) ? R.string.track_stop : R.string.track_start;
+            int title = hasUnfinishedTracks(this) ? R.string.track_stop : R.string.track_start;
             MenuItem item = menu.findItem(R.id.menu_track);
             if (null != item) {
                 item.setTitle(title);

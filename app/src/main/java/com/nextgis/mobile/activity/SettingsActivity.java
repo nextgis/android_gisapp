@@ -49,7 +49,7 @@ import com.nextgis.mobile.fragment.SettingsFragment;
 import java.io.File;
 import java.util.List;
 
-import static com.nextgis.maplibui.activity.TracksActivity.isTrackerServiceRunning;
+import static com.nextgis.maplibui.service.TrackerService.isTrackerServiceRunning;
 import static com.nextgis.mobile.util.SettingsConstants.ACTION_PREFS_LOCATION;
 import static com.nextgis.mobile.util.SettingsConstants.ACTION_PREFS_MAP;
 import static com.nextgis.mobile.util.SettingsConstants.ACTION_PREFS_TRACKING;
