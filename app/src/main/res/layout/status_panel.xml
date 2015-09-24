@@ -26,29 +26,27 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:background="?attr/colorPrimary"
-              android:padding="5dp"
-              android:orientation="vertical"
               android:gravity="center_vertical"
+              android:orientation="vertical"
+              android:padding="5dp"
     >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:gravity="center"
+        android:orientation="horizontal"
         >
 
-        <TextView
+        <com.nextgis.mobile.util.AutoFitTextView
             android:id="@+id/tv_latitude"
             style="@style/status_panel_text"
-            android:layout_weight="1"
             android:gravity="center"
             />
 
-        <TextView
+        <com.nextgis.mobile.util.AutoFitTextView
             android:id="@+id/tv_longitude"
             style="@style/status_panel_text"
-            android:layout_weight="1"
             android:gravity="center"
             />
     </LinearLayout>
@@ -56,33 +54,30 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:gravity="center"
+        android:orientation="horizontal"
         >
 
-        <TextView
+        <com.nextgis.mobile.util.AutoFitTextView
             android:id="@+id/tv_source"
-            android:layout_weight="1"
             style="@style/status_panel_text"
             />
 
-        <TextView
+        <com.nextgis.mobile.util.AutoFitTextView
             android:id="@+id/tv_accuracy"
             style="@style/status_panel_text"
-            android:layout_weight="1"
             android:drawableLeft="@drawable/ic_accuracy"
             android:drawableStart="@drawable/ic_accuracy"
             />
 
-        <TextView
+        <com.nextgis.mobile.util.AutoFitTextView
             android:id="@+id/tv_altitude"
             style="@style/status_panel_text"
-            android:layout_weight="1"
             android:drawableLeft="@drawable/ic_altitude"
             android:drawableStart="@drawable/ic_altitude"
             />
 
-        <TextView
+        <com.nextgis.mobile.util.AutoFitTextView
             android:id="@+id/tv_speed"
             style="@style/status_panel_text"
             android:layout_weight="2"
