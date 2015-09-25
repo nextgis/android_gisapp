@@ -209,17 +209,17 @@ public class MainActivity extends NGActivity
                     mMapFragment.refresh();
                 }
                 return true;
-            /*case R.id.menu_test:
+            case R.id.menu_test:
                 //testAttachInsert();
                 //testAttachUpdate();
-                testAttachDelete();
+                //testAttachDelete();
                 new Thread() {
                     @Override
                     public void run() {
                         testSync();
                     }
                 }.start();
-                return true;*/
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
