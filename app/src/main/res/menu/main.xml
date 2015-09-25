@@ -84,9 +84,9 @@
         android:icon="@drawable/ic_launcher"
         />
 
-    <item
+    <!--item
         android:id="@+id/menu_test"
         android:title="test"
         app:showAsAction="never"
-        />
+        /-->
 </menu>

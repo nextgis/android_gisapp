@@ -209,7 +209,7 @@ public class MainActivity extends NGActivity
                     mMapFragment.refresh();
                 }
                 return true;
-            case R.id.menu_test:
+            /*case R.id.menu_test:
                 //testAttachInsert();
                 //testAttachUpdate();
                 //testAttachDelete();
@@ -219,7 +219,7 @@ public class MainActivity extends NGActivity
                         testSync();
                     }
                 }.start();
-                return true;
+                return true;*/
         }
 
         return super.onOptionsItemSelected(item);
