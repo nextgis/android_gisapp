@@ -580,7 +580,7 @@ public class MapFragment
     @Override
     public void onLayerDeleted(int id)
     {
-
+        setMode(MODE_NORMAL);
     }
 
 
