@@ -27,11 +27,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.datasource.Field;
-import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplib.map.LayerGroup;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapDrawable;
@@ -43,7 +43,7 @@ import com.nextgis.maplibui.mapui.LayerFactoryUI;
 import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
 import com.nextgis.maplibui.mapui.TrackLayerUI;
 import com.nextgis.maplibui.mapui.VectorLayerUI;
-import com.nextgis.maplibui.service.TileDownloadService;
+import com.nextgis.maplibui.service.LayerFillService;
 import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.activity.SettingsActivity;
@@ -52,11 +52,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.nextgis.maplib.util.Constants.LAYERTYPE_LOCAL_TMS;
 import static com.nextgis.maplib.util.Constants.MAP_EXT;
 import static com.nextgis.maplib.util.GeoConstants.TMSTYPE_OSM;
 import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_MAP;
 import static com.nextgis.mobile.util.SettingsConstants.AUTHORITY;
-import static com.nextgis.mobile.util.SettingsConstants.FIRSTSTART_DOWNLOADZOOM;
 
 
 public class MainApplication extends GISApplication
@@ -140,23 +140,11 @@ public class MainApplication extends GISApplication
         mMap.addLayer(layer);
         mMap.moveLayer(0, layer);
 
-        //start tiles download
-        final int zoomFrom = (int) mMap.getMinZoom();
-        final int zoomTo = FIRSTSTART_DOWNLOADZOOM > zoomFrom ? FIRSTSTART_DOWNLOADZOOM : zoomFrom;
-        final int layerId = layer.getId();
-        final GeoEnvelope env = mMap.getFullBounds();
-
-        //start download service
-        Intent intent = new Intent(this, TileDownloadService.class);
-        intent.setAction(TileDownloadService.ACTION_ADD_TASK);
-        intent.putExtra(ConstantsUI.KEY_LAYER_ID, layerId);
-        intent.putExtra(TileDownloadService.KEY_ZOOM_FROM, zoomFrom);
-        intent.putExtra(TileDownloadService.KEY_ZOOM_TO, zoomTo);
-        intent.putExtra(TileDownloadService.KEY_MINX, env.getMinX());
-        intent.putExtra(TileDownloadService.KEY_MAXX, env.getMaxX());
-        intent.putExtra(TileDownloadService.KEY_MINY, env.getMinY());
-        intent.putExtra(TileDownloadService.KEY_MAXY, env.getMaxY());
-
+        Intent intent = new Intent(this, LayerFillService.class);
+        intent.setAction(LayerFillService.ACTION_ADD_TASK);
+        intent.putExtra(ConstantsUI.KEY_LAYER_ID, layer.getId());
+        intent.putExtra(LayerFillService.KEY_INPUT_TYPE, LAYERTYPE_LOCAL_TMS);
+        intent.putExtra(LayerFillService.KEY_URI, Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.mapnik));
         startService(intent);
 
         // create empty layers for first experimental editing
