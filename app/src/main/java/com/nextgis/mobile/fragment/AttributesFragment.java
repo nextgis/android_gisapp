@@ -174,6 +174,7 @@ public class AttributesFragment
 
         if (mLayer == null) {
             getActivity().getSupportFragmentManager().popBackStack();
+            return;
         }
 
         mFeatureIDs = mLayer.query(null); // get all feature IDs
