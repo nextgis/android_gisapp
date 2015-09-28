@@ -134,6 +134,7 @@ public class LayersFragment
         } else {
             if (null != mSyncButton) {
                 mSyncButton.setVisibility(View.VISIBLE);
+                mSyncButton.setEnabled(true);
                 mSyncButton.setOnClickListener(
                         new View.OnClickListener()
                         {
