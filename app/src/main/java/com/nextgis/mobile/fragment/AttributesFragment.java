@@ -46,8 +46,10 @@ import android.widget.Toast;
 
 import com.keenfin.easypicker.PhotoPicker;
 import com.nextgis.maplib.api.IGISApplication;
+import com.nextgis.maplib.datasource.Field;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.Constants;
+import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplibui.GISApplication;
 import com.nextgis.maplibui.control.PhotoGallery;
 import com.nextgis.maplibui.fragment.BottomToolbar;
@@ -55,10 +57,17 @@ import com.nextgis.maplibui.overlay.EditLayerOverlay;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+
+import static com.nextgis.maplib.util.GeoConstants.FTDate;
+import static com.nextgis.maplib.util.GeoConstants.FTDateTime;
+import static com.nextgis.maplib.util.GeoConstants.FTTime;
 
 
 public class AttributesFragment
@@ -217,12 +226,20 @@ public class AttributesFragment
         String selection = Constants.FIELD_ID + " = ?";
         Cursor attributes = mLayer.query(null, selection, new String[]{mItemId + ""}, null, null);
 
+        ArrayList<Field> dateTime = new ArrayList<>();
+        for (Field field : mLayer.getFields())
+            if (field.getType() == GeoConstants.FTDate ||
+                    field.getType() == GeoConstants.FTTime ||
+                    field.getType() == GeoConstants.FTDateTime)
+                dateTime.add(field);
+
         if (attributes.moveToFirst()) {
             for (int i = 0; i < attributes.getColumnCount(); i++) {
                 String column = attributes.getColumnName(i);
                 if (column.startsWith(Constants.FIELD_GEOM))
                     continue;
 
+                String text = attributes.getString(i);
                 LinearLayout row = new LinearLayout(getActivity());
                 row.setOrientation(LinearLayout.HORIZONTAL);
                 LinearLayout.LayoutParams params =
@@ -231,10 +248,11 @@ public class AttributesFragment
                 TextView columnName = new TextView(getActivity());
                 columnName.setLayoutParams(params);
 
-
-
-                if (column.equals(Constants.FIELD_GEOM)) {
-                    continue;
+                for (Field field : dateTime) {
+                    if (field.getName().equals(column)) {
+                        text = formatDateTime(text, field.getType());
+                        break;
+                    }
                 }
 
                 columnName.setText(column);
@@ -242,7 +260,7 @@ public class AttributesFragment
                 data.setLayoutParams(params);
 
                 try {
-                    data.setText(attributes.getString(i));
+                    data.setText(text);
                 } catch (Exception ignored) {
 
                 }
@@ -271,6 +289,34 @@ public class AttributesFragment
 
         attributes.close();
     }
+
+
+    protected String formatDateTime(String value, int type) {
+        String result = value;
+        SimpleDateFormat sdf = null;
+
+        switch (type) {
+            case FTDate:
+                sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                break;
+            case FTTime:
+                sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+                break;
+            case FTDateTime:
+                sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+                break;
+        }
+
+        if (sdf != null)
+            try {
+                result = sdf.format(new Date(Long.parseLong(value)));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        return result;
+    }
+
 
 
     public void selectItem(boolean isNext)
