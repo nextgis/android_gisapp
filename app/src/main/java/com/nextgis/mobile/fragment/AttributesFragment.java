@@ -86,6 +86,7 @@ public class AttributesFragment
     private boolean mIsFinished;
 
     protected EditLayerOverlay mEditLayerOverlay;
+    protected Menu mBottomMenu;
 
 
     @Override
@@ -288,6 +289,7 @@ public class AttributesFragment
         }
 
         attributes.close();
+        checkNearbyItems();
     }
 
 
@@ -318,6 +320,16 @@ public class AttributesFragment
     }
 
 
+    private void checkNearbyItems() {
+        boolean hasNext = mItemPosition + 1 <= mFeatureIDs.size() - 1;
+        boolean hasPrevious = mItemPosition - 1 >= 0;
+
+        if (mBottomMenu != null) {
+            mBottomMenu.getItem(0).setVisible(hasPrevious);
+            mBottomMenu.getItem(1).setVisible(hasNext);
+        }
+    }
+
 
     public void selectItem(boolean isNext)
     {
@@ -341,8 +353,6 @@ public class AttributesFragment
             if (null != mEditLayerOverlay) {
                 mEditLayerOverlay.setFeature(mLayer, mItemId);
             }
-        } else {
-            Toast.makeText(getActivity(), R.string.attributes_last_item, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -405,17 +415,16 @@ public class AttributesFragment
 
         toolbar.setNavigationIcon(R.drawable.ic_action_cancel_dark);
         toolbar.setNavigationOnClickListener(
-                new View.OnClickListener()
-                {
+                new View.OnClickListener() {
                     @Override
-                    public void onClick(View view)
-                    {
+                    public void onClick(View view) {
                         finishFragment();
                     }
                 });
 
-        if (toolbar.getMenu() != null) {
-            toolbar.getMenu().clear();
+        mBottomMenu = toolbar.getMenu();
+        if (mBottomMenu != null) {
+            mBottomMenu.clear();
         }
 
         toolbar.inflateMenu(R.menu.attributes);

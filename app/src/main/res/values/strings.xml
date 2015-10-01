@@ -89,7 +89,6 @@
     <string name="show_current_location">Show current location</string>
     <string name="edit_layer">Edit \'%s\' layer</string>
     <string name="attributes_title">Attributes</string>
-    <string name="attributes_last_item">No more items</string>
     <string name="refresh">Refresh</string>
     <string name="points_for_edit">Points (can be edited)</string>
     <string name="lines_for_edit">Lines (can be edited)</string>
