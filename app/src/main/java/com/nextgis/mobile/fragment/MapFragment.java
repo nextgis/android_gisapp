@@ -169,79 +169,92 @@ public class MapFragment
                 break;
             case MODE_EDIT:
                 if (null != toolbar) {
-                    if (null != mMainButton) {
-                        mMainButton.setVisibility(View.GONE);
-                    }
-                    mStatusPanel.setVisibility(View.INVISIBLE);
-                    toolbar.setVisibility(View.VISIBLE);
-                    toolbar.getBackground().setAlpha(128);
-                    Menu menu = toolbar.getMenu();
-                    if (null != menu) {
-                        menu.clear();
-                    }
-
                     if (null != mEditLayerOverlay) {
-                        mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT);
-                        mEditLayerOverlay.setToolbar(toolbar);
+                        if(mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT)) {
+
+                            if (null != mMainButton) {
+                                mMainButton.setVisibility(View.GONE);
+                            }
+                            mStatusPanel.setVisibility(View.INVISIBLE);
+                            toolbar.setVisibility(View.VISIBLE);
+                            toolbar.getBackground().setAlpha(128);
+                            Menu menu = toolbar.getMenu();
+                            if (null != menu) {
+                                menu.clear();
+                            }
+
+                            mEditLayerOverlay.setToolbar(toolbar);
+                        }
+                        else{
+                            Toast.makeText(getActivity(), R.string.error_unsupported_layer_type,
+                                    Toast.LENGTH_SHORT).show();
+                            break;
+                        }
                     }
                 }
                 break;
             case MODE_EDIT_BY_WALK:
                 if (null != toolbar) {
-                    if (null != mMainButton) {
-                        mMainButton.setVisibility(View.GONE);
-                    }
-                    mStatusPanel.setVisibility(View.INVISIBLE);
-                    toolbar.setVisibility(View.VISIBLE);
-                    toolbar.getBackground().setAlpha(128);
-                    Menu menu = toolbar.getMenu();
-                    if (null != menu) {
-                        menu.clear();
-                    }
-
-                    toolbar.inflateMenu(R.menu.edit_by_walk);
-
-                    toolbar.setOnMenuItemClickListener(
-                            new Toolbar.OnMenuItemClickListener()
-                            {
-                                @Override
-                                public boolean onMenuItemClick(MenuItem menuItem)
-                                {
-                                    if (menuItem.getItemId() == R.id.menu_cancel) {
-                                        mEditLayerOverlay.stopGeometryByWalk();
-                                        mEditLayerOverlay.setFeature(
-                                                mEditLayerOverlay.getSelectedLayer(), Constants.NOT_FOUND);
-                                        setMode(MODE_EDIT);
-                                        return true;
-                                    } else if (menuItem.getItemId() == R.id.menu_settings) {
-                                        Intent locationSettings =
-                                                new Intent(getActivity(), SettingsActivity.class);
-
-                                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-                                            locationSettings.setAction(ACTION_PREFS_LOCATION);
-                                        } else {
-                                            locationSettings.putExtra("settings", "location");
-                                            locationSettings.putExtra(
-                                                    PreferenceActivity.EXTRA_NO_HEADERS, true);
-                                            locationSettings.putExtra(
-                                                    PreferenceActivity.EXTRA_SHOW_FRAGMENT,
-                                                    SettingsFragment.class.getName());
-                                            locationSettings.putExtra(
-                                                    PreferenceActivity.EXTRA_SHOW_FRAGMENT_ARGUMENTS,
-                                                    locationSettings.getExtras());
-                                        }
-
-                                        locationSettings.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        startActivity(locationSettings);
-                                        return true;
-                                    }
-                                    return false;
-                                }
-                            });
-
                     if (null != mEditLayerOverlay) {
-                        mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT_BY_WALK);
-                        mEditLayerOverlay.setToolbar(toolbar);
+                        if(mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT_BY_WALK)) {
+                            if (null != mMainButton) {
+                                mMainButton.setVisibility(View.GONE);
+                            }
+                            mStatusPanel.setVisibility(View.INVISIBLE);
+                            toolbar.setVisibility(View.VISIBLE);
+                            toolbar.getBackground().setAlpha(128);
+                            Menu menu = toolbar.getMenu();
+                            if (null != menu) {
+                                menu.clear();
+                            }
+
+                            toolbar.inflateMenu(R.menu.edit_by_walk);
+
+                            toolbar.setOnMenuItemClickListener(
+                                    new Toolbar.OnMenuItemClickListener()
+                                    {
+                                        @Override
+                                        public boolean onMenuItemClick(MenuItem menuItem)
+                                        {
+                                            if (menuItem.getItemId() == R.id.menu_cancel) {
+                                                mEditLayerOverlay.stopGeometryByWalk();
+                                                mEditLayerOverlay.setFeature(
+                                                        mEditLayerOverlay.getSelectedLayer(), Constants.NOT_FOUND);
+                                                setMode(MODE_EDIT);
+                                                return true;
+                                            } else if (menuItem.getItemId() == R.id.menu_settings) {
+                                                Intent locationSettings =
+                                                        new Intent(getActivity(), SettingsActivity.class);
+
+                                                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+                                                    locationSettings.setAction(ACTION_PREFS_LOCATION);
+                                                } else {
+                                                    locationSettings.putExtra("settings", "location");
+                                                    locationSettings.putExtra(
+                                                            PreferenceActivity.EXTRA_NO_HEADERS, true);
+                                                    locationSettings.putExtra(
+                                                            PreferenceActivity.EXTRA_SHOW_FRAGMENT,
+                                                            SettingsFragment.class.getName());
+                                                    locationSettings.putExtra(
+                                                            PreferenceActivity.EXTRA_SHOW_FRAGMENT_ARGUMENTS,
+                                                            locationSettings.getExtras());
+                                                }
+
+                                                locationSettings.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                startActivity(locationSettings);
+                                                return true;
+                                            }
+                                            return false;
+                                        }
+                                    });
+
+                            mEditLayerOverlay.setToolbar(toolbar);
+                        }
+                        else{
+                            Toast.makeText(getActivity(), R.string.error_unsupported_layer_type,
+                                    Toast.LENGTH_SHORT).show();
+                            break;
+                        }
                     }
                 }
                 break;
@@ -993,15 +1006,13 @@ public class MapFragment
     public void onSingleTapUp(MotionEvent event)
     {
         switch (mMode) {
-            case MODE_SELECT_ACTION:
+            /*case MODE_SELECT_ACTION:
                 setMode(MODE_NORMAL);
-
                 if (null != mEditLayerOverlay) {
                     mEditLayerOverlay.setFeature(null, Constants.NOT_FOUND);
                     mEditLayerOverlay.setMode(EditLayerOverlay.MODE_NONE);
                 }
-                mMap.postInvalidate();
-                break;
+                break;*/
             case MODE_INFO:
                 if (null != mEditLayerOverlay) {
                     AttributesFragment attributesFragment =
