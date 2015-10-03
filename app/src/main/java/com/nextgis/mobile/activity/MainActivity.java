@@ -233,7 +233,7 @@ public class MainActivity extends NGActivity
     }
 
 
-    public void onRefresh(
+    public synchronized void onRefresh(
             boolean isRefresh,
             int progress)
     {
