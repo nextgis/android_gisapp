@@ -318,18 +318,15 @@ public class MainActivity extends NGActivity
                     Log.d(TAG, "File Uri: " + uri.toString());
                     //check the file type from extension
                     String fileName = FileUtil.getFileNameByUri(this, uri, "");
-                    if (fileName.endsWith("zip") ||
-                        fileName.endsWith("ZIP")) { //create local tile layer
+                    if (fileName.toLowerCase().endsWith("zip")) { //create local tile layer
                         if (null != mMapFragment) {
                             mMapFragment.addLocalTMSLayer(uri);
                         }
-                    } else if (fileName.endsWith("geojson") ||
-                               fileName.endsWith("GEOJSON")) { //create local vector layer
+                    } else if (fileName.toLowerCase().endsWith("geojson")) { //create local vector layer
                         if (null != mMapFragment) {
                             mMapFragment.addLocalVectorLayer(uri);
                         }
-                    } else if (fileName.endsWith("ngfp") ||
-                               fileName.endsWith("NGFP")) { //create local vector layer with form
+                    } else if (fileName.toLowerCase().endsWith("ngfp")) { //create local vector layer with form
                         if (null != mMapFragment) {
                             mMapFragment.addLocalVectorLayerWithForm(uri);
                         }
