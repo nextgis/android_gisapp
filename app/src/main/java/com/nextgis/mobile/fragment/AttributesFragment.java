@@ -57,6 +57,7 @@ import com.nextgis.maplibui.overlay.EditLayerOverlay;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
 
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -227,20 +228,35 @@ public class AttributesFragment
         String selection = Constants.FIELD_ID + " = ?";
         Cursor attributes = mLayer.query(null, selection, new String[]{mItemId + ""}, null, null);
 
-        ArrayList<Field> dateTime = new ArrayList<>();
-        for (Field field : mLayer.getFields())
-            if (field.getType() == GeoConstants.FTDate ||
-                    field.getType() == GeoConstants.FTTime ||
-                    field.getType() == GeoConstants.FTDateTime)
-                dateTime.add(field);
-
         if (attributes.moveToFirst()) {
             for (int i = 0; i < attributes.getColumnCount(); i++) {
                 String column = attributes.getColumnName(i);
                 if (column.startsWith(Constants.FIELD_GEOM))
                     continue;
 
-                String text = attributes.getString(i);
+                String text;
+                Field field = mLayer.getFieldByName(column);
+                int fieldType = field != null ? field.getType() : Constants.NOT_FOUND;
+                switch (fieldType) {
+                    case GeoConstants.FTInteger:
+                        text = attributes.getInt(i) + "";
+                        break;
+                    case GeoConstants.FTReal:
+                        NumberFormat nf = NumberFormat.getInstance();
+                        nf.setMaximumFractionDigits(4);
+                        nf.setGroupingUsed(false);
+                        text = nf.format(attributes.getDouble(i));
+                        break;
+                    case GeoConstants.FTDate:
+                    case GeoConstants.FTTime:
+                    case GeoConstants.FTDateTime:
+                        text = formatDateTime(attributes.getLong(i), fieldType);
+                        break;
+                    default:
+                        text = attributes.getString(i);
+                        break;
+                }
+
                 LinearLayout row = new LinearLayout(getActivity());
                 row.setOrientation(LinearLayout.HORIZONTAL);
                 LinearLayout.LayoutParams params =
@@ -248,14 +264,6 @@ public class AttributesFragment
 
                 TextView columnName = new TextView(getActivity());
                 columnName.setLayoutParams(params);
-
-                for (Field field : dateTime) {
-                    if (field.getName().equals(column)) {
-                        text = formatDateTime(text, field.getType());
-                        break;
-                    }
-                }
-
                 columnName.setText(column);
                 TextView data = new TextView(getActivity());
                 data.setLayoutParams(params);
@@ -293,8 +301,8 @@ public class AttributesFragment
     }
 
 
-    protected String formatDateTime(String value, int type) {
-        String result = value;
+    protected String formatDateTime(long millis, int type) {
+        String result = millis + "";
         SimpleDateFormat sdf = null;
 
         switch (type) {
@@ -311,7 +319,7 @@ public class AttributesFragment
 
         if (sdf != null)
             try {
-                result = sdf.format(new Date(Long.parseLong(value)));
+                result = sdf.format(new Date(millis));
             } catch (Exception e) {
                 e.printStackTrace();
             }
