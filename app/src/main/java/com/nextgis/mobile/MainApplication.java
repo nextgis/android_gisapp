@@ -102,7 +102,6 @@ public class MainApplication extends GISApplication
             trackLayer.setName(trackLayerName);
             trackLayer.setVisible(true);
             mMap.addLayer(trackLayer);
-
             mMap.save();
         }
     }
