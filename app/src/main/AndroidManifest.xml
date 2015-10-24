@@ -40,9 +40,9 @@
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
     <!--
         <uses-permission android:name="android.permission.CAMERA"/>
-        <uses-permission android:name="android.permission.VIBRATE"/>
     -->
 
     <uses-feature

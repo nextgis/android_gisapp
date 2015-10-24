@@ -72,6 +72,7 @@ import com.nextgis.maplibui.api.EditEventListener;
 import com.nextgis.maplibui.api.ILayerUI;
 import com.nextgis.maplibui.api.IVectorLayerUI;
 import com.nextgis.maplibui.api.MapViewEventListener;
+import com.nextgis.maplibui.fragment.CompassFragment;
 import com.nextgis.maplibui.dialog.ChooseLayerDialog;
 import com.nextgis.maplibui.fragment.BottomToolbar;
 import com.nextgis.maplibui.mapui.MapViewOverlays;
@@ -457,6 +458,27 @@ public class MapFragment
                             RelativeLayout.LayoutParams.MATCH_PARENT));
         }
         mMap.invalidate();
+
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        //get or create fragment
+        CompassFragment compassFragment = (CompassFragment) fragmentManager.findFragmentByTag("NEEDLE_COMPASS");
+        if (null == compassFragment) {
+            compassFragment = new CompassFragment();
+            compassFragment.setStyle(true);
+        }
+
+        int compassContainer = R.id.fl_compass;
+        if (!compassFragment.isAdded())
+            fragmentTransaction.add(compassContainer, compassFragment, "NEEDLE_COMPASS")
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .addToBackStack(null);
+
+        if (!compassFragment.isVisible()) {
+            fragmentTransaction.show(compassFragment);
+        }
+
+        fragmentTransaction.commit();
 
         mMainButton = view.findViewById(R.id.multiple_actions);
 
