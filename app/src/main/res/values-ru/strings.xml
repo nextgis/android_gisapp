@@ -89,6 +89,7 @@
     <string name="show_current_location">Показать текущее местоположение</string>
     <string name="edit_layer">Отредактировать слой \'%s\'</string>
     <string name="attributes_title">Атрибуты</string>
+    <string name="compass_title">Компас</string>
     <string name="refresh">Обновить</string>
     <string name="points_for_edit">Точки (можно редактировать)</string>
     <string name="lines_for_edit">Линии (можно редактировать)</string>

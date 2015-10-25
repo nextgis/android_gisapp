@@ -42,7 +42,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.keenfin.easypicker.PhotoPicker;
 import com.nextgis.maplib.api.IGISApplication;
@@ -84,7 +83,6 @@ public class AttributesFragment
     private long                  mItemId;
     private int                   mItemPosition;
     private boolean mIsTablet;
-    private boolean mIsFinished;
 
     protected EditLayerOverlay mEditLayerOverlay;
     protected Menu mBottomMenu;
@@ -126,7 +124,7 @@ public class AttributesFragment
     @Override
     public void onResume() {
         super.onResume();
-        ((MainActivity) getActivity()).setActionBarState(isTablet());
+        ((MainActivity) getActivity()).setActionBarState(isTablet(), R.string.attributes_title);
     }
 
 
@@ -145,33 +143,9 @@ public class AttributesFragment
 
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finishFragment();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-
-    protected void finishFragment()
-    {
-        MainActivity activity = (MainActivity) getActivity();
-        if (null != activity) {
-            activity.getSupportFragmentManager().popBackStack();
-            mIsFinished = true;
-        }
-    }
-
-
-    @Override
     public void onDestroyView()
     {
-        ((MainActivity) getActivity()).setActionBarState(true);
-        ((MainActivity) getActivity()).restoreBottomBar();
+        ((MainActivity) getActivity()).restoreBottomBar(MapFragment.MODE_SELECT_ACTION);
         super.onDestroyView();
     }
 
@@ -402,11 +376,6 @@ public class AttributesFragment
     }
 
 
-    public boolean isFinished() {
-        return mIsFinished;
-    }
-
-
     public void setToolbar(
             final BottomToolbar toolbar,
             EditLayerOverlay overlay)
@@ -426,7 +395,10 @@ public class AttributesFragment
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        finishFragment();
+                        ((MainActivity) getActivity()).finishFragment();
+
+                        if (isTablet())
+                            getActivity().getSupportFragmentManager().beginTransaction().remove(AttributesFragment.this).commit();
                     }
                 });
 
@@ -436,7 +408,6 @@ public class AttributesFragment
         }
 
         toolbar.inflateMenu(R.menu.attributes);
-
         toolbar.setOnMenuItemClickListener(
                 new BottomToolbar.OnMenuItemClickListener()
                 {
@@ -457,5 +428,6 @@ public class AttributesFragment
                         return true;
                     }
                 });
+        checkNearbyItems();
     }
 }

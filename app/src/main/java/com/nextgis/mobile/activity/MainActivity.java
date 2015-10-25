@@ -111,7 +111,6 @@ public class MainActivity extends NGActivity
 
         setContentView(R.layout.activity_main);
 
-
         mToolbar = (Toolbar) findViewById(R.id.main_toolbar);
         mToolbar.getBackground().setAlpha(128);
         setSupportActionBar(mToolbar);
@@ -170,6 +169,8 @@ public class MainActivity extends NGActivity
         final IGISApplication app = (IGISApplication) getApplication();
 
         switch (item.getItemId()) {
+            case android.R.id.home:
+                return finishFragment();
             case R.id.menu_settings:
                 app.showSettings();
                 return true;
@@ -223,6 +224,18 @@ public class MainActivity extends NGActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    public boolean finishFragment()
+    {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
+            setActionBarState(true, R.string.app_name);
+            return true;
+        }
+
+        return false;
     }
 
 
@@ -462,7 +475,7 @@ public class MainActivity extends NGActivity
         */
         Uri deleteUri = Uri.parse(
                 "content://" + SettingsConstants.AUTHORITY +
-                "/layer_20150210140455993/36/attach/1");
+                        "/layer_20150210140455993/36/attach/1");
         int result = getContentResolver().delete(deleteUri, null, null);
         if (result == 0) {
             Log.d(TAG, "delete failed");
@@ -666,6 +679,9 @@ public class MainActivity extends NGActivity
 
     @Override
     public void onBackPressed() {
+        if (finishFragment())
+            return;
+
         if (mBackPressed + 2000 > System.currentTimeMillis())
             super.onBackPressed();
         else
@@ -693,24 +709,30 @@ public class MainActivity extends NGActivity
     }
 
 
-    public void setActionBarState(boolean state)
+    public void setActionBarState(boolean state, int title)
     {
         mLayersFragment.setDrawerToggleEnabled(state);
 
         if (state) {
             mToolbar.getBackground().setAlpha(128);
             getBottomToolbar().getBackground().setAlpha(128);
-            mToolbar.setTitle(R.string.app_name);
+            title = R.string.app_name;
         } else {
             mToolbar.getBackground().setAlpha(255);
             getBottomToolbar().getBackground().setAlpha(255);
-            mToolbar.setTitle(R.string.action_attributes);
         }
+
+        mToolbar.setTitle(title);
     }
 
 
-    public void restoreBottomBar()
+    public void hideBottomBar() {
+        mMapFragment.hideBottomBar();
+    }
+
+
+    public void restoreBottomBar(int mode)
     {
-        mMapFragment.restoreBottomBar();
+        mMapFragment.restoreBottomBar(mode);
     }
 }

@@ -24,6 +24,7 @@
 package com.nextgis.mobile.fragment;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
@@ -31,6 +32,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -98,7 +100,7 @@ import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_ZOOM_LEVEL;
 
 public class MapFragment
         extends Fragment
-        implements MapViewEventListener, GpsEventListener, EditEventListener
+        implements MapViewEventListener, GpsEventListener, EditEventListener, OnClickListener
 {
     protected final static int mMargins = 10;
     protected float mTolerancePX;
@@ -122,6 +124,7 @@ public class MapFragment
 
     protected int mCoordinatesFormat;
     protected ChooseLayerDialog mChooseLayerDialog;
+    protected Vibrator mVibrator;
 
     protected static final int MODE_NORMAL        = 0;
     protected static final int MODE_SELECT_ACTION = 1;
@@ -131,7 +134,7 @@ public class MapFragment
     protected static final int MODE_EDIT_BY_WALK  = 5;
 
     protected static final String KEY_MODE = "mode";
-    protected boolean mShowStatusPanel;
+    protected boolean mShowStatusPanel, mIsCompassDragging;
 
     protected final int ADD_CURRENT_LOC      = 1;
     protected final int ADD_NEW_GEOMETRY     = 2;
@@ -336,7 +339,7 @@ public class MapFragment
                 AttributesFragment attributesFragment =
                         (AttributesFragment) fragmentManager.findFragmentByTag("ATTRIBUTES");
 
-                if (null == attributesFragment || attributesFragment.isFinished())
+                if (null == attributesFragment)
                     attributesFragment = new AttributesFragment();
 
                 attributesFragment.setTablet(tabletSize);
@@ -349,10 +352,13 @@ public class MapFragment
                     fragmentTransaction.hide(hide);
                 }
 
-                if (!attributesFragment.isAdded())
+                if (!attributesFragment.isAdded()) {
                     fragmentTransaction.add(container, attributesFragment, "ATTRIBUTES")
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                            .addToBackStack(null);
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+
+                    if (!attributesFragment.isTablet())
+                        fragmentTransaction.addToBackStack(null);
+                }
 
                 if (!attributesFragment.isVisible()) {
                     fragmentTransaction.show(attributesFragment);
@@ -471,8 +477,7 @@ public class MapFragment
         int compassContainer = R.id.fl_compass;
         if (!compassFragment.isAdded())
             fragmentTransaction.add(compassContainer, compassFragment, "NEEDLE_COMPASS")
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .addToBackStack(null);
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
 
         if (!compassFragment.isVisible()) {
             fragmentTransaction.show(compassFragment);
@@ -480,82 +485,73 @@ public class MapFragment
 
         fragmentTransaction.commit();
 
+        mVibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+        FrameLayout compass = (FrameLayout) view.findViewById(compassContainer);
+        compass.setOnClickListener(this);
+        compass.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                mIsCompassDragging = true;
+                mVibrator.vibrate(5);
+                return true;
+            }
+        });
+        // Thanks to http://javatechig.com/android/how-to-drag-a-view-in-android
+        compass.setOnTouchListener(new View.OnTouchListener() {
+            private int _xDelta;
+            private int _yDelta;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (!mIsCompassDragging)
+                    return false;
+
+                final int X = (int) event.getRawX();
+                final int Y = (int) event.getRawY();
+                switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                    case MotionEvent.ACTION_DOWN:
+                        RelativeLayout.LayoutParams lParams = (RelativeLayout.LayoutParams) v.getLayoutParams();
+                        _xDelta = X - lParams.leftMargin;
+                        _yDelta = Y - lParams.topMargin;
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        mIsCompassDragging = false;
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) v.getLayoutParams();
+                        layoutParams.leftMargin = X - _xDelta;
+                        layoutParams.topMargin = Y - _yDelta;
+                        layoutParams.rightMargin = -250;
+                        layoutParams.bottomMargin = -250;
+                        v.setLayoutParams(layoutParams);
+                        break;
+                }
+                mMapRelativeLayout.invalidate();
+                return true;
+            }
+        });
+
         mMainButton = view.findViewById(R.id.multiple_actions);
 
-        final View addCurrentLocation = view.findViewById(R.id.add_current_location);
-        if (null != addCurrentLocation) {
-            addCurrentLocation.setOnClickListener(
-                    new OnClickListener()
-                    {
-                        @Override
-                        public void onClick(View v)
-                        {
-                            if (addCurrentLocation.isEnabled()) {
-                                addCurrentLocation();
-                            }
-                        }
-                    });
-        }
+        View addCurrentLocation = view.findViewById(R.id.add_current_location);
+        if (null != addCurrentLocation)
+            addCurrentLocation.setOnClickListener(this);
 
-        final View addNewGeometry = view.findViewById(R.id.add_new_geometry);
-        if (null != addNewGeometry) {
-            addNewGeometry.setOnClickListener(
-                    new OnClickListener()
-                    {
-                        @Override
-                        public void onClick(View v)
-                        {
-                            if (addNewGeometry.isEnabled()) {
-                                addNewGeometry();
-                            }
-                        }
-                    });
-        }
+        View addNewGeometry = view.findViewById(R.id.add_new_geometry);
+        if (null != addNewGeometry)
+            addNewGeometry.setOnClickListener(this);
 
-        final View addGeometryByWalk = view.findViewById(R.id.add_geometry_by_walk);
-        if (null != addGeometryByWalk) {
-            addGeometryByWalk.setOnClickListener(
-                    new OnClickListener()
-                    {
-                        @Override
-                        public void onClick(View v)
-                        {
-                            if (addGeometryByWalk.isEnabled()) {
-                                addGeometryByWalk();
-                            }
-                        }
-                    });
-        }
+        View addGeometryByWalk = view.findViewById(R.id.add_geometry_by_walk);
+        if (null != addGeometryByWalk)
+            addGeometryByWalk.setOnClickListener(this);
 
         mivZoomIn = (FloatingActionButton) view.findViewById(R.id.action_zoom_in);
-        if (null != mivZoomIn) {
-            mivZoomIn.setOnClickListener(
-                    new OnClickListener()
-                    {
-                        @Override
-                        public void onClick(View v)
-                        {
-                            if (mivZoomIn.isEnabled()) {
-                                mMap.zoomIn();
-                            }
-                        }
-                    });
-        }
+        if (null != mivZoomIn)
+            mivZoomIn.setOnClickListener(this);
 
         mivZoomOut = (FloatingActionButton) view.findViewById(R.id.action_zoom_out);
-        if (null != mivZoomOut) {
-            mivZoomOut.setOnClickListener(
-                    new OnClickListener()
-                    {
-                        @Override
-                        public void onClick(View v)
-                        {
-                            if (mivZoomOut.isEnabled()) {
-                                mMap.zoomOut();
-                            }
-                        }
-                    });
-        }
+        if (null != mivZoomOut)
+            mivZoomOut.setOnClickListener(this);
 
         mStatusPanel = (FrameLayout) view.findViewById(R.id.fl_status_panel);
         return view;
@@ -1247,9 +1243,14 @@ public class MapFragment
     }
 
 
-    public void restoreBottomBar()
+    public void hideBottomBar() {
+        ((MainActivity) getActivity()).getBottomToolbar().setVisibility(View.GONE);
+    }
+
+
+    public void restoreBottomBar(int mode)
     {
-        setMode(MODE_SELECT_ACTION);
+        setMode(mode != -1 ? mode : mMode);
     }
 
 
@@ -1312,5 +1313,46 @@ public class MapFragment
 
     public boolean isDialogShown() {
         return mChooseLayerDialog != null && mChooseLayerDialog.isResumed();
+    }
+
+    protected void showFullCompass() {
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        FullCompassFragment compassFragment = new FullCompassFragment();
+
+        int container = R.id.mainview;
+        fragmentTransaction.add(container, compassFragment, "COMPASS_FULL")
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.fl_compass:
+                showFullCompass();
+                break;
+            case R.id.add_current_location:
+                if (v.isEnabled())
+                    addCurrentLocation();
+                break;
+            case R.id.add_new_geometry:
+                if (v.isEnabled())
+                    addNewGeometry();
+                break;
+            case R.id.add_geometry_by_walk:
+                if (v.isEnabled())
+                    addGeometryByWalk();
+                break;
+            case R.id.action_zoom_in:
+                if (v.isEnabled())
+                    mMap.zoomIn();
+                break;
+            case R.id.action_zoom_out:
+                if (v.isEnabled())
+                    mMap.zoomOut();
+                break;
+        }
     }
 }
