@@ -80,6 +80,10 @@
     <string name="warning_map_moving">Внимание! Не отменяйте операцию и не останавливайте приложение в процессе перемещения данных в новое место. Может привести к потере данных!</string>
     <string name="warning_folder_should_be_empty">Папка должна быть пустой. Операция отменена.</string>
     <string name="frequentest">, так часто, как возможно</string>
+    <string name="compass_vibrate">Вибрация на безеле</string>
+    <string name="compass_true_north">Показывать истинный полюс</string>
+    <string name="compass_magnetic">Показывать магнитный полюс</string>
+    <string name="compass_keep_screen">Не отключать экран</string>
     <string name="accurate_measures_count">Количество замеров GPS</string>
     <string name="action_delete">Удалить</string>
     <string name="action_attributes">Атрибуты</string>

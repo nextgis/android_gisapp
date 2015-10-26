@@ -34,7 +34,7 @@
     <string name="action_add_ngw">Add layer (NGW)</string>
     <string name="general">General</string>
     <string name="general_summary">General settings</string>
-    <string name="keep_screen_on">Keep screen on</string>
+    <string name="keep_screen_on">Keep map screen on</string>
     <string name="keep_screen_on_summary">Do not turn off screen</string>
     <string name="show_zoom_controls">Show zoom controls</string>
     <string name="show_zoom_controls_summary">Show zoom in/zoom out control on the map</string>
@@ -80,6 +80,10 @@
     <string name="warning_map_moving">Dangerous operation! Don\'t cancel it or kill the application during the data moving to new location! You data may be broken or lost!</string>
     <string name="warning_folder_should_be_empty">The folder should be empty. Cancel operation.</string>
     <string name="frequentest">, as frequent as possible</string>
+    <string name="compass_vibrate">Vibrate on bezel touch</string>
+    <string name="compass_true_north">Show true north</string>
+    <string name="compass_magnetic">Show magnetic</string>
+    <string name="compass_keep_screen">Keep compass screen on</string>
     <string name="accurate_measures_count">Count of GPS measures</string>
     <string name="action_delete">Delete</string>
     <string name="action_attributes">Attributes</string>

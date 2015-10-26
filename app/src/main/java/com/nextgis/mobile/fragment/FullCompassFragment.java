@@ -21,8 +21,11 @@
 
 package com.nextgis.mobile.fragment;
 
+import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v7.internal.widget.ThemeUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,8 +34,10 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.nextgis.maplibui.fragment.CompassFragment;
+import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
+import com.nineoldandroids.view.ViewHelper;
 
 public class FullCompassFragment extends CompassFragment {
     @Override
@@ -55,9 +60,17 @@ public class FullCompassFragment extends CompassFragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        mIsVibrationOn = prefs.getBoolean(SettingsConstantsUI.KEY_PREF_COMPASS_VIBRATE, true);
+        mParent.setKeepScreenOn(prefs.getBoolean(SettingsConstantsUI.KEY_PREF_COMPASS_KEEP_SCREEN, true));
+        mTrueNorth = prefs.getBoolean(SettingsConstantsUI.KEY_PREF_COMPASS_TRUE_NORTH, true);
+        mShowMagnetic = prefs.getBoolean(SettingsConstantsUI.KEY_PREF_COMPASS_MAGNETIC, true);
+
         ((MainActivity) getActivity()).setActionBarState(false, R.string.compass_title);
         assert getView() != null;
-        getView().getBackground().setAlpha(255);
+        int accentColor = ThemeUtils.getThemeAttrColor(getContext(), R.attr.colorAccent);
+        getView().setBackgroundColor(accentColor);
     }
 
     @Override
@@ -80,4 +93,17 @@ public class FullCompassFragment extends CompassFragment {
         super.onDestroyView();
     }
 
+
+    @Override
+    public void updateCompass(float azimuth) {
+        float alpha = 1f;
+        if (mShowMagnetic) {
+            alpha = .3f;
+        }
+
+        ViewHelper.setAlpha(mCompassNeedleMagnetic, alpha);
+        ViewHelper.setAlpha(mCompassNeedle, alpha);
+
+        super.updateCompass(azimuth);
+    }
 }
