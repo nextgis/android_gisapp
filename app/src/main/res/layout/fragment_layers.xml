@@ -23,52 +23,49 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="vertical"
-    >
-
+              android:orientation="vertical">
 
     <LinearLayout
-        android:orientation="vertical"
+        android:id="@+id/action_space"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
-        android:id="@+id/action_space"
-        >
+        android:orientation="vertical">
 
         <LinearLayout
-            android:orientation="horizontal"
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:id="@+id/toolbar"
             android:gravity="end"
-            >
+            android:orientation="horizontal">
 
             <ImageButton
+                android:id="@+id/sync"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/sync"
-                android:background="@drawable/ic_action_sync"
                 android:layout_margin="2dp"
-                />
+                android:background="@drawable/ic_action_sync"
+                tools:ignore="ContentDescription"/>
         </LinearLayout>
 
         <TextView
+            android:id="@+id/info"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:id="@+id/info"
             android:padding="5dp"
-            android:textColor="@color/abc_primary_text_material_dark"
-            />
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/abc_primary_text_material_dark"/>
     </LinearLayout>
 
     <com.nextgis.mobile.fragment.ReorderedLayerViewAnimated
         android:id="@+id/layer_list"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:choiceMode="singleChoice"
-        />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="?attr/layer_list_background"
+        android:choiceMode="singleChoice"/>
 
 </LinearLayout>
