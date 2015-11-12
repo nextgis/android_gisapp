@@ -105,6 +105,8 @@ public class MapFragment
     protected final static int mMargins = 10;
     protected float mTolerancePX;
 
+    protected MainApplication      mApp;
+    protected MainActivity         mActivity;
     protected MapViewOverlays      mMap;
     protected FloatingActionButton mivZoomIn;
     protected FloatingActionButton mivZoomOut;
@@ -145,19 +147,18 @@ public class MapFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        mTolerancePX =
-                getActivity().getResources().getDisplayMetrics().density * ConstantsUI.TOLERANCE_DP;
+        mActivity = (MainActivity) getActivity();
+        mTolerancePX = mActivity.getResources().getDisplayMetrics().density * ConstantsUI.TOLERANCE_DP;
     }
 
 
     protected void setMode(int mode)
     {
-        MainActivity activity = (MainActivity) getActivity();
-        if (null == activity) {
+        if (null == mActivity) {
             return;
         }
 
-        final BottomToolbar toolbar = activity.getBottomToolbar();
+        final BottomToolbar toolbar = mActivity.getBottomToolbar();
         switch (mode) {
             case MODE_NORMAL:
                 if (null != toolbar) {
@@ -190,7 +191,7 @@ public class MapFragment
                             mEditLayerOverlay.setToolbar(toolbar);
                         }
                         else{
-                            Toast.makeText(getActivity(), R.string.error_unsupported_layer_type,
+                            Toast.makeText(mActivity, R.string.error_unsupported_layer_type,
                                     Toast.LENGTH_SHORT).show();
                             break;
                         }
@@ -228,7 +229,7 @@ public class MapFragment
                                                 return true;
                                             } else if (menuItem.getItemId() == R.id.menu_settings) {
                                                 Intent locationSettings =
-                                                        new Intent(getActivity(), SettingsActivity.class);
+                                                        new Intent(mActivity, SettingsActivity.class);
 
                                                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
                                                     locationSettings.setAction(ACTION_PREFS_LOCATION);
@@ -255,7 +256,7 @@ public class MapFragment
                             mEditLayerOverlay.setToolbar(toolbar);
                         }
                         else{
-                            Toast.makeText(getActivity(), R.string.error_unsupported_layer_type,
+                            Toast.makeText(mActivity, R.string.error_unsupported_layer_type,
                                     Toast.LENGTH_SHORT).show();
                             break;
                         }
@@ -333,7 +334,7 @@ public class MapFragment
                 break;
             case MODE_INFO:
                 boolean tabletSize = getResources().getBoolean(R.bool.isTablet);
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 //get or create fragment
                 AttributesFragment attributesFragment =
@@ -391,7 +392,7 @@ public class MapFragment
         // Get the ChildCount of your Toolbar, this should only be 1
         int childCount = toolbar.getChildCount();
         // Get the Screen Width in pixels
-        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        Display display = mActivity.getWindowManager().getDefaultDisplay();
         DisplayMetrics metrics = new DisplayMetrics();
         display.getMetrics(metrics);
         int screenWidth = metrics.widthPixels;
@@ -434,21 +435,21 @@ public class MapFragment
             Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
-        MainApplication app = (MainApplication) getActivity().getApplication();
+        mApp = (MainApplication) mActivity.getApplication();
 
-        mMap = new MapViewOverlays(getActivity(), (MapDrawable) app.getMap());
+        mMap = new MapViewOverlays(mActivity, (MapDrawable) mApp.getMap());
         mMap.setId(777);
 
-        mGpsEventSource = app.getGpsEventSource();
-        mCurrentLocationOverlay = new CurrentLocationOverlay(getActivity(), mMap);
+        mGpsEventSource = mApp.getGpsEventSource();
+        mCurrentLocationOverlay = new CurrentLocationOverlay(mActivity, mMap);
         mCurrentLocationOverlay.setStandingMarker(R.mipmap.ic_location_standing);
         mCurrentLocationOverlay.setMovingMarker(R.mipmap.ic_location_moving);
         mCurrentLocationOverlay.setAutopanningEnabled(true);
 
-        mCurrentTrackOverlay = new CurrentTrackOverlay(getActivity(), mMap);
+        mCurrentTrackOverlay = new CurrentTrackOverlay(mActivity, mMap);
 
         //add edit_point layer overlay
-        mEditLayerOverlay = new EditLayerOverlay(getActivity(), mMap);
+        mEditLayerOverlay = new EditLayerOverlay(mActivity, mMap);
 
         mMap.addOverlay(mCurrentTrackOverlay);
         mMap.addOverlay(mCurrentLocationOverlay);
@@ -465,7 +466,7 @@ public class MapFragment
         }
         mMap.invalidate();
 
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         //get or create fragment
         CompassFragment compassFragment = (CompassFragment) fragmentManager.findFragmentByTag("NEEDLE_COMPASS");
@@ -485,7 +486,7 @@ public class MapFragment
 
         fragmentTransaction.commit();
 
-        mVibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+        mVibrator = (Vibrator) mActivity.getSystemService(Context.VIBRATOR_SERVICE);
         FrameLayout compass = (FrameLayout) view.findViewById(compassContainer);
         compass.setOnClickListener(this);
         compass.setOnLongClickListener(new View.OnLongClickListener() {
@@ -647,7 +648,7 @@ public class MapFragment
         //Log.d(Constants.TAG, "onLayerDrawFinished: " + id + " percent " + percent);
         /*if (percent >= 1.0)
             mLayerDrawn++;
-        MainActivity activity = (MainActivity) getActivity();
+        MainActivity activity = (MainActivity) mActivity;
         if (null != activity){
             if (percent >= 1.0) {
                 if (id == mMap.getTopVisibleLayerId()) {
@@ -658,9 +659,8 @@ public class MapFragment
             }
         }*/
         if (percent >= 1.0 && id == mMap.getMap().getId()) {
-            MainActivity activity = (MainActivity) getActivity();
-            if (null != activity) {
-                activity.onRefresh(false, 1);
+            if (null != mActivity) {
+                mActivity.onRefresh(false, 1);
             }
         }
     }
@@ -669,9 +669,8 @@ public class MapFragment
     @Override
     public void onLayerDrawStarted()
     {
-        MainActivity activity = (MainActivity) getActivity();
-        if (null != activity) {
-            activity.onRefresh(true, 0);
+        if (null != mActivity) {
+            mActivity.onRefresh(true, 0);
         }
     }
 
@@ -733,7 +732,7 @@ public class MapFragment
         }
 
         final SharedPreferences.Editor edit =
-                PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
+                PreferenceManager.getDefaultSharedPreferences(mActivity).edit();
         if (null != mMap) {
             edit.putFloat(KEY_PREF_ZOOM_LEVEL, mMap.getZoomLevel());
             GeoPoint point = mMap.getMapCenter();
@@ -754,7 +753,7 @@ public class MapFragment
         super.onResume();
 
         final SharedPreferences prefs =
-                PreferenceManager.getDefaultSharedPreferences(getActivity());
+                PreferenceManager.getDefaultSharedPreferences(mActivity);
 
         boolean showControls = prefs.getBoolean(KEY_PREF_SHOW_ZOOM_CONTROLS, false);
         showMapButtons(showControls, mMapRelativeLayout);
@@ -787,7 +786,7 @@ public class MapFragment
 
         if (null != mCurrentLocationOverlay) {
             mCurrentLocationOverlay.updateMode(
-                    PreferenceManager.getDefaultSharedPreferences(getActivity())
+                    PreferenceManager.getDefaultSharedPreferences(mActivity)
                             .getString(SettingsConstantsUI.KEY_PREF_SHOW_CURRENT_LOC, "3"));
             mCurrentLocationOverlay.startShowingCurrentLocation();
         }
@@ -827,7 +826,7 @@ public class MapFragment
         layers = removeHideLayers(layers);
         if (layers.isEmpty()) {
             Toast.makeText(
-                    getActivity(), getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG)
+                    mActivity, getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG)
                     .show();
         } else if (layers.size() == 1) {
             //open form
@@ -836,7 +835,7 @@ public class MapFragment
             setMode(MODE_EDIT);
 
             Toast.makeText(
-                    getActivity(),
+                    mActivity,
                     String.format(getString(R.string.edit_layer), vectorLayer.getName()),
                     Toast.LENGTH_SHORT).show();
         } else {
@@ -844,10 +843,11 @@ public class MapFragment
                 return;
             //open choose edit layer dialog
             mChooseLayerDialog = new ChooseLayerDialog();
-            mChooseLayerDialog.setTitle(getString(R.string.select_layer))
-                    .setLayerList(layers)
+            mChooseLayerDialog.setLayerList(layers)
                     .setCode(ADD_NEW_GEOMETRY)
-                    .show(getActivity().getSupportFragmentManager(), "choose_layer");
+                    .setTitle(getString(R.string.select_layer))
+                    .setTheme(mActivity.getThemeId())
+                    .show(mActivity.getSupportFragmentManager(), "choose_layer");
         }
     }
 
@@ -860,22 +860,22 @@ public class MapFragment
         layers = removeHideLayers(layers);
         if (layers.isEmpty()) {
             Toast.makeText(
-                    getActivity(), getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG)
+                    mActivity, getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG)
                     .show();
         } else if (layers.size() == 1) {
             //open form
             ILayer vectorLayer = layers.get(0);
             if (vectorLayer instanceof ILayerUI) {
                 IVectorLayerUI vectorLayerUI = (IVectorLayerUI) vectorLayer;
-                vectorLayerUI.showEditForm(getActivity(), Constants.NOT_FOUND, null);
+                vectorLayerUI.showEditForm(mActivity, Constants.NOT_FOUND, null);
 
                 Toast.makeText(
-                        getActivity(),
+                        mActivity,
                         String.format(getString(R.string.edit_layer), vectorLayer.getName()),
                         Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(
-                        getActivity(), getString(R.string.warning_no_edit_layers),
+                        mActivity, getString(R.string.warning_no_edit_layers),
                         Toast.LENGTH_LONG).show();
             }
         } else {
@@ -883,10 +883,11 @@ public class MapFragment
                 return;
             //open choose dialog
             mChooseLayerDialog = new ChooseLayerDialog();
-            mChooseLayerDialog.setTitle(getString(R.string.select_layer))
-                    .setLayerList(layers)
+            mChooseLayerDialog.setLayerList(layers)
                     .setCode(ADD_CURRENT_LOC)
-                    .show(getActivity().getSupportFragmentManager(), "choose_layer");
+                    .setTitle(getString(R.string.select_layer))
+                    .setTheme(mActivity.getThemeId())
+                    .show(mActivity.getSupportFragmentManager(), "choose_layer");
         }
     }
 
@@ -917,7 +918,7 @@ public class MapFragment
 
         if (layers.isEmpty()) {
             Toast.makeText(
-                    getActivity(), getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG)
+                    mActivity, getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG)
                     .show();
         } else if (layers.size() == 1) {
             //open form
@@ -926,7 +927,7 @@ public class MapFragment
             setMode(MODE_EDIT_BY_WALK);
 
             Toast.makeText(
-                    getActivity(),
+                    mActivity,
                     String.format(getString(R.string.edit_layer), vectorLayer.getName()),
                     Toast.LENGTH_SHORT).show();
         } else {
@@ -934,10 +935,11 @@ public class MapFragment
                 return;
             //open choose edit layer dialog
             mChooseLayerDialog = new ChooseLayerDialog();
-            mChooseLayerDialog.setTitle(getString(R.string.select_layer))
-                    .setLayerList(layers)
+            mChooseLayerDialog.setLayerList(layers)
                     .setCode(ADD_GEOMETRY_BY_WALK)
-                    .show(getActivity().getSupportFragmentManager(), "choose_layer");
+                    .setTitle(getString(R.string.select_layer))
+                    .setTheme(mActivity.getThemeId())
+                    .show(mActivity.getSupportFragmentManager(), "choose_layer");
         }
     }
 
@@ -949,7 +951,7 @@ public class MapFragment
         if (code == ADD_CURRENT_LOC) {
             if (layer instanceof ILayerUI) {
                 IVectorLayerUI layerUI = (IVectorLayerUI) layer;
-                layerUI.showEditForm(getActivity(), Constants.NOT_FOUND, null);
+                layerUI.showEditForm(mActivity, Constants.NOT_FOUND, null);
             }
         } else if (code == ADD_NEW_GEOMETRY) {
             VectorLayer vectorLayer = (VectorLayer) layer;
@@ -1034,7 +1036,7 @@ public class MapFragment
             case MODE_INFO:
                 if (null != mEditLayerOverlay) {
                     AttributesFragment attributesFragment =
-                            (AttributesFragment) getActivity().getSupportFragmentManager()
+                            (AttributesFragment) mActivity.getSupportFragmentManager()
                                     .findFragmentByTag("ATTRIBUTES");
 
                     if (attributesFragment != null) {
@@ -1111,7 +1113,7 @@ public class MapFragment
 
         View panel;
         if (!isCurrentOrientationOneLine) {
-            panel = getActivity().getLayoutInflater()
+            panel = mActivity.getLayoutInflater()
                     .inflate(R.layout.status_panel_land, mStatusPanel, false);
             defineTextViews(panel);
         } else {
@@ -1122,7 +1124,7 @@ public class MapFragment
         fillTextViews(location);
 
         if (!isFitOneLine()) {
-            panel = getActivity().getLayoutInflater()
+            panel = mActivity.getLayoutInflater()
                     .inflate(R.layout.status_panel, mStatusPanel, false);
             defineTextViews(panel);
             fillTextViews(location);
@@ -1205,7 +1207,7 @@ public class MapFragment
                          mStatusSpeed.getMeasuredWidth() + mStatusAltitude.getMeasuredWidth();
 
         DisplayMetrics metrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        mActivity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
         return totalWidth < metrics.widthPixels;
 //        return totalWidth < mStatusPanel.getWidth();
@@ -1244,7 +1246,7 @@ public class MapFragment
 
 
     public void hideBottomBar() {
-        ((MainActivity) getActivity()).getBottomToolbar().setVisibility(View.GONE);
+        mActivity.getBottomToolbar().setVisibility(View.GONE);
     }
 
 
@@ -1283,7 +1285,7 @@ public class MapFragment
         if (mCurrentCenter != null) {
             mMap.panTo(mCurrentCenter);
         } else {
-            Toast.makeText(getActivity(), R.string.error_no_location, Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity, R.string.error_no_location, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -1316,7 +1318,7 @@ public class MapFragment
     }
 
     protected void showFullCompass() {
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         FullCompassFragment compassFragment = new FullCompassFragment();
 
