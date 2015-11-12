@@ -36,6 +36,7 @@ import com.nextgis.mobile.activity.SettingsActivity;
 import com.nextgis.mobile.dialog.SelectMapPathDialogPreference;
 
 import static com.nextgis.mobile.activity.SettingsActivity.initializeShowCurrentLocation;
+import static com.nextgis.mobile.activity.SettingsActivity.initializeTheme;
 
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -53,6 +54,9 @@ public class SettingsFragment
         switch (settings) {
             case "general":
                 addPreferencesFromResource(R.xml.preferences_general);
+
+                final ListPreference theme = (ListPreference) findPreference(SettingsConstantsUI.KEY_PREF_THEME);
+                initializeTheme((SettingsActivity) getActivity(), theme);
                 break;
             case "map":
                 addPreferencesFromResource(R.xml.preferences_map);

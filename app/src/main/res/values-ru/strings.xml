@@ -99,5 +99,7 @@
     <string name="lines_for_edit">Линии (можно редактировать)</string>
     <string name="polygons_for_edit">Полигоны (можно редактировать)</string>
     <string name="press_aback_again">Нажите назад еще раз для выхода</string>
+    <string name="interface_title">Интерфейс</string>
+    <string name="theme">Тема</string>
 
 </resources>

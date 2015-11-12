@@ -24,28 +24,32 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <PreferenceCategory android:title="@string/compass_title">
-    <CheckBoxPreference
-        android:key="compass_true_north"
-        android:title="@string/compass_true_north"
-        android:defaultValue="true"
-        />
-    <CheckBoxPreference
-        android:key="compass_show_magnetic"
-        android:title="@string/compass_magnetic"
-        android:defaultValue="false"
-        />
-    <CheckBoxPreference
-        android:key="compass_vibration"
-        android:title="@string/compass_vibrate"
-        android:defaultValue="true"
-        />
-    <CheckBoxPreference
-        android:key="compass_wake_lock"
-        android:title="@string/compass_keep_screen"
-        android:defaultValue="true"
-        />
-  </PreferenceCategory>
+    <PreferenceCategory android:title="@string/interface_title">
+        <ListPreference
+            android:defaultValue="light"
+            android:entries="@array/theme"
+            android:entryValues="@array/theme_val"
+            android:key="theme"
+            android:title="@string/theme"/>
+    </PreferenceCategory>
 
+    <PreferenceCategory android:title="@string/compass_title">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="compass_true_north"
+            android:title="@string/compass_true_north"/>
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="compass_show_magnetic"
+            android:title="@string/compass_magnetic"/>
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="compass_vibration"
+            android:title="@string/compass_vibrate"/>
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="compass_wake_lock"
+            android:title="@string/compass_keep_screen"/>
+    </PreferenceCategory>
 
 </PreferenceScreen>

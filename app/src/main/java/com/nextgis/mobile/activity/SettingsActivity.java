@@ -61,6 +61,7 @@ public class SettingsActivity
 {
 
     public BackgroundMoveTask mBkTask;
+    protected boolean mIsPaused = false;
 
 
     @Override
@@ -73,6 +74,9 @@ public class SettingsActivity
             switch (action) {
                 case ACTION_PREFS_GENERAL:
                     addPreferencesFromResource(R.xml.preferences_general);
+
+                    final ListPreference theme = (ListPreference) findPreference(SettingsConstantsUI.KEY_PREF_THEME);
+                    initializeTheme(this, theme);
                     break;
                 case ACTION_PREFS_MAP:
                     addPreferencesFromResource(R.xml.preferences_map);
@@ -125,6 +129,22 @@ public class SettingsActivity
             // Load the legacy preferences headers
             addPreferencesFromResource(R.xml.preference_headers_legacy);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (mIsPaused) {
+            startActivity(getIntent());
+            finish();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mIsPaused = true;
     }
 
     public static void initializeAccurateTaking(EditTextPreference accurateMaxCount) {
@@ -368,6 +388,27 @@ public class SettingsActivity
 
                             parent.moveMap(newPath);
 
+                            return true;
+                        }
+                    });
+        }
+    }
+
+
+    public static void initializeTheme(final SettingsActivity activity, final ListPreference theme) {
+        if (null != theme) {
+            theme.setSummary(theme.getEntry());
+
+            theme.setOnPreferenceChangeListener(
+                    new Preference.OnPreferenceChangeListener()
+                    {
+                        @Override
+                        public boolean onPreferenceChange(
+                                Preference preference,
+                                Object newValue)
+                        {
+                            activity.startActivity(activity.getIntent());
+                            activity.finish();
                             return true;
                         }
                     });

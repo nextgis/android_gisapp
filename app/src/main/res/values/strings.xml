@@ -99,5 +99,7 @@
     <string name="lines_for_edit">Lines (can be edited)</string>
     <string name="polygons_for_edit">Polygons (can be edited)</string>
     <string name="press_aback_again">Press back again to exit</string>
+    <string name="interface_title">Interface</string>
+    <string name="theme">Theme</string>
 
 </resources>
