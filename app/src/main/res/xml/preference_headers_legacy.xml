@@ -23,52 +23,52 @@
   -->
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <!--Preference
-        android:title="@string/general"
-        android:summary="@string/general_summary" >
-        <intent
-            android:targetPackage="com.nextgis.mobile"
-            android:targetClass="com.nextgis.mobile.activity.SettingsActivity"
-            android:action="com.nextgis.mobile.PREFS_GENERAL" />
-    </Preference-->
     <Preference
-        android:title="@string/map"
+        android:summary="@string/general_summary"
+        android:title="@string/general">
+        <intent
+            android:action="com.nextgis.mobile.PREFS_GENERAL"
+            android:targetClass="com.nextgis.mobile.activity.SettingsActivity"
+            android:targetPackage="com.nextgis.mobile"/>
+    </Preference>
+    <Preference
         android:summary="@string/map_summary"
+        android:title="@string/map"
         >
         <intent
-            android:targetPackage="com.nextgis.mobile"
-            android:targetClass="com.nextgis.mobile.activity.SettingsActivity"
             android:action="com.nextgis.mobile.PREFS_MAP"
+            android:targetClass="com.nextgis.mobile.activity.SettingsActivity"
+            android:targetPackage="com.nextgis.mobile"
             />
     </Preference>
     <Preference
-        android:title="@string/location"
         android:summary="@string/location_summary"
+        android:title="@string/location"
         >
         <intent
-            android:targetPackage="com.nextgis.mobile"
-            android:targetClass="com.nextgis.mobile.activity.SettingsActivity"
             android:action="com.nextgis.mobile.PREFS_LOCATION"
-            />
-    </Preference>
-    <Preference
-        android:title="@string/tracks"
-        android:summary="@string/tracks_summary"
-        >
-        <intent
-            android:targetPackage="com.nextgis.mobile"
             android:targetClass="com.nextgis.mobile.activity.SettingsActivity"
-            android:action="com.nextgis.mobile.PREFS_TRACKING"
+            android:targetPackage="com.nextgis.mobile"
             />
     </Preference>
     <Preference
-        android:title="@string/ngw"
-        android:summary="@string/ngw_summary"
+        android:summary="@string/tracks_summary"
+        android:title="@string/tracks"
         >
         <intent
+            android:action="com.nextgis.mobile.PREFS_TRACKING"
+            android:targetClass="com.nextgis.mobile.activity.SettingsActivity"
             android:targetPackage="com.nextgis.mobile"
-            android:targetClass="com.nextgis.mobile.activity.NGWSettingsActivityProxy"
+            />
+    </Preference>
+    <Preference
+        android:summary="@string/ngw_summary"
+        android:title="@string/ngw"
+        >
+        <intent
             android:action="com.nextgis.mobile.PREFS_NGW"
+            android:targetClass="com.nextgis.mobile.activity.NGWSettingsActivityProxy"
+            android:targetPackage="com.nextgis.mobile"
             />
     </Preference>
 

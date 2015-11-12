@@ -51,9 +51,9 @@ public class SettingsFragment
         super.onCreate(savedInstanceState);
         String settings = getArguments().getString("settings");
         switch (settings) {
-            /*case "general":
+            case "general":
                 addPreferencesFromResource(R.xml.preferences_general);
-                break;*/
+                break;
             case "map":
                 addPreferencesFromResource(R.xml.preferences_map);
 

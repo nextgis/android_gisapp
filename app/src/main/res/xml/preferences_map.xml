@@ -65,28 +65,6 @@
         android:positiveButtonText="@string/select"
         android:negativeButtonText="@string/cancel"
         />
-    <PreferenceCategory android:title="@string/compass_title">
-        <CheckBoxPreference
-            android:key="compass_true_north"
-            android:title="@string/compass_true_north"
-            android:defaultValue="true"
-            />
-        <CheckBoxPreference
-            android:key="compass_show_magnetic"
-            android:title="@string/compass_magnetic"
-            android:defaultValue="false"
-            />
-        <CheckBoxPreference
-            android:key="compass_vibration"
-            android:title="@string/compass_vibrate"
-            android:defaultValue="true"
-            />
-        <CheckBoxPreference
-            android:key="compass_wake_lock"
-            android:title="@string/compass_keep_screen"
-            android:defaultValue="true"
-            />
-    </PreferenceCategory>
 
     <!-- TODO:
     1) tile size

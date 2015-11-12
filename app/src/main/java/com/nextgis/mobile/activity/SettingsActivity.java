@@ -50,6 +50,7 @@ import java.io.File;
 import java.util.List;
 
 import static com.nextgis.maplibui.service.TrackerService.isTrackerServiceRunning;
+import static com.nextgis.mobile.util.SettingsConstants.ACTION_PREFS_GENERAL;
 import static com.nextgis.mobile.util.SettingsConstants.ACTION_PREFS_LOCATION;
 import static com.nextgis.mobile.util.SettingsConstants.ACTION_PREFS_MAP;
 import static com.nextgis.mobile.util.SettingsConstants.ACTION_PREFS_TRACKING;
@@ -70,9 +71,9 @@ public class SettingsActivity
         String action = getIntent().getAction();
         if (action != null) {
             switch (action) {
-                /*case ACTION_PREFS_GENERAL:
+                case ACTION_PREFS_GENERAL:
                     addPreferencesFromResource(R.xml.preferences_general);
-                    break;*/
+                    break;
                 case ACTION_PREFS_MAP:
                     addPreferencesFromResource(R.xml.preferences_map);
 
