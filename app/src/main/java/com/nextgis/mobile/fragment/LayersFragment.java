@@ -345,6 +345,7 @@ public class LayersFragment
     public void onResume()
     {
         super.onResume();
+        mListAdapter.onResume();
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(SyncAdapter.SYNC_START);
