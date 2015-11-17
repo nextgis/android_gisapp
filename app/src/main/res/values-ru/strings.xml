@@ -101,5 +101,8 @@
     <string name="press_aback_again">Нажите назад еще раз для выхода</string>
     <string name="interface_title">Интерфейс</string>
     <string name="theme">Тема</string>
+    <string name="reset_settings">Сбросить все настройки</string>
+    <string name="reset_settings_title">Подтвердить?</string>
+    <string name="reset_settings_message">Все слои будут удалены! Будут восстановлены начальные слои.</string>
 
 </resources>

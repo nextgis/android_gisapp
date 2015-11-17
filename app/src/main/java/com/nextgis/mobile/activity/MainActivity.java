@@ -108,6 +108,9 @@ public class MainActivity extends NGActivity
 
         // initialize the default settings
         PreferenceManager.setDefaultValues(this, R.xml.preferences_general, false);
+        PreferenceManager.setDefaultValues(this, R.xml.preferences_map, false);
+        PreferenceManager.setDefaultValues(this, R.xml.preferences_location, false);
+        PreferenceManager.setDefaultValues(this, R.xml.preferences_tracks, false);
 
         setContentView(R.layout.activity_main);
 

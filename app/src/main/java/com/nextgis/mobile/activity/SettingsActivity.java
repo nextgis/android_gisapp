@@ -27,6 +27,8 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
@@ -35,11 +37,15 @@ import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
+import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.maplibui.activity.NGPreferenceActivity;
+import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
@@ -54,6 +60,7 @@ import static com.nextgis.mobile.util.SettingsConstants.ACTION_PREFS_GENERAL;
 import static com.nextgis.mobile.util.SettingsConstants.ACTION_PREFS_LOCATION;
 import static com.nextgis.mobile.util.SettingsConstants.ACTION_PREFS_MAP;
 import static com.nextgis.mobile.util.SettingsConstants.ACTION_PREFS_TRACKING;
+import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_ZOOM_CONTROLS;
 
 
 public class SettingsActivity
@@ -77,6 +84,8 @@ public class SettingsActivity
 
                     final ListPreference theme = (ListPreference) findPreference(SettingsConstantsUI.KEY_PREF_THEME);
                     initializeTheme(this, theme);
+                    final Preference reset = findPreference(SettingsConstantsUI.KEY_PREF_RESET_SETTINGS);
+                    initializeReset(this, reset);
                     break;
                 case ACTION_PREFS_MAP:
                     addPreferencesFromResource(R.xml.preferences_map);
@@ -400,18 +409,85 @@ public class SettingsActivity
             theme.setSummary(theme.getEntry());
 
             theme.setOnPreferenceChangeListener(
-                    new Preference.OnPreferenceChangeListener()
-                    {
+                    new Preference.OnPreferenceChangeListener() {
                         @Override
                         public boolean onPreferenceChange(
                                 Preference preference,
-                                Object newValue)
-                        {
+                                Object newValue) {
                             activity.startActivity(activity.getIntent());
                             activity.finish();
                             return true;
                         }
                     });
+        }
+    }
+
+
+    public static void initializeReset(final SettingsActivity activity, final Preference preference) {
+        if (null != preference) {
+            preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    AlertDialog.Builder confirm = new AlertDialog.Builder(activity, ControlHelper.getDialogTheme(activity, activity.getThemeId()));
+                    confirm.setTitle(R.string.reset_settings_title).setMessage(R.string.reset_settings_message)
+                            .setNegativeButton(android.R.string.cancel, null)
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    resetSettings(activity);
+                                    deleteLayers(activity);
+                                    ((MainApplication) activity.getApplication()).initBaseLayers();
+                                }
+                            }).show();
+                    return false;
+                }
+            });
+        }
+    }
+
+
+    protected static void resetSettings(Activity activity) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.remove(SettingsConstantsUI.KEY_PREF_THEME);
+        editor.remove(SettingsConstantsUI.KEY_PREF_COMPASS_TRUE_NORTH);
+        editor.remove(SettingsConstantsUI.KEY_PREF_COMPASS_MAGNETIC);
+        editor.remove(SettingsConstantsUI.KEY_PREF_COMPASS_KEEP_SCREEN);
+        editor.remove(SettingsConstantsUI.KEY_PREF_COMPASS_VIBRATE);
+        editor.remove(SettingsConstantsUI.KEY_PREF_SHOW_STATUS_PANEL);
+        editor.remove(SettingsConstantsUI.KEY_PREF_SHOW_CURRENT_LOC);
+        editor.remove(SettingsConstantsUI.KEY_PREF_KEEPSCREENON);
+        editor.remove(SettingsConstantsUI.KEY_PREF_COORD_FORMAT);
+        editor.remove(SettingsConstantsUI.KEY_PREF_COORD_FORMAT + "_int");
+        editor.remove(KEY_PREF_SHOW_ZOOM_CONTROLS);
+        editor.remove(SettingsConstants.KEY_PREF_LOCATION_SOURCE);
+        editor.remove(SettingsConstants.KEY_PREF_LOCATION_SOURCE + "_str");
+        editor.remove(SettingsConstants.KEY_PREF_LOCATION_MIN_TIME);
+        editor.remove(SettingsConstants.KEY_PREF_LOCATION_MIN_DISTANCE);
+        editor.remove(SettingsConstants.KEY_PREF_LOCATION_ACCURATE_COUNT);
+        editor.remove(SettingsConstants.KEY_PREF_TRACKS_SOURCE);
+        editor.remove(SettingsConstants.KEY_PREF_TRACKS_SOURCE + "_str");
+        editor.remove(SettingsConstants.KEY_PREF_TRACKS_MIN_TIME);
+        editor.remove(SettingsConstants.KEY_PREF_TRACKS_MIN_DISTANCE);
+        editor.commit();
+
+        PreferenceManager.setDefaultValues(activity, R.xml.preferences_general, true);
+        PreferenceManager.setDefaultValues(activity, R.xml.preferences_map, true);
+        PreferenceManager.setDefaultValues(activity, R.xml.preferences_location, true);
+        PreferenceManager.setDefaultValues(activity, R.xml.preferences_tracks, true);
+    }
+
+
+    protected static void deleteLayers(Activity activity) {
+        MainApplication app = (MainApplication) activity.getApplication();
+        for (int i = app.getMap().getLayerCount() - 1; i >= 0; i--) {
+            ILayer layer = app.getMap().getLayer(i);
+            if (!layer.getPath().getName().equals(MainApplication.LAYER_OSM)
+                    && !layer.getPath().getName().equals(MainApplication.LAYER_A)
+                    && !layer.getPath().getName().equals(MainApplication.LAYER_B)
+                    && !layer.getPath().getName().equals(MainApplication.LAYER_C)
+                    && !layer.getPath().getName().equals(MainApplication.LAYER_TRACKS))
+                layer.delete();
         }
     }
 

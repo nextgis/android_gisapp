@@ -101,5 +101,8 @@
     <string name="press_aback_again">Press back again to exit</string>
     <string name="interface_title">Interface</string>
     <string name="theme">Theme</string>
+    <string name="reset_settings">Reset to defaults</string>
+    <string name="reset_settings_title">Confirm?</string>
+    <string name="reset_settings_message">All layers will be deleted! Only initial layers will be restored.</string>
 
 </resources>

@@ -61,6 +61,12 @@ import static com.nextgis.mobile.util.SettingsConstants.AUTHORITY;
 
 public class MainApplication extends GISApplication
 {
+    public static final String LAYER_OSM = "osm";
+    public static final String LAYER_A = "vector_a";
+    public static final String LAYER_B = "vector_b";
+    public static final String LAYER_C = "vector_c";
+    public static final String LAYER_TRACKS = "tracks";
+
     @Override
     public MapBase getMap()
     {
@@ -98,7 +104,7 @@ public class MainApplication extends GISApplication
         if (tracks.isEmpty()) {
             String trackLayerName = getString(R.string.tracks);
             TrackLayerUI trackLayer =
-                    new TrackLayerUI(getApplicationContext(), mMap.createLayerStorage("tracks"));
+                    new TrackLayerUI(getApplicationContext(), mMap.createLayerStorage(LAYER_TRACKS));
             trackLayer.setName(trackLayerName);
             trackLayer.setVisible(true);
             mMap.addLayer(trackLayer);
@@ -124,32 +130,42 @@ public class MainApplication extends GISApplication
     @Override
     protected void onFirstRun()
     {
-        //add OpenStreetMap layer on application first run
-        String layerName = getString(R.string.osm);
-        String layerURL = SettingsConstantsUI.OSM_URL;
-        RemoteTMSLayerUI layer =
-                new RemoteTMSLayerUI(getApplicationContext(), mMap.createLayerStorage("osm"));
-        layer.setName(layerName);
-        layer.setURL(layerURL);
-        layer.setTMSType(TMSTYPE_OSM);
-        layer.setVisible(true);
-        layer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
-        layer.setMaxZoom(18);
+        initBaseLayers();
+    }
 
-        mMap.addLayer(layer);
-        mMap.moveLayer(0, layer);
 
-        Intent intent = new Intent(this, LayerFillService.class);
-        intent.setAction(LayerFillService.ACTION_ADD_TASK);
-        intent.putExtra(ConstantsUI.KEY_LAYER_ID, layer.getId());
-        intent.putExtra(LayerFillService.KEY_INPUT_TYPE, LAYERTYPE_LOCAL_TMS);
-        intent.putExtra(LayerFillService.KEY_URI, Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.mapnik));
-        startService(intent);
+    public void initBaseLayers() {
+        if (mMap.getLayerByPathName(LAYER_OSM) == null) {
+            //add OpenStreetMap layer
+            String layerName = getString(R.string.osm);
+            String layerURL = SettingsConstantsUI.OSM_URL;
+            RemoteTMSLayerUI layer =
+                    new RemoteTMSLayerUI(getApplicationContext(), mMap.createLayerStorage(LAYER_OSM));
+            layer.setName(layerName);
+            layer.setURL(layerURL);
+            layer.setTMSType(TMSTYPE_OSM);
+            layer.setVisible(true);
+            layer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
+            layer.setMaxZoom(18);
+
+            mMap.addLayer(layer);
+            mMap.moveLayer(0, layer);
+
+            Intent intent = new Intent(this, LayerFillService.class);
+            intent.setAction(LayerFillService.ACTION_ADD_TASK);
+            intent.putExtra(ConstantsUI.KEY_LAYER_ID, layer.getId());
+            intent.putExtra(LayerFillService.KEY_INPUT_TYPE, LAYERTYPE_LOCAL_TMS);
+            intent.putExtra(LayerFillService.KEY_URI, Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.mapnik));
+            startService(intent);
+        }
 
         // create empty layers for first experimental editing
-        mMap.addLayer(createEmptyVectorLayer(getString(R.string.points_for_edit),   "vector_a", GeoConstants.GTPoint));
-        mMap.addLayer(createEmptyVectorLayer(getString(R.string.lines_for_edit),    "vector_b", GeoConstants.GTLineString));
-        mMap.addLayer(createEmptyVectorLayer(getString(R.string.polygons_for_edit), "vector_c", GeoConstants.GTPolygon));
+        if (mMap.getLayerByPathName(LAYER_A) == null)
+            mMap.addLayer(createEmptyVectorLayer(getString(R.string.points_for_edit), LAYER_A, GeoConstants.GTPoint));
+        if (mMap.getLayerByPathName(LAYER_B) == null)
+            mMap.addLayer(createEmptyVectorLayer(getString(R.string.lines_for_edit), LAYER_B, GeoConstants.GTLineString));
+        if (mMap.getLayerByPathName(LAYER_C) == null)
+            mMap.addLayer(createEmptyVectorLayer(getString(R.string.polygons_for_edit), LAYER_C, GeoConstants.GTPolygon));
 
         mMap.save();
     }

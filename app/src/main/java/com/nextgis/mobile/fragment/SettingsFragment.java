@@ -28,6 +28,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
@@ -35,6 +36,7 @@ import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.SettingsActivity;
 import com.nextgis.mobile.dialog.SelectMapPathDialogPreference;
 
+import static com.nextgis.mobile.activity.SettingsActivity.initializeReset;
 import static com.nextgis.mobile.activity.SettingsActivity.initializeShowCurrentLocation;
 import static com.nextgis.mobile.activity.SettingsActivity.initializeTheme;
 
@@ -57,6 +59,8 @@ public class SettingsFragment
 
                 final ListPreference theme = (ListPreference) findPreference(SettingsConstantsUI.KEY_PREF_THEME);
                 initializeTheme((SettingsActivity) getActivity(), theme);
+                final Preference reset = findPreference(SettingsConstantsUI.KEY_PREF_RESET_SETTINGS);
+                initializeReset((SettingsActivity) getActivity(), reset);
                 break;
             case "map":
                 addPreferencesFromResource(R.xml.preferences_map);

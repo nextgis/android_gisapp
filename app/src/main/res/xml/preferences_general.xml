@@ -31,6 +31,9 @@
             android:entryValues="@array/theme_val"
             android:key="theme"
             android:title="@string/theme"/>
+        <Preference
+            android:key="reset_settings"
+            android:title="@string/reset_settings"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/compass_title">
