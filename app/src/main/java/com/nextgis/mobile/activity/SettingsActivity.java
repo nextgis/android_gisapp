@@ -55,6 +55,7 @@ import com.nextgis.mobile.fragment.SettingsFragment;
 import java.io.File;
 import java.util.List;
 
+import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_MAP;
 import static com.nextgis.maplibui.service.TrackerService.isTrackerServiceRunning;
 import static com.nextgis.mobile.util.SettingsConstants.ACTION_PREFS_GENERAL;
 import static com.nextgis.mobile.util.SettingsConstants.ACTION_PREFS_LOCATION;
@@ -446,7 +447,7 @@ public class SettingsActivity
     }
 
 
-    protected static void resetSettings(Activity activity) {
+    protected static void resetSettings(SettingsActivity activity) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
         SharedPreferences.Editor editor = preferences.edit();
         editor.remove(SettingsConstantsUI.KEY_PREF_THEME);
@@ -469,12 +470,20 @@ public class SettingsActivity
         editor.remove(SettingsConstants.KEY_PREF_TRACKS_SOURCE + "_str");
         editor.remove(SettingsConstants.KEY_PREF_TRACKS_MIN_TIME);
         editor.remove(SettingsConstants.KEY_PREF_TRACKS_MIN_DISTANCE);
+
+        File defaultPath = activity.getExternalFilesDir(KEY_PREF_MAP);
+        if (defaultPath == null)
+            defaultPath = new File(activity.getFilesDir(), KEY_PREF_MAP);
+
+        editor.putString(SettingsConstants.KEY_PREF_MAP_PATH, defaultPath.getPath());
         editor.commit();
 
         PreferenceManager.setDefaultValues(activity, R.xml.preferences_general, true);
         PreferenceManager.setDefaultValues(activity, R.xml.preferences_map, true);
         PreferenceManager.setDefaultValues(activity, R.xml.preferences_location, true);
         PreferenceManager.setDefaultValues(activity, R.xml.preferences_tracks, true);
+
+        activity.moveMap(defaultPath);
     }
 
 
