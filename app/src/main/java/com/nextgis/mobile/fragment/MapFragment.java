@@ -74,9 +74,9 @@ import com.nextgis.maplibui.api.EditEventListener;
 import com.nextgis.maplibui.api.ILayerUI;
 import com.nextgis.maplibui.api.IVectorLayerUI;
 import com.nextgis.maplibui.api.MapViewEventListener;
-import com.nextgis.maplibui.fragment.CompassFragment;
 import com.nextgis.maplibui.dialog.ChooseLayerDialog;
 import com.nextgis.maplibui.fragment.BottomToolbar;
+import com.nextgis.maplibui.fragment.CompassFragment;
 import com.nextgis.maplibui.mapui.MapViewOverlays;
 import com.nextgis.maplibui.overlay.CurrentLocationOverlay;
 import com.nextgis.maplibui.overlay.CurrentTrackOverlay;
@@ -141,6 +141,7 @@ public class MapFragment
     protected final int ADD_CURRENT_LOC      = 1;
     protected final int ADD_NEW_GEOMETRY     = 2;
     protected final int ADD_GEOMETRY_BY_WALK = 3;
+    protected final int ADD_POINT_BY_TAP     = 4;
 
 
     @Override
@@ -157,6 +158,9 @@ public class MapFragment
         if (null == mActivity) {
             return;
         }
+
+        if (mEditLayerOverlay != null)
+            mEditLayerOverlay.hideOverlayPoint();
 
         final BottomToolbar toolbar = mActivity.getBottomToolbar();
         switch (mode) {
@@ -292,6 +296,9 @@ public class MapFragment
                                 public boolean onMenuItemClick(MenuItem item)
                                 {
                                     switch (item.getItemId()) {
+                                        case R.id.menu_point_by_tap:
+                                            addPointByTap();
+                                            break;
                                         case R.id.menu_edit:
                                             setMode(MODE_EDIT);
                                             break;
@@ -383,6 +390,14 @@ public class MapFragment
                 break;
         }
         mMode = mode;
+    }
+
+
+    protected void hideEditIcons() {
+        Menu menu = mActivity.getBottomToolbar().getMenu();
+        for (int i = 0; i < menu.size(); i++)
+            if (menu.getItem(i).getItemId() != R.id.menu_point_by_tap)
+                menu.getItem(i).setVisible(false);
     }
 
 
@@ -852,6 +867,40 @@ public class MapFragment
     }
 
 
+    protected void addPointByTap()
+    {
+        //show select layer dialog if several layers, else start default or custom form
+        List<ILayer> layers = mMap.getVectorLayersByType(GeoConstants.GTPointCheck | GeoConstants.GTMultiPointCheck);
+        layers = removeHideLayers(layers);
+        if (layers.isEmpty()) {
+            Toast.makeText(
+                    mActivity, getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG)
+                    .show();
+        } else if (layers.size() == 1) {
+            //open form
+            ILayer vectorLayer = layers.get(0);
+            mEditLayerOverlay.setFeature((VectorLayer) vectorLayer, Constants.NOT_FOUND);
+            mEditLayerOverlay.createPointFromOverlay();
+            setMode(MODE_EDIT);
+
+            Toast.makeText(
+                    mActivity,
+                    String.format(getString(R.string.edit_layer), vectorLayer.getName()),
+                    Toast.LENGTH_SHORT).show();
+        } else {
+            if (isDialogShown())
+                return;
+            //open choose edit layer dialog
+            mChooseLayerDialog = new ChooseLayerDialog();
+            mChooseLayerDialog.setLayerList(layers)
+                    .setCode(ADD_POINT_BY_TAP)
+                    .setTitle(getString(R.string.select_layer))
+                    .setTheme(mActivity.getThemeId())
+                    .show(mActivity.getSupportFragmentManager(), "choose_layer");
+        }
+    }
+
+
     protected void addCurrentLocation()
     {
         //show select layer dialog if several layers, else start default or custom form
@@ -965,6 +1014,13 @@ public class MapFragment
                 mEditLayerOverlay.setFeature(vectorLayer, Constants.NOT_FOUND);
                 setMode(MODE_EDIT_BY_WALK);
             }
+        } else if (code == ADD_POINT_BY_TAP) {
+            VectorLayer vectorLayer = (VectorLayer) layer;
+            if(null != vectorLayer) {
+                mEditLayerOverlay.setFeature(vectorLayer, Constants.NOT_FOUND);
+                mEditLayerOverlay.createPointFromOverlay();
+                setMode(MODE_EDIT);
+            }
         }
     }
 
@@ -1015,10 +1071,15 @@ public class MapFragment
                 mEditLayerOverlay.setFeature(vectorLayer, items.get(0));
                 mEditLayerOverlay.setMode(EditLayerOverlay.MODE_HIGHLIGHT);
             }
-            mMap.postInvalidate();
-            //set select action mode
-            setMode(MODE_SELECT_ACTION);
         }
+
+        //set select action mode
+        setMode(MODE_SELECT_ACTION);
+        mEditLayerOverlay.setOverlayPoint(event);
+        mMap.postInvalidate();
+
+        if (!intersects)
+            hideEditIcons();
     }
 
 

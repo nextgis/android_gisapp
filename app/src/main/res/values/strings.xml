@@ -104,5 +104,6 @@
     <string name="reset_settings">Reset to defaults</string>
     <string name="reset_settings_title">Confirm?</string>
     <string name="reset_settings_message">All layers will be deleted! Only initial layers will be restored.</string>
+    <string name="action_point_by_tap">Create new point</string>
 
 </resources>

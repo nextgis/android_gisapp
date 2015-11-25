@@ -104,5 +104,6 @@
     <string name="reset_settings">Сбросить все настройки</string>
     <string name="reset_settings_title">Подтвердить?</string>
     <string name="reset_settings_message">Все слои будут удалены! Будут восстановлены начальные слои.</string>
+    <string name="action_point_by_tap">Создать новую точку</string>
 
 </resources>

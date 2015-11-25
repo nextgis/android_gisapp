@@ -26,6 +26,12 @@
       xmlns:app="http://schemas.android.com/apk/res-auto"
     >
     <item
+        android:id="@+id/menu_point_by_tap"
+        app:showAsAction="always|withText"
+        android:icon="@drawable/ic_action_add_point"
+        android:title="@string/action_point_by_tap"
+        />
+    <item
         android:id="@+id/menu_edit"
         app:showAsAction="always|withText"
         android:icon="@drawable/ic_action_edit_light"
