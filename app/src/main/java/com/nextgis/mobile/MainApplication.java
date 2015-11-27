@@ -24,9 +24,7 @@
 package com.nextgis.mobile;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 
@@ -74,19 +72,18 @@ public class MainApplication extends GISApplication
             return mMap;
         }
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         File defaultPath = getExternalFilesDir(KEY_PREF_MAP);
         if (defaultPath == null) {
             defaultPath = new File(getFilesDir(), KEY_PREF_MAP);
         }
 
-        String mapPath = sharedPreferences.getString(SettingsConstants.KEY_PREF_MAP_PATH, defaultPath.getPath());
-        String mapName = sharedPreferences.getString(SettingsConstantsUI.KEY_PREF_MAP_NAME, "default");
+        String mapPath = mSharedPreferences.getString(SettingsConstants.KEY_PREF_MAP_PATH, defaultPath.getPath());
+        String mapName = mSharedPreferences.getString(SettingsConstantsUI.KEY_PREF_MAP_NAME, "default");
 
         File mapFullPath = new File(mapPath, mapName + MAP_EXT);
 
-        final Bitmap bkBitmap = BitmapFactory.decodeResource(
-                getResources(), com.nextgis.maplibui.R.drawable.bk_tile);
+        final Bitmap bkBitmap = getMapBackground();
         mMap = new MapDrawable(bkBitmap, this, mapFullPath, new LayerFactoryUI());
         mMap.setName(mapName);
         mMap.load();

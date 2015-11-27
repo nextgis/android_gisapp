@@ -57,6 +57,13 @@
         android:entryValues="@array/coordinates_format_val"
         android:dialogTitle="@string/select_coordinates_format"
         />
+    <ListPreference
+        android:key="map_bg"
+        android:title="@string/map_bg"
+        android:defaultValue="neutral"
+        android:entries="@array/map_bg"
+        android:entryValues="@array/map_bg_val"
+        />
     <com.nextgis.mobile.dialog.SelectMapPathDialogPreference
         android:key="map_path"
         android:title="@string/map_path"

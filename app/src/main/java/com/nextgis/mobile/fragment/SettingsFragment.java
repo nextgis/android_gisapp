@@ -36,6 +36,7 @@ import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.SettingsActivity;
 import com.nextgis.mobile.dialog.SelectMapPathDialogPreference;
 
+import static com.nextgis.mobile.activity.SettingsActivity.initializeMapBG;
 import static com.nextgis.mobile.activity.SettingsActivity.initializeReset;
 import static com.nextgis.mobile.activity.SettingsActivity.initializeShowCurrentLocation;
 import static com.nextgis.mobile.activity.SettingsActivity.initializeTheme;
@@ -76,7 +77,11 @@ public class SettingsFragment
 
                 final ListPreference showCurrentLocation = (ListPreference) findPreference(
                         SettingsConstantsUI.KEY_PREF_SHOW_CURRENT_LOC);
-                initializeShowCurrentLocation(getActivity(), showCurrentLocation);
+                initializeShowCurrentLocation(showCurrentLocation);
+
+                final ListPreference changeMapBG = (ListPreference) findPreference(
+                        SettingsConstantsUI.KEY_PREF_MAP_BG);
+                initializeMapBG(getActivity(), changeMapBG);
                 break;
             case "location":
                 addPreferencesFromResource(R.xml.preferences_location);

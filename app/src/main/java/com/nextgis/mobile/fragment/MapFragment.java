@@ -776,6 +776,7 @@ public class MapFragment
         Log.d(Constants.TAG, "KEY_PREF_SHOW_ZOOM_CONTROLS: " + (showControls ? "ON" : "OFF"));
 
         if (null != mMap) {
+            mMap.getMap().setBackground(mApp.getMapBackground());
             float mMapZoom;
             try {
                 mMapZoom = prefs.getFloat(KEY_PREF_ZOOM_LEVEL, mMap.getMinZoom());

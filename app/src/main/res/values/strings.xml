@@ -73,6 +73,10 @@
     <string name="coordinates_format">Coordinates format</string>
     <string name="select_coordinates_format">Select coordinates format</string>
     <string name="coordinates_format_summary">Coordinate text format</string>
+    <string name="map_bg">Map background</string>
+    <string name="map_bg_light">Light</string>
+    <string name="map_bg_neutral">Neutral</string>
+    <string name="map_bg_dark">Dark</string>
     <string name="map_path">Map path</string>
     <string name="map_path_summary">The path to map data folder. Changing map folder may prevent data deletion on application uninstall process</string>
     <string name="select_map_path">Select map folder path</string>

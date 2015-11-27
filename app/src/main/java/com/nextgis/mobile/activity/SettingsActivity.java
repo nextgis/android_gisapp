@@ -102,7 +102,11 @@ public class SettingsActivity
 
                     final ListPreference showCurrentLocation = (ListPreference) findPreference(
                             SettingsConstantsUI.KEY_PREF_SHOW_CURRENT_LOC);
-                    initializeShowCurrentLocation(this, showCurrentLocation);
+                    initializeShowCurrentLocation(showCurrentLocation);
+
+                    final ListPreference changeMapBG = (ListPreference) findPreference(
+                            SettingsConstantsUI.KEY_PREF_MAP_BG);
+                    initializeMapBG(this, changeMapBG);
                     break;
                 case ACTION_PREFS_LOCATION:
                     addPreferencesFromResource(R.xml.preferences_location);
@@ -155,6 +159,18 @@ public class SettingsActivity
     protected void onPause() {
         super.onPause();
         mIsPaused = true;
+    }
+
+    public static void initializeMapBG(final Activity activity, final ListPreference mapBG) {
+        mapBG.setSummary(mapBG.getEntry());
+
+        mapBG.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                preference.setSummary(mapBG.getEntries()[mapBG.findIndexOfValue((String) newValue)]);
+                return true;
+            }
+        });
     }
 
     public static void initializeAccurateTaking(EditTextPreference accurateMaxCount) {
@@ -516,7 +532,6 @@ public class SettingsActivity
 
 
     public static void initializeShowCurrentLocation(
-            Context context,
             final ListPreference listPreference)
     {
         listPreference.setSummary(listPreference.getEntry());
