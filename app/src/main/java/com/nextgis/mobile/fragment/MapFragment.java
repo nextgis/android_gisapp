@@ -836,8 +836,8 @@ public class MapFragment
     {
         //show select layer dialog if several layers, else start default or custom form
         List<ILayer> layers = mMap.getVectorLayersByType(
-                GeoConstants.GTPointCheck |
-                GeoConstants.GTMultiPointCheck | GeoConstants.GTLineStringCheck |
+                GeoConstants.GTPointCheck | GeoConstants.GTMultiPointCheck |
+                GeoConstants.GTLineStringCheck | GeoConstants.GTMultiLineStringCheck |
                 GeoConstants.GTPolygonCheck);
         layers = removeHideLayers(layers);
         if (layers.isEmpty()) {
