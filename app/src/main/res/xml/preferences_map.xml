@@ -61,7 +61,7 @@
         android:key="map_bg"
         android:title="@string/map_bg"
         android:defaultValue="neutral"
-        android:entries="@array/map_bg"
+        android:entries="@array/map_bg_entry"
         android:entryValues="@array/map_bg_val"
         />
     <com.nextgis.mobile.dialog.SelectMapPathDialogPreference
