@@ -838,7 +838,7 @@ public class MapFragment
         List<ILayer> layers = mMap.getVectorLayersByType(
                 GeoConstants.GTPointCheck | GeoConstants.GTMultiPointCheck |
                 GeoConstants.GTLineStringCheck | GeoConstants.GTMultiLineStringCheck |
-                GeoConstants.GTPolygonCheck);
+                GeoConstants.GTPolygonCheck | GeoConstants.GTMultiPolygonCheck);
         layers = removeHideLayers(layers);
         if (layers.isEmpty()) {
             Toast.makeText(
