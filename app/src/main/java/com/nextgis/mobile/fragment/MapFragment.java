@@ -485,11 +485,10 @@ public class MapFragment
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         //get or create fragment
         CompassFragment compassFragment = (CompassFragment) fragmentManager.findFragmentByTag("NEEDLE_COMPASS");
-        if (null == compassFragment) {
+        if (null == compassFragment)
             compassFragment = new CompassFragment();
-            compassFragment.setStyle(true);
-        }
 
+        compassFragment.setStyle(true);
         int compassContainer = R.id.fl_compass;
         if (!compassFragment.isAdded())
             fragmentTransaction.add(compassContainer, compassFragment, "NEEDLE_COMPASS")
