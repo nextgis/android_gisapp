@@ -61,6 +61,7 @@ import static com.nextgis.mobile.util.SettingsConstants.ACTION_PREFS_GENERAL;
 import static com.nextgis.mobile.util.SettingsConstants.ACTION_PREFS_LOCATION;
 import static com.nextgis.mobile.util.SettingsConstants.ACTION_PREFS_MAP;
 import static com.nextgis.mobile.util.SettingsConstants.ACTION_PREFS_TRACKING;
+import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_COMPASS;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_ZOOM_CONTROLS;
 
 
@@ -473,6 +474,7 @@ public class SettingsActivity
         editor.remove(SettingsConstantsUI.KEY_PREF_COMPASS_VIBRATE);
         editor.remove(SettingsConstantsUI.KEY_PREF_SHOW_STATUS_PANEL);
         editor.remove(SettingsConstantsUI.KEY_PREF_SHOW_CURRENT_LOC);
+        editor.remove(KEY_PREF_SHOW_COMPASS);
         editor.remove(SettingsConstantsUI.KEY_PREF_KEEPSCREENON);
         editor.remove(SettingsConstantsUI.KEY_PREF_COORD_FORMAT);
         editor.remove(SettingsConstantsUI.KEY_PREF_COORD_FORMAT + "_int");

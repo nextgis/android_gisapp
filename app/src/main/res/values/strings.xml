@@ -38,6 +38,7 @@
     <string name="keep_screen_on_summary">Do not turn off screen</string>
     <string name="show_zoom_controls">Show zoom controls</string>
     <string name="show_zoom_controls_summary">Show zoom in/zoom out control on the map</string>
+    <string name="show_compass">Show mini compass</string>
     <string name="map">Map</string>
     <string name="map_summary">Map settings</string>
     <string name="ngw">NextGIS Web</string>

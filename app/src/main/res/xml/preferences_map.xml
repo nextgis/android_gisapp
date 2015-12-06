@@ -37,6 +37,11 @@
         android:entryValues="@array/current_location_mode_val"
         />
     <CheckBoxPreference
+        android:key="map_show_compass"
+        android:title="@string/show_compass"
+        android:defaultValue="true"
+        />
+    <CheckBoxPreference
         android:key="keep_screen_on"
         android:title="@string/keep_screen_on"
         android:defaultValue="false"

@@ -94,6 +94,7 @@ import static com.nextgis.mobile.util.SettingsConstants.ACTION_PREFS_LOCATION;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_COORD_FORMAT;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SCROLL_X;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SCROLL_Y;
+import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_COMPASS;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_ZOOM_CONTROLS;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_ZOOM_LEVEL;
 
@@ -451,6 +452,7 @@ public class MapFragment
     {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
         mApp = (MainApplication) mActivity.getApplication();
+        mVibrator = (Vibrator) mActivity.getSystemService(Context.VIBRATOR_SERVICE);
 
         mMap = new MapViewOverlays(mActivity, (MapDrawable) mApp.getMap());
         mMap.setId(777);
@@ -480,71 +482,6 @@ public class MapFragment
                             RelativeLayout.LayoutParams.MATCH_PARENT));
         }
         mMap.invalidate();
-
-        FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        //get or create fragment
-        CompassFragment compassFragment = (CompassFragment) fragmentManager.findFragmentByTag("NEEDLE_COMPASS");
-        if (null == compassFragment)
-            compassFragment = new CompassFragment();
-
-        compassFragment.setStyle(true);
-        int compassContainer = R.id.fl_compass;
-        if (!compassFragment.isAdded())
-            fragmentTransaction.add(compassContainer, compassFragment, "NEEDLE_COMPASS")
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-
-        if (!compassFragment.isVisible()) {
-            fragmentTransaction.show(compassFragment);
-        }
-
-        fragmentTransaction.commit();
-
-        mVibrator = (Vibrator) mActivity.getSystemService(Context.VIBRATOR_SERVICE);
-        FrameLayout compass = (FrameLayout) view.findViewById(compassContainer);
-        compass.setOnClickListener(this);
-        compass.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                mIsCompassDragging = true;
-                mVibrator.vibrate(5);
-                return true;
-            }
-        });
-        // Thanks to http://javatechig.com/android/how-to-drag-a-view-in-android
-        compass.setOnTouchListener(new View.OnTouchListener() {
-            private int _xDelta;
-            private int _yDelta;
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (!mIsCompassDragging)
-                    return false;
-
-                final int X = (int) event.getRawX();
-                final int Y = (int) event.getRawY();
-                switch (event.getAction() & MotionEvent.ACTION_MASK) {
-                    case MotionEvent.ACTION_DOWN:
-                        RelativeLayout.LayoutParams lParams = (RelativeLayout.LayoutParams) v.getLayoutParams();
-                        _xDelta = X - lParams.leftMargin;
-                        _yDelta = Y - lParams.topMargin;
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        mIsCompassDragging = false;
-                        break;
-                    case MotionEvent.ACTION_MOVE:
-                        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) v.getLayoutParams();
-                        layoutParams.leftMargin = X - _xDelta;
-                        layoutParams.topMargin = Y - _yDelta;
-                        layoutParams.rightMargin = -250;
-                        layoutParams.bottomMargin = -250;
-                        v.setLayoutParams(layoutParams);
-                        break;
-                }
-                mMapRelativeLayout.invalidate();
-                return true;
-            }
-        });
 
         mMainButton = view.findViewById(R.id.multiple_actions);
 
@@ -827,7 +764,84 @@ public class MapFragment
             }
         }
 
+        boolean showCompass = prefs.getBoolean(KEY_PREF_SHOW_COMPASS, true);
+        checkCompass(showCompass);
+
         mCurrentCenter = null;
+    }
+
+
+    protected void checkCompass(boolean showCompass) {
+        int compassContainer = R.id.fl_compass;
+        FrameLayout compass = (FrameLayout) mMapRelativeLayout.findViewById(compassContainer);
+
+        if (!showCompass) {
+            compass.setVisibility(View.GONE);
+            return;
+        }
+
+        FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        //get or create fragment
+        CompassFragment compassFragment = (CompassFragment) fragmentManager.findFragmentByTag("NEEDLE_COMPASS");
+        if (null == compassFragment)
+            compassFragment = new CompassFragment();
+
+        compassFragment.setStyle(true);
+        if (!compassFragment.isAdded())
+            fragmentTransaction.add(compassContainer, compassFragment, "NEEDLE_COMPASS")
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+
+        if (!compassFragment.isVisible()) {
+            fragmentTransaction.show(compassFragment);
+        }
+
+        fragmentTransaction.commit();
+
+        compass.setVisibility(View.VISIBLE);
+        compass.setOnClickListener(this);
+        compass.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                mIsCompassDragging = true;
+                mVibrator.vibrate(5);
+                return true;
+            }
+        });
+        // Thanks to http://javatechig.com/android/how-to-drag-a-view-in-android
+        compass.setOnTouchListener(new View.OnTouchListener() {
+            private int _xDelta;
+            private int _yDelta;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (!mIsCompassDragging)
+                    return false;
+
+                final int X = (int) event.getRawX();
+                final int Y = (int) event.getRawY();
+                switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                    case MotionEvent.ACTION_DOWN:
+                        RelativeLayout.LayoutParams lParams = (RelativeLayout.LayoutParams) v.getLayoutParams();
+                        _xDelta = X - lParams.leftMargin;
+                        _yDelta = Y - lParams.topMargin;
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        mIsCompassDragging = false;
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) v.getLayoutParams();
+                        layoutParams.leftMargin = X - _xDelta;
+                        layoutParams.topMargin = Y - _yDelta;
+                        layoutParams.rightMargin = -250;
+                        layoutParams.bottomMargin = -250;
+                        v.setLayoutParams(layoutParams);
+                        break;
+                }
+                mMapRelativeLayout.invalidate();
+                return true;
+            }
+        });
     }
 
 
