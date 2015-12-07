@@ -334,7 +334,8 @@ public class MainActivity extends NGActivity
                     Log.d(TAG, "File Uri: " + uri.toString());
                     //check the file type from extension
                     String fileName = FileUtil.getFileNameByUri(this, uri, "");
-                    if (fileName.toLowerCase().endsWith("zip")) { //create local tile layer
+                    if (fileName.toLowerCase().endsWith("ngrc") ||
+                            fileName.toLowerCase().endsWith("zip")) { //create local tile layer
                         if (null != mMapFragment) {
                             mMapFragment.addLocalTMSLayer(uri);
                         }
