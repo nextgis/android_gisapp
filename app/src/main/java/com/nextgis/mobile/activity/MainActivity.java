@@ -181,6 +181,10 @@ public class MainActivity extends NGActivity
                 Intent intentAbout = new Intent(this, AboutActivity.class);
                 startActivity(intentAbout);
                 return true;
+            case R.id.menu_new:
+                Intent intentNewLayer = new Intent(this, CreateVectorLayerActivity.class);
+                startActivity(intentNewLayer);
+                return true;
             case R.id.menu_add_local:
                 addLocalLayer();
                 return true;

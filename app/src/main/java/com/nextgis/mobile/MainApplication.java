@@ -33,6 +33,7 @@ import com.nextgis.maplib.datasource.Field;
 import com.nextgis.maplib.map.LayerGroup;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapDrawable;
+import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplib.util.SettingsConstants;
@@ -157,31 +158,33 @@ public class MainApplication extends GISApplication
         }
 
         // create empty layers for first experimental editing
+        List<Field> fields = new ArrayList<>(2);
+        fields.add(new Field(GeoConstants.FTInteger, "FID", "FID"));
+        fields.add(new Field(GeoConstants.FTString, "TEXT", "TEXT"));
+
         if (mMap.getLayerByPathName(LAYER_A) == null)
-            mMap.addLayer(createEmptyVectorLayer(getString(R.string.points_for_edit), LAYER_A, GeoConstants.GTPoint));
+            mMap.addLayer(createEmptyVectorLayer(getString(R.string.points_for_edit), LAYER_A, GeoConstants.GTPoint, fields));
         if (mMap.getLayerByPathName(LAYER_B) == null)
-            mMap.addLayer(createEmptyVectorLayer(getString(R.string.lines_for_edit), LAYER_B, GeoConstants.GTLineString));
+            mMap.addLayer(createEmptyVectorLayer(getString(R.string.lines_for_edit), LAYER_B, GeoConstants.GTLineString, fields));
         if (mMap.getLayerByPathName(LAYER_C) == null)
-            mMap.addLayer(createEmptyVectorLayer(getString(R.string.polygons_for_edit), LAYER_C, GeoConstants.GTPolygon));
+            mMap.addLayer(createEmptyVectorLayer(getString(R.string.polygons_for_edit), LAYER_C, GeoConstants.GTPolygon, fields));
 
         mMap.save();
     }
 
 
-    protected ILayer createEmptyVectorLayer(
+    public VectorLayer createEmptyVectorLayer(
             String layerName,
             String layerPath,
-            int layerType)
+            int layerType,
+            List<Field> fields)
     {
-        VectorLayerUI vectorLayer = new VectorLayerUI(this, mMap.createLayerStorage(layerPath));
+        VectorLayerUI vectorLayer = new VectorLayerUI(this, layerPath == null ?
+                mMap.createLayerStorage() : mMap.createLayerStorage(layerPath));
         vectorLayer.setName(layerName);
         vectorLayer.setVisible(true);
         vectorLayer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
         vectorLayer.setMaxZoom(GeoConstants.DEFAULT_MAX_ZOOM);
-
-        List<Field> fields = new ArrayList<>(2);
-        fields.add(new Field(GeoConstants.FTInteger, "FID", "FID"));
-        fields.add(new Field(GeoConstants.FTString, "TEXT", "TEXT"));
 
         vectorLayer.create(layerType, fields);
         return vectorLayer;

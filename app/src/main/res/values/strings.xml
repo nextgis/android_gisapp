@@ -28,10 +28,10 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_settings">Settings</string>
-    <string name="action_add">Add layer</string>
-    <string name="action_add_local">Add layer (local)</string>
-    <string name="action_add_remote">Add layer (web)</string>
-    <string name="action_add_ngw">Add layer (NGW)</string>
+    <string name="action_add">Open layer</string>
+    <string name="action_add_local">Local</string>
+    <string name="action_add_remote">Web</string>
+    <string name="action_add_ngw">NGW</string>
     <string name="general">General</string>
     <string name="general_summary">General settings</string>
     <string name="keep_screen_on">Keep map screen on</string>
@@ -110,5 +110,6 @@
     <string name="reset_settings_title">Confirm?</string>
     <string name="reset_settings_message">All layers will be deleted! Only initial layers will be restored.</string>
     <string name="action_point_by_tap">Create new point</string>
-
+    <string name="new_field">New field</string>
+    <string name="empty_field_name">Field name can not be empty</string>
 </resources>

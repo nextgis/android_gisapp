@@ -28,7 +28,7 @@
     <string name="navigation_drawer_open">Открыть панель навигации</string>
     <string name="navigation_drawer_close">Закрыть панель навигации</string>
     <string name="action_settings">Настройки</string>
-    <string name="action_add">Добавить слой</string>
+    <string name="action_add">Открыть слой</string>
     <string name="action_add_local">Локальный</string>
     <string name="action_add_remote">Веб</string>
     <string name="action_add_ngw">NGW</string>
@@ -110,5 +110,6 @@
     <string name="reset_settings_title">Подтвердить?</string>
     <string name="reset_settings_message">Все слои будут удалены! Будут восстановлены начальные слои.</string>
     <string name="action_point_by_tap">Создать новую точку</string>
-
+    <string name="new_field">Новое поле</string>
+    <string name="empty_field_name">Имя не может быть пустым</string>
 </resources>
