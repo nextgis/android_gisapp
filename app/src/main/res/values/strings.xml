@@ -112,4 +112,6 @@
     <string name="action_point_by_tap">Create new point</string>
     <string name="new_field">New field</string>
     <string name="empty_field_name">Field name can not be empty</string>
+    <string name="same_field_name">There is already field with same name</string>
+    <string name="same_layer_name">There is already layer with same name</string>
 </resources>

@@ -72,7 +72,7 @@ public class NewFieldDialog extends NGDialog {
                             normalizedName += "1";
 
                         normalizedName = LayerUtil.normalizeFieldName(normalizedName);
-                        if (!normalizedName.equals(name.getText().toString().trim())) {
+                        if (!normalizedName.equalsIgnoreCase(name.getText().toString().trim())) {
                             String warning = getString(R.string.warning_replace_field);
                             warning = String.format(warning, normalizedName);
                             Toast.makeText(getActivity(), warning, Toast.LENGTH_SHORT).show();

@@ -22,8 +22,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="16dp">
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
@@ -33,6 +33,7 @@
             android:id="@+id/et_field_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:digits="0123456789qwertzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM_"
             android:hint="@string/field_name" />
     </android.support.design.widget.TextInputLayout>
 
