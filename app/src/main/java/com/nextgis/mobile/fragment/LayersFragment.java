@@ -49,6 +49,7 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.nextgis.maplib.datasource.ngw.SyncAdapter;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.util.Constants;
@@ -56,12 +57,14 @@ import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.maplibui.fragment.LayersListAdapter;
 import com.nextgis.maplibui.fragment.ReorderedLayerView;
 import com.nextgis.mobile.R;
+import com.nextgis.mobile.activity.CreateVectorLayerActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static com.nextgis.maplib.util.Constants.NGW_ACCOUNT_TYPE;
 import static com.nextgis.mobile.util.SettingsConstants.AUTHORITY;
@@ -71,8 +74,7 @@ import static com.nextgis.mobile.util.SettingsConstants.AUTHORITY;
  * A layers fragment class
  */
 public class LayersFragment
-        extends Fragment
-{
+        extends Fragment implements View.OnClickListener {
     protected ActionBarDrawerToggle mDrawerToggle;
     protected DrawerLayout          mDrawerLayout;
     protected ReorderedLayerView    mLayersListView;
@@ -81,6 +83,8 @@ public class LayersFragment
     protected TextView              mInfoText;
     protected SyncReceiver          mSyncReceiver;
     protected ImageButton           mSyncButton;
+    protected ImageButton           mNewLayer;
+    protected List<Account>         mAccounts;
 
 
     @Override
@@ -89,6 +93,7 @@ public class LayersFragment
         super.onCreate(savedInstanceState);
 
         mSyncReceiver = new SyncReceiver();
+        mAccounts = new ArrayList<>();
     }
 
 
@@ -107,6 +112,8 @@ public class LayersFragment
         }
 
         mSyncButton = (ImageButton) view.findViewById(R.id.sync);
+        mNewLayer = (ImageButton) view.findViewById(R.id.new_layer);
+        mNewLayer.setOnClickListener(this);
         mInfoText = (TextView) view.findViewById(R.id.info);
 
         setupSyncOptions();
@@ -118,15 +125,14 @@ public class LayersFragment
 
     protected void setupSyncOptions()
     {
-
-        final List<Account> accounts = new ArrayList<>();
+        mAccounts.clear();
         final AccountManager accountManager =
                 AccountManager.get(getActivity().getApplicationContext());
-        Collections.addAll(accounts, accountManager.getAccountsByType(NGW_ACCOUNT_TYPE));
-        if (accounts.isEmpty()) {
+        Collections.addAll(mAccounts, accountManager.getAccountsByType(NGW_ACCOUNT_TYPE));
+        if (mAccounts.isEmpty()) {
             if (null != mSyncButton) {
                 mSyncButton.setEnabled(false);
-                mSyncButton.setVisibility(View.INVISIBLE);
+                mSyncButton.setVisibility(View.GONE);
             }
             if (null != mInfoText) {
                 mInfoText.setVisibility(View.INVISIBLE);
@@ -135,25 +141,7 @@ public class LayersFragment
             if (null != mSyncButton) {
                 mSyncButton.setVisibility(View.VISIBLE);
                 mSyncButton.setEnabled(true);
-                mSyncButton.setOnClickListener(
-                        new View.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(View view)
-                            {
-                                for (Account account : accounts) {
-                                    Bundle settingsBundle = new Bundle();
-                                    settingsBundle.putBoolean(
-                                            ContentResolver.SYNC_EXTRAS_MANUAL, true);
-                                    settingsBundle.putBoolean(
-                                            ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-
-                                    ContentResolver.requestSync(account, AUTHORITY, settingsBundle);
-                                }
-
-                                updateInfo();
-                            }
-                        });
+                mSyncButton.setOnClickListener(this);
             }
             if (null != mInfoText) {
                 mInfoText.setVisibility(View.VISIBLE);
@@ -173,10 +161,14 @@ public class LayersFragment
         long timeStamp =
                 sharedPreferences.getLong(SettingsConstants.KEY_PREF_LAST_SYNC_TIMESTAMP, 0);
         if (timeStamp > 0) {
-            mInfoText.setText(
-                    getString(R.string.last_sync_time) + ": " +
-                    new SimpleDateFormat().format(new Date(timeStamp)));
+            mInfoText.setText(getSyncTime(timeStamp));
         }
+    }
+
+    protected String getSyncTime(long timeStamp) {
+        String date = new SimpleDateFormat("dd MMM", Locale.getDefault()).format(new Date(timeStamp));
+        String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date(timeStamp));
+        return String.format(getString(R.string.last_sync_time), date, time);
     }
 
 
@@ -360,6 +352,29 @@ public class LayersFragment
     {
         getActivity().unregisterReceiver(mSyncReceiver);
         super.onPause();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.sync:
+                for (Account account : mAccounts) {
+                    Bundle settingsBundle = new Bundle();
+                    settingsBundle.putBoolean(
+                            ContentResolver.SYNC_EXTRAS_MANUAL, true);
+                    settingsBundle.putBoolean(
+                            ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+
+                    ContentResolver.requestSync(account, AUTHORITY, settingsBundle);
+                }
+
+                updateInfo();
+                break;
+            case R.id.new_layer:
+                Intent intentNewLayer = new Intent(getActivity(), CreateVectorLayerActivity.class);
+                startActivity(intentNewLayer);
+                break;
+        }
     }
 
 
