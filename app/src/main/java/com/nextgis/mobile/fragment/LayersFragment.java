@@ -56,6 +56,7 @@ import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.maplibui.fragment.LayersListAdapter;
 import com.nextgis.maplibui.fragment.ReorderedLayerView;
+import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.CreateVectorLayerActivity;
 
@@ -161,14 +162,8 @@ public class LayersFragment
         long timeStamp =
                 sharedPreferences.getLong(SettingsConstants.KEY_PREF_LAST_SYNC_TIMESTAMP, 0);
         if (timeStamp > 0) {
-            mInfoText.setText(getSyncTime(timeStamp));
+            mInfoText.setText(ControlHelper.getSyncTime(getContext(), timeStamp));
         }
-    }
-
-    protected String getSyncTime(long timeStamp) {
-        String date = new SimpleDateFormat("dd MMM", Locale.getDefault()).format(new Date(timeStamp));
-        String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date(timeStamp));
-        return String.format(getString(R.string.last_sync_time), date, time);
     }
 
 
