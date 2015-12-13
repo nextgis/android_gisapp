@@ -92,7 +92,6 @@
     <string name="accurate_measures_count">Количество замеров GPS</string>
     <string name="action_delete">Удалить</string>
     <string name="action_attributes">Атрибуты</string>
-    <string name="action_edit">Редактировать</string>
     <string name="show_status_panel">Панель статуса</string>
     <string name="show_status_panel_summary">Показать панель статуса внизу экрана</string>
     <string name="show_current_location">Показать текущее местоположение</string>
