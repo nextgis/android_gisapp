@@ -199,7 +199,7 @@ public class MainActivity extends NGActivity
                 return true;
             case R.id.menu_track:
                 Intent trackerService = new Intent(this, TrackerService.class);
-                trackerService.putExtra(TrackerService.TARGET_CLASS, this.getClass().getName());
+                trackerService.putExtra(ConstantsUI.TARGET_CLASS, this.getClass().getName());
 
                 if (isTrackerServiceRunning(this)) {
                     stopService(trackerService);
