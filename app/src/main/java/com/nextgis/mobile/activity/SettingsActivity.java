@@ -57,10 +57,6 @@ import java.util.List;
 
 import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_MAP;
 import static com.nextgis.maplibui.service.TrackerService.isTrackerServiceRunning;
-import static com.nextgis.mobile.util.SettingsConstants.ACTION_PREFS_GENERAL;
-import static com.nextgis.mobile.util.SettingsConstants.ACTION_PREFS_LOCATION;
-import static com.nextgis.mobile.util.SettingsConstants.ACTION_PREFS_MAP;
-import static com.nextgis.mobile.util.SettingsConstants.ACTION_PREFS_TRACKING;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_COMPASS;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_ZOOM_CONTROLS;
 
@@ -81,7 +77,7 @@ public class SettingsActivity
         String action = getIntent().getAction();
         if (action != null) {
             switch (action) {
-                case ACTION_PREFS_GENERAL:
+                case SettingsConstantsUI.ACTION_PREFS_GENERAL:
                     addPreferencesFromResource(R.xml.preferences_general);
 
                     final ListPreference theme = (ListPreference) findPreference(SettingsConstantsUI.KEY_PREF_THEME);
@@ -89,7 +85,7 @@ public class SettingsActivity
                     final Preference reset = findPreference(SettingsConstantsUI.KEY_PREF_RESET_SETTINGS);
                     initializeReset(this, reset);
                     break;
-                case ACTION_PREFS_MAP:
+                case SettingsConstantsUI.ACTION_PREFS_MAP:
                     addPreferencesFromResource(R.xml.preferences_map);
 
                     final ListPreference lpCoordinateFormat = (ListPreference) findPreference(
@@ -109,7 +105,7 @@ public class SettingsActivity
                             SettingsConstantsUI.KEY_PREF_MAP_BG);
                     initializeMapBG(this, changeMapBG);
                     break;
-                case ACTION_PREFS_LOCATION:
+                case SettingsConstantsUI.ACTION_PREFS_LOCATION:
                     addPreferencesFromResource(R.xml.preferences_location);
 
                     final ListPreference lpLocationAccuracy = (ListPreference) findPreference(
@@ -126,7 +122,7 @@ public class SettingsActivity
                             SettingsConstants.KEY_PREF_LOCATION_ACCURATE_COUNT);
                     initializeAccurateTaking(accurateMaxCount);
                     break;
-                case ACTION_PREFS_TRACKING:
+                case SettingsConstantsUI.ACTION_PREFS_TRACKING:
                     addPreferencesFromResource(R.xml.preferences_tracks);
 
                     final ListPreference lpTracksAccuracy = (ListPreference) findPreference(

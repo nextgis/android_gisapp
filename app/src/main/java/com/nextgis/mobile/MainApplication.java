@@ -26,7 +26,10 @@ package com.nextgis.mobile;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
+import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.datasource.Field;
@@ -46,6 +49,7 @@ import com.nextgis.maplibui.service.LayerFillService;
 import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.activity.SettingsActivity;
+import com.nextgis.mobile.fragment.SettingsFragment;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -54,8 +58,7 @@ import java.util.List;
 import static com.nextgis.maplib.util.Constants.LAYERTYPE_LOCAL_TMS;
 import static com.nextgis.maplib.util.Constants.MAP_EXT;
 import static com.nextgis.maplib.util.GeoConstants.TMSTYPE_OSM;
-import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_MAP;
-import static com.nextgis.mobile.util.SettingsConstants.AUTHORITY;
+import static com.nextgis.mobile.util.SettingsConstants.*;
 
 
 public class MainApplication extends GISApplication
@@ -74,9 +77,9 @@ public class MainApplication extends GISApplication
         }
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        File defaultPath = getExternalFilesDir(KEY_PREF_MAP);
+        File defaultPath = getExternalFilesDir(SettingsConstants.KEY_PREF_MAP);
         if (defaultPath == null) {
-            defaultPath = new File(getFilesDir(), KEY_PREF_MAP);
+            defaultPath = new File(getFilesDir(), SettingsConstants.KEY_PREF_MAP);
         }
 
         String mapPath = mSharedPreferences.getString(SettingsConstants.KEY_PREF_MAP_PATH, defaultPath.getPath());
@@ -118,11 +121,45 @@ public class MainApplication extends GISApplication
     }
 
     @Override
-    public void showSettings()
+    public void showSettings(String settings)
     {
-        Intent intentSet = new Intent(this, SettingsActivity.class);
-        intentSet.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intentSet);
+        if(TextUtils.isEmpty(settings) || settings.equals(SettingsConstantsUI.ACTION_PREFS_GENERAL)) {
+            Intent intentSet = new Intent(this, SettingsActivity.class);
+            intentSet.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intentSet);
+        }
+        else if(settings.equals(SettingsConstantsUI.ACTION_PREFS_LOCATION)){
+            Intent locationSettings = new Intent(this, SettingsActivity.class);
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+                locationSettings.setAction(SettingsConstantsUI.ACTION_PREFS_LOCATION);
+            } else {
+                locationSettings.putExtra("settings", "location");
+                locationSettings.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
+                locationSettings.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT,
+                        SettingsFragment.class.getName());
+                locationSettings.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT_ARGUMENTS,
+                        locationSettings.getExtras());
+            }
+
+            locationSettings.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(locationSettings);
+        }
+        else if(settings.equals(SettingsConstantsUI.ACTION_PREFS_TRACKING)){
+            Intent locationSettings = new Intent(this, SettingsActivity.class);
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+                locationSettings.setAction(SettingsConstantsUI.ACTION_PREFS_TRACKING);
+            } else {
+                locationSettings.putExtra("settings", "location");
+                locationSettings.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
+                locationSettings.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT,
+                        SettingsFragment.class.getName());
+                locationSettings.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT_ARGUMENTS,
+                        locationSettings.getExtras());
+            }
+
+            locationSettings.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(locationSettings);
+        }
     }
 
     @Override

@@ -68,6 +68,7 @@ import com.nextgis.maplibui.api.IChooseLayerResult;
 import com.nextgis.maplibui.fragment.BottomToolbar;
 import com.nextgis.maplibui.service.TrackerService;
 import com.nextgis.maplibui.util.ConstantsUI;
+import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.fragment.LayersFragment;
@@ -175,7 +176,7 @@ public class MainActivity extends NGActivity
             case android.R.id.home:
                 return finishFragment();
             case R.id.menu_settings:
-                app.showSettings();
+                app.showSettings(SettingsConstantsUI.ACTION_PREFS_GENERAL);
                 return true;
             case R.id.menu_about:
                 Intent intentAbout = new Intent(this, AboutActivity.class);

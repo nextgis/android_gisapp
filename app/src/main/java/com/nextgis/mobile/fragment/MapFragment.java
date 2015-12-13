@@ -86,11 +86,9 @@ import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
-import com.nextgis.mobile.activity.SettingsActivity;
 
 import java.util.List;
 
-import static com.nextgis.mobile.util.SettingsConstants.ACTION_PREFS_LOCATION;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_COORD_FORMAT;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SCROLL_X;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SCROLL_Y;
@@ -131,10 +129,10 @@ public class MapFragment
 
     protected static final int MODE_NORMAL        = 0;
     protected static final int MODE_SELECT_ACTION = 1;
-    protected static final int MODE_EDIT          = 2;
-    protected static final int MODE_HIGHLIGHT     = 3;
+    protected static final int MODE_EDIT          = EditLayerOverlay.MODE_EDIT + 100;
+    protected static final int MODE_HIGHLIGHT     = EditLayerOverlay.MODE_HIGHLIGHT + 100;
     protected static final int MODE_INFO          = 4;
-    protected static final int MODE_EDIT_BY_WALK  = 5;
+    protected static final int MODE_EDIT_BY_WALK  = EditLayerOverlay.MODE_EDIT_BY_WALK + 100;
 
     protected static final String KEY_MODE = "mode";
     protected boolean mShowStatusPanel, mIsCompassDragging;
@@ -178,35 +176,11 @@ public class MapFragment
                 }
                 break;
             case MODE_EDIT:
-                if (null != toolbar) {
-                    if (null != mEditLayerOverlay) {
-                        if(mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT)) {
-
-                            if (null != mMainButton) {
-                                mMainButton.setVisibility(View.GONE);
-                            }
-                            mStatusPanel.setVisibility(View.INVISIBLE);
-                            toolbar.setVisibility(View.VISIBLE);
-                            toolbar.getBackground().setAlpha(128);
-                            Menu menu = toolbar.getMenu();
-                            if (null != menu) {
-                                menu.clear();
-                            }
-
-                            mEditLayerOverlay.setToolbar(toolbar);
-                        }
-                        else{
-                            Toast.makeText(mActivity, R.string.error_unsupported_layer_type,
-                                    Toast.LENGTH_SHORT).show();
-                            break;
-                        }
-                    }
-                }
-                break;
             case MODE_EDIT_BY_WALK:
                 if (null != toolbar) {
                     if (null != mEditLayerOverlay) {
-                        if(mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT_BY_WALK)) {
+                        if(mEditLayerOverlay.setMode(mode - 100)) {
+
                             if (null != mMainButton) {
                                 mMainButton.setVisibility(View.GONE);
                             }
@@ -217,46 +191,6 @@ public class MapFragment
                             if (null != menu) {
                                 menu.clear();
                             }
-
-                            toolbar.inflateMenu(R.menu.edit_by_walk);
-
-                            toolbar.setOnMenuItemClickListener(
-                                    new Toolbar.OnMenuItemClickListener()
-                                    {
-                                        @Override
-                                        public boolean onMenuItemClick(MenuItem menuItem)
-                                        {
-                                            if (menuItem.getItemId() == R.id.menu_cancel) {
-                                                mEditLayerOverlay.stopGeometryByWalk();
-                                                mEditLayerOverlay.setFeature(
-                                                        mEditLayerOverlay.getSelectedLayer(), Constants.NOT_FOUND);
-                                                setMode(MODE_EDIT);
-                                                return true;
-                                            } else if (menuItem.getItemId() == R.id.menu_settings) {
-                                                Intent locationSettings =
-                                                        new Intent(mActivity, SettingsActivity.class);
-
-                                                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-                                                    locationSettings.setAction(ACTION_PREFS_LOCATION);
-                                                } else {
-                                                    locationSettings.putExtra("settings", "location");
-                                                    locationSettings.putExtra(
-                                                            PreferenceActivity.EXTRA_NO_HEADERS, true);
-                                                    locationSettings.putExtra(
-                                                            PreferenceActivity.EXTRA_SHOW_FRAGMENT,
-                                                            SettingsFragment.class.getName());
-                                                    locationSettings.putExtra(
-                                                            PreferenceActivity.EXTRA_SHOW_FRAGMENT_ARGUMENTS,
-                                                            locationSettings.getExtras());
-                                                }
-
-                                                locationSettings.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                startActivity(locationSettings);
-                                                return true;
-                                            }
-                                            return false;
-                                        }
-                                    });
 
                             mEditLayerOverlay.setToolbar(toolbar);
                         }

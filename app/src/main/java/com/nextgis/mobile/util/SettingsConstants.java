@@ -26,16 +26,6 @@ package com.nextgis.mobile.util;
 public interface SettingsConstants
 {
     String AUTHORITY             = "com.nextgis.mobile.provider";
-    /**
-     * preference pages
-     */
-    String ACTION_PREFS_GENERAL  = "com.nextgis.mobile.PREFS_GENERAL";
-    String ACTION_PREFS_MAP      = "com.nextgis.mobile.PREFS_MAP";
-    String ACTION_PREFS_NGW      = "com.nextgis.mobile.PREFS_NGW";
-    String ACTION_PREFS_COMPASS  = "com.nextgis.mobile.PREFS_COMPASS";
-    String ACTION_PREFS_TRACKING = "com.nextgis.mobile.PREFS_TRACKING";
-    String ACTION_PREFS_LOCATION = "com.nextgis.mobile.PREFS_LOCATION";
-    String ACTION_PREFS_EDIT     = "com.nextgis.mobile.PREFS_EDIT";
 
     /**
      * map preference
