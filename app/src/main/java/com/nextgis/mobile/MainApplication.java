@@ -24,6 +24,7 @@
 package com.nextgis.mobile;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -59,6 +60,7 @@ import static com.nextgis.maplib.util.Constants.LAYERTYPE_LOCAL_TMS;
 import static com.nextgis.maplib.util.Constants.MAP_EXT;
 import static com.nextgis.maplib.util.GeoConstants.TMSTYPE_OSM;
 import static com.nextgis.mobile.util.SettingsConstants.*;
+import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_APP_VERSION;
 
 
 public class MainApplication extends GISApplication
@@ -68,6 +70,44 @@ public class MainApplication extends GISApplication
     public static final String LAYER_B = "vector_b";
     public static final String LAYER_C = "vector_c";
     public static final String LAYER_TRACKS = "tracks";
+
+    @Override
+    public void onCreate() {
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        updateFromOldVersion();
+
+        super.onCreate();
+    }
+
+    private void updateFromOldVersion() {
+        try {
+            int currentVersionCode = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
+            int savedVersionCode = mSharedPreferences.getInt(KEY_PREF_APP_VERSION, 0);
+
+            switch (savedVersionCode) {
+                case 0:
+                    int source;
+                    if (mSharedPreferences.contains(SettingsConstants.KEY_PREF_LOCATION_SOURCE)) {
+                        source = mSharedPreferences.getInt(SettingsConstants.KEY_PREF_LOCATION_SOURCE, 3);
+                        mSharedPreferences.edit().putString(SettingsConstants.KEY_PREF_LOCATION_SOURCE, source + "")
+                                .remove(SettingsConstants.KEY_PREF_LOCATION_SOURCE)
+                                .remove(SettingsConstants.KEY_PREF_LOCATION_SOURCE + "_str").commit();
+                    }
+                    if (mSharedPreferences.contains(SettingsConstants.KEY_PREF_TRACKS_SOURCE)) {
+                        source = mSharedPreferences.getInt(SettingsConstants.KEY_PREF_TRACKS_SOURCE, 1);
+                        mSharedPreferences.edit().putString(SettingsConstants.KEY_PREF_TRACKS_SOURCE, source + "")
+                                .remove(SettingsConstants.KEY_PREF_TRACKS_SOURCE)
+                                .remove(SettingsConstants.KEY_PREF_TRACKS_SOURCE + "_str").commit();
+                    }
+                default:
+                    break;
+            }
+
+            if(savedVersionCode < currentVersionCode) {
+                mSharedPreferences.edit().putInt(KEY_PREF_APP_VERSION, currentVersionCode).commit();
+            }
+        } catch (PackageManager.NameNotFoundException ignored) { }
+    }
 
     @Override
     public MapBase getMap()

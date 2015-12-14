@@ -56,7 +56,6 @@ public class CreateVectorLayerActivity extends NGActivity implements View.OnClic
     private EditText mEtLayerName;
     private Spinner mSpLayerType;
     private FieldAdapter mFieldAdapter;
-    private ListView mLvFields;
     private int mColor;
 
     @Override
@@ -78,10 +77,10 @@ public class CreateVectorLayerActivity extends NGActivity implements View.OnClic
         
         mEtLayerName = (EditText) findViewById(R.id.et_layer_name);
         mSpLayerType = (Spinner) findViewById(R.id.sp_layer_type);
-        mLvFields = (ListView) findViewById(R.id.lv_fields);
+        ListView lvFields = (ListView) findViewById(R.id.lv_fields);
 
         mFieldAdapter = new FieldAdapter();
-        mLvFields.setAdapter(mFieldAdapter);
+        lvFields.setAdapter(mFieldAdapter);
     }
 
     @Override

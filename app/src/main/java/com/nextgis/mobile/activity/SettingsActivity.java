@@ -109,7 +109,7 @@ public class SettingsActivity
                     addPreferencesFromResource(R.xml.preferences_location);
 
                     final ListPreference lpLocationAccuracy = (ListPreference) findPreference(
-                            SettingsConstants.KEY_PREF_LOCATION_SOURCE + "_str");
+                            SettingsConstants.KEY_PREF_LOCATION_SOURCE);
                     initializeLocationAccuracy(lpLocationAccuracy, false);
 
                     final ListPreference minTimeLoc = (ListPreference) findPreference(
@@ -126,7 +126,7 @@ public class SettingsActivity
                     addPreferencesFromResource(R.xml.preferences_tracks);
 
                     final ListPreference lpTracksAccuracy = (ListPreference) findPreference(
-                            SettingsConstants.KEY_PREF_TRACKS_SOURCE + "_str");
+                            SettingsConstants.KEY_PREF_TRACKS_SOURCE);
                     initializeLocationAccuracy(lpTracksAccuracy, true);
 
                     final ListPreference minTime = (ListPreference) findPreference(
@@ -256,14 +256,6 @@ public class SettingsActivity
                             CharSequence summary =
                                     ((ListPreference) preference).getEntries()[value - 1];
                             preference.setSummary(summary);
-
-                            String preferenceKey = isTracks
-                                                   ? SettingsConstants.KEY_PREF_TRACKS_SOURCE
-                                                   : SettingsConstants.KEY_PREF_LOCATION_SOURCE;
-                            preference.getSharedPreferences()
-                                    .edit()
-                                    .putInt(preferenceKey, value)
-                                    .commit();
 
                             sectionWork(preference.getContext(), isTracks);
 
@@ -476,12 +468,10 @@ public class SettingsActivity
         editor.remove(SettingsConstantsUI.KEY_PREF_COORD_FORMAT + "_int");
         editor.remove(KEY_PREF_SHOW_ZOOM_CONTROLS);
         editor.remove(SettingsConstants.KEY_PREF_LOCATION_SOURCE);
-        editor.remove(SettingsConstants.KEY_PREF_LOCATION_SOURCE + "_str");
         editor.remove(SettingsConstants.KEY_PREF_LOCATION_MIN_TIME);
         editor.remove(SettingsConstants.KEY_PREF_LOCATION_MIN_DISTANCE);
         editor.remove(SettingsConstants.KEY_PREF_LOCATION_ACCURATE_COUNT);
         editor.remove(SettingsConstants.KEY_PREF_TRACKS_SOURCE);
-        editor.remove(SettingsConstants.KEY_PREF_TRACKS_SOURCE + "_str");
         editor.remove(SettingsConstants.KEY_PREF_TRACKS_MIN_TIME);
         editor.remove(SettingsConstants.KEY_PREF_TRACKS_MIN_DISTANCE);
 

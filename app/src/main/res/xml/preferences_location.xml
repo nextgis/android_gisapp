@@ -25,7 +25,7 @@
     <ListPreference
         android:defaultValue="3"
         android:entryValues="@array/location_accuracy_val"
-        android:key="location_source_str"
+        android:key="location_source"
         android:title="@string/pref_location_accuracy" />
 
     <ListPreference

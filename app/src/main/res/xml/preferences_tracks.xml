@@ -24,7 +24,7 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <ListPreference
-        android:key="tracks_location_source_str"
+        android:key="tracks_location_source"
         android:title="@string/pref_location_accuracy"
         android:entryValues="@array/location_accuracy_val"
         android:defaultValue="1"
