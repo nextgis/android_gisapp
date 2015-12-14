@@ -41,6 +41,7 @@ public interface SettingsConstants
     String KEY_PREF_SHOW_LOCATION = "map_show_loc";
     String KEY_PREF_SHOW_COMPASS  = "map_show_compass";
     String KEY_PREF_SHOW_INFO     = "map_show_info";
+    String KEY_PREF_APP_VERSION   = "app_version";
 
     /**
      * Preference keys - in UI

@@ -87,7 +87,7 @@ public class SettingsFragment
                 addPreferencesFromResource(R.xml.preferences_location);
 
                 final ListPreference lpLocationAccuracy = (ListPreference) findPreference(
-                        SettingsConstants.KEY_PREF_LOCATION_SOURCE + "_str");
+                        SettingsConstants.KEY_PREF_LOCATION_SOURCE);
                 SettingsActivity.initializeLocationAccuracy(lpLocationAccuracy, false);
 
                 final ListPreference minTimeLoc = (ListPreference) findPreference(
@@ -104,7 +104,7 @@ public class SettingsFragment
                 addPreferencesFromResource(R.xml.preferences_tracks);
 
                 final ListPreference lpTracksAccuracy = (ListPreference) findPreference(
-                        SettingsConstants.KEY_PREF_TRACKS_SOURCE + "_str");
+                        SettingsConstants.KEY_PREF_TRACKS_SOURCE);
                 SettingsActivity.initializeLocationAccuracy(lpTracksAccuracy, true);
 
                 final ListPreference minTime = (ListPreference) findPreference(
