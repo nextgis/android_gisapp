@@ -28,10 +28,10 @@
     <string name="navigation_drawer_open">Открыть панель навигации</string>
     <string name="navigation_drawer_close">Закрыть панель навигации</string>
     <string name="action_settings">Настройки</string>
-    <string name="action_add">Открыть слой</string>
-    <string name="action_add_local">Локальный</string>
-    <string name="action_add_remote">Веб</string>
-    <string name="action_add_ngw">NGW</string>
+    <string name="action_add">Новый слой</string>
+    <string name="action_add_local">Открыть локальный</string>
+    <string name="action_add_remote">Добавить веб</string>
+    <string name="action_add_ngw">Добавить из NGW</string>
     <string name="general">Общие</string>
     <string name="general_summary">Общие настройки</string>
     <string name="keep_screen_on">Не отключать экран</string>

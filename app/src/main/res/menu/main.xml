@@ -46,21 +46,18 @@
         android:icon="@drawable/ic_action_maps_directions_walk"
         />
     <item
-        android:id="@+id/menu_new"
-        android:title="@string/create_layer"
-        android:orderInCategory="100"
-        app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_action_add_layer"
-        />
-    <item
         android:id="@+id/menu_add"
         android:orderInCategory="100"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_action_open_layer"
+        android:icon="@drawable/ic_action_add_layer"
         android:title="@string/action_add"
         >
 
         <menu>
+            <item
+                android:id="@+id/menu_new"
+                android:title="@string/create_layer"
+                />
             <item
                 android:id="@+id/menu_add_local"
                 android:title="@string/action_add_local"
