@@ -643,7 +643,8 @@ public class MapFragment
         boolean showControls = prefs.getBoolean(KEY_PREF_SHOW_ZOOM_CONTROLS, false);
         showMapButtons(showControls, mMapRelativeLayout);
 
-        Log.d(Constants.TAG, "KEY_PREF_SHOW_ZOOM_CONTROLS: " + (showControls ? "ON" : "OFF"));
+        if(Constants.DEBUG_MODE)
+            Log.d(Constants.TAG, "KEY_PREF_SHOW_ZOOM_CONTROLS: " + (showControls ? "ON" : "OFF"));
 
         if (null != mMap) {
             mMap.getMap().setBackground(mApp.getMapBackground());
