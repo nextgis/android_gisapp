@@ -1156,7 +1156,7 @@ public class MapFragment
         } else {
             if (location.getProvider().equals(LocationManager.GPS_PROVIDER)) {
                 String text = "";
-                int satellites = location.getExtras().getInt("satellites");
+                int satellites = location.getExtras() != null ? location.getExtras().getInt("satellites") : 0;
                 if (satellites > 0)
                     text += satellites;
 
