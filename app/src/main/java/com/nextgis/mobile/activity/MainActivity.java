@@ -552,7 +552,7 @@ public class MainActivity extends NGActivity
         if (null != ngwVectorLayer) {
             Uri uri = Uri.parse(
                     "content://" + SettingsConstants.AUTHORITY + "/" +
-                    ngwVectorLayer.getPath().getName());
+                            ngwVectorLayer.getPath().getName());
             ContentValues values = new ContentValues();
             //values.put(VectorLayer.FIELD_ID, 26);
             values.put("width", 1);
@@ -682,7 +682,11 @@ public class MainActivity extends NGActivity
     @Override
     protected void onPause()
     {
-        unregisterReceiver(mMessageReceiver);
+        try {
+            if (mMessageReceiver != null)
+                unregisterReceiver(mMessageReceiver);
+        } catch (Exception ignored) { }
+
         super.onPause();
     }
 
