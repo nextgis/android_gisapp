@@ -30,8 +30,8 @@ android {
         applicationId 'com.nextgis.mobile'
         minSdkVersion 8
         targetSdkVersion 23
-        versionCode 13
-        versionName '2.3'
+        versionCode 14
+        versionName '2.3.1'
     }
     buildTypes {
         release {
