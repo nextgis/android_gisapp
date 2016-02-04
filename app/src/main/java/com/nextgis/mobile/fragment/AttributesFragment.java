@@ -23,10 +23,13 @@
 
 package com.nextgis.mobile.fragment;
 
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.Cursor;
+import android.location.Location;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -46,16 +49,21 @@ import android.widget.TextView;
 import com.keenfin.easypicker.PhotoPicker;
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.datasource.Field;
+import com.nextgis.maplib.datasource.GeoGeometryFactory;
+import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.GeoConstants;
+import com.nextgis.maplib.util.LocationUtil;
 import com.nextgis.maplibui.GISApplication;
 import com.nextgis.maplibui.control.PhotoGallery;
 import com.nextgis.maplibui.fragment.BottomToolbar;
 import com.nextgis.maplibui.overlay.EditLayerOverlay;
+import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
 
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -65,9 +73,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static com.nextgis.maplib.util.GeoConstants.CRS_WEB_MERCATOR;
+import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
 import static com.nextgis.maplib.util.GeoConstants.FTDate;
 import static com.nextgis.maplib.util.GeoConstants.FTDateTime;
 import static com.nextgis.maplib.util.GeoConstants.FTTime;
+import static com.nextgis.maplib.util.GeoConstants.GTPoint;
 
 
 public class AttributesFragment
@@ -205,10 +216,37 @@ public class AttributesFragment
         if (attributes.moveToFirst()) {
             for (int i = 0; i < attributes.getColumnCount(); i++) {
                 String column = attributes.getColumnName(i);
-                if (column.startsWith(Constants.FIELD_GEOM))
+                String text;
+
+                if (column.startsWith(Constants.FIELD_GEOM_))
                     continue;
 
-                String text;
+                if (column.equals(Constants.FIELD_GEOM)) {
+                    switch (mLayer.getGeometryType()) {
+                        case GTPoint:
+                            try {
+                                GeoPoint pt = (GeoPoint) GeoGeometryFactory.fromBlob(attributes.getBlob(i));
+                                pt.setCRS(CRS_WEB_MERCATOR);
+                                pt.project(CRS_WGS84);
+
+                                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+                                int format = prefs.getInt(SettingsConstantsUI.KEY_PREF_COORD_FORMAT + "_int", Location.FORMAT_SECONDS);
+
+                                String lat = getString(com.nextgis.maplibui.R.string.latitude_caption_short) + ": " +
+                                        LocationUtil.formatLatitude(pt.getY(), format, getResources());
+                                String lon = getString(com.nextgis.maplibui.R.string.longitude_caption_short) + ": " +
+                                        LocationUtil.formatLongitude(pt.getX(), format, getResources());
+
+                                text = lat + "\r\n" + lon;
+                                addRow(getString(R.string.coordinates), text);
+                            } catch (IOException | ClassNotFoundException e) {
+                                e.printStackTrace();
+                            }
+                        default:
+                            continue;
+                    }
+                }
+
                 Field field = mLayer.getFieldByName(column);
                 int fieldType = field != null ? field.getType() : Constants.NOT_FOUND;
                 switch (fieldType) {
@@ -231,31 +269,12 @@ public class AttributesFragment
                         break;
                 }
 
-                LinearLayout row = new LinearLayout(getActivity());
-                row.setOrientation(LinearLayout.HORIZONTAL);
-                LinearLayout.LayoutParams params =
-                        new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
-
-                TextView columnName = new TextView(getActivity());
-                columnName.setLayoutParams(params);
-                columnName.setText(column);
-                TextView data = new TextView(getActivity());
-                data.setLayoutParams(params);
-
-                try {
-                    data.setText(text);
-                } catch (Exception ignored) {
-
-                }
-
-                row.addView(columnName);
-                row.addView(data);
-                mAttributes.addView(row);
+            addRow(column, text);
             }
 
             IGISApplication app = (GISApplication) getActivity().getApplication();
             final Map<String, Integer> mAttaches = new HashMap<>();
-            PhotoGallery.getAttaches(app, mLayer, mItemId, mAttaches);
+        PhotoGallery.getAttaches(app, mLayer, mItemId, mAttaches);
 
             if (mAttaches.size() > 0) {
                 final PhotoPicker gallery = new PhotoPicker(getActivity(), true);
@@ -272,6 +291,30 @@ public class AttributesFragment
 
         attributes.close();
         checkNearbyItems();
+    }
+
+
+    protected void addRow(String column, String text) {
+        LinearLayout row = new LinearLayout(getActivity());
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout.LayoutParams params =
+                new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
+
+        TextView columnName = new TextView(getActivity());
+        columnName.setLayoutParams(params);
+        columnName.setText(column);
+        TextView data = new TextView(getActivity());
+        data.setLayoutParams(params);
+
+        try {
+            data.setText(text);
+        } catch (Exception ignored) {
+
+        }
+
+        row.addView(columnName);
+        row.addView(data);
+        mAttributes.addView(row);
     }
 
 

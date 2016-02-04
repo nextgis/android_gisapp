@@ -97,6 +97,7 @@
     <string name="show_current_location">Show current location</string>
     <string name="edit_layer">Edit \'%s\' layer</string>
     <string name="attributes_title">Attributes</string>
+    <string name="coordinates">Coordinates</string>
     <string name="compass_title">Compass</string>
     <string name="refresh">Refresh</string>
     <string name="points_for_edit">Points (can be edited)</string>
