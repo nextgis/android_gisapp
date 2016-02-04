@@ -67,7 +67,8 @@ public class FullCompassFragment extends CompassFragment {
         mTrueNorth = prefs.getBoolean(SettingsConstantsUI.KEY_PREF_COMPASS_TRUE_NORTH, true);
         mShowMagnetic = prefs.getBoolean(SettingsConstantsUI.KEY_PREF_COMPASS_MAGNETIC, true);
 
-        ((MainActivity) getActivity()).setActionBarState(false, R.string.compass_title);
+        ((MainActivity) getActivity()).setActionBarState(false);
+        getActivity().setTitle(R.string.compass_title);
         assert getView() != null;
         int accentColor = ThemeUtils.getThemeAttrColor(getContext(), R.attr.colorAccent);
         getView().setBackgroundColor(accentColor);
@@ -90,6 +91,7 @@ public class FullCompassFragment extends CompassFragment {
     public void onDestroyView()
     {
         ((MainActivity) getActivity()).restoreBottomBar(-1);
+        getActivity().setTitle(R.string.app_name);
         super.onDestroyView();
     }
 

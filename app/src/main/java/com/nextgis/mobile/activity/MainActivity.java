@@ -239,7 +239,7 @@ public class MainActivity extends NGActivity
     {
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             getSupportFragmentManager().popBackStack();
-            setActionBarState(true, R.string.app_name);
+            setActionBarState(true);
             return true;
         }
 
@@ -722,20 +722,17 @@ public class MainActivity extends NGActivity
     }
 
 
-    public void setActionBarState(boolean state, int title)
+    public void setActionBarState(boolean state)
     {
         mLayersFragment.setDrawerToggleEnabled(state);
 
         if (state) {
             mToolbar.getBackground().setAlpha(128);
             getBottomToolbar().getBackground().setAlpha(128);
-            title = R.string.app_name;
         } else {
             mToolbar.getBackground().setAlpha(255);
             getBottomToolbar().getBackground().setAlpha(255);
         }
-
-        mToolbar.setTitle(title);
     }
 
 
@@ -747,5 +744,9 @@ public class MainActivity extends NGActivity
     public void restoreBottomBar(int mode)
     {
         mMapFragment.restoreBottomBar(mode);
+    }
+
+    public void setSubtitle(String subtitle) {
+        mToolbar.setSubtitle(subtitle);
     }
 }

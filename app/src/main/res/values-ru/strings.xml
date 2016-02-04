@@ -96,7 +96,7 @@
     <string name="show_status_panel_summary">Показать панель статуса внизу экрана</string>
     <string name="show_current_location">Показать текущее местоположение</string>
     <string name="edit_layer">Отредактировать слой \'%s\'</string>
-    <string name="attributes_title">Атрибуты</string>
+    <string name="of">%1$d of %2$d</string>
     <string name="coordinates">Координаты</string>
     <string name="compass_title">Компас</string>
     <string name="refresh">Обновить</string>

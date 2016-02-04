@@ -24,7 +24,6 @@
 package com.nextgis.mobile.fragment;
 
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.location.Location;
@@ -34,9 +33,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.view.Display;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -105,6 +102,10 @@ public class AttributesFragment
             ViewGroup container,
             Bundle savedInstanceState)
     {
+        if (mLayer == null)
+            getActivity().getSupportFragmentManager().popBackStack();
+
+        getActivity().setTitle(mLayer.getName());
         setHasOptionsMenu(!isTablet());
 
         int resId = isTablet() ? R.layout.fragment_attributes_tab : R.layout.fragment_attributes;
@@ -135,7 +136,7 @@ public class AttributesFragment
     @Override
     public void onResume() {
         super.onResume();
-        ((MainActivity) getActivity()).setActionBarState(isTablet(), R.string.attributes_title);
+        ((MainActivity) getActivity()).setActionBarState(isTablet());
     }
 
 
@@ -157,6 +158,8 @@ public class AttributesFragment
     public void onDestroyView()
     {
         ((MainActivity) getActivity()).restoreBottomBar(MapFragment.MODE_SELECT_ACTION);
+        ((MainActivity) getActivity()).setSubtitle(null);
+        getActivity().setTitle(R.string.app_name);
         super.onDestroyView();
     }
 
@@ -168,10 +171,8 @@ public class AttributesFragment
         mItemId = selectedItemId;
         mLayer = selectedLayer;
 
-        if (mLayer == null) {
-            getActivity().getSupportFragmentManager().popBackStack();
+        if (mLayer == null)
             return;
-        }
 
         mFeatureIDs = mLayer.query(null); // get all feature IDs
 
@@ -195,20 +196,10 @@ public class AttributesFragment
         mAttributes.removeAllViews();
 
         FragmentActivity activity = getActivity();
-        if (null == activity) {
+        if (null == activity)
             return;
-        }
-        TextView title = new TextView(activity);
-        title.setText(mLayer.getName());
-        title.setTextSize(24);
-        title.setGravity(Gravity.CENTER);
 
-        Resources r = getResources();
-        int px = (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, 24, r.getDisplayMetrics());
-
-        title.setPadding(0, 0, 0, px);
-        mAttributes.addView(title);
+        ((MainActivity) activity).setSubtitle(String.format(getString(R.string.of), mItemPosition + 1, mFeatureIDs.size()));
 
         String selection = Constants.FIELD_ID + " = ?";
         Cursor attributes = mLayer.query(null, selection, new String[]{mItemId + ""}, null, null);
