@@ -98,6 +98,7 @@
     <string name="edit_layer">Отредактировать слой \'%s\'</string>
     <string name="features_count_attributes">%1$d of %2$d</string>
     <string name="coordinates">Координаты</string>
+    <string name="length">Длина</string>
     <string name="compass_title">Компас</string>
     <string name="refresh">Обновить</string>
     <string name="points_for_edit">Точки (можно редактировать)</string>

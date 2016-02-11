@@ -47,6 +47,7 @@ import com.keenfin.easypicker.PhotoPicker;
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.datasource.Field;
 import com.nextgis.maplib.datasource.GeoGeometryFactory;
+import com.nextgis.maplib.datasource.GeoLineString;
 import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.Constants;
@@ -75,6 +76,7 @@ import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
 import static com.nextgis.maplib.util.GeoConstants.FTDate;
 import static com.nextgis.maplib.util.GeoConstants.FTDateTime;
 import static com.nextgis.maplib.util.GeoConstants.FTTime;
+import static com.nextgis.maplib.util.GeoConstants.GTLineString;
 import static com.nextgis.maplib.util.GeoConstants.GTPoint;
 
 
@@ -233,6 +235,15 @@ public class AttributesFragment
                             } catch (IOException | ClassNotFoundException e) {
                                 e.printStackTrace();
                             }
+                            continue;
+                        case GTLineString:
+                            try {
+                                GeoLineString line = (GeoLineString) GeoGeometryFactory.fromBlob(attributes.getBlob(i));
+                                addRow(getString(R.string.length), String.format("%.3f %s", line.getLength() / 1000, getString(R.string.unit_kilometer)));
+                            } catch (IOException | ClassNotFoundException e) {
+                                e.printStackTrace();
+                            }
+                            continue;
                         default:
                             continue;
                     }
