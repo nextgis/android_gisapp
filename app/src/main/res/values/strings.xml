@@ -100,6 +100,7 @@
     <string name="features_count_attributes">%1$d of %2$d</string>
     <string name="coordinates">Coordinates</string>
     <string name="length">Length</string>
+    <string name="center">Center</string>
     <string name="compass_title">Compass</string>
     <string name="refresh">Refresh</string>
     <string name="points_for_edit">Points (can be edited)</string>

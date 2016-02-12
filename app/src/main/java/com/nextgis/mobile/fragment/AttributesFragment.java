@@ -48,6 +48,8 @@ import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.datasource.Field;
 import com.nextgis.maplib.datasource.GeoGeometryFactory;
 import com.nextgis.maplib.datasource.GeoLineString;
+import com.nextgis.maplib.datasource.GeoMultiLineString;
+import com.nextgis.maplib.datasource.GeoMultiPoint;
 import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.Constants;
@@ -77,6 +79,8 @@ import static com.nextgis.maplib.util.GeoConstants.FTDate;
 import static com.nextgis.maplib.util.GeoConstants.FTDateTime;
 import static com.nextgis.maplib.util.GeoConstants.FTTime;
 import static com.nextgis.maplib.util.GeoConstants.GTLineString;
+import static com.nextgis.maplib.util.GeoConstants.GTMultiLineString;
+import static com.nextgis.maplib.util.GeoConstants.GTMultiPoint;
 import static com.nextgis.maplib.util.GeoConstants.GTPoint;
 
 
@@ -219,19 +223,15 @@ public class AttributesFragment
                         case GTPoint:
                             try {
                                 GeoPoint pt = (GeoPoint) GeoGeometryFactory.fromBlob(attributes.getBlob(i));
-                                pt.setCRS(CRS_WEB_MERCATOR);
-                                pt.project(CRS_WGS84);
-
-                                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-                                int format = prefs.getInt(SettingsConstantsUI.KEY_PREF_COORD_FORMAT + "_int", Location.FORMAT_SECONDS);
-
-                                String lat = getString(com.nextgis.maplibui.R.string.latitude_caption_short) + ": " +
-                                        LocationUtil.formatLatitude(pt.getY(), format, getResources());
-                                String lon = getString(com.nextgis.maplibui.R.string.longitude_caption_short) + ": " +
-                                        LocationUtil.formatLongitude(pt.getX(), format, getResources());
-
-                                text = lat + "\r\n" + lon;
-                                addRow(getString(R.string.coordinates), text);
+                                addRow(getString(R.string.coordinates), formatCoordinates(pt));
+                            } catch (IOException | ClassNotFoundException e) {
+                                e.printStackTrace();
+                            }
+                            continue;
+                        case GTMultiPoint:
+                            try {
+                                GeoMultiPoint mpt = (GeoMultiPoint) GeoGeometryFactory.fromBlob(attributes.getBlob(i));
+                                addRow(getString(R.string.center), formatCoordinates(mpt.getEnvelope().getCenter()));
                             } catch (IOException | ClassNotFoundException e) {
                                 e.printStackTrace();
                             }
@@ -240,6 +240,14 @@ public class AttributesFragment
                             try {
                                 GeoLineString line = (GeoLineString) GeoGeometryFactory.fromBlob(attributes.getBlob(i));
                                 addRow(getString(R.string.length), String.format("%.3f %s", line.getLength() / 1000, getString(R.string.unit_kilometer)));
+                            } catch (IOException | ClassNotFoundException e) {
+                                e.printStackTrace();
+                            }
+                            continue;
+                        case GTMultiLineString:
+                            try {
+                                GeoMultiLineString multiline = (GeoMultiLineString) GeoGeometryFactory.fromBlob(attributes.getBlob(i));
+                                addRow(getString(R.string.length), String.format("%.3f %s", multiline.getLength() / 1000, getString(R.string.unit_kilometer)));
                             } catch (IOException | ClassNotFoundException e) {
                                 e.printStackTrace();
                             }
@@ -317,6 +325,22 @@ public class AttributesFragment
         row.addView(columnName);
         row.addView(data);
         mAttributes.addView(row);
+    }
+
+
+    protected String formatCoordinates(GeoPoint pt) {
+        pt.setCRS(CRS_WEB_MERCATOR);
+        pt.project(CRS_WGS84);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+        int format = prefs.getInt(SettingsConstantsUI.KEY_PREF_COORD_FORMAT + "_int", Location.FORMAT_SECONDS);
+
+        String lat = getString(com.nextgis.maplibui.R.string.latitude_caption_short) + ": " +
+                LocationUtil.formatLatitude(pt.getY(), format, getResources());
+        String lon = getString(com.nextgis.maplibui.R.string.longitude_caption_short) + ": " +
+                LocationUtil.formatLongitude(pt.getX(), format, getResources());
+
+        return lat + "\r\n" + lon;
     }
 
 
