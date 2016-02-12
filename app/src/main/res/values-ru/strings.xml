@@ -6,7 +6,7 @@
   ~ Author:   NikitaFeodonit, nfeodonit@yandex.com
   ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2012-2015. NextGIS, info@nextgis.com
+  ~ Copyright (c) 2012-2016 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -44,9 +44,11 @@
     <string name="ngw">NextGIS Web</string>
     <string name="ngw_summary">Настройки NextGIS Web</string>
     <string name="app_description">Мобильная ГИС для визуализации и сбора геоданных в поле и отправки результатов на сервер. NextGIS Mobile также записывает треки и отправляет координаты местоположения на сервер.</string>
-    <string name="credits_intro">Лицензии:</string>
-    <string name="credits"><![CDATA[Некоторые иконки использованные в приложении:<br>- <a href=\"http://icons8.com/android-icons\">Icons8.com</a>, <a href=\"http://creativecommons.org/licenses/by-nd/3.0/\">CC BY-ND 3.0</a><br>- <a href=\"http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html\">romannurik.github.io</a>, <a href=\"http://creativecommons.org/licenses/by/3.0/\">CC BY 3.0</a>]]></string>
+    <string name="credits_intro">Лицензии</string>
+    <string name="credits">Некоторые иконки использованные в приложении с <a href="http://icons8.com/android-icons">Icons8.com</a> под лицензией <a
+        href="http://creativecommons.org/licenses/by-nd/3.0/">CC BY-ND 3.0</a> и <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a> под лицензией <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a></string>
     <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2012–2015]]></string>
+    <string name="contacts"><a href="http://nextgis.ru/contact/">Связаться с нами</a></string>
     <string name="action_about">О программе</string>
     <string name="add_current_place">Добавить текущую точку</string>
     <string name="add_new_geometry">Добавить объект</string>

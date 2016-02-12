@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2015. NextGIS, info@nextgis.com
+ * Copyright (c) 2012-2016 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,12 +25,12 @@ package com.nextgis.mobile.activity;
 
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
-import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
+
 import com.nextgis.maplibui.activity.NGActivity;
 import com.nextgis.mobile.R;
 
@@ -59,9 +59,20 @@ public class AboutActivity
             txtVersion.setText("");
         }
 
-        TextView txtCreditsText = (TextView) findViewById(R.id.credits);
-        txtCreditsText.setText(Html.fromHtml(getString(R.string.credits)));
-        txtCreditsText.setMovementMethod(LinkMovementMethod.getInstance());
+        findViewById(R.id.creditsInto).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog builder = new AlertDialog.Builder(v.getContext()).setTitle(R.string.credits_intro)
+                        .setMessage(R.string.credits)
+                        .setPositiveButton(android.R.string.ok, null).create();
+                builder.show();
+                ((TextView) builder.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
+                ((TextView) builder.findViewById(android.R.id.message)).setLinksClickable(true);
+            }
+        });
+
+        TextView contacts = (TextView) findViewById(R.id.contacts);
+        contacts.setMovementMethod(LinkMovementMethod.getInstance());
 
         TextView txtCopyrightText = (TextView) findViewById(R.id.copyright);
         txtCopyrightText.setText(Html.fromHtml(getString(R.string.copyright)));
