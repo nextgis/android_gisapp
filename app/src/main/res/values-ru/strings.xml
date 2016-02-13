@@ -102,6 +102,8 @@
     <string name="coordinates">Координаты</string>
     <string name="length">Длина</string>
     <string name="center">Центр</string>
+    <string name="area">Площадь</string>
+    <string name="perimeter">Периметр</string>
     <string name="compass_title">Компас</string>
     <string name="refresh">Обновить</string>
     <string name="points_for_edit">Точки (можно редактировать)</string>

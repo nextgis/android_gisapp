@@ -50,7 +50,9 @@ import com.nextgis.maplib.datasource.GeoGeometryFactory;
 import com.nextgis.maplib.datasource.GeoLineString;
 import com.nextgis.maplib.datasource.GeoMultiLineString;
 import com.nextgis.maplib.datasource.GeoMultiPoint;
+import com.nextgis.maplib.datasource.GeoMultiPolygon;
 import com.nextgis.maplib.datasource.GeoPoint;
+import com.nextgis.maplib.datasource.GeoPolygon;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.GeoConstants;
@@ -81,7 +83,9 @@ import static com.nextgis.maplib.util.GeoConstants.FTTime;
 import static com.nextgis.maplib.util.GeoConstants.GTLineString;
 import static com.nextgis.maplib.util.GeoConstants.GTMultiLineString;
 import static com.nextgis.maplib.util.GeoConstants.GTMultiPoint;
+import static com.nextgis.maplib.util.GeoConstants.GTMultiPolygon;
 import static com.nextgis.maplib.util.GeoConstants.GTPoint;
+import static com.nextgis.maplib.util.GeoConstants.GTPolygon;
 
 
 public class AttributesFragment
@@ -239,7 +243,7 @@ public class AttributesFragment
                         case GTLineString:
                             try {
                                 GeoLineString line = (GeoLineString) GeoGeometryFactory.fromBlob(attributes.getBlob(i));
-                                addRow(getString(R.string.length), String.format("%.3f %s", line.getLength() / 1000, getString(R.string.unit_kilometer)));
+                                addRow(getString(R.string.length), formatLength(line.getLength()));
                             } catch (IOException | ClassNotFoundException e) {
                                 e.printStackTrace();
                             }
@@ -247,7 +251,25 @@ public class AttributesFragment
                         case GTMultiLineString:
                             try {
                                 GeoMultiLineString multiline = (GeoMultiLineString) GeoGeometryFactory.fromBlob(attributes.getBlob(i));
-                                addRow(getString(R.string.length), String.format("%.3f %s", multiline.getLength() / 1000, getString(R.string.unit_kilometer)));
+                                addRow(getString(R.string.length), formatLength(multiline.getLength()));
+                            } catch (IOException | ClassNotFoundException e) {
+                                e.printStackTrace();
+                            }
+                            continue;
+                        case GTPolygon:
+                            try {
+                                GeoPolygon polygon = (GeoPolygon) GeoGeometryFactory.fromBlob(attributes.getBlob(i));
+                                addRow(getString(R.string.perimeter), formatLength(polygon.getPerimeter()));
+                                addRow(getString(R.string.area), formatArea(polygon.getArea()));
+                            } catch (IOException | ClassNotFoundException e) {
+                                e.printStackTrace();
+                            }
+                            continue;
+                        case GTMultiPolygon:
+                            try {
+                                GeoMultiPolygon polygon = (GeoMultiPolygon) GeoGeometryFactory.fromBlob(attributes.getBlob(i));
+                                addRow(getString(R.string.perimeter), formatLength(polygon.getPerimeter()));
+                                addRow(getString(R.string.area), formatArea(polygon.getArea()));
                             } catch (IOException | ClassNotFoundException e) {
                                 e.printStackTrace();
                             }
@@ -341,6 +363,28 @@ public class AttributesFragment
                 LocationUtil.formatLongitude(pt.getX(), format, getResources());
 
         return lat + "\r\n" + lon;
+    }
+
+
+    protected String formatLength(double length) {
+        int div = 1, unit = R.string.unit_meter;
+        if (length >= 1000) {
+            div *= 1000;
+            unit = R.string.unit_kilometer;
+        }
+
+        return String.format("%.3f %s", length / div, getString(unit));
+    }
+
+
+    protected String formatArea(double length) {
+        int div = 1, unit = R.string.unit_square_meter;
+        if (length >= 1000000) {
+            div *= 1000000;
+            unit = R.string.unit_square_kilometer;
+        }
+
+        return String.format("%.3f %s", length / div, getString(unit));
     }
 
 

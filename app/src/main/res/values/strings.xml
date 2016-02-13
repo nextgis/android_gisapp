@@ -101,6 +101,8 @@
     <string name="coordinates">Coordinates</string>
     <string name="length">Length</string>
     <string name="center">Center</string>
+    <string name="area">Area</string>
+    <string name="perimeter">Perimeter</string>
     <string name="compass_title">Compass</string>
     <string name="refresh">Refresh</string>
     <string name="points_for_edit">Points (can be edited)</string>
