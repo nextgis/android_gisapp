@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2015. NextGIS, info@nextgis.com
+ * Copyright (c) 2012-2016 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,7 +50,10 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.nextgis.maplib.api.IGISApplication;
+import com.nextgis.maplib.api.INGWLayer;
 import com.nextgis.maplib.datasource.ngw.SyncAdapter;
+import com.nextgis.maplib.map.MapContentProviderHelper;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.SettingsConstants;
@@ -60,12 +63,8 @@ import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.CreateVectorLayerActivity;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import static com.nextgis.maplib.util.Constants.NGW_ACCOUNT_TYPE;
 import static com.nextgis.mobile.util.SettingsConstants.AUTHORITY;
@@ -127,9 +126,18 @@ public class LayersFragment
     protected void setupSyncOptions()
     {
         mAccounts.clear();
-        final AccountManager accountManager =
-                AccountManager.get(getActivity().getApplicationContext());
-        Collections.addAll(mAccounts, accountManager.getAccountsByType(NGW_ACCOUNT_TYPE));
+        final AccountManager accountManager = AccountManager.get(getActivity().getApplicationContext());
+        final IGISApplication application = (IGISApplication) getActivity().getApplication();
+        List<INGWLayer> layers = new ArrayList<>();
+
+        for (Account account : accountManager.getAccountsByType(NGW_ACCOUNT_TYPE)) {
+            layers.clear();
+            MapContentProviderHelper.getLayersByAccount(application.getMap(), account.name, layers);
+
+            if (layers.size() > 0)
+                mAccounts.add(account);
+        }
+
         if (mAccounts.isEmpty()) {
             if (null != mSyncButton) {
                 mSyncButton.setEnabled(false);
