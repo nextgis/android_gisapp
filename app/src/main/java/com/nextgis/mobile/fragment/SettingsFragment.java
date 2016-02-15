@@ -35,6 +35,7 @@ import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.SettingsActivity;
 import com.nextgis.mobile.dialog.SelectMapPathDialogPreference;
+import com.nextgis.mobile.util.IntEditTextPreference;
 
 import static com.nextgis.mobile.activity.SettingsActivity.initializeMapBG;
 import static com.nextgis.mobile.activity.SettingsActivity.initializeReset;
@@ -68,7 +69,9 @@ public class SettingsFragment
 
                 final ListPreference lpCoordinateFormat = (ListPreference) findPreference(
                         SettingsConstantsUI.KEY_PREF_COORD_FORMAT);
-                SettingsActivity.initializeCoordinateFormat(lpCoordinateFormat);
+                final IntEditTextPreference etCoordinateFraction = (IntEditTextPreference) findPreference(
+                        SettingsConstantsUI.KEY_PREF_COORD_FRACTION);
+                SettingsActivity.initializeCoordinates(lpCoordinateFormat, etCoordinateFraction);
 
                 final SelectMapPathDialogPreference mapPath =
                         (SelectMapPathDialogPreference) findPreference(

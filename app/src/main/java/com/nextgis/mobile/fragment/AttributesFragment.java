@@ -356,11 +356,12 @@ public class AttributesFragment
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         int format = prefs.getInt(SettingsConstantsUI.KEY_PREF_COORD_FORMAT + "_int", Location.FORMAT_SECONDS);
+        int fraction = prefs.getInt(SettingsConstantsUI.KEY_PREF_COORD_FRACTION, 6);
 
         String lat = getString(com.nextgis.maplibui.R.string.latitude_caption_short) + ": " +
-                LocationUtil.formatLatitude(pt.getY(), format, getResources());
+                LocationUtil.formatLatitude(pt.getY(), format, fraction, getResources());
         String lon = getString(com.nextgis.maplibui.R.string.longitude_caption_short) + ": " +
-                LocationUtil.formatLongitude(pt.getX(), format, getResources());
+                LocationUtil.formatLongitude(pt.getX(), format, fraction, getResources());
 
         return lat + "\r\n" + lon;
     }

@@ -73,6 +73,7 @@
     <string name="meters">m</string>
     <string name="seconds">s</string>
     <string name="coordinates_format">Coordinates format</string>
+    <string name="coordinates_fraction_digits">Fraction digits</string>
     <string name="select_coordinates_format">Select coordinates format</string>
     <string name="coordinates_format_summary">Coordinate text format</string>
     <string name="map_bg">Map background</string>

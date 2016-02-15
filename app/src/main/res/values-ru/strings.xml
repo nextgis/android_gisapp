@@ -74,6 +74,7 @@
     <string name="meters">м</string>
     <string name="seconds">с</string>
     <string name="coordinates_format">Формат координат</string>
+    <string name="coordinates_fraction_digits">Разрядов после запятой</string>
     <string name="select_coordinates_format">Выберите формат координат</string>
     <string name="coordinates_format_summary">Выберите текст для координат</string>
     <string name="map_bg">Фон карты</string>

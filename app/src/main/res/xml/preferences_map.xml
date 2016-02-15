@@ -6,7 +6,7 @@
   ~ Author:   NikitaFeodonit, nfeodonit@yandex.com
   ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2012-2015. NextGIS, info@nextgis.com
+  ~ Copyright (c) 2012-2016 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -24,59 +24,65 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <CheckBoxPreference
-        android:key="show_status_panel"
-        android:title="@string/show_status_panel"
         android:defaultValue="true"
+        android:key="show_status_panel"
         android:summary="@string/show_status_panel_summary"
-        />
+        android:title="@string/show_status_panel"/>
+
     <ListPreference
-        android:key="show_current_location"
-        android:title="@string/show_current_location"
         android:defaultValue="3"
         android:entries="@array/current_location_mode"
         android:entryValues="@array/current_location_mode_val"
-        />
+        android:key="show_current_location"
+        android:title="@string/show_current_location"/>
+
     <CheckBoxPreference
-        android:key="map_show_compass"
-        android:title="@string/show_compass"
         android:defaultValue="true"
-        />
+        android:key="map_show_compass"
+        android:title="@string/show_compass"/>
+
     <CheckBoxPreference
+        android:defaultValue="false"
         android:key="keep_screen_on"
-        android:title="@string/keep_screen_on"
-        android:defaultValue="false"
         android:summary="@string/keep_screen_on_summary"
-        />
+        android:title="@string/keep_screen_on"/>
+
     <CheckBoxPreference
-        android:key="show_zoom_controls"
-        android:title="@string/show_zoom_controls"
         android:defaultValue="false"
+        android:key="show_zoom_controls"
         android:summary="@string/show_zoom_controls_summary"
-        />
+        android:title="@string/show_zoom_controls"/>
+
     <ListPreference
-        android:key="coordinates_format"
-        android:title="@string/coordinates_format"
-        android:summary="@string/coordinates_format_summary"
         android:defaultValue="0"
+        android:dialogTitle="@string/select_coordinates_format"
         android:entries="@array/coordinates_format"
         android:entryValues="@array/coordinates_format_val"
-        android:dialogTitle="@string/select_coordinates_format"
-        />
+        android:key="coordinates_format"
+        android:summary="@string/coordinates_format_summary"
+        android:title="@string/coordinates_format"/>
+
+    <com.nextgis.mobile.util.IntEditTextPreference
+        android:defaultValue="6"
+        android:inputType="number"
+        android:key="coordinates_fraction_digits"
+        android:numeric="integer"
+        android:title="@string/coordinates_fraction_digits"/>
+
     <ListPreference
-        android:key="map_bg"
-        android:title="@string/map_bg"
         android:defaultValue="neutral"
         android:entries="@array/map_bg_entry"
         android:entryValues="@array/map_bg_val"
-        />
+        android:key="map_bg"
+        android:title="@string/map_bg"/>
+
     <com.nextgis.mobile.dialog.SelectMapPathDialogPreference
-        android:key="map_path"
-        android:title="@string/map_path"
-        android:summary="@string/map_path_summary"
         android:dialogTitle="@string/select_map_path"
-        android:positiveButtonText="@string/select"
+        android:key="map_path"
         android:negativeButtonText="@string/cancel"
-        />
+        android:positiveButtonText="@string/select"
+        android:summary="@string/map_path_summary"
+        android:title="@string/map_path"/>
 
     <!-- TODO:
     1) tile size

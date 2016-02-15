@@ -51,6 +51,7 @@ import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.dialog.SelectMapPathDialogPreference;
 import com.nextgis.mobile.fragment.SettingsFragment;
+import com.nextgis.mobile.util.IntEditTextPreference;
 
 import java.io.File;
 import java.util.List;
@@ -90,7 +91,9 @@ public class SettingsActivity
 
                     final ListPreference lpCoordinateFormat = (ListPreference) findPreference(
                             SettingsConstantsUI.KEY_PREF_COORD_FORMAT);
-                    initializeCoordinateFormat(lpCoordinateFormat);
+                    final IntEditTextPreference etCoordinateFraction = (IntEditTextPreference) findPreference(
+                            SettingsConstantsUI.KEY_PREF_COORD_FRACTION);
+                    initializeCoordinates(lpCoordinateFormat, etCoordinateFraction);
 
                     final SelectMapPathDialogPreference mapPath =
                             (SelectMapPathDialogPreference) findPreference(
@@ -182,8 +185,23 @@ public class SettingsActivity
         });
     }
 
-    public static void initializeCoordinateFormat(ListPreference lpCoordinateFormat)
+    public static void initializeCoordinates(ListPreference lpCoordinateFormat, IntEditTextPreference etCoordinateFraction)
     {
+        if (etCoordinateFraction != null) {
+            etCoordinateFraction.setSummary(etCoordinateFraction.getPersistedString("6"));
+
+            etCoordinateFraction.setOnPreferenceChangeListener(
+                    new Preference.OnPreferenceChangeListener() {
+                        @Override
+                        public boolean onPreferenceChange(
+                                Preference preference,
+                                Object newValue) {
+                            preference.setSummary(newValue.toString());
+                            return true;
+                        }
+                    });
+        }
+
         if (null != lpCoordinateFormat) {
             lpCoordinateFormat.setSummary(lpCoordinateFormat.getEntry());
 

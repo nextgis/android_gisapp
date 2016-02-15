@@ -89,7 +89,6 @@ import com.nextgis.mobile.activity.MainActivity;
 
 import java.util.List;
 
-import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_COORD_FORMAT;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SCROLL_X;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SCROLL_Y;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_COMPASS;
@@ -123,7 +122,7 @@ public class MapFragment
     protected EditLayerOverlay       mEditLayerOverlay;
     protected GeoPoint               mCurrentCenter;
 
-    protected int mCoordinatesFormat;
+    protected int mCoordinatesFormat, mCoordinatesFraction;
     protected ChooseLayerDialog mChooseLayerDialog;
     protected Vibrator mVibrator;
 
@@ -669,7 +668,8 @@ public class MapFragment
             mMap.addListener(this);
         }
 
-        mCoordinatesFormat = prefs.getInt(KEY_PREF_COORD_FORMAT + "_int", Location.FORMAT_DEGREES);
+        mCoordinatesFormat = prefs.getInt(SettingsConstantsUI.KEY_PREF_COORD_FORMAT + "_int", Location.FORMAT_DEGREES);
+        mCoordinatesFraction = prefs.getInt(SettingsConstantsUI.KEY_PREF_COORD_FRACTION, 6);
 
         if (null != mCurrentLocationOverlay) {
             mCurrentLocationOverlay.updateMode(
@@ -1180,14 +1180,15 @@ public class MapFragment
                             "%.1f %s/%s", location.getSpeed() * 3600 / 1000,
                             getString(R.string.unit_kilometer), getString(R.string.unit_hour)));
             mStatusLatitude.setText(
-                    LocationUtil.formatCoordinate(location.getLatitude(), mCoordinatesFormat) +
-                            " " +
-                            getString(R.string.latitude_caption_short));
+                    formatCoordinate(location.getLatitude(), R.string.latitude_caption_short));
             mStatusLongitude.setText(
-                    LocationUtil.formatCoordinate(location.getLongitude(), mCoordinatesFormat) +
-                            " " +
-                            getString(R.string.longitude_caption_short));
+                    formatCoordinate(location.getLongitude(), R.string.longitude_caption_short));
         }
+    }
+
+
+    private String formatCoordinate(double value, int appendix) {
+        return LocationUtil.formatCoordinate(value, mCoordinatesFormat, mCoordinatesFraction) + " " + getString(appendix);
     }
 
 

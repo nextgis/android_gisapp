@@ -28,11 +28,6 @@ public interface SettingsConstants
     String AUTHORITY             = "com.nextgis.mobile.provider";
 
     /**
-     * map preference
-     */
-    String KEY_PREF_COORD_FORMAT = "coordinates_format";
-
-    /**
      * Preference key - not UI
      */
     String KEY_PREF_SCROLL_X      = "map_scroll_x";
