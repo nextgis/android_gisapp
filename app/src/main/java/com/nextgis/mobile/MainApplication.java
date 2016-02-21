@@ -62,7 +62,10 @@ import static com.nextgis.maplib.util.GeoConstants.TMSTYPE_OSM;
 import static com.nextgis.mobile.util.SettingsConstants.*;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_APP_VERSION;
 
-
+/**
+ * Main application class
+ * The initial layers create here. Also upgrade db from previous version si here too.
+ */
 public class MainApplication extends GISApplication
 {
     public static final String LAYER_OSM = "osm";
