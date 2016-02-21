@@ -336,7 +336,8 @@ public class MainActivity extends NGActivity
                 if (resultCode == RESULT_OK) {
                     // Get the Uri of the selected file
                     Uri uri = data.getData();
-                    Log.d(TAG, "File Uri: " + uri.toString());
+                    if(Constants.DEBUG_MODE)
+                        Log.d(TAG, "File Uri: " + uri.toString());
                     //check the file type from extension
                     String fileName = FileUtil.getFileNameByUri(this, uri, "");
                     if (fileName.toLowerCase().endsWith("ngrc") ||
@@ -423,10 +424,12 @@ public class MainActivity extends NGActivity
                 e.printStackTrace();
             }
             int result = getContentResolver().update(updateUri, values, null, null);
-            if (result == 0) {
-                Log.d(TAG, "update failed");
-            } else {
-                Log.d(TAG, "" + result);
+            if(Constants.DEBUG_MODE){
+                if (result == 0) {
+                    Log.d(TAG, "update failed");
+                } else {
+                    Log.d(TAG, "" + result);
+                }
             }
         }
     }
@@ -457,10 +460,12 @@ public class MainActivity extends NGActivity
         values.put(VectorLayer.ATTACH_DESCRIPTION, "simple update description");
         //    values.put(VectorLayer.ATTACH_ID, 999);
         int result = getContentResolver().update(updateUri, values, null, null);
-        if (result == 0) {
-            Log.d(TAG, "update failed");
-        } else {
-            Log.d(TAG, "" + result);
+        if(Constants.DEBUG_MODE){
+            if (result == 0) {
+                Log.d(TAG, "update failed");
+            } else {
+                Log.d(TAG, "" + result);
+            }
         }
         //}
     }
@@ -486,10 +491,12 @@ public class MainActivity extends NGActivity
                 "content://" + SettingsConstants.AUTHORITY +
                         "/layer_20150210140455993/36/attach/1");
         int result = getContentResolver().delete(deleteUri, null, null);
-        if (result == 0) {
-            Log.d(TAG, "delete failed");
-        } else {
-            Log.d(TAG, "" + result);
+        if(Constants.DEBUG_MODE){
+            if (result == 0) {
+                Log.d(TAG, "delete failed");
+            } else {
+                Log.d(TAG, "" + result);
+            }
         }
         //}
     }
@@ -531,7 +538,8 @@ public class MainActivity extends NGActivity
                 e.printStackTrace();
             }
 
-            Log.d(TAG, result.toString());
+            if(Constants.DEBUG_MODE)
+                Log.d(TAG, result.toString());
         }
         //}
     }
@@ -575,10 +583,12 @@ public class MainActivity extends NGActivity
                 e.printStackTrace();
             }
             Uri result = getContentResolver().insert(uri, values);
-            if (result == null) {
-                Log.d(TAG, "insert failed");
-            } else {
-                Log.d(TAG, result.toString());
+            if(Constants.DEBUG_MODE){
+                if (result == null) {
+                    Log.d(TAG, "insert failed");
+                } else {
+                    Log.d(TAG, result.toString());
+                }
             }
         }
     }
@@ -601,10 +611,12 @@ public class MainActivity extends NGActivity
                     ngwVectorLayer.getPath().getName());
             Uri deleteUri = ContentUris.withAppendedId(uri, 27);
             int result = getContentResolver().delete(deleteUri, null, null);
-            if (result == 0) {
-                Log.d(TAG, "delete failed");
-            } else {
-                Log.d(TAG, "" + result);
+            if(Constants.DEBUG_MODE){
+                if (result == 0) {
+                    Log.d(TAG, "delete failed");
+                } else {
+                    Log.d(TAG, "" + result);
+                }
             }
         }
     }
