@@ -6,7 +6,7 @@
   ~ Author:   NikitaFeodonit, nfeodonit@yandex.com
   ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2012-2015. NextGIS, info@nextgis.com
+  ~ Copyright (c) 2012-2016 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -27,8 +27,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
     <FrameLayout
         android:id="@+id/fl_compass"
@@ -42,16 +41,14 @@
         android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="?attr/actionBarSize"
-        />
+        android:layout_marginTop="?attr/actionBarSize"/>
 
     <FrameLayout
         android:id="@+id/fl_status_panel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:minHeight="16dp"
-        />
+        android:minHeight="16dp"/>
 
     <com.getbase.floatingactionbutton.FloatingActionButton
         android:id="@+id/action_zoom_in"
@@ -66,8 +63,7 @@
         fab:fab_addButtonColorPressed="?attr/colorAccent"
         fab:fab_addButtonPlusIconColor="@android:color/white"
         fab:fab_icon="@drawable/ic_plus"
-        fab:fab_size="mini"
-        />
+        fab:fab_size="mini"/>
 
     <com.getbase.floatingactionbutton.FloatingActionButton
         android:id="@+id/action_zoom_out"
@@ -82,8 +78,22 @@
         fab:fab_addButtonColorPressed="?attr/colorAccent"
         fab:fab_addButtonPlusIconColor="@android:color/white"
         fab:fab_icon="@drawable/ic_minus"
-        fab:fab_size="mini"
-        />
+        fab:fab_size="mini"/>
+
+    <com.getbase.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_point_by_tap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/fl_status_panel"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:visibility="gone"
+        fab:fab_addButtonColorNormal="?attr/colorPrimary"
+        fab:fab_addButtonColorPressed="?attr/colorAccent"
+        fab:fab_addButtonPlusIconColor="@android:color/white"
+        fab:fab_icon="@drawable/ic_action_add_point"/>
 
     <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:id="@+id/multiple_actions"
@@ -96,8 +106,7 @@
         android:layout_marginRight="16dp"
         fab:fab_addButtonColorNormal="?attr/colorPrimary"
         fab:fab_addButtonColorPressed="?attr/colorAccent"
-        fab:fab_addButtonPlusIconColor="@android:color/white"
-        >
+        fab:fab_addButtonPlusIconColor="@android:color/white">
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/add_geometry_by_walk"
@@ -106,8 +115,7 @@
             fab:fab_colorNormal="?attr/colorPrimary"
             fab:fab_colorPressed="?attr/colorAccent"
             fab:fab_icon="@drawable/ic_action_maps_directions_walk"
-            fab:fab_size="mini"
-            />
+            fab:fab_size="mini"/>
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/add_new_geometry"
@@ -116,8 +124,7 @@
             fab:fab_colorNormal="?attr/colorPrimary"
             fab:fab_colorPressed="?attr/colorAccent"
             fab:fab_icon="@drawable/ic_action_edit_light"
-            fab:fab_size="mini"
-            />
+            fab:fab_size="mini"/>
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/add_current_location"
@@ -126,9 +133,6 @@
             fab:fab_colorNormal="?attr/colorPrimary"
             fab:fab_colorPressed="?attr/colorAccent"
             fab:fab_icon="@drawable/ic_action_maps_place"
-            fab:fab_size="mini"
-            />
-
+            fab:fab_size="mini"/>
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
-
 </RelativeLayout>

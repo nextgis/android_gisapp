@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2015. NextGIS, info@nextgis.com
+ * Copyright (c) 2012-2016 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -106,7 +106,6 @@ public class MainActivity extends NGActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
         // initialize the default settings
         PreferenceManager.setDefaultValues(this, R.xml.preferences_general, false);
         PreferenceManager.setDefaultValues(this, R.xml.preferences_map, false);
@@ -124,7 +123,7 @@ public class MainActivity extends NGActivity
 
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerLayout.setStatusBarBackgroundColor(ThemeUtils.getThemeAttrColor(
-                                                         this, R.attr.colorPrimaryDark));
+                this, R.attr.colorPrimaryDark));
 
         mMapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
@@ -140,6 +139,24 @@ public class MainActivity extends NGActivity
         }
 
         mMessageReceiver = new MessageReceiver();
+    }
+
+
+    public void showEditBar() {
+        mToolbar.getMenu().clear();
+        mToolbar.inflateMenu(R.menu.edit_geometry);
+        mLayersFragment.setDrawerToggleEnabled(false);
+        mToolbar.setNavigationIcon(R.drawable.ic_action_cancel_dark);
+    }
+
+
+    public void showToolbar() {
+        mToolbar.setTitle(R.string.app_name);
+        mToolbar.setSubtitle(null);
+        mToolbar.getMenu().clear();
+        mToolbar.inflateMenu(R.menu.main);
+        mLayersFragment.setDrawerToggleEnabled(true);
+        mLayersFragment.syncState();
     }
 
 
@@ -160,9 +177,11 @@ public class MainActivity extends NGActivity
         return super.onCreateOptionsMenu(menu);
     }
 
+    public Toolbar getToolbar() {
+        return mToolbar;
+    }
 
-    public BottomToolbar getBottomToolbar()
-    {
+    public BottomToolbar getBottomToolbar() {
         return (BottomToolbar) findViewById(R.id.bottom_toolbar);
     }
 
@@ -174,7 +193,14 @@ public class MainActivity extends NGActivity
 
         switch (item.getItemId()) {
             case android.R.id.home:
-                return finishFragment();
+                if (hasFragments())
+                    return finishFragment();
+                else if (mMapFragment.isEditMode())
+                    return mMapFragment.onOptionsItemSelected(item.getItemId());
+                else {
+                    mLayersFragment.toggle();
+                    return true;
+                }
             case R.id.menu_settings:
                 app.showSettings(SettingsConstantsUI.ACTION_PREFS_GENERAL);
                 return true;
@@ -218,6 +244,10 @@ public class MainActivity extends NGActivity
                     mMapFragment.refresh();
                 }
                 return true;
+            case R.id.menu_edit_save:
+                return mMapFragment.saveEdits();
+            default:
+                return super.onOptionsItemSelected(item);
             /*case R.id.menu_test:
                 //testAttachInsert();
                 //testAttachUpdate();
@@ -230,14 +260,17 @@ public class MainActivity extends NGActivity
                 }.start();
                 return true;*/
         }
+    }
 
-        return super.onOptionsItemSelected(item);
+
+    public boolean hasFragments() {
+        return getSupportFragmentManager().getBackStackEntryCount() > 0;
     }
 
 
     public boolean finishFragment()
     {
-        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+        if (hasFragments()) {
             getSupportFragmentManager().popBackStack();
             setActionBarState(true);
             return true;
@@ -259,6 +292,9 @@ public class MainActivity extends NGActivity
             int progress)
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            if (!mLayersFragment.isDrawerToggleEnabled())
+                return;
+
             if (null != mRefreshItem) {
                 if (isRefresh) {
                     if (mRefreshItem.getActionView() == null) {
@@ -363,6 +399,10 @@ public class MainActivity extends NGActivity
         }
     }
 
+
+    public MapFragment getMapFragment() {
+        return mMapFragment;
+    }
 
     protected void locateCurrentPosition()
     {

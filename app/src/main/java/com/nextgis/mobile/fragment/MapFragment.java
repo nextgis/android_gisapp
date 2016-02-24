@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2015. NextGIS, info@nextgis.com
+ * Copyright (c) 2012-2016 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,16 +25,15 @@ package com.nextgis.mobile.fragment;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.os.Vibrator;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -58,11 +57,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cocosw.undobar.UndoBarController;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.nextgis.maplib.api.GpsEventListener;
+import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.api.ILayerView;
+import com.nextgis.maplib.datasource.Feature;
 import com.nextgis.maplib.datasource.GeoEnvelope;
+import com.nextgis.maplib.datasource.GeoGeometry;
 import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.maplib.map.MapDrawable;
@@ -116,6 +119,7 @@ public class MapFragment
     protected RelativeLayout         mMapRelativeLayout;
     protected GpsEventSource         mGpsEventSource;
     protected View                   mMainButton;
+    protected View                   mAddPointButton;
     protected int                    mMode;
     protected CurrentLocationOverlay mCurrentLocationOverlay;
     protected CurrentTrackOverlay    mCurrentTrackOverlay;
@@ -128,10 +132,9 @@ public class MapFragment
 
     protected static final int MODE_NORMAL        = 0;
     protected static final int MODE_SELECT_ACTION = 1;
-    protected static final int MODE_EDIT          = EditLayerOverlay.MODE_EDIT + 100;
-    protected static final int MODE_HIGHLIGHT     = EditLayerOverlay.MODE_HIGHLIGHT + 100;
-    protected static final int MODE_INFO          = 4;
-    protected static final int MODE_EDIT_BY_WALK  = EditLayerOverlay.MODE_EDIT_BY_WALK + 100;
+    protected static final int MODE_EDIT          = 2;
+    protected static final int MODE_INFO          = 3;
+    protected static final int MODE_EDIT_BY_WALK  = 4;
 
     protected static final String KEY_MODE = "mode";
     protected boolean mShowStatusPanel, mIsCompassDragging;
@@ -151,127 +154,192 @@ public class MapFragment
     }
 
 
-    protected void setMode(int mode)
-    {
-        if (null == mActivity) {
-            return;
+    public boolean isEditMode() {
+        return mMode == MODE_EDIT;
+    }
+
+
+    public boolean onOptionsItemSelected(int id) {
+        switch (id) {
+            case android.R.id.home:
+                cancelEdits();
+                return true;
+            default:
+                return mEditLayerOverlay.onOptionsItemSelected(id);
+        }
+    }
+
+
+    public boolean saveEdits() {
+        mEditLayerOverlay.setHasEdits(false);
+
+        VectorLayer layer = mEditLayerOverlay.getSelectedLayer();
+        long featureId = mEditLayerOverlay.getSelectedFeatureId();
+        GeoGeometry geometry = mEditLayerOverlay.getSelectedFeatureGeometry();
+
+        if (mEditLayerOverlay.isGeometryDeleted()) {
+            layer.deleteAddChanges(featureId);
+            defineMenuItems();
+        } else {
+            if (mEditLayerOverlay.getSelectedFeatureGeometry() != null) {
+                //show attributes edit activity
+                IVectorLayerUI vectorLayerUI = (IVectorLayerUI) layer;
+                if (null != vectorLayerUI)
+                    vectorLayerUI.showEditForm(mActivity, featureId, geometry);
+
+                layer.showFeature(featureId);
+            }
         }
 
-        if (mEditLayerOverlay != null)
-            mEditLayerOverlay.hideOverlayPoint();
+        mEditLayerOverlay.setSelectedFeature(null);
+        mEditLayerOverlay.setMode(EditLayerOverlay.MODE_HIGHLIGHT);
+        setMode(MODE_SELECT_ACTION);
+
+        return true;
+    }
+
+
+    public void cancelEdits() {
+//        if (mEditLayerOverlay.hasEdits()) TODO prompt dialog
+//            return;
+
+        // restore
+        mEditLayerOverlay.setHasEdits(false);
+        long featureId = mEditLayerOverlay.getSelectedFeatureId();
+
+        mEditLayerOverlay.setSelectedFeatureId(featureId);
+        mEditLayerOverlay.setMode(EditLayerOverlay.MODE_HIGHLIGHT);
+        setMode(MODE_SELECT_ACTION);
+    }
+
+
+    protected void setMode(int mode) {
+        mMode = mode;
+
+        hideAddByTapButton();
+        mEditLayerOverlay.hideOverlayPoint();
 
         final BottomToolbar toolbar = mActivity.getBottomToolbar();
+        mStatusPanel.setVisibility(View.INVISIBLE);
+        toolbar.setVisibility(View.VISIBLE);
+        hideMainButton();
+
         switch (mode) {
             case MODE_NORMAL:
-                if (null != toolbar) {
-                    toolbar.setVisibility(View.GONE);
-                }
-                if (null != mMainButton) {
-                    mMainButton.setVisibility(View.VISIBLE);
-                }
+                toolbar.setVisibility(View.GONE);
+                showMainButton();
 
-                if (mShowStatusPanel) {
+                if (mShowStatusPanel)
                     mStatusPanel.setVisibility(View.VISIBLE);
-                }
+
+                mActivity.showToolbar();
                 break;
             case MODE_EDIT:
+                mActivity.showEditBar();
+                toolbar.getBackground().setAlpha(128);
+                break;
             case MODE_EDIT_BY_WALK:
-                if (null != toolbar) {
-                    if (null != mEditLayerOverlay) {
-                        if(mEditLayerOverlay.setMode(mode - 100)) {
+                toolbar.getMenu().clear();
+                toolbar.inflateMenu(com.nextgis.maplibui.R.menu.edit_by_walk);
+                toolbar.setNavigationIcon(com.nextgis.maplibui.R.drawable.ic_action_cancel_dark);
 
-                            if (null != mMainButton) {
-                                mMainButton.setVisibility(View.GONE);
+                toolbar.setNavigationOnClickListener(
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                setMode(MODE_NORMAL);
+                                mEditLayerOverlay.stopGeometryByWalk(); // TODO toast?
+                                mEditLayerOverlay.setMode(EditLayerOverlay.MODE_NONE);
                             }
-                            mStatusPanel.setVisibility(View.INVISIBLE);
-                            toolbar.setVisibility(View.VISIBLE);
-                            toolbar.getBackground().setAlpha(128);
-                            Menu menu = toolbar.getMenu();
-                            if (null != menu) {
-                                menu.clear();
-                            }
+                        });
 
-                            mEditLayerOverlay.setToolbar(toolbar);
+                toolbar.setOnMenuItemClickListener(
+                        new BottomToolbar.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem menuItem) {
+                                /**
+                                 * create a new geometry during walk edit
+                                 */
+                                if (menuItem.getItemId() == com.nextgis.maplibui.R.id.menu_add_geometry) {
+                                    Toast.makeText(mActivity, com.nextgis.maplibui.R.string.not_implemented, Toast.LENGTH_SHORT).show();
+                                } else if (menuItem.getItemId() == com.nextgis.maplibui.R.id.menu_edit_save) {
+                                    mEditLayerOverlay.stopGeometryByWalk();
+
+                                    if (mEditLayerOverlay.isCurrentGeometryValid())
+                                        saveEdits();
+                                    else
+                                        Toast.makeText(mActivity, com.nextgis.maplibui.R.string.geometry_by_walk_no_points, Toast.LENGTH_SHORT).show();
+
+                                    mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT);
+                                    setMode(MODE_EDIT);
+                                } else if (menuItem.getItemId() == com.nextgis.maplibui.R.id.menu_settings) {
+                                    IGISApplication app = (IGISApplication) mActivity.getApplication();
+                                    app.showSettings(SettingsConstantsUI.ACTION_PREFS_LOCATION);
+                                }
+
+                                return true;
+                            }
                         }
-                        else{
-                            Toast.makeText(mActivity, R.string.error_unsupported_layer_type,
-                                    Toast.LENGTH_SHORT).show();
-                            break;
-                        }
-                    }
-                }
+                );
+
+                mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT_BY_WALK);
                 break;
             case MODE_SELECT_ACTION:
                 //hide FAB, show bottom toolbar
-                if (null != toolbar) {
-                    if (null != mMainButton) {
-                        mMainButton.setVisibility(View.GONE);
-                    }
-                    mStatusPanel.setVisibility(View.INVISIBLE);
-                    toolbar.setNavigationIcon(R.drawable.ic_action_cancel_dark);
-                    toolbar.setNavigationOnClickListener(
-                            new View.OnClickListener()
+                mActivity.showToolbar();
+
+                toolbar.setNavigationIcon(R.drawable.ic_action_cancel_dark);
+                toolbar.setNavigationOnClickListener(
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                setMode(MODE_NORMAL);
+                                mEditLayerOverlay.setMode(EditLayerOverlay.MODE_NONE);
+                                mEditLayerOverlay.showAllFeatures();
+                            }
+                        });
+                toolbar.getBackground().setAlpha(128);
+                toolbar.setOnMenuItemClickListener(
+                        new BottomToolbar.OnMenuItemClickListener()
+                        {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item)
                             {
-                                @Override
-                                public void onClick(View view)
-                                {
-                                    if (null != mEditLayerOverlay) {
-                                        mEditLayerOverlay.setMode(EditLayerOverlay.MODE_NONE);
-                                    }
-                                    setMode(MODE_NORMAL);
-                                }
-                            });
-                    toolbar.setVisibility(View.VISIBLE);
-                    toolbar.getBackground().setAlpha(128);
-                    toolbar.setOnMenuItemClickListener(
-                            new BottomToolbar.OnMenuItemClickListener()
-                            {
-                                @Override
-                                public boolean onMenuItemClick(MenuItem item)
-                                {
-                                    switch (item.getItemId()) {
-                                        case R.id.menu_point_by_tap:
-                                            addPointByTap();
-                                            break;
-                                        case R.id.menu_edit:
+                                if (!isLayerValid())
+                                    return false;
+
+                                switch (item.getItemId()) {
+                                    case R.id.menu_feature_add:
+                                        mEditLayerOverlay.createNewGeometry();
+                                        mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT);
+                                        setMode(MODE_EDIT);
+                                        break;
+                                    case R.id.menu_feature_edit:
+                                        if (isFeatureValid()) {
+                                            mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT);
                                             setMode(MODE_EDIT);
-                                            break;
-                                        case R.id.menu_delete:
-                                            if (null != mEditLayerOverlay) {
-                                                mEditLayerOverlay.deleteItem();
-                                            }
-
-                                            setMode(MODE_NORMAL);
-                                            break;
-                                        case R.id.menu_info:
+                                        }
+                                        break;
+                                    case R.id.menu_feature_delete:
+                                        if (isFeatureValid())
+                                            deleteFeature();
+                                        break;
+                                    case R.id.menu_feature_attributes:
+                                        if (isFeatureValid())
                                             setMode(MODE_INFO);
-                                            break;
-                                    }
-                                    return true;
+                                        break;
                                 }
-                            });
-                    // Inflate a menu to be displayed in the toolbar
-                    Menu menu = toolbar.getMenu();
-                    if (null != menu) {
-                        menu.clear();
-                    }
-                    toolbar.inflateMenu(R.menu.select_action);
-                    //distributeToolbarItems(toolbar);
-                }
-                break;
-            case MODE_HIGHLIGHT:
-                if (null != toolbar) {
-                    toolbar.setVisibility(View.VISIBLE);
-                    toolbar.getBackground().setAlpha(128);
-                    if (null != mMainButton) {
-                        mMainButton.setVisibility(View.GONE);
-                    }
-                    mStatusPanel.setVisibility(View.INVISIBLE);
 
-                    if (mEditLayerOverlay != null) {
-                        mEditLayerOverlay.setToolbar(toolbar);
-                    }
-                }
+                                return true;
+                            }
+                        });
+                // Inflate a menu to be displayed in the toolbar
+                Menu menu = toolbar.getMenu();
+                if (null != menu)
+                    menu.clear();
+
+                toolbar.inflateMenu(R.menu.select_action);
+                //distributeToolbarItems(toolbar);
                 break;
             case MODE_INFO:
                 boolean tabletSize = getResources().getBoolean(R.bool.isTablet);
@@ -310,28 +378,63 @@ public class MapFragment
 
                 attributesFragment.setSelectedFeature(
                         mEditLayerOverlay.getSelectedLayer(),
-                        mEditLayerOverlay.getSelectedItemId());
+                        mEditLayerOverlay.getSelectedFeatureId());
 
-                if (null != toolbar) {
-                    toolbar.setVisibility(View.VISIBLE);
-                    if (null != mMainButton) {
-                        mMainButton.setVisibility(View.GONE);
-                    }
-                    mStatusPanel.setVisibility(View.INVISIBLE);
-
-                    attributesFragment.setToolbar(toolbar, mEditLayerOverlay);
-                }
+                attributesFragment.setToolbar(toolbar, mEditLayerOverlay);
                 break;
         }
-        mMode = mode;
+
+        defineMenuItems();
     }
 
+    protected void defineMenuItems() {
+        if (mMode == MODE_NORMAL || mMode == MODE_INFO)
+            return;
 
-    protected void hideEditIcons() {
-        Menu menu = mActivity.getBottomToolbar().getMenu();
-        for (int i = 0; i < menu.size(); i++)
-            if (menu.getItem(i).getItemId() != R.id.menu_point_by_tap)
-                menu.getItem(i).setVisible(false);
+        Toolbar topbar = mActivity.getToolbar();
+        boolean noFeature = mEditLayerOverlay.getSelectedFeatureGeometry() == null;
+        long featureId = mEditLayerOverlay.getSelectedFeatureId();
+        String featureName = noFeature ? getString(R.string.nothing_selected) :
+                featureId == Constants.NOT_FOUND ? getString(R.string.new_feature) :
+                        String.format(getString(R.string.feature_n), featureId);
+        topbar.setTitle(featureName);
+        topbar.setSubtitle(mEditLayerOverlay.getSelectedLayer().getName());
+    }
+
+    protected boolean isLayerValid() {
+        return mEditLayerOverlay.getSelectedLayer() != null;
+    }
+
+    protected boolean isFeatureValid() {
+        return mEditLayerOverlay.getSelectedFeatureId() != Constants.NOT_FOUND;
+    }
+
+    public void deleteFeature()
+    {
+        final VectorLayer selectedLayer = mEditLayerOverlay.getSelectedLayer();
+        final long selectedFeatureId = mEditLayerOverlay.getSelectedFeatureId();
+        selectedLayer.hideFeature(selectedFeatureId);
+        mEditLayerOverlay.setSelectedFeature(null);
+        defineMenuItems();
+
+        new UndoBarController.UndoBar(mActivity)
+                .message(mActivity.getString(com.nextgis.maplibui.R.string.delete_item_done))
+                .listener(new UndoBarController.AdvancedUndoListener() {
+                    @Override
+                    public void onHide(@Nullable Parcelable parcelable) {
+                        selectedLayer.deleteAddChanges(selectedFeatureId);
+                    }
+
+                    @Override
+                    public void onClear(@NonNull Parcelable[] parcelables) { }
+
+                    @Override
+                    public void onUndo(@Nullable Parcelable parcelable) {
+                        selectedLayer.showFeature(selectedFeatureId);
+                        mEditLayerOverlay.setSelectedFeatureId(selectedFeatureId);
+                        defineMenuItems();
+                    }
+                }).show();
     }
 
 
@@ -400,6 +503,12 @@ public class MapFragment
 
         //add edit_point layer overlay
         mEditLayerOverlay = new EditLayerOverlay(mActivity, mMap);
+        view.post(new Runnable() {
+            @Override
+            public void run() {
+                mEditLayerOverlay.setToolbar(mActivity.getBottomToolbar());
+            }
+        });
 
         mMap.addOverlay(mCurrentTrackOverlay);
         mMap.addOverlay(mCurrentLocationOverlay);
@@ -417,6 +526,8 @@ public class MapFragment
         mMap.invalidate();
 
         mMainButton = view.findViewById(R.id.multiple_actions);
+        mAddPointButton = view.findViewById(R.id.add_point_by_tap);
+        mAddPointButton.setOnClickListener(this);
 
         View addCurrentLocation = view.findViewById(R.id.add_current_location);
         if (null != addCurrentLocation)
@@ -789,19 +900,16 @@ public class MapFragment
                 GeoConstants.GTPolygonCheck | GeoConstants.GTMultiPolygonCheck);
         layers = removeHideLayers(layers);
         if (layers.isEmpty()) {
-            Toast.makeText(
-                    mActivity, getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG)
-                    .show();
+            Toast.makeText(mActivity, getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG).show();
         } else if (layers.size() == 1) {
             //open form
-            ILayer vectorLayer = layers.get(0);
-            mEditLayerOverlay.setFeature((VectorLayer) vectorLayer, Constants.NOT_FOUND);
-            setMode(MODE_EDIT);
+            VectorLayer layer = (VectorLayer) layers.get(0);
 
-            Toast.makeText(
-                    mActivity,
-                    String.format(getString(R.string.edit_layer), vectorLayer.getName()),
-                    Toast.LENGTH_SHORT).show();
+            mEditLayerOverlay.setSelectedLayer(layer);
+            mEditLayerOverlay.setSelectedFeature(new Feature());
+            setMode(MODE_SELECT_ACTION);
+
+            Toast.makeText(mActivity, String.format(getString(R.string.edit_layer), layer.getName()), Toast.LENGTH_SHORT).show();
         } else {
             if (isDialogShown())
                 return;
@@ -827,14 +935,16 @@ public class MapFragment
                     .show();
         } else if (layers.size() == 1) {
             //open form
-            ILayer vectorLayer = layers.get(0);
-            mEditLayerOverlay.setFeature((VectorLayer) vectorLayer, Constants.NOT_FOUND);
+            VectorLayer layer = (VectorLayer) layers.get(0);
+
+            mEditLayerOverlay.setSelectedLayer(layer);
             mEditLayerOverlay.createPointFromOverlay();
+            mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT);
             setMode(MODE_EDIT);
 
             Toast.makeText(
                     mActivity,
-                    String.format(getString(R.string.edit_layer), vectorLayer.getName()),
+                    String.format(getString(R.string.edit_layer), layer.getName()),
                     Toast.LENGTH_SHORT).show();
         } else {
             if (isDialogShown())
@@ -909,25 +1019,18 @@ public class MapFragment
     protected void addGeometryByWalk()
     {
         //show select layer dialog if several layers, else start default or custom form
-        List<ILayer> layers = mMap.getVectorLayersByType(
-                GeoConstants.GTLineStringCheck | GeoConstants.GTPolygonCheck);
-
+        List<ILayer> layers = mMap.getVectorLayersByType(GeoConstants.GTLineStringCheck | GeoConstants.GTPolygonCheck);
         layers = removeHideLayers(layers);
 
         if (layers.isEmpty()) {
-            Toast.makeText(
-                    mActivity, getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG)
-                    .show();
+            Toast.makeText(mActivity, getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG).show();
         } else if (layers.size() == 1) {
             //open form
-            ILayer vectorLayer = layers.get(0);
-            mEditLayerOverlay.setFeature((VectorLayer) vectorLayer, Constants.NOT_FOUND);
+            VectorLayer layer = (VectorLayer) layers.get(0);
             setMode(MODE_EDIT_BY_WALK);
+            mEditLayerOverlay.setSelectedLayer(layer);
 
-            Toast.makeText(
-                    mActivity,
-                    String.format(getString(R.string.edit_layer), vectorLayer.getName()),
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity, String.format(getString(R.string.edit_layer), layer.getName()), Toast.LENGTH_SHORT).show();
         } else {
             if (isDialogShown())
                 return;
@@ -946,30 +1049,25 @@ public class MapFragment
             int code,
             ILayer layer)
     {
+        VectorLayer vectorLayer = (VectorLayer) layer;
+        if (layer == null)
+            return; // TODO toast?
+
+        mEditLayerOverlay.setSelectedLayer(vectorLayer);
+
         if (code == ADD_CURRENT_LOC) {
             if (layer instanceof ILayerUI) {
                 IVectorLayerUI layerUI = (IVectorLayerUI) layer;
                 layerUI.showEditForm(mActivity, Constants.NOT_FOUND, null);
             }
         } else if (code == ADD_NEW_GEOMETRY) {
-            VectorLayer vectorLayer = (VectorLayer) layer;
-            if(null != vectorLayer) {
-                mEditLayerOverlay.setFeature(vectorLayer, Constants.NOT_FOUND);
-                setMode(MODE_EDIT);
-            }
+            setMode(MODE_SELECT_ACTION);
         } else if (code == ADD_GEOMETRY_BY_WALK) {
-            VectorLayer vectorLayer = (VectorLayer) layer;
-            if(null != vectorLayer) {
-                mEditLayerOverlay.setFeature(vectorLayer, Constants.NOT_FOUND);
-                setMode(MODE_EDIT_BY_WALK);
-            }
+            setMode(MODE_EDIT_BY_WALK);
         } else if (code == ADD_POINT_BY_TAP) {
-            VectorLayer vectorLayer = (VectorLayer) layer;
-            if(null != vectorLayer) {
-                mEditLayerOverlay.setFeature(vectorLayer, Constants.NOT_FOUND);
-                mEditLayerOverlay.createPointFromOverlay();
-                setMode(MODE_EDIT);
-            }
+            mEditLayerOverlay.createPointFromOverlay();
+            mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT);
+            setMode(MODE_EDIT);
         }
     }
 
@@ -1013,22 +1111,56 @@ public class MapFragment
             }
         }
 
+
         if (intersects) {
             //add geometry to overlay
-
-            if (null != mEditLayerOverlay) {
-                mEditLayerOverlay.setFeature(vectorLayer, items.get(0));
-                mEditLayerOverlay.setMode(EditLayerOverlay.MODE_HIGHLIGHT);
-            }
+            mEditLayerOverlay.setSelectedLayer(vectorLayer);
+            mEditLayerOverlay.setSelectedFeatureId(items.get(0));
+            mEditLayerOverlay.setMode(EditLayerOverlay.MODE_HIGHLIGHT);
+            setMode(MODE_SELECT_ACTION);
         }
 
+        showOverlayPoint(event);
         //set select action mode
-        setMode(MODE_SELECT_ACTION);
-        mEditLayerOverlay.setOverlayPoint(event);
         mMap.postInvalidate();
+    }
 
-        if (!intersects)
-            hideEditIcons();
+
+    public void showAddByTapButton() {
+        mAddPointButton.setVisibility(View.VISIBLE);
+    }
+
+
+    public void hideAddByTapButton() {
+        mAddPointButton.setVisibility(View.GONE);
+    }
+
+
+    public void showMainButton() {
+        mMainButton.setVisibility(View.VISIBLE);
+    }
+
+
+    public void hideMainButton() {
+        mMainButton.setVisibility(View.GONE);
+    }
+
+
+    public void hideOverlayPoint() {
+        if (mEditLayerOverlay != null) {
+            mEditLayerOverlay.hideOverlayPoint();
+            mMap.postInvalidate();
+        }
+
+        hideAddByTapButton();
+        showMainButton();
+    }
+
+
+    public void showOverlayPoint(MotionEvent event) {
+        hideMainButton();
+        showAddByTapButton();
+        mEditLayerOverlay.setOverlayPoint(event);
     }
 
 
@@ -1036,13 +1168,16 @@ public class MapFragment
     public void onSingleTapUp(MotionEvent event)
     {
         switch (mMode) {
-            /*case MODE_SELECT_ACTION:
-                setMode(MODE_NORMAL);
-                if (null != mEditLayerOverlay) {
-                    mEditLayerOverlay.setFeature(null, Constants.NOT_FOUND);
-                    mEditLayerOverlay.setMode(EditLayerOverlay.MODE_NONE);
-                }
-                break;*/
+            case MODE_EDIT:
+            case MODE_SELECT_ACTION:
+//                setMode(MODE_NORMAL);
+//                if (null != mEditLayerOverlay) {
+//                    mEditLayerOverlay.setSelectedFeature(null, Constants.NOT_FOUND);
+//                    mEditLayerOverlay.setMode(EditLayerOverlay.MODE_NONE);
+//                }
+                mEditLayerOverlay.selectGeometryInScreenCoordinates(event.getX(), event.getY());
+                defineMenuItems();
+                break;
             case MODE_INFO:
                 if (null != mEditLayerOverlay) {
                     AttributesFragment attributesFragment =
@@ -1052,12 +1187,15 @@ public class MapFragment
                     if (attributesFragment != null) {
                         attributesFragment.setSelectedFeature(
                                 mEditLayerOverlay.getSelectedLayer(),
-                                mEditLayerOverlay.getSelectedItemId());
+                                mEditLayerOverlay.getSelectedFeatureId());
 
                         mMap.postInvalidate();
                     }
                 }
 
+                break;
+            default:
+                hideOverlayPoint();
                 break;
         }
     }
@@ -1261,8 +1399,7 @@ public class MapFragment
     }
 
 
-    public void restoreBottomBar(int mode)
-    {
+    public void restoreBottomBar(int mode) {
         setMode(mode != -1 ? mode : mMode);
     }
 
@@ -1365,6 +1502,9 @@ public class MapFragment
             case R.id.action_zoom_out:
                 if (v.isEnabled())
                     mMap.zoomOut();
+                break;
+            case R.id.add_point_by_tap:
+                addPointByTap();
                 break;
         }
     }

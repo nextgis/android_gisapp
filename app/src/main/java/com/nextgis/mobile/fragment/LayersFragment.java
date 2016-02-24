@@ -273,19 +273,29 @@ public class LayersFragment
         };
 
         // Defer code dependent on restoration of previous instance state.
-        mDrawerLayout.post(
-                new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        mDrawerToggle.syncState();
-                    }
-                });
-
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        syncState();
     }
 
+    public void syncState() {
+        mDrawerLayout.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mDrawerToggle.syncState();
+                        mDrawerLayout.setDrawerListener(mDrawerToggle);
+                    }
+                });
+    }
+
+    public void toggle() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START))
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        else
+            mDrawerLayout.openDrawer(GravityCompat.START);
+    }
+
+    public boolean isDrawerToggleEnabled() {
+        return mDrawerToggle.isDrawerIndicatorEnabled();
+    }
 
     public void setDrawerToggleEnabled(boolean state)
     {

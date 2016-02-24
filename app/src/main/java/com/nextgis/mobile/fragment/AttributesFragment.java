@@ -168,8 +168,6 @@ public class AttributesFragment
     public void onDestroyView()
     {
         ((MainActivity) getActivity()).restoreBottomBar(MapFragment.MODE_SELECT_ACTION);
-        ((MainActivity) getActivity()).setSubtitle(null);
-        getActivity().setTitle(R.string.app_name);
         super.onDestroyView();
     }
 
@@ -447,7 +445,7 @@ public class AttributesFragment
             mItemId = mFeatureIDs.get(mItemPosition);
             setAttributes();
             if (null != mEditLayerOverlay) {
-                mEditLayerOverlay.setFeature(mLayer, mItemId);
+                mEditLayerOverlay.setSelectedFeatureId(mItemId);
             }
         }
     }
@@ -494,13 +492,12 @@ public class AttributesFragment
             final BottomToolbar toolbar,
             EditLayerOverlay overlay)
     {
-        if (null == toolbar || null == mLayer) {
+        if (null == toolbar || null == mLayer)
             return;
-        }
 
         mEditLayerOverlay = overlay;
-
         if (mEditLayerOverlay != null) {
+            mEditLayerOverlay.setSelectedLayer(mLayer);
             mEditLayerOverlay.setMode(EditLayerOverlay.MODE_HIGHLIGHT);
         }
 
@@ -516,10 +513,12 @@ public class AttributesFragment
                     }
                 });
 
+        if (!isTablet())
+            toolbar.getBackground().setAlpha(255);
+
         mBottomMenu = toolbar.getMenu();
-        if (mBottomMenu != null) {
+        if (mBottomMenu != null)
             mBottomMenu.clear();
-        }
 
         toolbar.inflateMenu(R.menu.attributes);
         toolbar.setOnMenuItemClickListener(
@@ -542,6 +541,7 @@ public class AttributesFragment
                         return true;
                     }
                 });
+
         checkNearbyItems();
     }
 }
