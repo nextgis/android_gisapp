@@ -85,6 +85,7 @@ import com.nextgis.maplibui.overlay.CurrentLocationOverlay;
 import com.nextgis.maplibui.overlay.CurrentTrackOverlay;
 import com.nextgis.maplibui.overlay.EditLayerOverlay;
 import com.nextgis.maplibui.util.ConstantsUI;
+import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
@@ -111,6 +112,7 @@ public class MapFragment
     protected MapViewOverlays      mMap;
     protected FloatingActionButton mivZoomIn;
     protected FloatingActionButton mivZoomOut;
+    protected FloatingActionButton mAddNewGeometry;
 
     protected TextView mStatusSource, mStatusAccuracy, mStatusSpeed, mStatusAltitude,
             mStatusLatitude, mStatusLongitude;
@@ -313,11 +315,13 @@ public class MapFragment
                                         mEditLayerOverlay.createNewGeometry();
                                         mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT);
                                         setMode(MODE_EDIT);
+                                        mEditLayerOverlay.setHasEdits(true);
                                         break;
                                     case R.id.menu_feature_edit:
                                         if (isFeatureValid()) {
                                             mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT);
                                             setMode(MODE_EDIT);
+                                            mEditLayerOverlay.setHasEdits(false);
                                         }
                                         break;
                                     case R.id.menu_feature_delete:
@@ -399,6 +403,22 @@ public class MapFragment
                         String.format(getString(R.string.feature_n), featureId);
         topbar.setTitle(featureName);
         topbar.setSubtitle(mEditLayerOverlay.getSelectedLayer().getName());
+
+        boolean hasSelectedFeature = mEditLayerOverlay.getSelectedFeature() != null;
+        BottomToolbar toolbar = mActivity.getBottomToolbar();
+        for (int i = 0; i < toolbar.getMenu().size(); i++) {
+            MenuItem item = toolbar.getMenu().findItem(R.id.menu_feature_delete);
+            if (item != null)
+                ControlHelper.setEnabled(item, hasSelectedFeature);
+
+            item = toolbar.getMenu().findItem(R.id.menu_feature_edit);
+            if (item != null)
+                ControlHelper.setEnabled(item, hasSelectedFeature);
+
+            item = toolbar.getMenu().findItem(R.id.menu_feature_attributes);
+            if (item != null)
+                ControlHelper.setEnabled(item, hasSelectedFeature);
+        }
     }
 
     protected boolean isLayerValid() {
@@ -506,6 +526,7 @@ public class MapFragment
         view.post(new Runnable() {
             @Override
             public void run() {
+                mEditLayerOverlay.setEditbar(mActivity.getToolbar());
                 mEditLayerOverlay.setToolbar(mActivity.getBottomToolbar());
             }
         });
@@ -530,24 +551,19 @@ public class MapFragment
         mAddPointButton.setOnClickListener(this);
 
         View addCurrentLocation = view.findViewById(R.id.add_current_location);
-        if (null != addCurrentLocation)
-            addCurrentLocation.setOnClickListener(this);
+        addCurrentLocation.setOnClickListener(this);
 
-        View addNewGeometry = view.findViewById(R.id.add_new_geometry);
-        if (null != addNewGeometry)
-            addNewGeometry.setOnClickListener(this);
+        mAddNewGeometry = (FloatingActionButton) view.findViewById(R.id.add_new_geometry);
+        mAddNewGeometry.setOnClickListener(this);
 
         View addGeometryByWalk = view.findViewById(R.id.add_geometry_by_walk);
-        if (null != addGeometryByWalk)
-            addGeometryByWalk.setOnClickListener(this);
+        addGeometryByWalk.setOnClickListener(this);
 
         mivZoomIn = (FloatingActionButton) view.findViewById(R.id.action_zoom_in);
-        if (null != mivZoomIn)
-            mivZoomIn.setOnClickListener(this);
+        mivZoomIn.setOnClickListener(this);
 
         mivZoomOut = (FloatingActionButton) view.findViewById(R.id.action_zoom_out);
-        if (null != mivZoomOut)
-            mivZoomOut.setOnClickListener(this);
+        mivZoomOut.setOnClickListener(this);
 
         mStatusPanel = (FrameLayout) view.findViewById(R.id.fl_status_panel);
         return view;
@@ -941,6 +957,7 @@ public class MapFragment
             mEditLayerOverlay.createPointFromOverlay();
             mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT);
             setMode(MODE_EDIT);
+            mEditLayerOverlay.setHasEdits(true);
 
             Toast.makeText(
                     mActivity,
@@ -1068,6 +1085,7 @@ public class MapFragment
             mEditLayerOverlay.createPointFromOverlay();
             mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT);
             setMode(MODE_EDIT);
+            mEditLayerOverlay.setHasEdits(true);
         }
     }
 
@@ -1137,6 +1155,7 @@ public class MapFragment
 
 
     public void showMainButton() {
+        mAddNewGeometry.getIconDrawable().setAlpha(255);
         mMainButton.setVisibility(View.VISIBLE);
     }
 

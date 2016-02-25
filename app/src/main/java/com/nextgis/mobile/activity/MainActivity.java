@@ -727,6 +727,9 @@ public class MainActivity extends NGActivity
             }
         }
 
+        if (mMapFragment.isEditMode())
+            showEditBar();
+
         return super.onPrepareOptionsMenu(menu);
     }
 

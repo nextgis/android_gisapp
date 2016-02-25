@@ -27,6 +27,7 @@
               android:layout_height="wrap_content"
               android:background="?attr/colorPrimary"
               android:gravity="center_vertical"
+              android:minHeight="?attr/actionBarSize"
               android:orientation="vertical"
               android:padding="5dp">
 

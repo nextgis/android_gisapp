@@ -61,6 +61,7 @@ import com.nextgis.maplibui.GISApplication;
 import com.nextgis.maplibui.control.PhotoGallery;
 import com.nextgis.maplibui.fragment.BottomToolbar;
 import com.nextgis.maplibui.overlay.EditLayerOverlay;
+import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
@@ -419,8 +420,8 @@ public class AttributesFragment
         boolean hasPrevious = mItemPosition - 1 >= 0;
 
         if (mBottomMenu != null) {
-            mBottomMenu.getItem(0).setVisible(hasPrevious);
-            mBottomMenu.getItem(1).setVisible(hasNext);
+            ControlHelper.setEnabled(mBottomMenu.getItem(0), hasPrevious);
+            ControlHelper.setEnabled(mBottomMenu.getItem(1), hasNext);
         }
     }
 
