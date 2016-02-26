@@ -228,16 +228,18 @@ public class MainActivity extends NGActivity
                 Intent trackerService = new Intent(this, TrackerService.class);
                 trackerService.putExtra(ConstantsUI.TARGET_CLASS, this.getClass().getName());
 
+                int title = R.string.track_start, icon = R.drawable.ic_action_maps_directions_walk;
                 if (isTrackerServiceRunning(this)) {
                     stopService(trackerService);
-                    item.setTitle(R.string.track_start);
                 } else if (hasUnfinishedTracks(this)) {
                     TrackerService.closeTracks(this, app);
-                    item.setTitle(R.string.track_start);
                 } else {
                     startService(trackerService);
-                    item.setTitle(R.string.track_stop);
+                    title = R.string.track_stop;
+                    icon = R.drawable.ic_action_maps_directions_walk_rec;
                 }
+
+                setTrackItem(item, title, icon);
                 return true;
             case R.id.menu_refresh:
                 if (null != mMapFragment) {
@@ -259,6 +261,14 @@ public class MainActivity extends NGActivity
                     }
                 }.start();
                 return true;*/
+        }
+    }
+
+
+    private void setTrackItem(MenuItem item, int title, int icon) {
+        if (null != item) {
+            item.setTitle(title);
+            item.setIcon(icon);
         }
     }
 
@@ -720,11 +730,10 @@ public class MainActivity extends NGActivity
     public boolean onPrepareOptionsMenu(Menu menu)
     {
         if (null != mLayersFragment && !mLayersFragment.isDrawerOpen()) {
-            int title = hasUnfinishedTracks(this) ? R.string.track_stop : R.string.track_start;
-            MenuItem item = menu.findItem(R.id.menu_track);
-            if (null != item) {
-                item.setTitle(title);
-            }
+            boolean hasUnfinishedTracks = hasUnfinishedTracks(this);
+            int title = hasUnfinishedTracks ? R.string.track_stop : R.string.track_start;
+            int icon = hasUnfinishedTracks ? R.drawable.ic_action_maps_directions_walk_rec : R.drawable.ic_action_maps_directions_walk;
+            setTrackItem(menu.findItem(R.id.menu_track), title, icon);
         }
 
         if (mMapFragment.isEditMode())
