@@ -58,6 +58,7 @@ import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplib.util.LocationUtil;
 import com.nextgis.maplibui.GISApplication;
+import com.nextgis.maplibui.api.IVectorLayerUI;
 import com.nextgis.maplibui.control.PhotoGallery;
 import com.nextgis.maplibui.fragment.BottomToolbar;
 import com.nextgis.maplibui.overlay.EditLayerOverlay;
@@ -147,6 +148,7 @@ public class AttributesFragment
     @Override
     public void onResume() {
         super.onResume();
+        setAttributes();
         ((MainActivity) getActivity()).setActionBarState(isTablet());
     }
 
@@ -420,8 +422,8 @@ public class AttributesFragment
         boolean hasPrevious = mItemPosition - 1 >= 0;
 
         if (mBottomMenu != null) {
-            ControlHelper.setEnabled(mBottomMenu.getItem(0), hasPrevious);
-            ControlHelper.setEnabled(mBottomMenu.getItem(1), hasNext);
+            ControlHelper.setEnabled(mBottomMenu.findItem(R.id.menu_prev), hasPrevious);
+            ControlHelper.setEnabled(mBottomMenu.findItem(R.id.menu_next), hasNext);
         }
     }
 
@@ -536,6 +538,11 @@ public class AttributesFragment
                             return true;
                         } else if (menuItem.getItemId() == R.id.menu_prev) {
                             selectItem(false);
+                            return true;
+                        } else if (menuItem.getItemId() == R.id.menu_edit_attributes) {
+                            IVectorLayerUI vectorLayerUI = (IVectorLayerUI) mLayer;
+                            if (null != vectorLayerUI)
+                                vectorLayerUI.showEditForm(getActivity(), mItemId, null);
                             return true;
                         }
 

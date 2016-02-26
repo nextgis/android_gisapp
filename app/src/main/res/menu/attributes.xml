@@ -6,7 +6,7 @@
   ~ Author:   NikitaFeodonit, nfeodonit@yandex.com
   ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2012-2015. NextGIS, info@nextgis.com
+  ~ Copyright (c) 2012-2016 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -23,18 +23,21 @@
   -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_edit_attributes"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_action_attributes"
+        android:title="@string/edit_attributes"/>
     <item
         android:id="@+id/menu_prev"
         app:showAsAction="ifRoom|withText"
         android:icon="@drawable/ic_action_av_skip_previous"
-        android:title="@string/attributes_prev"
-        />
+        android:title="@string/attributes_prev"/>
     <item
         android:id="@+id/menu_next"
         app:showAsAction="ifRoom|withText"
         android:icon="@drawable/ic_action_av_skip_next"
-        android:title="@string/attributes_next"
-        />
+        android:title="@string/attributes_next"/>
 </menu>

@@ -24,6 +24,8 @@
 package com.nextgis.mobile.fragment;
 
 
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
@@ -91,8 +93,10 @@ import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
 
+import java.io.IOException;
 import java.util.List;
 
+import static com.nextgis.maplib.util.Constants.FIELD_GEOM;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SCROLL_X;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SCROLL_Y;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_COMPASS;
@@ -184,10 +188,24 @@ public class MapFragment
             defineMenuItems();
         } else {
             if (mEditLayerOverlay.getSelectedFeatureGeometry() != null) {
-                //show attributes edit activity
-                IVectorLayerUI vectorLayerUI = (IVectorLayerUI) layer;
-                if (null != vectorLayerUI)
-                    vectorLayerUI.showEditForm(mActivity, featureId, geometry);
+                if (featureId == Constants.NOT_FOUND) {
+                    //show attributes edit activity
+                    IVectorLayerUI vectorLayerUI = (IVectorLayerUI) layer;
+                    if (null != vectorLayerUI)
+                        vectorLayerUI.showEditForm(mActivity, featureId, geometry);
+                } else {
+                    Uri uri = Uri.parse("content://" + mApp.getAuthority() + "/" + layer.getPath().getName());
+                    uri = ContentUris.withAppendedId(uri, featureId);
+
+                    ContentValues values = new ContentValues();
+                    try {
+                        values.put(FIELD_GEOM, mEditLayerOverlay.getSelectedFeatureGeometry().toBlob());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    mActivity.getContentResolver().update(uri, values, null, null);
+                }
 
                 layer.showFeature(featureId);
             }

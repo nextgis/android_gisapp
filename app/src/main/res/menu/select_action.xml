@@ -29,20 +29,20 @@
         android:id="@+id/menu_feature_add"
         android:icon="@drawable/ic_plus"
         android:title="@string/add_new_geometry"
-        app:showAsAction="always|withText"/>
+        app:showAsAction="always"/>
     <item
         android:id="@+id/menu_feature_edit"
         android:icon="@drawable/ic_action_edit_light"
         android:title="@string/action_edit"
-        app:showAsAction="always|withText"/>
+        app:showAsAction="always"/>
     <item
         android:id="@+id/menu_feature_delete"
         android:icon="@drawable/ic_action_delete_alpha"
         android:title="@string/action_delete"
-        app:showAsAction="always|withText"/>
+        app:showAsAction="always"/>
     <item
         android:id="@+id/menu_feature_attributes"
         android:icon="@drawable/ic_action_information_light"
         android:title="@string/action_attributes"
-        app:showAsAction="always|withText"/>
+        app:showAsAction="always"/>
 </menu>
