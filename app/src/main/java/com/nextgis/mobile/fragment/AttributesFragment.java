@@ -96,13 +96,13 @@ public class AttributesFragment
     protected static final String KEY_ITEM_ID       = "item_id";
     protected static final String KEY_ITEM_POSITION = "item_pos";
 
-    private LinearLayout          mAttributes;
-    private VectorLayer           mLayer;
-    private List<Long> mFeatureIDs;
+    private LinearLayout    mAttributes;
+    private VectorLayer     mLayer;
+    private List<Long>      mFeatureIDs;
 
-    private long                  mItemId;
-    private int                   mItemPosition;
-    private boolean mIsTablet;
+    private long        mItemId;
+    private int         mItemPosition;
+    private boolean     mIsTablet;
 
     protected EditLayerOverlay mEditLayerOverlay;
     protected Menu mBottomMenu;
@@ -448,7 +448,7 @@ public class AttributesFragment
             mItemId = mFeatureIDs.get(mItemPosition);
             setAttributes();
             if (null != mEditLayerOverlay) {
-                mEditLayerOverlay.setSelectedFeatureId(mItemId);
+                mEditLayerOverlay.setSelectedFeature(mItemId);
             }
         }
     }
@@ -495,14 +495,10 @@ public class AttributesFragment
             final BottomToolbar toolbar,
             EditLayerOverlay overlay)
     {
-        if (null == toolbar || null == mLayer)
+        if (null == mLayer)
             return;
 
         mEditLayerOverlay = overlay;
-        if (mEditLayerOverlay != null) {
-            mEditLayerOverlay.setSelectedLayer(mLayer);
-            mEditLayerOverlay.setMode(EditLayerOverlay.MODE_HIGHLIGHT);
-        }
 
         toolbar.setNavigationIcon(R.drawable.ic_action_cancel_dark);
         toolbar.setNavigationOnClickListener(

@@ -126,6 +126,8 @@ public class MainActivity extends NGActivity
                 this, R.attr.colorPrimaryDark));
 
         mMapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mMapFragment.getEditLayerOverlay().setTopToolbar(mToolbar);
+        mMapFragment.getEditLayerOverlay().setBottomToolbar(getBottomToolbar());
 
         MainApplication app = (MainApplication) getApplication();
 
@@ -142,7 +144,7 @@ public class MainActivity extends NGActivity
     }
 
 
-    public void showEditBar() {
+    public void showEditToolbar() {
         mToolbar.getMenu().clear();
         mToolbar.inflateMenu(R.menu.edit_geometry);
         mLayersFragment.setDrawerToggleEnabled(false);
@@ -150,7 +152,7 @@ public class MainActivity extends NGActivity
     }
 
 
-    public void showToolbar() {
+    public void showDefaultToolbar() {
         mToolbar.setTitle(R.string.app_name);
         mToolbar.setSubtitle(null);
         mToolbar.getMenu().clear();
@@ -177,9 +179,6 @@ public class MainActivity extends NGActivity
         return super.onCreateOptionsMenu(menu);
     }
 
-    public Toolbar getToolbar() {
-        return mToolbar;
-    }
 
     public BottomToolbar getBottomToolbar() {
         return (BottomToolbar) findViewById(R.id.bottom_toolbar);
@@ -248,6 +247,9 @@ public class MainActivity extends NGActivity
                 return true;
             case R.id.menu_edit_save:
                 return mMapFragment.saveEdits();
+            case R.id.menu_edit_undo:
+            case R.id.menu_edit_redo:
+                return mMapFragment.onOptionsItemSelected(item.getItemId());
             default:
                 return super.onOptionsItemSelected(item);
             /*case R.id.menu_test:
@@ -737,7 +739,7 @@ public class MainActivity extends NGActivity
         }
 
         if (mMapFragment.isEditMode())
-            showEditBar();
+            showEditToolbar();
 
         return super.onPrepareOptionsMenu(menu);
     }
@@ -807,7 +809,8 @@ public class MainActivity extends NGActivity
 
     public void restoreBottomBar(int mode)
     {
-        mMapFragment.restoreBottomBar(mode);
+        if (mMapFragment.isAdded())
+            mMapFragment.restoreBottomBar(mode);
     }
 
     public void setSubtitle(String subtitle) {

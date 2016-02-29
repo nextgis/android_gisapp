@@ -40,14 +40,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.internal.view.menu.ActionMenuItemView;
-import android.support.v7.widget.ActionMenuView;
-import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -68,6 +63,7 @@ import com.nextgis.maplib.api.ILayerView;
 import com.nextgis.maplib.datasource.Feature;
 import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplib.datasource.GeoGeometry;
+import com.nextgis.maplib.datasource.GeoGeometryFactory;
 import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.maplib.map.MapDrawable;
@@ -131,6 +127,7 @@ public class MapFragment
     protected CurrentTrackOverlay    mCurrentTrackOverlay;
     protected EditLayerOverlay       mEditLayerOverlay;
     protected GeoPoint               mCurrentCenter;
+    protected VectorLayer            mSelectedLayer;
 
     protected int mCoordinatesFormat, mCoordinatesFraction;
     protected ChooseLayerDialog mChooseLayerDialog;
@@ -143,6 +140,9 @@ public class MapFragment
     protected static final int MODE_EDIT_BY_WALK  = 4;
 
     protected static final String KEY_MODE = "mode";
+    protected static final String BUNDLE_KEY_LAYER = "layer";
+    protected static final String BUNDLE_KEY_FEATURE_ID = "feature";
+    protected static final String BUNDLE_KEY_SAVED_FEATURE = "feature_blob";
     protected boolean mShowStatusPanel, mIsCompassDragging;
 
     protected final int ADD_CURRENT_LOC      = 1;
@@ -157,6 +157,19 @@ public class MapFragment
         super.onCreate(savedInstanceState);
         mActivity = (MainActivity) getActivity();
         mTolerancePX = mActivity.getResources().getDisplayMetrics().density * ConstantsUI.TOLERANCE_DP;
+
+        mApp = (MainApplication) mActivity.getApplication();
+        mVibrator = (Vibrator) mActivity.getSystemService(Context.VIBRATOR_SERVICE);
+        mGpsEventSource = mApp.getGpsEventSource();
+
+        mMap = new MapViewOverlays(mActivity, (MapDrawable) mApp.getMap());
+        mMap.setId(777);
+
+        mEditLayerOverlay = new EditLayerOverlay(mActivity, mMap);
+    }
+
+    public EditLayerOverlay getEditLayerOverlay() {
+        return mEditLayerOverlay;
     }
 
 
@@ -178,43 +191,35 @@ public class MapFragment
 
     public boolean saveEdits() {
         mEditLayerOverlay.setHasEdits(false);
+        Feature feature = mEditLayerOverlay.getSelectedFeature();
 
-        VectorLayer layer = mEditLayerOverlay.getSelectedLayer();
-        long featureId = mEditLayerOverlay.getSelectedFeatureId();
-        GeoGeometry geometry = mEditLayerOverlay.getSelectedFeatureGeometry();
+        if (mSelectedLayer != null && feature != null) {
+            long featureId = feature.getId();
+            GeoGeometry geometry = feature.getGeometry();
 
-        if (mEditLayerOverlay.isGeometryDeleted()) {
-            layer.deleteAddChanges(featureId);
-            defineMenuItems();
-        } else {
-            if (mEditLayerOverlay.getSelectedFeatureGeometry() != null) {
-                if (featureId == Constants.NOT_FOUND) {
-                    //show attributes edit activity
-                    IVectorLayerUI vectorLayerUI = (IVectorLayerUI) layer;
-                    if (null != vectorLayerUI)
-                        vectorLayerUI.showEditForm(mActivity, featureId, geometry);
-                } else {
-                    Uri uri = Uri.parse("content://" + mApp.getAuthority() + "/" + layer.getPath().getName());
-                    uri = ContentUris.withAppendedId(uri, featureId);
+            if (featureId == Constants.NOT_FOUND) {
+                //show attributes edit activity
+                IVectorLayerUI vectorLayerUI = (IVectorLayerUI) mSelectedLayer;
+                vectorLayerUI.showEditForm(mActivity, featureId, geometry);
+                mEditLayerOverlay.setSelectedFeature(null);
+            } else {
+                Uri uri = Uri.parse("content://" + mApp.getAuthority() + "/" + mSelectedLayer.getPath().getName());
+                uri = ContentUris.withAppendedId(uri, featureId);
+                ContentValues values = new ContentValues();
 
-                    ContentValues values = new ContentValues();
-                    try {
-                        values.put(FIELD_GEOM, mEditLayerOverlay.getSelectedFeatureGeometry().toBlob());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    mActivity.getContentResolver().update(uri, values, null, null);
+                try {
+                    values.put(FIELD_GEOM, geometry.toBlob());
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
 
-                layer.showFeature(featureId);
+                mActivity.getContentResolver().update(uri, values, null, null);
             }
+
+            mSelectedLayer.showFeature(featureId);
         }
 
-        mEditLayerOverlay.setSelectedFeature(null);
-        mEditLayerOverlay.setMode(EditLayerOverlay.MODE_HIGHLIGHT);
         setMode(MODE_SELECT_ACTION);
-
         return true;
     }
 
@@ -226,9 +231,7 @@ public class MapFragment
         // restore
         mEditLayerOverlay.setHasEdits(false);
         long featureId = mEditLayerOverlay.getSelectedFeatureId();
-
-        mEditLayerOverlay.setSelectedFeatureId(featureId);
-        mEditLayerOverlay.setMode(EditLayerOverlay.MODE_HIGHLIGHT);
+        mEditLayerOverlay.setSelectedFeature(featureId);
         setMode(MODE_SELECT_ACTION);
     }
 
@@ -236,27 +239,27 @@ public class MapFragment
     protected void setMode(int mode) {
         mMode = mode;
 
+        hideMainButton();
         hideAddByTapButton();
-        mEditLayerOverlay.hideOverlayPoint();
 
         final BottomToolbar toolbar = mActivity.getBottomToolbar();
-        mStatusPanel.setVisibility(View.INVISIBLE);
+        toolbar.getBackground().setAlpha(128);
         toolbar.setVisibility(View.VISIBLE);
-        hideMainButton();
+        mStatusPanel.setVisibility(View.INVISIBLE);
+        mActivity.showDefaultToolbar();
 
         switch (mode) {
             case MODE_NORMAL:
                 toolbar.setVisibility(View.GONE);
                 showMainButton();
-
                 if (mShowStatusPanel)
                     mStatusPanel.setVisibility(View.VISIBLE);
 
-                mActivity.showToolbar();
+                mEditLayerOverlay.setMode(EditLayerOverlay.MODE_NONE);
                 break;
             case MODE_EDIT:
-                mActivity.showEditBar();
-                toolbar.getBackground().setAlpha(128);
+                mActivity.showEditToolbar();
+                mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT);
                 break;
             case MODE_EDIT_BY_WALK:
                 toolbar.getMenu().clear();
@@ -269,7 +272,6 @@ public class MapFragment
                             public void onClick(View view) {
                                 setMode(MODE_NORMAL);
                                 mEditLayerOverlay.stopGeometryByWalk(); // TODO toast?
-                                mEditLayerOverlay.setMode(EditLayerOverlay.MODE_NONE);
                             }
                         });
 
@@ -289,9 +291,6 @@ public class MapFragment
                                         saveEdits();
                                     else
                                         Toast.makeText(mActivity, com.nextgis.maplibui.R.string.geometry_by_walk_no_points, Toast.LENGTH_SHORT).show();
-
-                                    mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT);
-                                    setMode(MODE_EDIT);
                                 } else if (menuItem.getItemId() == com.nextgis.maplibui.R.id.menu_settings) {
                                     IGISApplication app = (IGISApplication) mActivity.getApplication();
                                     app.showSettings(SettingsConstantsUI.ACTION_PREFS_LOCATION);
@@ -305,63 +304,51 @@ public class MapFragment
                 mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT_BY_WALK);
                 break;
             case MODE_SELECT_ACTION:
-                //hide FAB, show bottom toolbar
-                mActivity.showToolbar();
-
+                toolbar.getMenu().clear();
+                toolbar.inflateMenu(R.menu.select_action);
                 toolbar.setNavigationIcon(R.drawable.ic_action_cancel_dark);
+
                 toolbar.setNavigationOnClickListener(
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                setMode(MODE_NORMAL);
-                                mEditLayerOverlay.setMode(EditLayerOverlay.MODE_NONE);
                                 mEditLayerOverlay.showAllFeatures();
+                                setMode(MODE_NORMAL);
                             }
                         });
-                toolbar.getBackground().setAlpha(128);
+
                 toolbar.setOnMenuItemClickListener(
-                        new BottomToolbar.OnMenuItemClickListener()
-                        {
+                        new BottomToolbar.OnMenuItemClickListener() {
                             @Override
-                            public boolean onMenuItemClick(MenuItem item)
-                            {
-                                if (!isLayerValid())
+                            public boolean onMenuItemClick(MenuItem item) {
+                                if (mSelectedLayer == null)
                                     return false;
 
                                 switch (item.getItemId()) {
                                     case R.id.menu_feature_add:
-                                        mEditLayerOverlay.createNewGeometry();
-                                        mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT);
+                                        mEditLayerOverlay.setSelectedFeature(new Feature());
                                         setMode(MODE_EDIT);
+                                        mEditLayerOverlay.createNewGeometry();
                                         mEditLayerOverlay.setHasEdits(true);
                                         break;
                                     case R.id.menu_feature_edit:
-                                        if (isFeatureValid()) {
-                                            mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT);
-                                            setMode(MODE_EDIT);
-                                            mEditLayerOverlay.setHasEdits(false);
-                                        }
+                                        setMode(MODE_EDIT);
+                                        mEditLayerOverlay.saveToHistory();
+                                        mEditLayerOverlay.setHasEdits(false);
                                         break;
                                     case R.id.menu_feature_delete:
-                                        if (isFeatureValid())
-                                            deleteFeature();
+                                        deleteFeature();
                                         break;
                                     case R.id.menu_feature_attributes:
-                                        if (isFeatureValid())
-                                            setMode(MODE_INFO);
+                                        setMode(MODE_INFO);
                                         break;
                                 }
 
                                 return true;
                             }
                         });
-                // Inflate a menu to be displayed in the toolbar
-                Menu menu = toolbar.getMenu();
-                if (null != menu)
-                    menu.clear();
 
-                toolbar.inflateMenu(R.menu.select_action);
-                //distributeToolbarItems(toolbar);
+                mEditLayerOverlay.setMode(EditLayerOverlay.MODE_HIGHLIGHT);
                 break;
             case MODE_INFO:
                 boolean tabletSize = getResources().getBoolean(R.bool.isTablet);
@@ -398,8 +385,7 @@ public class MapFragment
 
                 fragmentTransaction.commit();
 
-                attributesFragment.setSelectedFeature(
-                        mEditLayerOverlay.getSelectedLayer(),
+                attributesFragment.setSelectedFeature(mSelectedLayer,
                         mEditLayerOverlay.getSelectedFeatureId());
 
                 attributesFragment.setToolbar(toolbar, mEditLayerOverlay);
@@ -413,14 +399,13 @@ public class MapFragment
         if (mMode == MODE_NORMAL || mMode == MODE_INFO)
             return;
 
-        Toolbar topbar = mActivity.getToolbar();
         boolean noFeature = mEditLayerOverlay.getSelectedFeatureGeometry() == null;
         long featureId = mEditLayerOverlay.getSelectedFeatureId();
         String featureName = noFeature ? getString(R.string.nothing_selected) :
                 featureId == Constants.NOT_FOUND ? getString(R.string.new_feature) :
                         String.format(getString(R.string.feature_n), featureId);
-        topbar.setTitle(featureName);
-        topbar.setSubtitle(mEditLayerOverlay.getSelectedLayer().getName());
+        mActivity.setTitle(featureName);
+        mActivity.setSubtitle(mSelectedLayer.getName());
 
         boolean hasSelectedFeature = mEditLayerOverlay.getSelectedFeature() != null;
         BottomToolbar toolbar = mActivity.getBottomToolbar();
@@ -439,19 +424,10 @@ public class MapFragment
         }
     }
 
-    protected boolean isLayerValid() {
-        return mEditLayerOverlay.getSelectedLayer() != null;
-    }
 
-    protected boolean isFeatureValid() {
-        return mEditLayerOverlay.getSelectedFeatureId() != Constants.NOT_FOUND;
-    }
-
-    public void deleteFeature()
-    {
-        final VectorLayer selectedLayer = mEditLayerOverlay.getSelectedLayer();
+    public void deleteFeature() {
         final long selectedFeatureId = mEditLayerOverlay.getSelectedFeatureId();
-        selectedLayer.hideFeature(selectedFeatureId);
+        mSelectedLayer.hideFeature(selectedFeatureId);
         mEditLayerOverlay.setSelectedFeature(null);
         defineMenuItems();
 
@@ -460,7 +436,7 @@ public class MapFragment
                 .listener(new UndoBarController.AdvancedUndoListener() {
                     @Override
                     public void onHide(@Nullable Parcelable parcelable) {
-                        selectedLayer.deleteAddChanges(selectedFeatureId);
+                        mSelectedLayer.deleteAddChanges(selectedFeatureId);
                     }
 
                     @Override
@@ -468,53 +444,11 @@ public class MapFragment
 
                     @Override
                     public void onUndo(@Nullable Parcelable parcelable) {
-                        selectedLayer.showFeature(selectedFeatureId);
-                        mEditLayerOverlay.setSelectedFeatureId(selectedFeatureId);
+                        mSelectedLayer.showFeature(selectedFeatureId);
+                        mEditLayerOverlay.setSelectedFeature(selectedFeatureId);
                         defineMenuItems();
                     }
                 }).show();
-    }
-
-
-    protected void distributeToolbarItems(Toolbar toolbar)
-    {
-        toolbar.setContentInsetsAbsolute(0, 0);
-        // Get the ChildCount of your Toolbar, this should only be 1
-        int childCount = toolbar.getChildCount();
-        // Get the Screen Width in pixels
-        Display display = mActivity.getWindowManager().getDefaultDisplay();
-        DisplayMetrics metrics = new DisplayMetrics();
-        display.getMetrics(metrics);
-        int screenWidth = metrics.widthPixels;
-
-        // Create the Toolbar Params based on the screenWidth
-        Toolbar.LayoutParams toolbarParams =
-                new Toolbar.LayoutParams(screenWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        // Loop through the child Items
-        for (int i = 0; i < childCount; i++) {
-            // Get the item at the current index
-            View childView = toolbar.getChildAt(i);
-            // If its a ViewGroup
-            if (childView instanceof ViewGroup) {
-                // Set its layout params
-                childView.setLayoutParams(toolbarParams);
-                // Get the child count of this view group, and compute the item widths based on this count & screen size
-                int innerChildCount = ((ViewGroup) childView).getChildCount();
-                int itemWidth = (screenWidth / innerChildCount);
-                // Create layout params for the ActionMenuView
-                ActionMenuView.LayoutParams params = new ActionMenuView.LayoutParams(
-                        itemWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
-                // Loop through the children
-                for (int j = 0; j < innerChildCount; j++) {
-                    View grandChild = ((ViewGroup) childView).getChildAt(j);
-                    if (grandChild instanceof ActionMenuItemView) {
-                        // set the layout parameters on each View
-                        grandChild.setLayoutParams(params);
-                    }
-                }
-            }
-        }
     }
 
 
@@ -525,13 +459,7 @@ public class MapFragment
             Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
-        mApp = (MainApplication) mActivity.getApplication();
-        mVibrator = (Vibrator) mActivity.getSystemService(Context.VIBRATOR_SERVICE);
 
-        mMap = new MapViewOverlays(mActivity, (MapDrawable) mApp.getMap());
-        mMap.setId(777);
-
-        mGpsEventSource = mApp.getGpsEventSource();
         mCurrentLocationOverlay = new CurrentLocationOverlay(mActivity, mMap);
         mCurrentLocationOverlay.setStandingMarker(R.mipmap.ic_location_standing);
         mCurrentLocationOverlay.setMovingMarker(R.mipmap.ic_location_moving);
@@ -539,20 +467,9 @@ public class MapFragment
 
         mCurrentTrackOverlay = new CurrentTrackOverlay(mActivity, mMap);
 
-        //add edit_point layer overlay
-        mEditLayerOverlay = new EditLayerOverlay(mActivity, mMap);
-        view.post(new Runnable() {
-            @Override
-            public void run() {
-                mEditLayerOverlay.setEditbar(mActivity.getToolbar());
-                mEditLayerOverlay.setToolbar(mActivity.getBottomToolbar());
-            }
-        });
-
         mMap.addOverlay(mCurrentTrackOverlay);
         mMap.addOverlay(mCurrentLocationOverlay);
         mMap.addOverlay(mEditLayerOverlay);
-
 
         //search relative view of map, if not found - add it
         mMapRelativeLayout = (RelativeLayout) view.findViewById(R.id.maprl);
@@ -728,6 +645,18 @@ public class MapFragment
     {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_MODE, mMode);
+        outState.putInt(BUNDLE_KEY_LAYER, null == mSelectedLayer ? Constants.NOT_FOUND : mSelectedLayer.getId());
+
+        Feature feature = mEditLayerOverlay.getSelectedFeature();
+        outState.putLong(BUNDLE_KEY_FEATURE_ID, null == feature ? Constants.NOT_FOUND : feature.getId());
+
+        if (null != feature && feature.getGeometry() != null) {
+            try {
+                outState.putByteArray(BUNDLE_KEY_SAVED_FEATURE, feature.getGeometry().toBlob());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 
@@ -741,6 +670,31 @@ public class MapFragment
             mMode = MODE_NORMAL;
         } else {
             mMode = savedInstanceState.getInt(KEY_MODE);
+
+            int layerId = savedInstanceState.getInt(BUNDLE_KEY_LAYER);
+            ILayer layer = mMap.getLayerById(layerId);
+            Feature feature = null;
+
+            if (null != layer && layer instanceof VectorLayer) {
+                mSelectedLayer = (VectorLayer) layer;
+
+                if (savedInstanceState.containsKey(BUNDLE_KEY_SAVED_FEATURE)) {
+                    GeoGeometry geometry = null;
+
+                    try {
+                        geometry = GeoGeometryFactory.fromBlob(savedInstanceState.getByteArray(BUNDLE_KEY_SAVED_FEATURE));
+                    } catch (IOException | ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+                    feature = new Feature();
+                    feature.setId(savedInstanceState.getLong(BUNDLE_KEY_FEATURE_ID));
+                    feature.setGeometry(geometry);
+                }
+            }
+
+            mEditLayerOverlay.setSelectedLayer(mSelectedLayer);
+            mEditLayerOverlay.setSelectedFeature(feature);
         }
 
         setMode(mMode);
@@ -939,6 +893,7 @@ public class MapFragment
             //open form
             VectorLayer layer = (VectorLayer) layers.get(0);
 
+            mSelectedLayer = layer;
             mEditLayerOverlay.setSelectedLayer(layer);
             mEditLayerOverlay.setSelectedFeature(new Feature());
             setMode(MODE_SELECT_ACTION);
@@ -971,10 +926,12 @@ public class MapFragment
             //open form
             VectorLayer layer = (VectorLayer) layers.get(0);
 
+            mSelectedLayer = layer;
             mEditLayerOverlay.setSelectedLayer(layer);
-            mEditLayerOverlay.createPointFromOverlay();
-            mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT);
+            mEditLayerOverlay.setSelectedFeature(new Feature());
             setMode(MODE_EDIT);
+            mEditLayerOverlay.clearHistory();
+            mEditLayerOverlay.createPointFromOverlay();
             mEditLayerOverlay.setHasEdits(true);
 
             Toast.makeText(
@@ -1062,6 +1019,7 @@ public class MapFragment
         } else if (layers.size() == 1) {
             //open form
             VectorLayer layer = (VectorLayer) layers.get(0);
+            mSelectedLayer = layer;
             setMode(MODE_EDIT_BY_WALK);
             mEditLayerOverlay.setSelectedLayer(layer);
 
@@ -1088,6 +1046,7 @@ public class MapFragment
         if (layer == null)
             return; // TODO toast?
 
+        mSelectedLayer = vectorLayer;
         mEditLayerOverlay.setSelectedLayer(vectorLayer);
 
         if (code == ADD_CURRENT_LOC) {
@@ -1100,9 +1059,10 @@ public class MapFragment
         } else if (code == ADD_GEOMETRY_BY_WALK) {
             setMode(MODE_EDIT_BY_WALK);
         } else if (code == ADD_POINT_BY_TAP) {
-            mEditLayerOverlay.createPointFromOverlay();
-            mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT);
+            mEditLayerOverlay.setSelectedFeature(new Feature());
             setMode(MODE_EDIT);
+            mEditLayerOverlay.clearHistory();
+            mEditLayerOverlay.createPointFromOverlay();
             mEditLayerOverlay.setHasEdits(true);
         }
     }
@@ -1150,9 +1110,9 @@ public class MapFragment
 
         if (intersects) {
             //add geometry to overlay
+            mSelectedLayer = vectorLayer;
             mEditLayerOverlay.setSelectedLayer(vectorLayer);
-            mEditLayerOverlay.setSelectedFeatureId(items.get(0));
-            mEditLayerOverlay.setMode(EditLayerOverlay.MODE_HIGHLIGHT);
+            mEditLayerOverlay.setSelectedFeature(items.get(0));
             setMode(MODE_SELECT_ACTION);
         }
 
@@ -1184,10 +1144,8 @@ public class MapFragment
 
 
     public void hideOverlayPoint() {
-        if (mEditLayerOverlay != null) {
-            mEditLayerOverlay.hideOverlayPoint();
-            mMap.postInvalidate();
-        }
+        mEditLayerOverlay.hideOverlayPoint();
+        mMap.postInvalidate();
 
         hideAddByTapButton();
         showMainButton();
@@ -1216,14 +1174,15 @@ public class MapFragment
                 defineMenuItems();
                 break;
             case MODE_INFO:
+                mEditLayerOverlay.selectGeometryInScreenCoordinates(event.getX(), event.getY());
+
                 if (null != mEditLayerOverlay) {
                     AttributesFragment attributesFragment =
                             (AttributesFragment) mActivity.getSupportFragmentManager()
                                     .findFragmentByTag("ATTRIBUTES");
 
                     if (attributesFragment != null) {
-                        attributesFragment.setSelectedFeature(
-                                mEditLayerOverlay.getSelectedLayer(),
+                        attributesFragment.setSelectedFeature(mSelectedLayer,
                                 mEditLayerOverlay.getSelectedFeatureId());
 
                         mMap.postInvalidate();
