@@ -145,10 +145,10 @@ public class MapFragment
     protected static final String BUNDLE_KEY_SAVED_FEATURE = "feature_blob";
     protected boolean mShowStatusPanel, mIsCompassDragging;
 
-    protected final int ADD_CURRENT_LOC      = 1;
-    protected final int ADD_NEW_GEOMETRY     = 2;
-    protected final int ADD_GEOMETRY_BY_WALK = 3;
-    protected final int ADD_POINT_BY_TAP     = 4;
+    protected final int ADD_CURRENT_LOC         = 1;
+    public static final int EDIT_LAYER          = 2;
+    protected final int ADD_GEOMETRY_BY_WALK    = 3;
+    protected final int ADD_POINT_BY_TAP        = 4;
 
 
     @Override
@@ -905,7 +905,7 @@ public class MapFragment
             //open choose edit layer dialog
             mChooseLayerDialog = new ChooseLayerDialog();
             mChooseLayerDialog.setLayerList(layers)
-                    .setCode(ADD_NEW_GEOMETRY)
+                    .setCode(EDIT_LAYER)
                     .setTitle(getString(R.string.select_layer))
                     .setTheme(mActivity.getThemeId())
                     .show(mActivity.getSupportFragmentManager(), "choose_layer");
@@ -1054,7 +1054,7 @@ public class MapFragment
                 IVectorLayerUI layerUI = (IVectorLayerUI) layer;
                 layerUI.showEditForm(mActivity, Constants.NOT_FOUND, null);
             }
-        } else if (code == ADD_NEW_GEOMETRY) {
+        } else if (code == EDIT_LAYER) {
             setMode(MODE_SELECT_ACTION);
         } else if (code == ADD_GEOMETRY_BY_WALK) {
             setMode(MODE_EDIT_BY_WALK);

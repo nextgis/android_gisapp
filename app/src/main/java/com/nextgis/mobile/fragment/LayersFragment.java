@@ -51,6 +51,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nextgis.maplib.api.IGISApplication;
+import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.api.INGWLayer;
 import com.nextgis.maplib.datasource.ngw.SyncAdapter;
 import com.nextgis.maplib.map.MapContentProviderHelper;
@@ -62,6 +63,7 @@ import com.nextgis.maplibui.fragment.ReorderedLayerView;
 import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.CreateVectorLayerActivity;
+import com.nextgis.mobile.activity.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -224,6 +226,13 @@ public class LayersFragment
 
         mLayersListView = (ReorderedLayerView) mFragmentContainerView.findViewById(R.id.layer_list);
         mListAdapter = new LayersListAdapter(getActivity(), map);
+        mListAdapter.setOnLayerEditListener(new LayersListAdapter.onEdit() {
+            @Override
+            public void onLayerEdit(ILayer layer) {
+                ((MainActivity) getActivity()).getMapFragment().onFinishChooseLayerDialog(MapFragment.EDIT_LAYER, layer);
+                toggle();
+            }
+        });
         mListAdapter.setDrawer(drawerLayout);
         mLayersListView.setAdapter(mListAdapter);
         mLayersListView.setDrawer(drawerLayout);
