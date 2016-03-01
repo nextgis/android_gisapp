@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2015. NextGIS, info@nextgis.com
+ * Copyright (c) 2012-2016 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -106,7 +106,6 @@ public class MainActivity extends NGActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
         // initialize the default settings
         PreferenceManager.setDefaultValues(this, R.xml.preferences_general, false);
         PreferenceManager.setDefaultValues(this, R.xml.preferences_map, false);
@@ -124,9 +123,11 @@ public class MainActivity extends NGActivity
 
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerLayout.setStatusBarBackgroundColor(ThemeUtils.getThemeAttrColor(
-                                                         this, R.attr.colorPrimaryDark));
+                this, R.attr.colorPrimaryDark));
 
         mMapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mMapFragment.getEditLayerOverlay().setTopToolbar(mToolbar);
+        mMapFragment.getEditLayerOverlay().setBottomToolbar(getBottomToolbar());
 
         MainApplication app = (MainApplication) getApplication();
 
@@ -140,6 +141,24 @@ public class MainActivity extends NGActivity
         }
 
         mMessageReceiver = new MessageReceiver();
+    }
+
+
+    public void showEditToolbar() {
+        mToolbar.getMenu().clear();
+        mToolbar.inflateMenu(R.menu.edit_geometry);
+        mLayersFragment.setDrawerToggleEnabled(false);
+        mToolbar.setNavigationIcon(R.drawable.ic_action_cancel_dark);
+    }
+
+
+    public void showDefaultToolbar() {
+        mToolbar.setTitle(R.string.app_name);
+        mToolbar.setSubtitle(null);
+        mToolbar.getMenu().clear();
+        mToolbar.inflateMenu(R.menu.main);
+        mLayersFragment.setDrawerToggleEnabled(true);
+        mLayersFragment.syncState();
     }
 
 
@@ -161,8 +180,7 @@ public class MainActivity extends NGActivity
     }
 
 
-    public BottomToolbar getBottomToolbar()
-    {
+    public BottomToolbar getBottomToolbar() {
         return (BottomToolbar) findViewById(R.id.bottom_toolbar);
     }
 
@@ -174,7 +192,14 @@ public class MainActivity extends NGActivity
 
         switch (item.getItemId()) {
             case android.R.id.home:
-                return finishFragment();
+                if (hasFragments())
+                    return finishFragment();
+                else if (mMapFragment.isEditMode())
+                    return mMapFragment.onOptionsItemSelected(item.getItemId());
+                else {
+                    mLayersFragment.toggle();
+                    return true;
+                }
             case R.id.menu_settings:
                 app.showSettings(SettingsConstantsUI.ACTION_PREFS_GENERAL);
                 return true;
@@ -202,22 +227,31 @@ public class MainActivity extends NGActivity
                 Intent trackerService = new Intent(this, TrackerService.class);
                 trackerService.putExtra(ConstantsUI.TARGET_CLASS, this.getClass().getName());
 
+                int title = R.string.track_start, icon = R.drawable.ic_action_maps_directions_walk;
                 if (isTrackerServiceRunning(this)) {
                     stopService(trackerService);
-                    item.setTitle(R.string.track_start);
                 } else if (hasUnfinishedTracks(this)) {
                     TrackerService.closeTracks(this, app);
-                    item.setTitle(R.string.track_start);
                 } else {
                     startService(trackerService);
-                    item.setTitle(R.string.track_stop);
+                    title = R.string.track_stop;
+                    icon = R.drawable.ic_action_maps_directions_walk_rec;
                 }
+
+                setTrackItem(item, title, icon);
                 return true;
             case R.id.menu_refresh:
                 if (null != mMapFragment) {
                     mMapFragment.refresh();
                 }
                 return true;
+            case R.id.menu_edit_save:
+                return mMapFragment.saveEdits();
+            case R.id.menu_edit_undo:
+            case R.id.menu_edit_redo:
+                return mMapFragment.onOptionsItemSelected(item.getItemId());
+            default:
+                return super.onOptionsItemSelected(item);
             /*case R.id.menu_test:
                 //testAttachInsert();
                 //testAttachUpdate();
@@ -230,14 +264,25 @@ public class MainActivity extends NGActivity
                 }.start();
                 return true;*/
         }
+    }
 
-        return super.onOptionsItemSelected(item);
+
+    private void setTrackItem(MenuItem item, int title, int icon) {
+        if (null != item) {
+            item.setTitle(title);
+            item.setIcon(icon);
+        }
+    }
+
+
+    public boolean hasFragments() {
+        return getSupportFragmentManager().getBackStackEntryCount() > 0;
     }
 
 
     public boolean finishFragment()
     {
-        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+        if (hasFragments()) {
             getSupportFragmentManager().popBackStack();
             setActionBarState(true);
             return true;
@@ -259,6 +304,9 @@ public class MainActivity extends NGActivity
             int progress)
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            if (!mLayersFragment.isDrawerToggleEnabled())
+                return;
+
             if (null != mRefreshItem) {
                 if (isRefresh) {
                     if (mRefreshItem.getActionView() == null) {
@@ -363,6 +411,10 @@ public class MainActivity extends NGActivity
         }
     }
 
+
+    public MapFragment getMapFragment() {
+        return mMapFragment;
+    }
 
     protected void locateCurrentPosition()
     {
@@ -680,12 +732,14 @@ public class MainActivity extends NGActivity
     public boolean onPrepareOptionsMenu(Menu menu)
     {
         if (null != mLayersFragment && !mLayersFragment.isDrawerOpen()) {
-            int title = hasUnfinishedTracks(this) ? R.string.track_stop : R.string.track_start;
-            MenuItem item = menu.findItem(R.id.menu_track);
-            if (null != item) {
-                item.setTitle(title);
-            }
+            boolean hasUnfinishedTracks = hasUnfinishedTracks(this);
+            int title = hasUnfinishedTracks ? R.string.track_stop : R.string.track_start;
+            int icon = hasUnfinishedTracks ? R.drawable.ic_action_maps_directions_walk_rec : R.drawable.ic_action_maps_directions_walk;
+            setTrackItem(menu.findItem(R.id.menu_track), title, icon);
         }
+
+        if (mMapFragment.isEditMode())
+            showEditToolbar();
 
         return super.onPrepareOptionsMenu(menu);
     }
@@ -755,7 +809,8 @@ public class MainActivity extends NGActivity
 
     public void restoreBottomBar(int mode)
     {
-        mMapFragment.restoreBottomBar(mode);
+        if (mMapFragment.isAdded())
+            mMapFragment.restoreBottomBar(mode);
     }
 
     public void setSubtitle(String subtitle) {

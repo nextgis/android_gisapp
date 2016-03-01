@@ -58,9 +58,11 @@ import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplib.util.LocationUtil;
 import com.nextgis.maplibui.GISApplication;
+import com.nextgis.maplibui.api.IVectorLayerUI;
 import com.nextgis.maplibui.control.PhotoGallery;
 import com.nextgis.maplibui.fragment.BottomToolbar;
 import com.nextgis.maplibui.overlay.EditLayerOverlay;
+import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
@@ -94,13 +96,13 @@ public class AttributesFragment
     protected static final String KEY_ITEM_ID       = "item_id";
     protected static final String KEY_ITEM_POSITION = "item_pos";
 
-    private LinearLayout          mAttributes;
-    private VectorLayer           mLayer;
-    private List<Long> mFeatureIDs;
+    private LinearLayout    mAttributes;
+    private VectorLayer     mLayer;
+    private List<Long>      mFeatureIDs;
 
-    private long                  mItemId;
-    private int                   mItemPosition;
-    private boolean mIsTablet;
+    private long        mItemId;
+    private int         mItemPosition;
+    private boolean     mIsTablet;
 
     protected EditLayerOverlay mEditLayerOverlay;
     protected Menu mBottomMenu;
@@ -146,6 +148,7 @@ public class AttributesFragment
     @Override
     public void onResume() {
         super.onResume();
+        setAttributes();
         ((MainActivity) getActivity()).setActionBarState(isTablet());
     }
 
@@ -168,8 +171,6 @@ public class AttributesFragment
     public void onDestroyView()
     {
         ((MainActivity) getActivity()).restoreBottomBar(MapFragment.MODE_SELECT_ACTION);
-        ((MainActivity) getActivity()).setSubtitle(null);
-        getActivity().setTitle(R.string.app_name);
         super.onDestroyView();
     }
 
@@ -421,8 +422,8 @@ public class AttributesFragment
         boolean hasPrevious = mItemPosition - 1 >= 0;
 
         if (mBottomMenu != null) {
-            mBottomMenu.getItem(0).setVisible(hasPrevious);
-            mBottomMenu.getItem(1).setVisible(hasNext);
+            ControlHelper.setEnabled(mBottomMenu.findItem(R.id.menu_prev), hasPrevious);
+            ControlHelper.setEnabled(mBottomMenu.findItem(R.id.menu_next), hasNext);
         }
     }
 
@@ -447,7 +448,7 @@ public class AttributesFragment
             mItemId = mFeatureIDs.get(mItemPosition);
             setAttributes();
             if (null != mEditLayerOverlay) {
-                mEditLayerOverlay.setFeature(mLayer, mItemId);
+                mEditLayerOverlay.setSelectedFeature(mItemId);
             }
         }
     }
@@ -494,15 +495,10 @@ public class AttributesFragment
             final BottomToolbar toolbar,
             EditLayerOverlay overlay)
     {
-        if (null == toolbar || null == mLayer) {
+        if (null == mLayer)
             return;
-        }
 
         mEditLayerOverlay = overlay;
-
-        if (mEditLayerOverlay != null) {
-            mEditLayerOverlay.setMode(EditLayerOverlay.MODE_HIGHLIGHT);
-        }
 
         toolbar.setNavigationIcon(R.drawable.ic_action_cancel_dark);
         toolbar.setNavigationOnClickListener(
@@ -516,10 +512,12 @@ public class AttributesFragment
                     }
                 });
 
+        if (!isTablet())
+            toolbar.getBackground().setAlpha(255);
+
         mBottomMenu = toolbar.getMenu();
-        if (mBottomMenu != null) {
+        if (mBottomMenu != null)
             mBottomMenu.clear();
-        }
 
         toolbar.inflateMenu(R.menu.attributes);
         toolbar.setOnMenuItemClickListener(
@@ -537,11 +535,17 @@ public class AttributesFragment
                         } else if (menuItem.getItemId() == R.id.menu_prev) {
                             selectItem(false);
                             return true;
+                        } else if (menuItem.getItemId() == R.id.menu_edit_attributes) {
+                            IVectorLayerUI vectorLayerUI = (IVectorLayerUI) mLayer;
+                            if (null != vectorLayerUI)
+                                vectorLayerUI.showEditForm(getActivity(), mItemId, null);
+                            return true;
                         }
 
                         return true;
                     }
                 });
+
         checkNearbyItems();
     }
 }

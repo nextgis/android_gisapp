@@ -6,7 +6,7 @@
   ~ Author:   NikitaFeodonit, nfeodonit@yandex.com
   ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2012-2015. NextGIS, info@nextgis.com
+  ~ Copyright (c) 2012-2016 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -23,30 +23,26 @@
   -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <item
-        android:id="@+id/menu_point_by_tap"
-        app:showAsAction="always|withText"
-        android:icon="@drawable/ic_action_add_point"
-        android:title="@string/action_point_by_tap"
-        />
+        android:id="@+id/menu_feature_add"
+        android:icon="@drawable/ic_plus"
+        android:title="@string/add_new_geometry"
+        app:showAsAction="always"/>
     <item
-        android:id="@+id/menu_edit"
-        app:showAsAction="always|withText"
+        android:id="@+id/menu_feature_edit"
         android:icon="@drawable/ic_action_edit_light"
         android:title="@string/action_edit"
-        />
+        app:showAsAction="always"/>
     <item
-        android:id="@+id/menu_delete"
-        app:showAsAction="always|withText"
+        android:id="@+id/menu_feature_delete"
         android:icon="@drawable/ic_action_delete_alpha"
         android:title="@string/action_delete"
-        />
+        app:showAsAction="always"/>
     <item
-        android:id="@+id/menu_info"
-        app:showAsAction="always|withText"
+        android:id="@+id/menu_feature_attributes"
         android:icon="@drawable/ic_action_information_light"
         android:title="@string/action_attributes"
-        />
+        app:showAsAction="always"/>
 </menu>
