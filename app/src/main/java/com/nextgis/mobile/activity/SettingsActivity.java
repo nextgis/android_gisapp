@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2015. NextGIS, info@nextgis.com
+ * Copyright (c) 2012-2016 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.nextgis.mobile.activity;
 
 import android.annotation.TargetApi;
@@ -88,6 +89,10 @@ public class SettingsActivity
                     break;
                 case SettingsConstantsUI.ACTION_PREFS_MAP:
                     addPreferencesFromResource(R.xml.preferences_map);
+
+                    final ListPreference showInfoPanel = (ListPreference) findPreference(
+                            SettingsConstantsUI.KEY_PREF_SHOW_STATUS_PANEL);
+                    initializeShowStatusPanel(showInfoPanel);
 
                     final ListPreference lpCoordinateFormat = (ListPreference) findPreference(
                             SettingsConstantsUI.KEY_PREF_COORD_FORMAT);
@@ -536,6 +541,25 @@ public class SettingsActivity
         mBkTask.execute();
     }
 
+    public static void initializeShowStatusPanel(final ListPreference listPreference) {
+        listPreference.setSummary(listPreference.getEntry());
+
+        listPreference.setOnPreferenceChangeListener(
+                new Preference.OnPreferenceChangeListener()
+                {
+                    @Override
+                    public boolean onPreferenceChange(
+                            Preference preference,
+                            Object newValue)
+                    {
+                        preference.setSummary(
+                                listPreference.getEntries()[listPreference.findIndexOfValue(
+                                        (String) newValue)]);
+
+                        return true;
+                    }
+                });
+    }
 
     public static void initializeShowCurrentLocation(
             final ListPreference listPreference)

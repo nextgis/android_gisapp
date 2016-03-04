@@ -143,7 +143,8 @@ public class MapFragment
     protected static final String BUNDLE_KEY_LAYER = "layer";
     protected static final String BUNDLE_KEY_FEATURE_ID = "feature";
     protected static final String BUNDLE_KEY_SAVED_FEATURE = "feature_blob";
-    protected boolean mShowStatusPanel, mIsCompassDragging;
+    protected boolean mIsCompassDragging;
+    protected int mStatusPanelMode;
 
     protected final int ADD_CURRENT_LOC         = 1;
     public static final int EDIT_LAYER          = 2;
@@ -245,14 +246,16 @@ public class MapFragment
         final BottomToolbar toolbar = mActivity.getBottomToolbar();
         toolbar.getBackground().setAlpha(128);
         toolbar.setVisibility(View.VISIBLE);
-        mStatusPanel.setVisibility(View.INVISIBLE);
         mActivity.showDefaultToolbar();
+
+        if (mStatusPanelMode != 3)
+            mStatusPanel.setVisibility(View.INVISIBLE);
 
         switch (mode) {
             case MODE_NORMAL:
                 toolbar.setVisibility(View.GONE);
                 showMainButton();
-                if (mShowStatusPanel)
+                if (mStatusPanelMode != 0)
                     mStatusPanel.setVisibility(View.VISIBLE);
 
                 mEditLayerOverlay.setMode(EditLayerOverlay.MODE_NONE);
@@ -392,6 +395,7 @@ public class MapFragment
                 break;
         }
 
+        setMarginsToPanel();
         defineMenuItems();
     }
 
@@ -783,25 +787,59 @@ public class MapFragment
             mEditLayerOverlay.addListener(this);
         }
 
-        mShowStatusPanel = prefs.getBoolean(SettingsConstantsUI.KEY_PREF_SHOW_STATUS_PANEL, true);
+        mStatusPanelMode = Integer.parseInt(prefs.getString(SettingsConstantsUI.KEY_PREF_SHOW_STATUS_PANEL, "1"));
 
         if (null != mStatusPanel) {
-            if (mShowStatusPanel) {
+            if (mStatusPanelMode != 0) {
                 mStatusPanel.setVisibility(View.VISIBLE);
                 fillStatusPanel(null);
 
-                if (mMode != MODE_NORMAL) {
+                if (mMode != MODE_NORMAL && mStatusPanelMode != 3)
                     mStatusPanel.setVisibility(View.INVISIBLE);
-                }
             } else {
                 mStatusPanel.removeAllViews();
             }
+
+            setMarginsToPanel();
         }
 
         boolean showCompass = prefs.getBoolean(KEY_PREF_SHOW_COMPASS, true);
         checkCompass(showCompass);
 
         mCurrentCenter = null;
+    }
+
+
+    protected void setMarginsToPanel() {
+        final BottomToolbar toolbar = mActivity.getBottomToolbar();
+
+        toolbar.post(new Runnable() {
+            @Override
+            public void run() {
+                boolean isToolbarVisible = toolbar.getVisibility() == View.VISIBLE;
+                boolean isPanelVisible = mStatusPanel.getVisibility() == View.VISIBLE;
+                int toolbarHeight = toolbar.getMeasuredHeight();
+
+                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mStatusPanel.getLayoutParams();
+
+                int bottom;
+                if (isToolbarVisible && isPanelVisible)
+                    bottom = toolbarHeight;
+                else
+                    bottom = 0;
+
+                lp.setMargins(lp.leftMargin, lp.topMargin, lp.rightMargin, bottom);
+                mStatusPanel.setLayoutParams(lp);
+
+                if (isToolbarVisible && !isPanelVisible)
+                    bottom = toolbarHeight;
+                else
+                    bottom = 0;
+
+                mStatusPanel.setMinimumHeight(bottom);
+                mStatusPanel.requestLayout();
+            }
+        });
     }
 
 
@@ -1243,22 +1281,17 @@ public class MapFragment
     }
 
 
-    private void fillStatusPanel(Location location)
-    {
-        if (!mShowStatusPanel) //mStatusPanel.getVisibility() == FrameLayout.INVISIBLE)
-        {
+    private void fillStatusPanel(Location location){
+        if (mStatusPanelMode == 0)
             return;
-        }
 
         boolean needViewUpdate = true;
-        boolean isCurrentOrientationOneLine =
-                mStatusPanel.getChildCount() > 0 && ((LinearLayout) mStatusPanel.getChildAt(
-                        0)).getOrientation() == LinearLayout.HORIZONTAL;
+        boolean isCurrentOrientationOneLine = mStatusPanel.getChildCount() > 0 &&
+                mStatusPanel.getChildAt(0).getId() == R.id.status_container_land;
 
         View panel;
         if (!isCurrentOrientationOneLine) {
-            panel = mActivity.getLayoutInflater()
-                    .inflate(R.layout.status_panel_land, mStatusPanel, false);
+            panel = mActivity.getLayoutInflater().inflate(R.layout.status_panel_land, mStatusPanel, false);
             defineTextViews(panel);
         } else {
             panel = mStatusPanel.getChildAt(0);
@@ -1268,8 +1301,7 @@ public class MapFragment
         fillTextViews(location);
 
         if (!isFitOneLine()) {
-            panel = mActivity.getLayoutInflater()
-                    .inflate(R.layout.status_panel, mStatusPanel, false);
+            panel = mActivity.getLayoutInflater().inflate(R.layout.status_panel, mStatusPanel, false);
             defineTextViews(panel);
             fillTextViews(location);
             needViewUpdate = true;

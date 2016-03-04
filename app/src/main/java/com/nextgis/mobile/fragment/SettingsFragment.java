@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2015. NextGIS, info@nextgis.com
+ * Copyright (c) 2012-2016 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,10 +37,7 @@ import com.nextgis.mobile.activity.SettingsActivity;
 import com.nextgis.mobile.dialog.SelectMapPathDialogPreference;
 import com.nextgis.mobile.util.IntEditTextPreference;
 
-import static com.nextgis.mobile.activity.SettingsActivity.initializeMapBG;
-import static com.nextgis.mobile.activity.SettingsActivity.initializeReset;
-import static com.nextgis.mobile.activity.SettingsActivity.initializeShowCurrentLocation;
-import static com.nextgis.mobile.activity.SettingsActivity.initializeTheme;
+import static com.nextgis.mobile.activity.SettingsActivity.*;
 
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -55,6 +52,9 @@ public class SettingsFragment
     {
         super.onCreate(savedInstanceState);
         String settings = getArguments().getString("settings");
+        if (settings == null)
+            return;
+
         switch (settings) {
             case "general":
                 addPreferencesFromResource(R.xml.preferences_general);
@@ -67,16 +67,20 @@ public class SettingsFragment
             case "map":
                 addPreferencesFromResource(R.xml.preferences_map);
 
+                final ListPreference showInfoPanel = (ListPreference) findPreference(
+                        SettingsConstantsUI.KEY_PREF_SHOW_STATUS_PANEL);
+                initializeShowStatusPanel(showInfoPanel);
+
                 final ListPreference lpCoordinateFormat = (ListPreference) findPreference(
                         SettingsConstantsUI.KEY_PREF_COORD_FORMAT);
                 final IntEditTextPreference etCoordinateFraction = (IntEditTextPreference) findPreference(
                         SettingsConstantsUI.KEY_PREF_COORD_FRACTION);
-                SettingsActivity.initializeCoordinates(lpCoordinateFormat, etCoordinateFraction);
+                initializeCoordinates(lpCoordinateFormat, etCoordinateFraction);
 
                 final SelectMapPathDialogPreference mapPath =
                         (SelectMapPathDialogPreference) findPreference(
                                 SettingsConstants.KEY_PREF_MAP_PATH);
-                SettingsActivity.initializeMapPath(getActivity(), mapPath);
+                initializeMapPath(getActivity(), mapPath);
 
                 final ListPreference showCurrentLocation = (ListPreference) findPreference(
                         SettingsConstantsUI.KEY_PREF_SHOW_CURRENT_LOC);
@@ -91,30 +95,30 @@ public class SettingsFragment
 
                 final ListPreference lpLocationAccuracy = (ListPreference) findPreference(
                         SettingsConstants.KEY_PREF_LOCATION_SOURCE);
-                SettingsActivity.initializeLocationAccuracy(lpLocationAccuracy, false);
+                initializeLocationAccuracy(lpLocationAccuracy, false);
 
                 final ListPreference minTimeLoc = (ListPreference) findPreference(
                         SettingsConstants.KEY_PREF_LOCATION_MIN_TIME);
                 final ListPreference minDistanceLoc = (ListPreference) findPreference(
                         SettingsConstants.KEY_PREF_LOCATION_MIN_DISTANCE);
-                SettingsActivity.initializeLocationMins(minTimeLoc, minDistanceLoc, false);
+                initializeLocationMins(minTimeLoc, minDistanceLoc, false);
 
                 final EditTextPreference accurateMaxCount = (EditTextPreference) findPreference(
                         SettingsConstants.KEY_PREF_LOCATION_ACCURATE_COUNT);
-                SettingsActivity.initializeAccurateTaking(accurateMaxCount);
+                initializeAccurateTaking(accurateMaxCount);
                 break;
             case "tracks":
                 addPreferencesFromResource(R.xml.preferences_tracks);
 
                 final ListPreference lpTracksAccuracy = (ListPreference) findPreference(
                         SettingsConstants.KEY_PREF_TRACKS_SOURCE);
-                SettingsActivity.initializeLocationAccuracy(lpTracksAccuracy, true);
+                initializeLocationAccuracy(lpTracksAccuracy, true);
 
                 final ListPreference minTime = (ListPreference) findPreference(
                         SettingsConstants.KEY_PREF_TRACKS_MIN_TIME);
                 final ListPreference minDistance = (ListPreference) findPreference(
                         SettingsConstants.KEY_PREF_TRACKS_MIN_DISTANCE);
-                SettingsActivity.initializeLocationMins(minTime, minDistance, true);
+                initializeLocationMins(minTime, minDistance, true);
                 break;
         }
     }

@@ -22,48 +22,63 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="?attr/colorPrimary"
-              android:gravity="center_vertical"
-              android:minHeight="?attr/actionBarSize"
-              android:orientation="horizontal"
-              android:padding="5dp">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:id="@+id/status_container_land"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:minHeight="?attr/actionBarSize"
+             android:background="?attr/colorPrimary">
 
-    <TextView
-        android:id="@+id/tv_latitude"
-        style="@style/status_panel_text_land"
-        android:layout_weight="3"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="5dp">
 
-    <TextView
-        android:id="@+id/tv_longitude"
-        style="@style/status_panel_text_land"
-        android:layout_weight="3"/>
+        <TextView
+            android:id="@+id/tv_latitude"
+            style="@style/status_panel_text_land"
+            android:layout_weight="3"/>
 
-    <TextView
-        android:id="@+id/tv_source"
-        style="@style/status_panel_text_land"
-        android:layout_weight="1"/>
+        <TextView
+            android:id="@+id/tv_longitude"
+            style="@style/status_panel_text_land"
+            android:layout_weight="3"/>
 
-    <TextView
-        android:id="@+id/tv_accuracy"
-        style="@style/status_panel_text_land"
-        android:layout_weight="1"
-        android:drawableLeft="@drawable/ic_accuracy"
-        android:drawableStart="@drawable/ic_accuracy"/>
+        <TextView
+            android:id="@+id/tv_source"
+            style="@style/status_panel_text_land"
+            android:layout_weight="1"/>
 
-    <TextView
-        android:id="@+id/tv_altitude"
-        style="@style/status_panel_text_land"
-        android:layout_weight="1"
-        android:drawableLeft="@drawable/ic_altitude"
-        android:drawableStart="@drawable/ic_altitude"/>
+        <TextView
+            android:id="@+id/tv_accuracy"
+            style="@style/status_panel_text_land"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/ic_accuracy"
+            android:drawableStart="@drawable/ic_accuracy"/>
 
-    <TextView
-        android:id="@+id/tv_speed"
-        style="@style/status_panel_text_land"
-        android:layout_weight="2"
-        android:drawableLeft="@drawable/ic_speed"
-        android:drawableStart="@drawable/ic_speed"/>
-</LinearLayout>
+        <TextView
+            android:id="@+id/tv_altitude"
+            style="@style/status_panel_text_land"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/ic_altitude"
+            android:drawableStart="@drawable/ic_altitude"/>
+
+        <TextView
+            android:id="@+id/tv_speed"
+            style="@style/status_panel_text_land"
+            android:layout_weight="2"
+            android:drawableLeft="@drawable/ic_speed"
+            android:drawableStart="@drawable/ic_speed"/>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:layout_gravity="bottom"
+        android:background="@color/color_grey_400"/>
+
+</FrameLayout>

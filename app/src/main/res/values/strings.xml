@@ -94,8 +94,7 @@
     <string name="accurate_measures_count">Count of GPS measures</string>
     <string name="action_delete">Delete</string>
     <string name="action_attributes">Attributes</string>
-    <string name="show_status_panel">Status info panel</string>
-    <string name="show_status_panel_summary">Show current status info at bottom panel</string>
+    <string name="show_status_panel">Show status info panel</string>
     <string name="show_current_location">Show current location</string>
     <string name="edit_layer">Edit \'%s\' layer</string>
     <string name="features_count_attributes">%1$d of %2$d</string>

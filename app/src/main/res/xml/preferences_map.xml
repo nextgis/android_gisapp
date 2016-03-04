@@ -23,10 +23,11 @@
   -->
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <CheckBoxPreference
-        android:defaultValue="true"
+    <ListPreference
+        android:defaultValue="2"
         android:key="show_status_panel"
-        android:summary="@string/show_status_panel_summary"
+        android:entries="@array/status_panel_mode"
+        android:entryValues="@array/status_panel_mode_val"
         android:title="@string/show_status_panel"/>
 
     <ListPreference
