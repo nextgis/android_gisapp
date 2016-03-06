@@ -49,7 +49,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -64,7 +63,9 @@ import com.nextgis.maplib.datasource.Feature;
 import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplib.datasource.GeoGeometry;
 import com.nextgis.maplib.datasource.GeoGeometryFactory;
+import com.nextgis.maplib.datasource.GeoMultiPolygon;
 import com.nextgis.maplib.datasource.GeoPoint;
+import com.nextgis.maplib.datasource.GeoPolygon;
 import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.map.VectorLayer;
@@ -198,6 +199,9 @@ public class MapFragment
             long featureId = feature.getId();
             GeoGeometry geometry = feature.getGeometry();
 
+            if (!isGeometryValid(geometry))
+                return false;
+
             if (featureId == Constants.NOT_FOUND) {
                 //show attributes edit activity
                 IVectorLayerUI vectorLayerUI = (IVectorLayerUI) mSelectedLayer;
@@ -221,6 +225,25 @@ public class MapFragment
         }
 
         setMode(MODE_SELECT_ACTION);
+        return true;
+    }
+
+
+    protected boolean isGeometryValid(GeoGeometry geometry) {
+        if (geometry instanceof GeoPolygon) {
+            if (((GeoPolygon) geometry).isSelfIntersects()) {
+                Toast.makeText(getContext(), R.string.self_intersection, Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }
+
+        if (geometry instanceof GeoMultiPolygon) {
+            if (((GeoMultiPolygon) geometry).isSelfIntersects()) {
+                Toast.makeText(getContext(), R.string.self_intersection, Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }
+
         return true;
     }
 
