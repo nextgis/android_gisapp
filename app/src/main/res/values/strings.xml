@@ -118,7 +118,8 @@
     <string name="reset_settings_message">All layers will be deleted! Only initial layers will be restored.</string>
     <string name="action_point_by_tap">Create new point</string>
     <string name="new_field">New field</string>
-    <string name="empty_field_name">Field name can not be empty</string>
+    <string name="empty_name">Name can not be empty</string>
     <string name="same_field_name">There is already field with same name</string>
     <string name="same_layer_name">There is already layer with same name</string>
+    <string name="default_field_name">Description</string>
 </resources>

@@ -41,6 +41,7 @@ import com.nextgis.maplib.display.SimpleFeatureRenderer;
 import com.nextgis.maplib.display.Style;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.VectorLayer;
+import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplib.util.LayerUtil;
 import com.nextgis.maplibui.activity.NGActivity;
 import com.nextgis.maplibui.util.ControlHelper;
@@ -89,7 +90,9 @@ public class CreateVectorLayerActivity extends NGActivity implements View.OnClic
             case R.id.fab_ok:
                 int info = R.string.error_layer_create;
 
-                if (hasLayerWithSameName())
+                if (TextUtils.isEmpty(mEtLayerName.getText().toString().trim()))
+                    info = R.string.empty_name;
+                else if (hasLayerWithSameName())
                     info = R.string.same_layer_name;
                 else if (createNewLayer()) {
                     info = R.string.message_layer_created;
@@ -125,7 +128,7 @@ public class CreateVectorLayerActivity extends NGActivity implements View.OnClic
     @Override
     public void OnFieldChosen(String name, int type) {
         if (TextUtils.isEmpty(name))
-            Toast.makeText(this, R.string.empty_field_name, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.empty_name, Toast.LENGTH_SHORT).show();
         else if (mFieldAdapter.containsField(name))
             Toast.makeText(this, R.string.same_field_name, Toast.LENGTH_SHORT).show();
         else
@@ -135,8 +138,12 @@ public class CreateVectorLayerActivity extends NGActivity implements View.OnClic
     private boolean createNewLayer() {
         MainApplication app = (MainApplication) getApplication();
         int geomType = getResources().getIntArray(R.array.geom_types)[mSpLayerType.getSelectedItemPosition()];
+        List<Field> fields = mFieldAdapter.getFields();
+        if (fields.size() == 0)
+            fields.add(new Field(GeoConstants.FTString, "description", getString(R.string.default_field_name)));
+
         VectorLayer layer = app.createEmptyVectorLayer(mEtLayerName.getText().toString().trim(),
-                null, geomType, mFieldAdapter.getFields());
+                null, geomType, fields);
 
         SimpleFeatureRenderer sfr = (SimpleFeatureRenderer) layer.getRenderer();
         if (null != sfr) {

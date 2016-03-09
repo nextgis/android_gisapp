@@ -119,7 +119,8 @@
     <string name="reset_settings_message">Все слои будут удалены! Будут восстановлены начальные слои.</string>
     <string name="action_point_by_tap">Создать новую точку</string>
     <string name="new_field">Новое поле</string>
-    <string name="empty_field_name">Имя не может быть пустым</string>
+    <string name="empty_name">Имя не может быть пустым</string>
     <string name="same_field_name">Поле с таким именем уже существует</string>
     <string name="same_layer_name">Слой с таким именем уже существует</string>
+    <string name="default_field_name">Описание</string>
 </resources>
