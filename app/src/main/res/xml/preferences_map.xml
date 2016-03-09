@@ -24,7 +24,7 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <ListPreference
-        android:defaultValue="2"
+        android:defaultValue="0"
         android:key="show_status_panel"
         android:entries="@array/status_panel_mode"
         android:entryValues="@array/status_panel_mode_val"
@@ -76,7 +76,7 @@
         android:entryValues="@array/map_bg_val"
         android:key="map_bg"
         android:title="@string/map_bg"/>
-
+bui/blob/master/src/main/res/values/arrays.xml#L107
     <com.nextgis.mobile.dialog.SelectMapPathDialogPreference
         android:dialogTitle="@string/select_map_path"
         android:key="map_path"

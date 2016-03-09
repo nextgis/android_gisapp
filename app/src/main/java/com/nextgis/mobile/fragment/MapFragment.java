@@ -70,6 +70,7 @@ import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.Constants;
+import com.nextgis.maplib.util.FileUtil;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplib.util.LocationUtil;
 import com.nextgis.maplibui.api.EditEventListener;
@@ -820,7 +821,11 @@ public class MapFragment
             mEditLayerOverlay.addListener(this);
         }
 
-        mStatusPanelMode = Integer.parseInt(prefs.getString(SettingsConstantsUI.KEY_PREF_SHOW_STATUS_PANEL, "1"));
+        String statusPanelModeStr = prefs.getString(SettingsConstantsUI.KEY_PREF_SHOW_STATUS_PANEL, "0");
+        if(FileUtil.isIntegerParseInt(statusPanelModeStr))
+            mStatusPanelMode = Integer.parseInt(statusPanelModeStr);
+        else
+            mStatusPanelMode = 0;
 
         if (null != mStatusPanel) {
             if (mStatusPanelMode != 0) {
