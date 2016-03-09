@@ -111,6 +111,7 @@
     <string name="polygons_for_edit">Полигоны (можно редактировать)</string>
     <string name="press_aback_again">Нажмите назад еще раз для выхода</string>
     <string name="self_intersection">Обнаружено самопересечение</string>
+    <string name="ring_outside">Одна из дырок за границами полигона</string>
     <string name="interface_title">Интерфейс</string>
     <string name="theme">Тема</string>
     <string name="reset_settings">Сбросить все настройки</string>

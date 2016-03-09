@@ -235,11 +235,21 @@ public class MapFragment
                 Toast.makeText(getContext(), R.string.self_intersection, Toast.LENGTH_SHORT).show();
                 return false;
             }
+
+            if (!((GeoPolygon) geometry).isHolesInside()) {
+                Toast.makeText(getContext(), R.string.ring_outside, Toast.LENGTH_SHORT).show();
+                return false;
+            }
         }
 
         if (geometry instanceof GeoMultiPolygon) {
             if (((GeoMultiPolygon) geometry).isSelfIntersects()) {
                 Toast.makeText(getContext(), R.string.self_intersection, Toast.LENGTH_SHORT).show();
+                return false;
+            }
+
+            if (!((GeoMultiPolygon) geometry).isHolesInside()) {
+                Toast.makeText(getContext(), R.string.ring_outside, Toast.LENGTH_SHORT).show();
                 return false;
             }
         }
