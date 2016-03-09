@@ -22,12 +22,12 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:id="@+id/status_container_land"
+<FrameLayout android:id="@+id/status_container_land"
+             xmlns:android="http://schemas.android.com/apk/res/android"
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
-             android:minHeight="?attr/actionBarSize"
-             android:background="?attr/colorPrimary">
+             android:background="?attr/colorPrimary"
+             android:gravity="center_vertical">
 
     <LinearLayout
         android:layout_width="match_parent"

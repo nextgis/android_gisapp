@@ -47,8 +47,7 @@
         android:id="@+id/fl_status_panel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:minHeight="?attr/actionBarSize"/>
+        android:layout_alignParentBottom="true"/>
 
     <com.getbase.floatingactionbutton.FloatingActionButton
         android:id="@+id/action_zoom_in"
