@@ -214,6 +214,8 @@ public class AttributesFragment
 
         String selection = Constants.FIELD_ID + " = ?";
         Cursor attributes = mLayer.query(null, selection, new String[]{mItemId + ""}, null, null);
+        if(null == attributes)
+            return;
 
         if (attributes.moveToFirst()) {
             for (int i = 0; i < attributes.getColumnCount(); i++) {
