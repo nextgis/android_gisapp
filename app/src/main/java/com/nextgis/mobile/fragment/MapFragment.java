@@ -821,11 +821,17 @@ public class MapFragment
             mEditLayerOverlay.addListener(this);
         }
 
-        String statusPanelModeStr = prefs.getString(SettingsConstantsUI.KEY_PREF_SHOW_STATUS_PANEL, "0");
-        if(FileUtil.isIntegerParseInt(statusPanelModeStr))
-            mStatusPanelMode = Integer.parseInt(statusPanelModeStr);
-        else
+        try {
+            String statusPanelModeStr = prefs.getString(SettingsConstantsUI.KEY_PREF_SHOW_STATUS_PANEL, "0");
+            if (FileUtil.isIntegerParseInt(statusPanelModeStr))
+                mStatusPanelMode = Integer.parseInt(statusPanelModeStr);
+            else
+                mStatusPanelMode = 0;
+        } catch (ClassCastException e){
             mStatusPanelMode = 0;
+            if(Constants.DEBUG_MODE)
+                Log.d(Constants.TAG, "Previous version of KEY_PREF_SHOW_STATUS_PANEL of bool type. Let set it to 0");
+        }
 
         if (null != mStatusPanel) {
             if (mStatusPanelMode != 0) {
