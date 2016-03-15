@@ -95,6 +95,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static com.nextgis.maplib.util.Constants.FIELD_GEOM;
+import static com.nextgis.maplib.util.Constants.FIELD_ID;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SCROLL_X;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SCROLL_Y;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_COMPASS;
@@ -439,9 +440,14 @@ public class MapFragment
 
         boolean noFeature = mEditLayerOverlay.getSelectedFeatureGeometry() == null;
         long featureId = mEditLayerOverlay.getSelectedFeatureId();
-        String featureName = noFeature ? getString(R.string.nothing_selected) :
-                featureId == Constants.NOT_FOUND ? getString(R.string.new_feature) :
-                        String.format(getString(R.string.feature_n), featureId);
+
+        String featureName = String.format(getString(R.string.feature_n), featureId);
+        String labelField = mSelectedLayer.getPreferences().getString(SettingsConstantsUI.KEY_PREF_LAYER_LABEL, FIELD_ID);
+        if (!labelField.equals(FIELD_ID))
+            featureName = mSelectedLayer.getFeature(featureId).getFieldValueAsString(labelField);
+
+        featureName = noFeature ? getString(R.string.nothing_selected) :
+                featureId == Constants.NOT_FOUND ? getString(R.string.new_feature) : featureName;
         mActivity.setTitle(featureName);
         mActivity.setSubtitle(mSelectedLayer.getName());
 
