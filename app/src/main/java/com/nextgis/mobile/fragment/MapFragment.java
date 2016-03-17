@@ -84,6 +84,7 @@ import com.nextgis.maplibui.mapui.MapViewOverlays;
 import com.nextgis.maplibui.overlay.CurrentLocationOverlay;
 import com.nextgis.maplibui.overlay.CurrentTrackOverlay;
 import com.nextgis.maplibui.overlay.EditLayerOverlay;
+import com.nextgis.maplibui.service.WalkEditService;
 import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
@@ -96,6 +97,7 @@ import java.util.List;
 
 import static com.nextgis.maplib.util.Constants.FIELD_GEOM;
 import static com.nextgis.maplib.util.Constants.FIELD_ID;
+import static com.nextgis.maplib.util.Constants.NOT_FOUND;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SCROLL_X;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SCROLL_Y;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_COMPASS;
@@ -739,6 +741,17 @@ public class MapFragment
 
             mEditLayerOverlay.setSelectedLayer(mSelectedLayer);
             mEditLayerOverlay.setSelectedFeature(feature);
+        }
+
+        if (WalkEditService.isServiceRunning(getContext())) {
+            SharedPreferences preferences = getContext().getSharedPreferences(WalkEditService.TEMP_PREFERENCES, Constants.MODE_MULTI_PROCESS);
+            int layerId = preferences.getInt(ConstantsUI.KEY_LAYER_ID, NOT_FOUND);
+            ILayer layer = mMap.getMap().getLayerById(layerId);
+            if (layer != null && layer instanceof VectorLayer) {
+                mSelectedLayer = (VectorLayer) layer;
+                mEditLayerOverlay.setSelectedLayer(mSelectedLayer);
+                mMode = MODE_EDIT_BY_WALK;
+            }
         }
 
         setMode(mMode);
