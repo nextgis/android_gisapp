@@ -1108,8 +1108,8 @@ public class MapFragment
             //open form
             VectorLayer layer = (VectorLayer) layers.get(0);
             mSelectedLayer = layer;
-            setMode(MODE_EDIT_BY_WALK);
             mEditLayerOverlay.setSelectedLayer(layer);
+            setMode(MODE_EDIT_BY_WALK);
 
             Toast.makeText(mActivity, String.format(getString(R.string.edit_layer), layer.getName()), Toast.LENGTH_SHORT).show();
         } else {
