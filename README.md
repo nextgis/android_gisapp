@@ -1,7 +1,7 @@
 NextGIS Mobile
 ==============
 
-![Screenshot_1](/art/nextgis-mobile.png)
+![Screenshot_1](/art/nextgis-mobile-eng.png)
 
 GIS application for Android. Current version 2.3 is available in Google Play and [here](https://github.com/nextgis/android_gisapp/releases/tag/v2.3).
 
