@@ -235,7 +235,7 @@ public class MapFragment
 
     protected boolean isGeometryValid(GeoGeometry geometry) {
         if (geometry instanceof GeoPolygon) {
-            if (((GeoPolygon) geometry).isSelfIntersects()) {
+            if (((GeoPolygon) geometry).intersects()) {
                 Toast.makeText(getContext(), R.string.self_intersection, Toast.LENGTH_SHORT).show();
                 return false;
             }
