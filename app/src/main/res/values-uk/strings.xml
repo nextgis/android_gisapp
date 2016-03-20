@@ -117,9 +117,9 @@
     <string name="reset_settings_message">Усі шари будуть видалені! Будуть відновлені початкові шари.</string>
     <string name="action_point_by_tap">Додати нову точку</string>
     <string name="new_field">Нове поле</string>
-    <string name="empty_name">Ім'я не може бути порожнім</string>
-    <string name="same_field_name">Поле з таким ім'ям вже існує</string>
-    <string name="same_layer_name">Шар з таким ім'ям вже існує</string>
+    <string name="empty_name">Ім\'я не може бути порожнім</string>
+    <string name="same_field_name">Поле з таким ім\'ям вже існує</string>
+    <string name="same_layer_name">Шар з таким ім\'ям вже існує</string>
     <string name="default_field_name">Опис</string>
     <string name="pref_sync_notification">Повідомлення про синхронізацію</string>
 </resources>
