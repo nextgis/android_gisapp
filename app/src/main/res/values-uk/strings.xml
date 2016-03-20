@@ -43,21 +43,21 @@
     <string name="ngw_summary">NextGIS Web налаштування</string>
     <string name="app_description">Мобільний ГІС додаток для візуалізації та збору даних у польових умовах та відправки їх на сервер. NextGIS Mobile також записує путь та відправляє координати на сервер.</string>
     <string name="credits_intro">Credits</string>
-    <string name="credits">Some icons used in the application are from <a href="http://icons8.com/android-icons">Icons8.com</a> licensed under a <a href="http://creativecommons.org/licenses/by-nd/3.0/">CC BY-ND 3.0 license</a> and <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a> licensed under a <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0 license</a></string>
+    <string name="credits">Деякф іконки використані в застосунку з <a href="http://icons8.com/android-icons">Icons8.com</a> з ліцензією <a href="http://creativecommons.org/licenses/by-nd/3.0/">CC BY-ND 3.0 license</a> та <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a> з ліцензією <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0 license</a></string>
     <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2012–2015]]></string>
-    <string name="contacts"><a href="http://nextgis.ru/en/contact/">Contact us</a></string>
-    <string name="action_about">About</string>
-    <string name="add_current_place">Add current place</string>
-    <string name="add_new_geometry">Add new geometry</string>
-    <string name="add_geometry_by_walk">Add geometry by walking</string>
-    <string name="warning_no_edit_layers">No editable layers</string>
-    <string name="select_layer">Select layer to edit</string>
-    <string name="menu_locate">Locate</string>
-    <string name="select_file">Select file to create layer</string>
-    <string name="warning_install_file_manager">Please install a File Manager</string>
-    <string name="error_file_unsupported">File type is not supported</string>
-    <string name="warning_not_implemented">Not implemented yet</string>
-    <string name="pref_location_accuracy">Location accuracy</string>
+    <string name="contacts"><a href="http://nextgis.ru/en/contact/">Наші контакти</a></string>
+    <string name="action_about">Про застосунок</string>
+    <string name="add_current_place">Додати поточну точку</string>
+    <string name="add_new_geometry">Додати новий об’єкт</string>
+    <string name="add_geometry_by_walk">Додати новій об’єкт в обхід</string>
+    <string name="warning_no_edit_layers">Відсутні шари для редагування</string>
+    <string name="select_layer">Позначити шар для редагування</string>
+    <string name="menu_locate">Знайти</string>
+    <string name="select_file">Обрати файл для створення шару</string>
+    <string name="warning_install_file_manager">Будь ласка, встановіть менеджер файлів</string>
+    <string name="error_file_unsupported">Не підтримуємий тип файлів</string>
+    <string name="warning_not_implemented">Ще не впроваджено</string>
+    <string name="pref_location_accuracy">Точність визначення місцезнаходження</string>
     <string name="pref_location_accuracy_gps">GPS</string>
     <string name="pref_location_accuracy_cell">Other networks</string>
     <string name="location">Location</string>
@@ -120,6 +120,6 @@
     <string name="empty_name">Name can not be empty</string>
     <string name="same_field_name">There is already field with same name</string>
     <string name="same_layer_name">There is already layer with same name</string>
-    <string name="default_field_name">Description</string>
-    <string name="pref_sync_notification">Show sync notification</string>
+    <string name="default_field_name">Опис</string>
+    <string name="pref_sync_notification">Повідомлення про синхронізацію</string>
 </resources>
