@@ -622,7 +622,7 @@ public class SettingsActivity
                     mActivity.getString(R.string.warning_map_moving), true);
             mProgressDialog.setCancelable(false);
             mProgressDialog.setIcon(
-                    mActivity.getResources().getDrawable(R.drawable.ic_action_warning));
+                    mActivity.getResources().getDrawable(R.drawable.ic_action_warning_light));
         }
 
 
