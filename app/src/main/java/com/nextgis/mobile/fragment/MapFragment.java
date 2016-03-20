@@ -244,6 +244,11 @@ public class MapFragment
                 Toast.makeText(getContext(), R.string.ring_outside, Toast.LENGTH_SHORT).show();
                 return false;
             }
+
+            if (((GeoPolygon) geometry).isHolesIntersect()) {
+                Toast.makeText(getContext(), R.string.rings_intersection, Toast.LENGTH_SHORT).show();
+                return false;
+            }
         }
 
         if (geometry instanceof GeoMultiPolygon) {
@@ -254,6 +259,11 @@ public class MapFragment
 
             if (!((GeoMultiPolygon) geometry).isHolesInside()) {
                 Toast.makeText(getContext(), R.string.ring_outside, Toast.LENGTH_SHORT).show();
+                return false;
+            }
+
+            if (((GeoMultiPolygon) geometry).isHolesIntersect()) {
+                Toast.makeText(getContext(), R.string.rings_intersection, Toast.LENGTH_SHORT).show();
                 return false;
             }
         }
