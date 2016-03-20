@@ -123,4 +123,5 @@
     <string name="same_field_name">There is already field with same name</string>
     <string name="same_layer_name">There is already layer with same name</string>
     <string name="default_field_name">Description</string>
+    <string name="pref_sync_notification">Show sync notification</string>
 </resources>

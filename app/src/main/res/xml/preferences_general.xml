@@ -6,7 +6,7 @@
   ~ Author:   NikitaFeodonit, nfeodonit@yandex.com
   ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2012-2015. NextGIS, info@nextgis.com
+  ~ Copyright (c) 2012-2016 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -31,6 +31,10 @@
             android:entryValues="@array/theme_val"
             android:key="theme"
             android:title="@string/theme"/>
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="show_sync"
+            android:title="@string/pref_sync_notification"/>
         <Preference
             android:key="reset_settings"
             android:title="@string/reset_settings"/>
