@@ -43,7 +43,7 @@
     <string name="map_summary">Map settings</string>
     <string name="ngw">NextGIS Web</string>
     <string name="ngw_summary">NextGIS Web settings</string>
-    <string name="app_description">Mobile GIS application for visualize and gather spatial data in the field and send it back to server. NextGIS Mobile also writes tracks and sends position information to web server.</string>
+    <string name="app_description">Mobile GIS application for spatial field data collection and sending it back to server. NextGIS Mobile also records tracks and sends position information to web server.</string>
     <string name="credits_intro">Credits</string>
     <string name="credits">Some icons used in the application are from <a href="http://icons8.com/android-icons">Icons8.com</a> licensed under a <a href="http://creativecommons.org/licenses/by-nd/3.0/">CC BY-ND 3.0 license</a> and <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a> licensed under a <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0 license</a></string>
     <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2012–2015]]></string>
@@ -81,11 +81,11 @@
     <string name="map_bg_neutral">Neutral</string>
     <string name="map_bg_dark">Dark</string>
     <string name="map_path">Map path</string>
-    <string name="map_path_summary">The path to map data folder. Changing map folder may prevent data deletion on application uninstall process</string>
+    <string name="map_path_summary">The path to map data folder. Changing map folder may prevent data removal after application is uninstalled.</string>
     <string name="select_map_path">Select map folder path</string>
     <string name="moving">Moving…</string>
-    <string name="warning_map_moving">Dangerous operation! Don\'t cancel it or kill the application during the data moving to new location! You data may be broken or lost!</string>
-    <string name="warning_folder_should_be_empty">The folder should be empty. Cancel operation.</string>
+    <string name="warning_map_moving">Dangerous operation! Don\'t cancel it or kill the application during the data transfer to the new location! Your data may be broken or lost!</string>
+    <string name="warning_folder_should_be_empty">The folder should be empty. Canceling operation.</string>
     <string name="frequentest">, as frequent as possible</string>
     <string name="compass_vibrate">Vibrate on bezel touch</string>
     <string name="compass_true_north">Show true north</string>
@@ -110,7 +110,7 @@
     <string name="polygons_for_edit">Polygons (can be edited)</string>
     <string name="press_aback_again">Press back again to exit</string>
     <string name="self_intersection">Self intersection detected</string>
-    <string name="ring_outside">One of holes outside the outer ring</string>
+    <string name="ring_outside">One of the holes outside of the outer ring</string>
     <string name="rings_intersection">Holes intersection</string>
     <string name="interface_title">Interface</string>
     <string name="theme">Theme</string>
@@ -120,7 +120,7 @@
     <string name="action_point_by_tap">Create new point</string>
     <string name="new_field">New field</string>
     <string name="empty_name">Name can not be empty</string>
-    <string name="same_field_name">There is already field with same name</string>
-    <string name="same_layer_name">There is already layer with same name</string>
+    <string name="same_field_name">There is already a field with the same name</string>
+    <string name="same_layer_name">There is already a layer with the same name</string>
     <string name="default_field_name">Description</string>
 </resources>
