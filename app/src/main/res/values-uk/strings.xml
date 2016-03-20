@@ -23,25 +23,25 @@
 <resources>
 
     <string name="app_name">NextGIS Mobile</string>
-    <string name="navigation_drawer_open">Відкрити панель навігації</string>
-    <string name="navigation_drawer_close">Закрити панель навігації</string>
-    <string name="action_settings">Налаштування</string>
-    <string name="action_add">Новий шар</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_add">New layer</string>
     <string name="action_add_local">Open local</string>
-    <string name="action_add_remote">Додати Веб</string>
-    <string name="action_add_ngw">Додати з NGW</string>
-    <string name="general">Загальне</string>
-    <string name="general_summary">Загальні налаштування</string>
-    <string name="keep_screen_on">Тримати екран ввімкненим</string>
-    <string name="keep_screen_on_summary">Не гасити екран</string>
-    <string name="show_zoom_controls">Показивати керування маштабу</string>
-    <string name="show_zoom_controls_summary">Показувати кнопки зуму +/- на карті</string>
-    <string name="show_compass">Показувати міні компас</string>
-    <string name="map">Карта</string>
-    <string name="map_summary">Налаштування карти</string>
+    <string name="action_add_remote">Add web</string>
+    <string name="action_add_ngw">Add from NGW</string>
+    <string name="general">General</string>
+    <string name="general_summary">General settings</string>
+    <string name="keep_screen_on">Keep map screen on</string>
+    <string name="keep_screen_on_summary">Do not turn off screen</string>
+    <string name="show_zoom_controls">Show zoom controls</string>
+    <string name="show_zoom_controls_summary">Show zoom in/zoom out control on the map</string>
+    <string name="show_compass">Show mini compass</string>
+    <string name="map">Map</string>
+    <string name="map_summary">Map settings</string>
     <string name="ngw">NextGIS Web</string>
-    <string name="ngw_summary">NextGIS Web налаштування</string>
-    <string name="app_description">Мобільний ГІС додаток для візуалізації та збору даних у польових умовах та відправки їх на сервер. NextGIS Mobile також записує путь та відправляє координати на сервер.</string>
+    <string name="ngw_summary">NextGIS Web settings</string>
+    <string name="app_description">Mobile GIS application for visualize and gather spatial data in the field and send it back to server. NextGIS Mobile also writes tracks and sends position information to web server.</string>
     <string name="credits_intro">Credits</string>
     <string name="credits">Деякф іконки використані в застосунку з <a href="http://icons8.com/android-icons">Icons8.com</a> з ліцензією <a href="http://creativecommons.org/licenses/by-nd/3.0/">CC BY-ND 3.0 license</a> та <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a> з ліцензією <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0 license</a></string>
     <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2012–2015]]></string>
