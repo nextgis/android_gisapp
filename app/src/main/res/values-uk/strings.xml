@@ -34,6 +34,7 @@
     <string name="general_summary">Загальні налаштування</string>
     <string name="keep_screen_on">Тримати екран ввімкненим</string>
     <string name="keep_screen_on_summary">Не гасити екран</string>
+    <string name="show_scale_ruler">Show scale ruler</string>
     <string name="show_zoom_controls">Показивати керування маштабу</string>
     <string name="show_zoom_controls_summary">Показувати кнопки зуму +/- на карті</string>
     <string name="show_compass">Показувати міні компас</string>
