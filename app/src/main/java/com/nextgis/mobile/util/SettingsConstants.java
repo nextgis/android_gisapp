@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2015. NextGIS, info@nextgis.com
+ * Copyright (c) 2012-2016 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,6 +61,7 @@ public interface SettingsConstants
     String KEY_PREF_COMPASS_SHOW_MAGNET = "compass_show_magnetic";
     String KEY_PREF_COMPASS_WAKE_LOCK   = "compass_wake_lock";
     String KEY_PREF_SHOW_ZOOM_CONTROLS  = "show_zoom_controls";
+    String KEY_PREF_SHOW_SCALE_RULER    = "show_scale_ruler";
 
     int FIRSTSTART_DOWNLOADZOOM = 5;
 }

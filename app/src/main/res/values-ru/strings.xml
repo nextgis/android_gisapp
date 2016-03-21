@@ -37,6 +37,7 @@
     <string name="general_summary">Общие настройки</string>
     <string name="keep_screen_on">Не отключать экран</string>
     <string name="keep_screen_on_summary">Держать экран включенным</string>
+    <string name="show_scale_ruler">Шкала масштаба</string>
     <string name="show_zoom_controls">Включить управление масштабами</string>
     <string name="show_zoom_controls_summary">Показывать кнопки +/- на карте для увеличения/уменьшения</string>
     <string name="show_compass">Показывать мини компас</string>

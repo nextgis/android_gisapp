@@ -28,6 +28,9 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -42,6 +45,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -49,6 +53,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,6 +69,7 @@ import com.nextgis.maplib.datasource.Feature;
 import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplib.datasource.GeoGeometry;
 import com.nextgis.maplib.datasource.GeoGeometryFactory;
+import com.nextgis.maplib.datasource.GeoLineString;
 import com.nextgis.maplib.datasource.GeoMultiPolygon;
 import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.datasource.GeoPolygon;
@@ -102,6 +109,7 @@ import static com.nextgis.maplib.util.Constants.NOT_FOUND;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SCROLL_X;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SCROLL_Y;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_COMPASS;
+import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_SCALE_RULER;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_ZOOM_CONTROLS;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_ZOOM_LEVEL;
 
@@ -123,6 +131,9 @@ public class MapFragment
     protected TextView mStatusSource, mStatusAccuracy, mStatusSpeed, mStatusAltitude,
             mStatusLatitude, mStatusLongitude;
     protected FrameLayout mStatusPanel;
+    protected LinearLayout mScaleRulerLayout;
+    protected TextView mScaleRulerText;
+    protected ImageView mScaleRuler;
 
     protected RelativeLayout         mMapRelativeLayout;
     protected GpsEventSource         mGpsEventSource;
@@ -558,6 +569,11 @@ public class MapFragment
         mivZoomOut.setOnClickListener(this);
 
         mStatusPanel = (FrameLayout) view.findViewById(R.id.fl_status_panel);
+        mScaleRuler = (ImageView) view.findViewById(R.id.iv_ruler);
+        mScaleRulerText = (TextView) view.findViewById(R.id.tv_ruler);
+        mScaleRulerLayout = (LinearLayout) view.findViewById(R.id.ll_ruler);
+        drawScaleRuler();
+
         return view;
     }
 
@@ -573,6 +589,23 @@ public class MapFragment
         }
 
         super.onDestroyView();
+    }
+
+
+    protected void drawScaleRuler() {
+        int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_MM, 10, getResources().getDisplayMetrics());
+        int notch = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_MM, 1, getResources().getDisplayMetrics());
+        Bitmap ruler = Bitmap.createBitmap(px, px, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(ruler);
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setColor(getResources().getColor(R.color.primary_dark));
+        paint.setStrokeWidth(4);
+        paint.setStyle(Paint.Style.STROKE);
+        canvas.drawLine(0, px, px, px, paint);
+        canvas.drawLine(0, px, 0, 0, paint);
+        canvas.drawLine(0, 0, notch, 0, paint);
+        canvas.drawLine(px, px, px, px - notch, paint);
+        mScaleRuler.setImageBitmap(ruler);
     }
 
 
@@ -633,6 +666,25 @@ public class MapFragment
     {
         setZoomInEnabled(mMap.canZoomIn());
         setZoomOutEnabled(mMap.canZoomOut());
+        mScaleRulerText.setText(getRulerText());
+    }
+
+
+    protected String getRulerText() {
+        GeoEnvelope left = new GeoEnvelope(mScaleRuler.getLeft(), mScaleRuler.getLeft(), mScaleRuler.getTop(), mScaleRuler.getTop());
+        left = mMap.screenToMap(left);
+        GeoEnvelope right = new GeoEnvelope(mScaleRuler.getRight(), mScaleRuler.getRight(), mScaleRuler.getTop(), mScaleRuler.getTop());
+        right = mMap.screenToMap(right);
+
+        GeoPoint p1 = new GeoPoint(left.getMaxX(), left.getMaxY());
+        GeoPoint p2 = new GeoPoint(right.getMaxX(), right.getMaxY());
+        p1.setCRS(GeoConstants.CRS_WEB_MERCATOR);
+        p2.setCRS(GeoConstants.CRS_WEB_MERCATOR);
+        GeoLineString s = new GeoLineString();
+        s.add(p1);
+        s.add(p2);
+
+        return LocationUtil.formatLength(getContext(), s.getLength());
     }
 
 
@@ -808,6 +860,12 @@ public class MapFragment
 
         boolean showControls = prefs.getBoolean(KEY_PREF_SHOW_ZOOM_CONTROLS, false);
         showMapButtons(showControls, mMapRelativeLayout);
+
+        showControls = prefs.getBoolean(KEY_PREF_SHOW_SCALE_RULER, true);
+        if (showControls)
+            mScaleRulerLayout.setVisibility(View.VISIBLE);
+        else
+            mScaleRulerLayout.setVisibility(View.GONE);
 
         if(Constants.DEBUG_MODE)
             Log.d(Constants.TAG, "KEY_PREF_SHOW_ZOOM_CONTROLS: " + (showControls ? "ON" : "OFF"));
