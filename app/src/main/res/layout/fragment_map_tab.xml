@@ -49,8 +49,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"/>
 
-    <com.getbase.floatingactionbutton.FloatingActionButton
-        android:id="@+id/action_zoom_in"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -58,26 +57,28 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
-        fab:fab_addButtonColorNormal="?attr/colorPrimary"
-        fab:fab_addButtonColorPressed="?attr/colorAccent"
-        fab:fab_addButtonPlusIconColor="@android:color/white"
-        fab:fab_icon="@drawable/ic_plus"
-        fab:fab_size="mini"/>
+        android:orientation="vertical">
 
-    <com.getbase.floatingactionbutton.FloatingActionButton
-        android:id="@+id/action_zoom_out"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/action_zoom_in"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        fab:fab_addButtonColorNormal="?attr/colorPrimary"
-        fab:fab_addButtonColorPressed="?attr/colorAccent"
-        fab:fab_addButtonPlusIconColor="@android:color/white"
-        fab:fab_icon="@drawable/ic_minus"
-        fab:fab_size="mini"/>
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/action_zoom_in"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_addButtonColorNormal="?attr/colorPrimary"
+            fab:fab_addButtonColorPressed="?attr/colorAccent"
+            fab:fab_addButtonPlusIconColor="@android:color/white"
+            fab:fab_icon="@drawable/ic_plus"
+            fab:fab_size="mini"/>
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/action_zoom_out"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_addButtonColorNormal="?attr/colorPrimary"
+            fab:fab_addButtonColorPressed="?attr/colorAccent"
+            fab:fab_addButtonPlusIconColor="@android:color/white"
+            fab:fab_icon="@drawable/ic_minus"
+            fab:fab_size="mini"/>
+    </LinearLayout>
 
     <com.getbase.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_point_by_tap"
