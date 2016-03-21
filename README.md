@@ -15,7 +15,7 @@ Build status
 License
 =======
 
-The application is licensed under the terms of GNU GPL v.3.
+The application is licensed under the terms of GNU GPL v3 or any later version.
 
 Commercial support
 ----------
