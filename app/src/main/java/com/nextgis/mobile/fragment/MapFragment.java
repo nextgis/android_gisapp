@@ -87,6 +87,7 @@ import com.nextgis.maplibui.overlay.EditLayerOverlay;
 import com.nextgis.maplibui.service.WalkEditService;
 import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.maplibui.util.ControlHelper;
+import com.nextgis.maplibui.util.NotificationHelper;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
@@ -845,6 +846,7 @@ public class MapFragment
         }
         if (null != mGpsEventSource) {
             mGpsEventSource.addListener(this);
+            NotificationHelper.showLocationInfo(getActivity());
         }
         if (null != mEditLayerOverlay) {
             mEditLayerOverlay.addListener(this);
