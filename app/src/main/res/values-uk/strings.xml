@@ -44,7 +44,7 @@
     <string name="ngw_summary">NextGIS Web налаштування</string>
     <string name="app_description">Мобільний ГІС додаток для візуалізації та збору даних у польових умовах та відправки їх на сервер. NextGIS Mobile також записує путь та відправляє координати на сервер.</string>
     <string name="credits_intro">Credits</string>
-    <string name="credits">Деякф іконки використані в застосунку з <a href="http://icons8.com/android-icons">Icons8.com</a> з ліцензією <a href="http://creativecommons.org/licenses/by-nd/3.0/">CC BY-ND 3.0 license</a> та <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a> з ліцензією <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0 license</a></string>
+    <string name="credits">Деякф іконки використані в застосунку з <a href="http://icons8.com/android-icons">Icons8.com</a> з ліцензією <a href="http://creativecommons.org/licenses/by-nd/3.0/">CC BY-ND 3.0 license</a>, <a href="http://materialdesignicons.com/">materialdesignicons.com</a> та <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a> з ліцензією <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0 license</a></string>
     <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2012–2015]]></string>
     <string name="contacts"><a href="http://nextgis.ru/en/contact/">Наші контакти</a></string>
     <string name="action_about">Про застосунок</string>
@@ -123,4 +123,5 @@
     <string name="same_layer_name">Шар з таким ім\'ям вже існує</string>
     <string name="default_field_name">Опис</string>
     <string name="pref_sync_notification">Повідомлення про синхронізацію</string>
+    <string name="tap_to_measure">Нажмите на карту для выбора точек</string>
 </resources>

@@ -36,6 +36,26 @@
         android:layout_marginTop="?attr/actionBarSize"/>
 
     <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="?attr/actionBarSize">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/action_ruler"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            fab:fab_addButtonColorNormal="?attr/colorPrimary"
+            fab:fab_addButtonColorPressed="?attr/colorAccent"
+            fab:fab_addButtonPlusIconColor="@android:color/white"
+            fab:fab_icon="@drawable/ic_ruler"
+            fab:fab_size="mini"/>
+    </FrameLayout>
+
+    <FrameLayout
         android:id="@+id/fl_status_panel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

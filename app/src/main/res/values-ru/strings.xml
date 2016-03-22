@@ -48,7 +48,7 @@
     <string name="app_description">Мобильная ГИС для визуализации и сбора геоданных в поле и отправки результатов на сервер. NextGIS Mobile также записывает треки и отправляет координаты местоположения на сервер.</string>
     <string name="credits_intro">Лицензии</string>
     <string name="credits">Некоторые иконки использованные в приложении с <a href="http://icons8.com/android-icons">Icons8.com</a> под лицензией <a
-        href="http://creativecommons.org/licenses/by-nd/3.0/">CC BY-ND 3.0</a> и <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a> под лицензией <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a></string>
+        href="http://creativecommons.org/licenses/by-nd/3.0/">CC BY-ND 3.0</a>, <a href="http://materialdesignicons.com/">materialdesignicons.com</a> и <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a> под лицензией <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a></string>
     <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2012–2015]]></string>
     <string name="contacts"><a href="http://nextgis.ru/contact/">Связаться с нами</a></string>
     <string name="action_about">О программе</string>
@@ -127,4 +127,5 @@
     <string name="same_layer_name">Слой с таким именем уже существует</string>
     <string name="default_field_name">Описание</string>
     <string name="pref_sync_notification">Уведомление синхронизации</string>
+    <string name="tap_to_measure">Нажмите на карту для выбора точек</string>
 </resources>

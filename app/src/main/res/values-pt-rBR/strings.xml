@@ -44,7 +44,7 @@
     <string name="ngw_summary">NextGIS Web settings</string>
     <string name="app_description">Mobile GIS application for visualize and gather spatial data in the field and send it back to server. NextGIS Mobile also writes tracks and sends position information to web server.</string>
     <string name="credits_intro">Credits</string>
-    <string name="credits">Some icons used in the application are from <a href="http://icons8.com/android-icons">Icons8.com</a> licensed under a <a href="http://creativecommons.org/licenses/by-nd/3.0/">CC BY-ND 3.0 license</a> and <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a> licensed under a <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0 license</a></string>
+    <string name="credits">Some icons used in the application are from <a href="http://icons8.com/android-icons">Icons8.com</a> licensed under a <a href="http://creativecommons.org/licenses/by-nd/3.0/">CC BY-ND 3.0 license</a>, <a href="http://materialdesignicons.com/">materialdesignicons.com</a> and <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a> licensed under a <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0 license</a></string>
     <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2012–2015]]></string>
     <string name="contacts"><a href="http://nextgis.ru/en/contact/">Contact us</a></string>
     <string name="action_about">About</string>
@@ -123,4 +123,5 @@
     <string name="same_layer_name">There is already layer with same name</string>
     <string name="default_field_name">Description</string>
     <string name="pref_sync_notification">Show sync notification</string>
+    <string name="tap_to_measure">Tap on map to check points</string>
 </resources>

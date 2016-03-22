@@ -91,6 +91,7 @@ import com.nextgis.maplibui.mapui.MapViewOverlays;
 import com.nextgis.maplibui.overlay.CurrentLocationOverlay;
 import com.nextgis.maplibui.overlay.CurrentTrackOverlay;
 import com.nextgis.maplibui.overlay.EditLayerOverlay;
+import com.nextgis.maplibui.overlay.RulerOverlay;
 import com.nextgis.maplibui.service.WalkEditService;
 import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.maplibui.util.ControlHelper;
@@ -116,8 +117,7 @@ import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_ZOOM_LEVEL;
 
 public class MapFragment
         extends Fragment
-        implements MapViewEventListener, GpsEventListener, EditEventListener, OnClickListener
-{
+        implements MapViewEventListener, GpsEventListener, EditEventListener, OnClickListener, RulerOverlay.OnRulerChanged {
     protected final static int mMargins = 10;
     protected float mTolerancePX;
 
@@ -126,7 +126,9 @@ public class MapFragment
     protected MapViewOverlays      mMap;
     protected FloatingActionButton mivZoomIn;
     protected FloatingActionButton mivZoomOut;
+    protected FloatingActionButton mRuler;
     protected FloatingActionButton mAddNewGeometry;
+    protected FloatingActionButton mAddPointButton;
 
     protected TextView mStatusSource, mStatusAccuracy, mStatusSpeed, mStatusAltitude,
             mStatusLatitude, mStatusLongitude;
@@ -138,11 +140,11 @@ public class MapFragment
     protected RelativeLayout         mMapRelativeLayout;
     protected GpsEventSource         mGpsEventSource;
     protected View                   mMainButton;
-    protected View                   mAddPointButton;
     protected int                    mMode;
     protected CurrentLocationOverlay mCurrentLocationOverlay;
     protected CurrentTrackOverlay    mCurrentTrackOverlay;
     protected EditLayerOverlay       mEditLayerOverlay;
+    protected RulerOverlay           mRulerOverlay;
     protected GeoPoint               mCurrentCenter;
     protected VectorLayer            mSelectedLayer;
 
@@ -301,6 +303,7 @@ public class MapFragment
 
         hideMainButton();
         hideAddByTapButton();
+        hideRulerButton();
 
         final BottomToolbar toolbar = mActivity.getBottomToolbar();
         toolbar.getBackground().setAlpha(128);
@@ -314,6 +317,7 @@ public class MapFragment
             case MODE_NORMAL:
                 toolbar.setVisibility(View.GONE);
                 showMainButton();
+                showRulerButton();
                 if (mStatusPanelMode != 0)
                     mStatusPanel.setVisibility(View.VISIBLE);
 
@@ -534,10 +538,12 @@ public class MapFragment
         mCurrentLocationOverlay.setAutopanningEnabled(true);
 
         mCurrentTrackOverlay = new CurrentTrackOverlay(mActivity, mMap);
+        mRulerOverlay = new RulerOverlay(mActivity, mMap);
 
         mMap.addOverlay(mCurrentTrackOverlay);
         mMap.addOverlay(mCurrentLocationOverlay);
         mMap.addOverlay(mEditLayerOverlay);
+        mMap.addOverlay(mRulerOverlay);
 
         //search relative view of map, if not found - add it
         mMapRelativeLayout = (RelativeLayout) view.findViewById(R.id.maprl);
@@ -550,7 +556,7 @@ public class MapFragment
         mMap.invalidate();
 
         mMainButton = view.findViewById(R.id.multiple_actions);
-        mAddPointButton = view.findViewById(R.id.add_point_by_tap);
+        mAddPointButton = (FloatingActionButton) view.findViewById(R.id.add_point_by_tap);
         mAddPointButton.setOnClickListener(this);
 
         View addCurrentLocation = view.findViewById(R.id.add_current_location);
@@ -558,6 +564,8 @@ public class MapFragment
 
         mAddNewGeometry = (FloatingActionButton) view.findViewById(R.id.add_new_geometry);
         mAddNewGeometry.setOnClickListener(this);
+        mRuler = (FloatingActionButton) view.findViewById(R.id.action_ruler);
+        mRuler.setOnClickListener(this);
 
         View addGeometryByWalk = view.findViewById(R.id.add_geometry_by_walk);
         addGeometryByWalk.setOnClickListener(this);
@@ -1242,7 +1250,7 @@ public class MapFragment
     @Override
     public void onLongPress(MotionEvent event)
     {
-        if (!(mMode == MODE_NORMAL || mMode == MODE_SELECT_ACTION)) {
+        if (!(mMode == MODE_NORMAL || mMode == MODE_SELECT_ACTION) || mRulerOverlay.isMeasuring()) {
             return;
         }
 
@@ -1303,6 +1311,16 @@ public class MapFragment
     }
 
 
+    public void showRulerButton() {
+        mRuler.setVisibility(View.VISIBLE);
+    }
+
+
+    public void hideRulerButton() {
+        mRuler.setVisibility(View.GONE);
+    }
+
+
     public void showMainButton() {
         mAddNewGeometry.getIconDrawable().setAlpha(255);
         mMainButton.setVisibility(View.VISIBLE);
@@ -1336,11 +1354,6 @@ public class MapFragment
         switch (mMode) {
             case MODE_EDIT:
             case MODE_SELECT_ACTION:
-//                setMode(MODE_NORMAL);
-//                if (null != mEditLayerOverlay) {
-//                    mEditLayerOverlay.setSelectedFeature(null, Constants.NOT_FOUND);
-//                    mEditLayerOverlay.setMode(EditLayerOverlay.MODE_NONE);
-//                }
                 mEditLayerOverlay.selectGeometryInScreenCoordinates(event.getX(), event.getY());
                 defineMenuItems();
                 break;
@@ -1362,7 +1375,8 @@ public class MapFragment
 
                 break;
             default:
-                hideOverlayPoint();
+                if (!mRulerOverlay.isMeasuring())
+                    hideOverlayPoint();
                 break;
         }
     }
@@ -1665,8 +1679,29 @@ public class MapFragment
                     mMap.zoomOut();
                 break;
             case R.id.add_point_by_tap:
-                addPointByTap();
+                if (mRulerOverlay.isMeasuring()) {
+                    mRulerOverlay.stopMeasuring();
+                    showMainButton();
+                    showRulerButton();
+                    hideAddByTapButton();
+                    mAddPointButton.setIcon(R.drawable.ic_action_add_point);
+                    mActivity.setTitle(R.string.app_name);
+                } else
+                    addPointByTap();
+                break;
+            case R.id.action_ruler:
+                mRulerOverlay.startMeasuring(this);
+                hideMainButton();
+                hideRulerButton();
+                showAddByTapButton();
+                mAddPointButton.setIcon(R.drawable.ic_action_apply_dark);
+                Toast.makeText(getContext(), R.string.tap_to_measure, Toast.LENGTH_SHORT).show();
                 break;
         }
+    }
+
+    @Override
+    public void onLengthChanged(double length) {
+        mActivity.setTitle(LocationUtil.formatLength(getContext(), length));
     }
 }
