@@ -246,7 +246,7 @@ public class AttributesFragment
                         case GTLineString:
                             try {
                                 GeoLineString line = (GeoLineString) GeoGeometryFactory.fromBlob(attributes.getBlob(i));
-                                addRow(getString(R.string.length), LocationUtil.formatLength(getContext(), line.getLength()));
+                                addRow(getString(R.string.length), LocationUtil.formatLength(getContext(), line.getLength(), 3));
                             } catch (IOException | ClassNotFoundException e) {
                                 e.printStackTrace();
                             }
@@ -254,7 +254,7 @@ public class AttributesFragment
                         case GTMultiLineString:
                             try {
                                 GeoMultiLineString multiline = (GeoMultiLineString) GeoGeometryFactory.fromBlob(attributes.getBlob(i));
-                                addRow(getString(R.string.length), LocationUtil.formatLength(getContext(), multiline.getLength()));
+                                addRow(getString(R.string.length), LocationUtil.formatLength(getContext(), multiline.getLength(), 3));
                             } catch (IOException | ClassNotFoundException e) {
                                 e.printStackTrace();
                             }
@@ -262,7 +262,7 @@ public class AttributesFragment
                         case GTPolygon:
                             try {
                                 GeoPolygon polygon = (GeoPolygon) GeoGeometryFactory.fromBlob(attributes.getBlob(i));
-                                addRow(getString(R.string.perimeter), LocationUtil.formatLength(getContext(), polygon.getPerimeter()));
+                                addRow(getString(R.string.perimeter), LocationUtil.formatLength(getContext(), polygon.getPerimeter(), 3));
                                 addRow(getString(R.string.area), LocationUtil.formatArea(getContext(), polygon.getArea()));
                             } catch (IOException | ClassNotFoundException e) {
                                 e.printStackTrace();
@@ -271,7 +271,7 @@ public class AttributesFragment
                         case GTMultiPolygon:
                             try {
                                 GeoMultiPolygon polygon = (GeoMultiPolygon) GeoGeometryFactory.fromBlob(attributes.getBlob(i));
-                                addRow(getString(R.string.perimeter), LocationUtil.formatLength(getContext(), polygon.getPerimeter()));
+                                addRow(getString(R.string.perimeter), LocationUtil.formatLength(getContext(), polygon.getPerimeter(), 3));
                                 addRow(getString(R.string.area), LocationUtil.formatArea(getContext(), polygon.getArea()));
                             } catch (IOException | ClassNotFoundException e) {
                                 e.printStackTrace();

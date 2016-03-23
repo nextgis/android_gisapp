@@ -692,7 +692,7 @@ public class MapFragment
         s.add(p1);
         s.add(p2);
 
-        return LocationUtil.formatLength(getContext(), s.getLength());
+        return LocationUtil.formatLength(getContext(), s.getLength(), 0);
     }
 
 
@@ -1702,6 +1702,6 @@ public class MapFragment
 
     @Override
     public void onLengthChanged(double length) {
-        mActivity.setTitle(LocationUtil.formatLength(getContext(), length));
+        mActivity.setTitle(LocationUtil.formatLength(getContext(), length, 3));
     }
 }
