@@ -393,8 +393,8 @@ public class MapFragment
                                 switch (item.getItemId()) {
                                     case R.id.menu_feature_add:
                                         mEditLayerOverlay.setSelectedFeature(new Feature());
-                                        setMode(MODE_EDIT);
                                         mEditLayerOverlay.createNewGeometry();
+                                        setMode(MODE_EDIT);
                                         mEditLayerOverlay.setHasEdits(true);
                                         break;
                                     case R.id.menu_feature_edit:
@@ -471,7 +471,7 @@ public class MapFragment
 
         String featureName = String.format(getString(R.string.feature_n), featureId);
         String labelField = mSelectedLayer.getPreferences().getString(SettingsConstantsUI.KEY_PREF_LAYER_LABEL, FIELD_ID);
-        if (!labelField.equals(FIELD_ID))
+        if (!labelField.equals(FIELD_ID) && !noFeature && featureId != NOT_FOUND)
             featureName = mSelectedLayer.getFeature(featureId).getFieldValueAsString(labelField);
 
         featureName = noFeature ? getString(R.string.nothing_selected) :
