@@ -62,6 +62,7 @@ public interface SettingsConstants
     String KEY_PREF_COMPASS_WAKE_LOCK   = "compass_wake_lock";
     String KEY_PREF_SHOW_ZOOM_CONTROLS  = "show_zoom_controls";
     String KEY_PREF_SHOW_SCALE_RULER    = "show_scale_ruler";
+    String KEY_PREF_SHOW_MEASURING      = "show_ruler_measuring";
 
     int FIRSTSTART_DOWNLOADZOOM = 5;
 }

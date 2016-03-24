@@ -110,6 +110,7 @@ import static com.nextgis.maplib.util.Constants.NOT_FOUND;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SCROLL_X;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SCROLL_Y;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_COMPASS;
+import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_MEASURING;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_SCALE_RULER;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_ZOOM_CONTROLS;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_ZOOM_LEVEL;
@@ -879,6 +880,12 @@ public class MapFragment
             mScaleRulerLayout.setVisibility(View.VISIBLE);
         else
             mScaleRulerLayout.setVisibility(View.GONE);
+
+        showControls = prefs.getBoolean(KEY_PREF_SHOW_MEASURING, false);
+        if (showControls)
+            mRuler.setVisibility(View.VISIBLE);
+        else
+            mRuler.setVisibility(View.GONE);
 
         if(Constants.DEBUG_MODE)
             Log.d(Constants.TAG, "KEY_PREF_SHOW_ZOOM_CONTROLS: " + (showControls ? "ON" : "OFF"));
@@ -1687,7 +1694,10 @@ public class MapFragment
                 if (mRulerOverlay.isMeasuring()) {
                     mRulerOverlay.stopMeasuring();
                     showMainButton();
-                    showRulerButton();
+
+                    if (PreferenceManager.getDefaultSharedPreferences(mActivity).getBoolean(KEY_PREF_SHOW_MEASURING, false))
+                        showRulerButton();
+
                     hideAddByTapButton();
                     mAddPointButton.setIcon(R.drawable.ic_action_add_point);
                     mActivity.setTitle(R.string.app_name);

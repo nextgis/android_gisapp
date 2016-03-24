@@ -59,6 +59,11 @@
         android:key="show_scale_ruler"
         android:title="@string/show_scale_ruler"/>
 
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="show_ruler_measuring"
+        android:title="@string/show_ruler_measuring"/>
+
     <ListPreference
         android:defaultValue="0"
         android:dialogTitle="@string/select_coordinates_format"
