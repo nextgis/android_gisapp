@@ -162,6 +162,7 @@ public class MapFragment
     protected static final String BUNDLE_KEY_LAYER = "layer";
     protected static final String BUNDLE_KEY_FEATURE_ID = "feature";
     protected static final String BUNDLE_KEY_SAVED_FEATURE = "feature_blob";
+    protected static final String BUNDLE_KEY_IS_MEASURING = "is_measuring";
     protected boolean mIsCompassDragging;
     protected int mStatusPanelMode;
 
@@ -761,6 +762,7 @@ public class MapFragment
     public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
+        outState.putBoolean(BUNDLE_KEY_IS_MEASURING, mRulerOverlay.isMeasuring());
         outState.putInt(KEY_MODE, mMode);
         outState.putInt(BUNDLE_KEY_LAYER, null == mSelectedLayer ? Constants.NOT_FOUND : mSelectedLayer.getId());
 
@@ -826,6 +828,9 @@ public class MapFragment
         }
 
         setMode(mMode);
+
+        if (savedInstanceState != null && savedInstanceState.getBoolean(BUNDLE_KEY_IS_MEASURING, false))
+            startMeasuring();
     }
 
 
@@ -1691,14 +1696,18 @@ public class MapFragment
                     addPointByTap();
                 break;
             case R.id.action_ruler:
-                mRulerOverlay.startMeasuring(this);
-                hideMainButton();
-                hideRulerButton();
-                showAddByTapButton();
-                mAddPointButton.setIcon(R.drawable.ic_action_apply_dark);
+                startMeasuring();
                 Toast.makeText(getContext(), R.string.tap_to_measure, Toast.LENGTH_SHORT).show();
                 break;
         }
+    }
+
+    protected void startMeasuring() {
+        mRulerOverlay.startMeasuring(this);
+        hideMainButton();
+        hideRulerButton();
+        showAddByTapButton();
+        mAddPointButton.setIcon(R.drawable.ic_action_apply_dark);
     }
 
     @Override
