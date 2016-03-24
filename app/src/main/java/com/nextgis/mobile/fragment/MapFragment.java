@@ -1686,6 +1686,7 @@ public class MapFragment
                     hideAddByTapButton();
                     mAddPointButton.setIcon(R.drawable.ic_action_add_point);
                     mActivity.setTitle(R.string.app_name);
+                    mActivity.setSubtitle(null);
                 } else
                     addPointByTap();
                 break;
@@ -1703,5 +1704,10 @@ public class MapFragment
     @Override
     public void onLengthChanged(double length) {
         mActivity.setTitle(LocationUtil.formatLength(getContext(), length, 3));
+    }
+
+    @Override
+    public void onAreaChanged(double area) {
+        mActivity.setSubtitle(LocationUtil.formatArea(getContext(), area));
     }
 }
