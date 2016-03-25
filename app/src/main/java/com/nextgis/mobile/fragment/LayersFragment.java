@@ -39,6 +39,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.internal.widget.ThemeUtils;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -69,6 +70,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.nextgis.maplib.util.Constants.NGW_ACCOUNT_TYPE;
+import static com.nextgis.maplib.util.Constants.TAG;
 import static com.nextgis.mobile.util.SettingsConstants.AUTHORITY;
 
 
@@ -129,6 +131,7 @@ public class LayersFragment
     {
         mAccounts.clear();
         final AccountManager accountManager = AccountManager.get(getActivity().getApplicationContext());
+        Log.d(TAG, "LayersFragment: AccountManager.get(" + getActivity().getApplicationContext() + ")");
         final IGISApplication application = (IGISApplication) getActivity().getApplication();
         List<INGWLayer> layers = new ArrayList<>();
 
