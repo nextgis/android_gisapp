@@ -875,6 +875,9 @@ public class MapFragment
         boolean showControls = prefs.getBoolean(KEY_PREF_SHOW_ZOOM_CONTROLS, false);
         showMapButtons(showControls, mMapRelativeLayout);
 
+        if(Constants.DEBUG_MODE)
+            Log.d(Constants.TAG, "KEY_PREF_SHOW_ZOOM_CONTROLS: " + (showControls ? "ON" : "OFF"));
+
         showControls = prefs.getBoolean(KEY_PREF_SHOW_SCALE_RULER, true);
         if (showControls)
             mScaleRulerLayout.setVisibility(View.VISIBLE);
@@ -886,9 +889,6 @@ public class MapFragment
             mRuler.setVisibility(View.VISIBLE);
         else
             mRuler.setVisibility(View.GONE);
-
-        if(Constants.DEBUG_MODE)
-            Log.d(Constants.TAG, "KEY_PREF_SHOW_ZOOM_CONTROLS: " + (showControls ? "ON" : "OFF"));
 
         if (null != mMap) {
             mMap.getMap().setBackground(mApp.getMapBackground());
@@ -1325,7 +1325,8 @@ public class MapFragment
 
 
     public void showRulerButton() {
-        mRuler.setVisibility(View.VISIBLE);
+        if (PreferenceManager.getDefaultSharedPreferences(mActivity).getBoolean(KEY_PREF_SHOW_MEASURING, false))
+            mRuler.setVisibility(View.VISIBLE);
     }
 
 
@@ -1696,10 +1697,7 @@ public class MapFragment
                 if (mRulerOverlay.isMeasuring()) {
                     mRulerOverlay.stopMeasuring();
                     showMainButton();
-
-                    if (PreferenceManager.getDefaultSharedPreferences(mActivity).getBoolean(KEY_PREF_SHOW_MEASURING, false))
-                        showRulerButton();
-
+                    showRulerButton();
                     hideAddByTapButton();
                     mAddPointButton.setIcon(R.drawable.ic_action_add_point);
                     mActivity.setTitle(R.string.app_name);
