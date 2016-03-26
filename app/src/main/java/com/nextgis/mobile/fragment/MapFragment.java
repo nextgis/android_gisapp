@@ -1012,6 +1012,7 @@ public class MapFragment
         if (null == compassFragment)
             compassFragment = new CompassFragment();
 
+        compass.setClickable(false);
         compassFragment.setStyle(true);
         if (!compassFragment.isAdded())
             fragmentTransaction.add(compassContainer, compassFragment, "NEEDLE_COMPASS")
@@ -1656,6 +1657,7 @@ public class MapFragment
         FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         FullCompassFragment compassFragment = new FullCompassFragment();
+        compassFragment.setClickable(true);
 
         int container = R.id.mainview;
         fragmentTransaction.add(container, compassFragment, "COMPASS_FULL")
