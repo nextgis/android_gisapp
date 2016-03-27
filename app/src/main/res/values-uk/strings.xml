@@ -27,15 +27,15 @@
     <string name="navigation_drawer_close">Закрити панель навігації</string>
     <string name="action_settings">Налаштування</string>
     <string name="action_add">Новий шар</string>
-    <string name="action_add_local">Open local</string>
+    <string name="action_add_local">Додати локальний</string>
     <string name="action_add_remote">Додати Веб</string>
     <string name="action_add_ngw">Додати з NGW</string>
     <string name="general">Загальне</string>
     <string name="general_summary">Загальні налаштування</string>
-    <string name="keep_screen_on">Тримати екран ввімкненим</string>
+    <string name="keep_screen_on">Тримати екран увімкненим</string>
     <string name="keep_screen_on_summary">Не гасити екран</string>
-    <string name="show_scale_ruler">Show scale ruler</string>
-    <string name="show_ruler_measuring">Линейка измерений</string>
+    <string name="show_scale_ruler">Показувати шкалу масштабу</string>
+    <string name="show_ruler_measuring">Показувати лінійку вимірів</string>
     <string name="show_zoom_controls">Показивати керування маштабу</string>
     <string name="show_zoom_controls_summary">Показувати кнопки зуму +/- на карті</string>
     <string name="show_compass">Показувати міні компас</string>
@@ -44,25 +44,25 @@
     <string name="ngw">NextGIS Web</string>
     <string name="ngw_summary">NextGIS Web налаштування</string>
     <string name="app_description">Мобільний ГІС додаток для візуалізації та збору даних у польових умовах та відправки їх на сервер. NextGIS Mobile також записує путь та відправляє координати на сервер.</string>
-    <string name="credits_intro">Credits</string>
-    <string name="credits">Деякф іконки використані в застосунку з <a href="http://icons8.com/android-icons">Icons8.com</a> з ліцензією <a href="http://creativecommons.org/licenses/by-nd/3.0/">CC BY-ND 3.0 license</a>, <a href="http://materialdesignicons.com/">materialdesignicons.com</a> та <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a> з ліцензією <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0 license</a></string>
+    <string name="credits_intro">Ліцензії</string>
+    <string name="credits">Деякі іконки використані в застосунку з <a href="http://icons8.com/android-icons">Icons8.com</a> з ліцензією <a href="http://creativecommons.org/licenses/by-nd/3.0/">CC BY-ND 3.0 license</a>, <a href="http://materialdesignicons.com/">materialdesignicons.com</a> та <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a> з ліцензією <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0 license</a></string>
     <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2012–2015]]></string>
     <string name="contacts"><a href="http://nextgis.ru/en/contact/">Наші контакти</a></string>
     <string name="action_about">Про застосунок</string>
     <string name="add_current_place">Додати поточну точку</string>
     <string name="add_new_geometry">Додати новий об’єкт</string>
-    <string name="add_geometry_by_walk">Додати новій об’єкт в обхід</string>
+    <string name="add_geometry_by_walk">Додати новий об’єкт в обхід</string>
     <string name="warning_no_edit_layers">Відсутні шари для редагування</string>
     <string name="select_layer">Позначити шар для редагування</string>
     <string name="menu_locate">Знайти</string>
     <string name="select_file">Обрати файл для створення шару</string>
     <string name="warning_install_file_manager">Будь ласка, встановіть менеджер файлів</string>
-    <string name="error_file_unsupported">Не підтримуємий тип файлів</string>
+    <string name="error_file_unsupported">Тип файлу не підтримується</string>
     <string name="warning_not_implemented">Ще не впроваджено</string>
     <string name="pref_location_accuracy">Точність визначення місцезнаходження</string>
     <string name="pref_location_accuracy_gps">GPS</string>
     <string name="pref_location_accuracy_cell">Інщі мережі</string>
-    <string name="location">Місцеположення</string>
+    <string name="location">Місцезнаходження</string>
     <string name="location_summary">Налаштування місцезнаходження та введення геометрій обходом</string>
     <string name="tracks_summary">Налаштування треків</string>
     <string name="track_start">Почати запис нового треку</string>
@@ -88,7 +88,7 @@
     <string name="warning_folder_should_be_empty">Папка повинна бути пустою. Дія відмінена.</string>
     <string name="frequentest">, так часто, як можливо</string>
     <string name="compass_vibrate">Вібрація при дотику</string>
-    <string name="compass_true_north">Показати істинний північ</string>
+    <string name="compass_true_north">Показати справжню північ</string>
     <string name="compass_magnetic">Показувати магнітний полюс</string>
     <string name="compass_keep_screen">Залишати екран компасу ввімкненим</string>
     <string name="accurate_measures_count">Кількість замірів GPS</string>
@@ -103,7 +103,7 @@
     <string name="center">Центр</string>
     <string name="area">Площа</string>
     <string name="perimeter">Периметр</string>
-    <string name="compass_title">Компасс</string>
+    <string name="compass_title">Компас</string>
     <string name="refresh">Оновити</string>
     <string name="points_for_edit">Точки (можна редагувати)</string>
     <string name="lines_for_edit">Лінії (можна редагувати)</string>
@@ -119,10 +119,10 @@
     <string name="reset_settings_message">Усі шари будуть видалені! Будуть відновлені початкові шари.</string>
     <string name="action_point_by_tap">Додати нову точку</string>
     <string name="new_field">Нове поле</string>
-    <string name="empty_name">Ім\'я не може бути порожнім</string>
-    <string name="same_field_name">Поле з таким ім\'ям вже існує</string>
-    <string name="same_layer_name">Шар з таким ім\'ям вже існує</string>
+    <string name="empty_name">Ім’я не може бути порожнім</string>
+    <string name="same_field_name">Поле з таким ім’ям вже існує</string>
+    <string name="same_layer_name">Шар з таким ім’ям вже існує</string>
     <string name="default_field_name">Опис</string>
     <string name="pref_sync_notification">Повідомлення про синхронізацію</string>
-    <string name="tap_to_measure">Нажмите на карту для выбора точек</string>
+    <string name="tap_to_measure">Натисніть на карту аби обрати точки</string>
 </resources>
