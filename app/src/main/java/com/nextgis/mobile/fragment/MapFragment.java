@@ -190,6 +190,11 @@ public class MapFragment
         mEditLayerOverlay = new EditLayerOverlay(mActivity, mMap);
     }
 
+    public void restartGpsListener() {
+        mGpsEventSource.removeListener(this);
+        mGpsEventSource.addListener(this);
+    }
+
     public EditLayerOverlay getEditLayerOverlay() {
         return mEditLayerOverlay;
     }

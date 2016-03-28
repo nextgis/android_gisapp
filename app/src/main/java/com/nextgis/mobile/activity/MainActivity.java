@@ -23,6 +23,7 @@
 
 package com.nextgis.mobile.activity;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.ContentUris;
@@ -40,6 +41,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.internal.widget.ThemeUtils;
 import android.support.v7.widget.Toolbar;
@@ -90,6 +92,7 @@ import static com.nextgis.maplibui.service.TrackerService.isTrackerServiceRunnin
 public class MainActivity extends NGActivity
         implements GpsEventListener, IChooseLayerResult
 {
+    protected final static int PERMISSIONS_REQUEST = 1;
 
     protected MapFragment     mMapFragment;
     protected LayersFragment  mLayersFragment;
@@ -113,6 +116,7 @@ public class MainActivity extends NGActivity
         PreferenceManager.setDefaultValues(this, R.xml.preferences_tracks, false);
 
         setContentView(R.layout.activity_main);
+        mMessageReceiver = new MessageReceiver();
 
         mToolbar = (Toolbar) findViewById(R.id.main_toolbar);
         mToolbar.getBackground().setAlpha(128);
@@ -130,9 +134,8 @@ public class MainActivity extends NGActivity
         mMapFragment.getEditLayerOverlay().setBottomToolbar(getBottomToolbar());
 
         MainApplication app = (MainApplication) getApplication();
+        mLayersFragment = (LayersFragment) getSupportFragmentManager().findFragmentById(R.id.layers);
 
-        mLayersFragment =
-                (LayersFragment) getSupportFragmentManager().findFragmentById(R.id.layers);
         if (mLayersFragment != null && null != mLayersFragment.getView()) {
             mLayersFragment.getView().setBackgroundColor(
                     getResources().getColor(R.color.background_material_light));
@@ -140,9 +143,30 @@ public class MainActivity extends NGActivity
             mLayersFragment.setUp(R.id.layers, drawerLayout, (MapDrawable) app.getMap());
         }
 
-        mMessageReceiver = new MessageReceiver();
+        if (!hasPermissions()) {
+            String[] permissions = new String[] {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.GET_ACCOUNTS, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            requestPermissions(R.string.permissions, R.string.requested_permissions, PERMISSIONS_REQUEST, permissions);
+        }
     }
 
+    protected boolean hasPermissions() {
+        return isPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION) &&
+                isPermissionGranted(Manifest.permission.ACCESS_COARSE_LOCATION) &&
+                isPermissionGranted(Manifest.permission.GET_ACCOUNTS) &&
+                isPermissionGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST:
+                mMapFragment.restartGpsListener();
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
 
     public void showEditToolbar() {
         mToolbar.getMenu().clear();

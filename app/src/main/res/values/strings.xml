@@ -127,4 +127,7 @@
     <string name="default_field_name">Description</string>
     <string name="pref_sync_notification">Show sync notification</string>
     <string name="tap_to_measure">Tap on map to check points</string>
+    <string name="permissions">Permissions</string>
+    <string name="requested_permissions">Application needs some permissions to work properly. It includes writing to external storage (to save data on card),
+        access to location services and getting contacts (to create and manage web accounts).</string>
 </resources>

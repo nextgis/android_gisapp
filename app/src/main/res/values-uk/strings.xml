@@ -125,4 +125,7 @@
     <string name="default_field_name">Опис</string>
     <string name="pref_sync_notification">Повідомлення про синхронізацію</string>
     <string name="tap_to_measure">Натисніть на карту аби обрати точки</string>
+    <string name="permissions">Разрешения</string>
+    <string name="requested_permissions">Приложению требуются некоторые разрешения для корректной работы: запись на устройство (для хранения данных), доступ
+        к местоположению и получение контактов (для создания и управления веб аккаунтами).</string>
 </resources>
