@@ -42,6 +42,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.internal.widget.ThemeUtils;
 import android.support.v7.widget.Toolbar;
@@ -68,6 +69,7 @@ import com.nextgis.maplib.util.FileUtil;
 import com.nextgis.maplibui.activity.NGActivity;
 import com.nextgis.maplibui.api.IChooseLayerResult;
 import com.nextgis.maplibui.fragment.BottomToolbar;
+import com.nextgis.maplibui.fragment.LayerFillProgressDialogFragment;
 import com.nextgis.maplibui.service.TrackerService;
 import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
@@ -93,6 +95,7 @@ public class MainActivity extends NGActivity
         implements GpsEventListener, IChooseLayerResult
 {
     protected final static int PERMISSIONS_REQUEST = 1;
+    protected final static String TAG_FRAGMENT_PROGRESS = "layer_fill_dialog_fragment";
 
     protected MapFragment     mMapFragment;
     protected LayersFragment  mLayersFragment;
@@ -129,18 +132,25 @@ public class MainActivity extends NGActivity
         drawerLayout.setStatusBarBackgroundColor(ThemeUtils.getThemeAttrColor(
                 this, R.attr.colorPrimaryDark));
 
-        mMapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        FragmentManager fm = getSupportFragmentManager();
+        mMapFragment = (MapFragment) fm.findFragmentById(R.id.map);
         mMapFragment.getEditLayerOverlay().setTopToolbar(mToolbar);
         mMapFragment.getEditLayerOverlay().setBottomToolbar(getBottomToolbar());
 
         MainApplication app = (MainApplication) getApplication();
-        mLayersFragment = (LayersFragment) getSupportFragmentManager().findFragmentById(R.id.layers);
+        mLayersFragment = (LayersFragment) fm.findFragmentById(R.id.layers);
 
         if (mLayersFragment != null && null != mLayersFragment.getView()) {
             mLayersFragment.getView().setBackgroundColor(
                     getResources().getColor(R.color.background_material_light));
             // Set up the drawer.
             mLayersFragment.setUp(R.id.layers, drawerLayout, (MapDrawable) app.getMap());
+        }
+
+        LayerFillProgressDialogFragment progressFragment = (LayerFillProgressDialogFragment) fm.findFragmentByTag(TAG_FRAGMENT_PROGRESS);
+        if (progressFragment == null) {
+            progressFragment = new LayerFillProgressDialogFragment();
+            fm.beginTransaction().add(progressFragment, TAG_FRAGMENT_PROGRESS).commit();
         }
 
         if (!hasPermissions()) {
