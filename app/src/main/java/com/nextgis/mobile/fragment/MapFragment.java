@@ -62,7 +62,6 @@ import android.widget.Toast;
 import com.cocosw.undobar.UndoBarController;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.nextgis.maplib.api.GpsEventListener;
-import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.api.ILayerView;
 import com.nextgis.maplib.datasource.Feature;
@@ -70,6 +69,8 @@ import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplib.datasource.GeoGeometry;
 import com.nextgis.maplib.datasource.GeoGeometryFactory;
 import com.nextgis.maplib.datasource.GeoLineString;
+import com.nextgis.maplib.datasource.GeoLinearRing;
+import com.nextgis.maplib.datasource.GeoMultiLineString;
 import com.nextgis.maplib.datasource.GeoMultiPolygon;
 import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.datasource.GeoPolygon;
@@ -153,11 +154,11 @@ public class MapFragment
     protected ChooseLayerDialog mChooseLayerDialog;
     protected Vibrator mVibrator;
 
-    protected static final int MODE_NORMAL        = 0;
-    protected static final int MODE_SELECT_ACTION = 1;
-    protected static final int MODE_EDIT          = 2;
-    protected static final int MODE_INFO          = 3;
-    protected static final int MODE_EDIT_BY_WALK  = 4;
+    public static final int MODE_NORMAL        = 0;
+    public static final int MODE_SELECT_ACTION = 1;
+    public static final int MODE_EDIT          = 2;
+    public static final int MODE_INFO          = 3;
+    public static final int MODE_EDIT_BY_WALK  = 4;
 
     protected static final String KEY_MODE = "mode";
     protected static final String BUNDLE_KEY_LAYER = "layer";
@@ -199,17 +200,21 @@ public class MapFragment
         return mEditLayerOverlay;
     }
 
-
     public boolean isEditMode() {
-        return mMode == MODE_EDIT;
+        return mMode == MODE_EDIT || mMode == MODE_EDIT_BY_WALK;
     }
 
+    public int getMode() {
+        return mMode;
+    }
 
     public boolean onOptionsItemSelected(int id) {
         switch (id) {
             case android.R.id.home:
                 cancelEdits();
                 return true;
+            case R.id.menu_edit_by_walk:
+                setMode(MODE_EDIT_BY_WALK);
             default:
                 return mEditLayerOverlay.onOptionsItemSelected(id);
         }
@@ -217,21 +222,31 @@ public class MapFragment
 
 
     public boolean saveEdits() {
-        mEditLayerOverlay.setHasEdits(false);
         Feature feature = mEditLayerOverlay.getSelectedFeature();
+        long featureId = NOT_FOUND;
+        GeoGeometry geometry = null;
 
-        if (mSelectedLayer != null && feature != null) {
-            long featureId = feature.getId();
-            GeoGeometry geometry = feature.getGeometry();
+        if (feature != null) {
+            geometry = feature.getGeometry();
+            featureId = feature.getId();
+        }
 
-            if (!isGeometryValid(geometry))
-                return false;
+        if (!isGeometryValid(geometry))
+            return false;
 
-            if (featureId == Constants.NOT_FOUND) {
+        mEditLayerOverlay.setHasEdits(false);
+        if (mMode == MODE_EDIT_BY_WALK) {
+            mEditLayerOverlay.stopGeometryByWalk();
+            setMode(MODE_EDIT);
+            mEditLayerOverlay.clearHistory();
+            mEditLayerOverlay.defineUndoRedo();
+        }
+
+        if (mSelectedLayer != null) {
+            if (featureId == NOT_FOUND) {
                 //show attributes edit activity
                 IVectorLayerUI vectorLayerUI = (IVectorLayerUI) mSelectedLayer;
                 vectorLayerUI.showEditForm(mActivity, featureId, geometry);
-                mEditLayerOverlay.setSelectedFeature(null);
             } else {
                 Uri uri = Uri.parse("content://" + mApp.getAuthority() + "/" + mSelectedLayer.getPath().getName());
                 uri = ContentUris.withAppendedId(uri, featureId);
@@ -244,17 +259,20 @@ public class MapFragment
                 }
 
                 mActivity.getContentResolver().update(uri, values, null, null);
+                setMode(MODE_SELECT_ACTION);
             }
-
-            mSelectedLayer.showFeature(featureId);
         }
 
-        setMode(MODE_SELECT_ACTION);
         return true;
     }
 
 
     protected boolean isGeometryValid(GeoGeometry geometry) {
+        if (!hasMinimumPoints(geometry)) {
+            Toast.makeText(getContext(), R.string.geometry_no_points, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
         if (geometry instanceof GeoPolygon) {
             if (((GeoPolygon) geometry).intersects()) {
                 Toast.makeText(getContext(), R.string.self_intersection, Toast.LENGTH_SHORT).show();
@@ -293,12 +311,58 @@ public class MapFragment
     }
 
 
+    protected boolean hasMinimumPoints(GeoGeometry geometry) {
+        if (null == geometry)
+            return false;
+
+        switch (geometry.getType()) {
+            case GeoConstants.GTPoint:
+            case GeoConstants.GTMultiPoint:
+                return true;
+            case GeoConstants.GTLineString:
+                GeoLineString line = (GeoLineString) geometry;
+                return line.getPointCount() > 1;
+            case GeoConstants.GTMultiLineString:
+                GeoMultiLineString multiLine = (GeoMultiLineString) geometry;
+                for (int i = 0; i < multiLine.size(); i++) {
+                    GeoLineString subLine = multiLine.get(i);
+                    if (subLine.getPointCount() > 1) {
+                        return true;
+                    }
+                }
+                return false;
+            case GeoConstants.GTPolygon:
+                GeoPolygon polygon = (GeoPolygon) geometry;
+                GeoLinearRing ring = polygon.getOuterRing();
+                return ring.getPointCount() > 2;
+            case GeoConstants.GTMultiPolygon:
+                GeoMultiPolygon multiPolygon = (GeoMultiPolygon) geometry;
+                for (int i = 0; i < multiPolygon.size(); i++) {
+                    GeoPolygon subPolygon = multiPolygon.get(i);
+                    if (subPolygon.getOuterRing().getPointCount() > 2) {
+                        return true;
+                    }
+                }
+                return false;
+            default:
+                return false;
+        }
+    }
+
+
     public void cancelEdits() {
 //        if (mEditLayerOverlay.hasEdits()) TODO prompt dialog
 //            return;
 
         // restore
         mEditLayerOverlay.setHasEdits(false);
+        if (mMode == MODE_EDIT_BY_WALK) {
+            mEditLayerOverlay.stopGeometryByWalk(); // TODO toast?
+            setMode(MODE_EDIT);
+            mEditLayerOverlay.clearHistory();
+            mEditLayerOverlay.defineUndoRedo();
+        }
+
         long featureId = mEditLayerOverlay.getSelectedFeatureId();
         mEditLayerOverlay.setSelectedFeature(featureId);
         setMode(MODE_SELECT_ACTION);
@@ -333,50 +397,20 @@ public class MapFragment
             case MODE_EDIT:
                 mActivity.showEditToolbar();
                 mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT);
-                break;
-            case MODE_EDIT_BY_WALK:
-                toolbar.getMenu().clear();
-                toolbar.inflateMenu(com.nextgis.maplibui.R.menu.edit_by_walk);
-                toolbar.setNavigationIcon(com.nextgis.maplibui.R.drawable.ic_action_cancel_dark);
-
-                toolbar.setNavigationOnClickListener(
-                        new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                setMode(MODE_NORMAL);
-                                mEditLayerOverlay.stopGeometryByWalk(); // TODO toast?
-                            }
-                        });
-
                 toolbar.setOnMenuItemClickListener(
                         new BottomToolbar.OnMenuItemClickListener() {
                             @Override
                             public boolean onMenuItemClick(MenuItem menuItem) {
-                                /**
-                                 * create a new geometry during walk edit
-                                 */
-                                if (menuItem.getItemId() == com.nextgis.maplibui.R.id.menu_add_geometry) {
-                                    Toast.makeText(mActivity, com.nextgis.maplibui.R.string.not_implemented, Toast.LENGTH_SHORT).show();
-                                } else if (menuItem.getItemId() == com.nextgis.maplibui.R.id.menu_edit_save) {
-                                    mEditLayerOverlay.stopGeometryByWalk();
-
-                                    if (mEditLayerOverlay.isCurrentGeometryValid())
-                                        saveEdits();
-                                    else
-                                        Toast.makeText(mActivity, com.nextgis.maplibui.R.string.geometry_by_walk_no_points, Toast.LENGTH_SHORT).show();
-                                } else if (menuItem.getItemId() == com.nextgis.maplibui.R.id.menu_settings) {
-                                    IGISApplication app = (IGISApplication) mActivity.getApplication();
-                                    app.showSettings(SettingsConstantsUI.ACTION_PREFS_LOCATION);
-                                }
-
-                                return true;
+                                return onOptionsItemSelected(menuItem.getItemId());
                             }
-                        }
-                );
-
+                        });
+                break;
+            case MODE_EDIT_BY_WALK:
+                mActivity.showEditToolbar();
                 mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT_BY_WALK);
                 break;
             case MODE_SELECT_ACTION:
+                toolbar.setTitle(null);
                 toolbar.getMenu().clear();
                 toolbar.inflateMenu(R.menu.select_action);
                 toolbar.setNavigationIcon(R.drawable.ic_action_cancel_dark);
@@ -402,6 +436,7 @@ public class MapFragment
                                         mEditLayerOverlay.setSelectedFeature(new Feature());
                                         mEditLayerOverlay.createNewGeometry();
                                         setMode(MODE_EDIT);
+                                        mEditLayerOverlay.saveToHistory();
                                         mEditLayerOverlay.setHasEdits(true);
                                         break;
                                     case R.id.menu_feature_edit:
@@ -825,10 +860,21 @@ public class MapFragment
         if (WalkEditService.isServiceRunning(getContext())) {
             SharedPreferences preferences = getContext().getSharedPreferences(WalkEditService.TEMP_PREFERENCES, Constants.MODE_MULTI_PROCESS);
             int layerId = preferences.getInt(ConstantsUI.KEY_LAYER_ID, NOT_FOUND);
+            long featureId = preferences.getLong(ConstantsUI.KEY_FEATURE_ID, NOT_FOUND);
             ILayer layer = mMap.getMap().getLayerById(layerId);
             if (layer != null && layer instanceof VectorLayer) {
                 mSelectedLayer = (VectorLayer) layer;
                 mEditLayerOverlay.setSelectedLayer(mSelectedLayer);
+
+                if (featureId > NOT_FOUND)
+                    mEditLayerOverlay.setSelectedFeature(featureId);
+                else
+                    mEditLayerOverlay.newGeometryByWalk();
+
+                GeoGeometry geometry = GeoGeometryFactory.fromWKT(preferences.getString(ConstantsUI.KEY_GEOMETRY, ""));
+                if (geometry != null)
+                    mEditLayerOverlay.setGeometryFromWalkEdit(geometry);
+
                 mMode = MODE_EDIT_BY_WALK;
             }
         }
@@ -1208,7 +1254,8 @@ public class MapFragment
     protected void addGeometryByWalk()
     {
         //show select layer dialog if several layers, else start default or custom form
-        List<ILayer> layers = mMap.getVectorLayersByType(GeoConstants.GTLineStringCheck | GeoConstants.GTPolygonCheck);
+        List<ILayer> layers = mMap.getVectorLayersByType(GeoConstants.GTLineStringCheck | GeoConstants.GTPolygonCheck
+                | GeoConstants.GTMultiLineStringCheck | GeoConstants.GTMultiPolygonCheck);
         layers = removeHideLayers(layers);
 
         if (layers.isEmpty()) {
@@ -1218,6 +1265,7 @@ public class MapFragment
             VectorLayer layer = (VectorLayer) layers.get(0);
             mSelectedLayer = layer;
             mEditLayerOverlay.setSelectedLayer(layer);
+            mEditLayerOverlay.newGeometryByWalk();
             setMode(MODE_EDIT_BY_WALK);
 
             Toast.makeText(mActivity, String.format(getString(R.string.edit_layer), layer.getName()), Toast.LENGTH_SHORT).show();
@@ -1254,6 +1302,7 @@ public class MapFragment
         } else if (code == EDIT_LAYER) {
             setMode(MODE_SELECT_ACTION);
         } else if (code == ADD_GEOMETRY_BY_WALK) {
+            mEditLayerOverlay.newGeometryByWalk();
             setMode(MODE_EDIT_BY_WALK);
         } else if (code == ADD_POINT_BY_TAP) {
             mEditLayerOverlay.setSelectedFeature(new Feature());
@@ -1341,6 +1390,9 @@ public class MapFragment
 
 
     public void showMainButton() {
+        if (mMode == MODE_EDIT_BY_WALK)
+            return;
+
         mAddNewGeometry.getIconDrawable().setAlpha(255);
         mMainButton.setVisibility(View.VISIBLE);
     }

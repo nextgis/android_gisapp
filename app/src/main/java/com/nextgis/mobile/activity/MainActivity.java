@@ -181,6 +181,12 @@ public class MainActivity extends NGActivity
     public void showEditToolbar() {
         mToolbar.getMenu().clear();
         mToolbar.inflateMenu(R.menu.edit_geometry);
+
+        MenuItem item = mToolbar.getMenu().findItem(com.nextgis.maplibui.R.id.menu_edit_redo);
+        item.setVisible(mMapFragment.getMode() != MapFragment.MODE_EDIT_BY_WALK);
+        item = mToolbar.getMenu().findItem(com.nextgis.maplibui.R.id.menu_edit_undo);
+        item.setVisible(mMapFragment.getMode() != MapFragment.MODE_EDIT_BY_WALK);
+
         mLayersFragment.setDrawerToggleEnabled(false);
         mToolbar.setNavigationIcon(R.drawable.ic_action_cancel_dark);
     }
