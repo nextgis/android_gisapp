@@ -27,6 +27,7 @@ package com.nextgis.mobile.fragment;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -264,6 +265,23 @@ public class MapFragment
         }
 
         return true;
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == IVectorLayerUI.MODIFY_REQUEST && data != null) {
+            long id = data.getLongExtra(ConstantsUI.KEY_FEATURE_ID, NOT_FOUND);
+
+            if (id != NOT_FOUND) {
+                mEditLayerOverlay.setSelectedFeature(id);
+                mSelectedLayer.showFeature(id);
+                setMode(MODE_SELECT_ACTION);
+            }
+        } else
+            mEditLayerOverlay.setHasEdits(true);
     }
 
 

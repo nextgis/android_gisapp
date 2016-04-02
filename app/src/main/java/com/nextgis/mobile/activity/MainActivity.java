@@ -68,6 +68,7 @@ import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.FileUtil;
 import com.nextgis.maplibui.activity.NGActivity;
 import com.nextgis.maplibui.api.IChooseLayerResult;
+import com.nextgis.maplibui.api.IVectorLayerUI;
 import com.nextgis.maplibui.fragment.BottomToolbar;
 import com.nextgis.maplibui.fragment.LayerFillProgressDialogFragment;
 import com.nextgis.maplibui.service.TrackerService;
@@ -447,6 +448,9 @@ public class MainActivity extends NGActivity
                                 Toast.LENGTH_SHORT).show();
                     }
                 }
+                break;
+            case IVectorLayerUI.MODIFY_REQUEST:
+                mMapFragment.onActivityResult(requestCode, resultCode, data);
                 break;
         }
     }
