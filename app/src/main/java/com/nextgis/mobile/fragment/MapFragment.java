@@ -526,6 +526,11 @@ public class MapFragment
         if (mMode == MODE_NORMAL || mMode == MODE_INFO)
             return;
 
+        if (mSelectedLayer == null) {
+            setMode(MODE_NORMAL);
+            return;
+        }
+
         boolean noFeature = mEditLayerOverlay.getSelectedFeatureGeometry() == null;
         long featureId = mEditLayerOverlay.getSelectedFeatureId();
 
