@@ -60,6 +60,8 @@ import java.util.List;
 import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_MAP;
 import static com.nextgis.maplibui.service.TrackerService.isTrackerServiceRunning;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_COMPASS;
+import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_MEASURING;
+import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_SCALE_RULER;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_ZOOM_CONTROLS;
 
 
@@ -497,6 +499,9 @@ public class SettingsActivity
         editor.remove(SettingsConstants.KEY_PREF_TRACKS_SOURCE);
         editor.remove(SettingsConstants.KEY_PREF_TRACKS_MIN_TIME);
         editor.remove(SettingsConstants.KEY_PREF_TRACKS_MIN_DISTANCE);
+        editor.remove(KEY_PREF_SHOW_MEASURING);
+        editor.remove(KEY_PREF_SHOW_SCALE_RULER);
+        editor.remove(SettingsConstantsUI.KEY_PREF_SHOW_GEO_DIALOG);
 
         File defaultPath = activity.getExternalFilesDir(KEY_PREF_MAP);
         if (defaultPath == null)
