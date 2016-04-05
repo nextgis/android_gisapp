@@ -5,7 +5,7 @@
   ~ Author:   NikitaFeodonit, nfeodonit@yandex.com
   ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2012-2015. NextGIS, info@nextgis.com
+  ~ Copyright (c) 2012-2016 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -45,34 +45,6 @@
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_action_maps_directions_walk"
         />
-    <item
-        android:id="@+id/menu_add"
-        android:orderInCategory="100"
-        app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_action_add_layer"
-        android:title="@string/action_add"
-        >
-
-        <menu>
-            <item
-                android:id="@+id/menu_new"
-                android:title="@string/create_layer"
-                />
-            <item
-                android:id="@+id/menu_add_local"
-                android:title="@string/action_add_local"
-                />
-            <item
-                android:id="@+id/menu_add_remote"
-                android:title="@string/action_add_remote"
-                />
-            <item
-                android:id="@+id/menu_add_ngw"
-                android:title="@string/action_add_ngw"
-                />
-        </menu>
-    </item>
-
     <item
         android:id="@+id/menu_settings"
         android:title="@string/action_settings"

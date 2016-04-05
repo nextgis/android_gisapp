@@ -248,19 +248,6 @@ public class MainActivity extends NGActivity
                 Intent intentAbout = new Intent(this, AboutActivity.class);
                 startActivity(intentAbout);
                 return true;
-            case R.id.menu_new:
-                Intent intentNewLayer = new Intent(this, CreateVectorLayerActivity.class);
-                startActivity(intentNewLayer);
-                return true;
-            case R.id.menu_add_local:
-                addLocalLayer();
-                return true;
-            case R.id.menu_add_remote:
-                addRemoteLayer();
-                return true;
-            case R.id.menu_add_ngw:
-                addNGWLayer();
-                return true;
             case R.id.menu_locate:
                 locateCurrentPosition();
                 return true;
@@ -382,7 +369,7 @@ public class MainActivity extends NGActivity
     }
 
 
-    protected void addLocalLayer()
+    public void addLocalLayer()
     {
         // ACTION_OPEN_DOCUMENT is the intent to choose a file via the system's file
         // browser.
@@ -718,7 +705,7 @@ public class MainActivity extends NGActivity
     }
 
 
-    protected void addNGWLayer()
+    public void addNGWLayer()
     {
         if (null != mMapFragment) {
             mMapFragment.addNGWLayer();
@@ -726,7 +713,7 @@ public class MainActivity extends NGActivity
     }
 
 
-    protected void addRemoteLayer()
+    public void addRemoteLayer()
     {
         if (null != mMapFragment) {
             mMapFragment.addRemoteLayer();

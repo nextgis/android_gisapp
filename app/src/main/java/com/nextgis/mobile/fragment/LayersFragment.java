@@ -40,6 +40,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.internal.widget.ThemeUtils;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -127,6 +128,32 @@ public class LayersFragment
     }
 
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        getActivity().getMenuInflater().inflate(R.menu.add_layer, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_new:
+                Intent intentNewLayer = new Intent(getActivity(), CreateVectorLayerActivity.class);
+                startActivity(intentNewLayer);
+                return true;
+            case R.id.menu_add_local:
+                ((MainActivity) getActivity()).addLocalLayer();
+                return true;
+            case R.id.menu_add_remote:
+                ((MainActivity) getActivity()).addRemoteLayer();
+                return true;
+            case R.id.menu_add_ngw:
+                ((MainActivity) getActivity()).addNGWLayer();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
     protected void setupSyncOptions()
     {
         mAccounts.clear();
@@ -186,6 +213,7 @@ public class LayersFragment
         super.onActivityCreated(savedInstanceState);
         // Indicate that this fragment would like to influence the set of actions in the action bar.
         setHasOptionsMenu(true);
+        registerForContextMenu(mNewLayer);
     }
 
 
@@ -396,8 +424,7 @@ public class LayersFragment
                 updateInfo();
                 break;
             case R.id.new_layer:
-                Intent intentNewLayer = new Intent(getActivity(), CreateVectorLayerActivity.class);
-                startActivity(intentNewLayer);
+                mNewLayer.showContextMenu();
                 break;
         }
     }
