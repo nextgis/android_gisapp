@@ -10,7 +10,7 @@ The v.1.x versions can be found [here](https://github.com/nextgis/nextgismobile/
 Build status
 ============
 
-![build status](http://176.9.38.120/buildbot/png?builder=makengmob)
+![build status](http://176.9.38.120/buildbot/png?builder=ngmob)
 
 License
 =======
