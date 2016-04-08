@@ -31,7 +31,6 @@
     <string name="action_settings">Настройки</string>
     <string name="action_add">Новый слой</string>
     <string name="action_add_local">Открыть локальный</string>
-    <string name="action_add_remote">Добавить веб</string>
     <string name="action_add_ngw">Добавить из NGW</string>
     <string name="general">Общие</string>
     <string name="general_summary">Общие настройки</string>
