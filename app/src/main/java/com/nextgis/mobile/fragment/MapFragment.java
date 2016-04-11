@@ -168,12 +168,20 @@ public class MapFragment
     protected static final String BUNDLE_KEY_IS_MEASURING = "is_measuring";
     protected boolean mIsCompassDragging;
     protected int mStatusPanelMode;
+    protected onModeChange mModeListener;
 
     protected final int ADD_CURRENT_LOC         = 1;
     public static final int EDIT_LAYER          = 2;
     protected final int ADD_GEOMETRY_BY_WALK    = 3;
     protected final int ADD_POINT_BY_TAP        = 4;
 
+    public interface onModeChange {
+        void onModeChangeListener();
+    }
+
+    public void setOnModeChangeListener(onModeChange listener) {
+        mModeListener = listener;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -404,6 +412,10 @@ public class MapFragment
 
         switch (mode) {
             case MODE_NORMAL:
+                if (mSelectedLayer != null)
+                    mSelectedLayer.setLocked(false);
+
+                mSelectedLayer = null;
                 toolbar.setVisibility(View.GONE);
                 showMainButton();
                 showRulerButton();
@@ -413,6 +425,7 @@ public class MapFragment
                 mEditLayerOverlay.setMode(EditLayerOverlay.MODE_NONE);
                 break;
             case MODE_EDIT:
+                mSelectedLayer.setLocked(true);
                 mActivity.showEditToolbar();
                 mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT);
                 toolbar.setOnMenuItemClickListener(
@@ -424,10 +437,12 @@ public class MapFragment
                         });
                 break;
             case MODE_EDIT_BY_WALK:
+                mSelectedLayer.setLocked(true);
                 mActivity.showEditToolbar();
                 mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT_BY_WALK);
                 break;
             case MODE_SELECT_ACTION:
+                mSelectedLayer.setLocked(true);
                 toolbar.setTitle(null);
                 toolbar.getMenu().clear();
                 toolbar.inflateMenu(R.menu.select_action);
@@ -477,6 +492,7 @@ public class MapFragment
                 mEditLayerOverlay.setMode(EditLayerOverlay.MODE_HIGHLIGHT);
                 break;
             case MODE_INFO:
+                mSelectedLayer.setLocked(true);
                 boolean tabletSize = getResources().getBoolean(R.bool.isTablet);
                 FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -517,6 +533,9 @@ public class MapFragment
                 attributesFragment.setToolbar(toolbar, mEditLayerOverlay);
                 break;
         }
+
+        if (mModeListener != null)
+            mModeListener.onModeChangeListener();
 
         setMarginsToPanel();
         defineMenuItems();

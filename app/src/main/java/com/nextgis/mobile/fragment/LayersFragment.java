@@ -255,8 +255,8 @@ public class LayersFragment
         }
         mFragmentContainerView.setLayoutParams(params);
 
-        mLayersListView = (ReorderedLayerView) mFragmentContainerView.findViewById(R.id.layer_list);
         mListAdapter = new LayersListAdapter(getActivity(), map);
+        mListAdapter.setDrawer(drawerLayout);
         mListAdapter.setOnLayerEditListener(new LayersListAdapter.onEdit() {
             @Override
             public void onLayerEdit(ILayer layer) {
@@ -264,7 +264,14 @@ public class LayersFragment
                 toggle();
             }
         });
-        mListAdapter.setDrawer(drawerLayout);
+        ((MainActivity) getActivity()).getMapFragment().setOnModeChangeListener(new MapFragment.onModeChange() {
+            @Override
+            public void onModeChangeListener() {
+                mListAdapter.notifyDataSetChanged();
+            }
+        });
+
+        mLayersListView = (ReorderedLayerView) mFragmentContainerView.findViewById(R.id.layer_list);
         mLayersListView.setAdapter(mListAdapter);
         mLayersListView.setDrawer(drawerLayout);
 
