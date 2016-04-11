@@ -27,4 +27,6 @@
           type="id"/>
     <item name="fab_label"
           type="id"/>
+    <item name="map_view"
+          type="id"/>
 </resources>

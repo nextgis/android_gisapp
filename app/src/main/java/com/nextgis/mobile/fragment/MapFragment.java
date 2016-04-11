@@ -195,7 +195,7 @@ public class MapFragment
         mGpsEventSource = mApp.getGpsEventSource();
 
         mMap = new MapViewOverlays(mActivity, (MapDrawable) mApp.getMap());
-        mMap.setId(777);
+        mMap.setId(R.id.map_view);
 
         mEditLayerOverlay = new EditLayerOverlay(mActivity, mMap);
     }
