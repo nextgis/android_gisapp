@@ -1200,6 +1200,7 @@ public class MapFragment
 
     protected void addPointByTap()
     {
+        mSelectedLayer.setLocked(false);
         //show select layer dialog if several layers, else start default or custom form
         List<ILayer> layers = mMap.getVectorLayersByType(GeoConstants.GTPointCheck | GeoConstants.GTMultiPointCheck);
         layers = removeHideLayers(layers);
@@ -1214,6 +1215,7 @@ public class MapFragment
             mSelectedLayer = layer;
             mEditLayerOverlay.setSelectedLayer(layer);
             mEditLayerOverlay.setSelectedFeature(new Feature());
+            mEditLayerOverlay.getSelectedFeature().setGeometry(new GeoPoint());
             setMode(MODE_EDIT);
             mEditLayerOverlay.clearHistory();
             mEditLayerOverlay.createPointFromOverlay();
@@ -1348,6 +1350,7 @@ public class MapFragment
             setMode(MODE_EDIT_BY_WALK);
         } else if (code == ADD_POINT_BY_TAP) {
             mEditLayerOverlay.setSelectedFeature(new Feature());
+            mEditLayerOverlay.getSelectedFeature().setGeometry(new GeoPoint());
             setMode(MODE_EDIT);
             mEditLayerOverlay.clearHistory();
             mEditLayerOverlay.createPointFromOverlay();
