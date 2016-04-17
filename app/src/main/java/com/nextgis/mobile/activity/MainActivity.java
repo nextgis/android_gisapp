@@ -34,6 +34,7 @@ import android.content.IntentFilter;
 import android.content.SyncResult;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
@@ -47,12 +48,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.internal.widget.ThemeUtils;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
-import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.nextgis.maplib.api.GpsEventListener;
@@ -102,7 +100,6 @@ public class MainActivity extends NGActivity
     protected LayersFragment  mLayersFragment;
     protected MessageReceiver mMessageReceiver;
     protected Toolbar         mToolbar;
-    protected MenuItem        mRefreshItem;
 
     protected final static int FILE_SELECT_CODE = 555;
 
@@ -142,8 +139,7 @@ public class MainActivity extends NGActivity
         mLayersFragment = (LayersFragment) fm.findFragmentById(R.id.layers);
 
         if (mLayersFragment != null && null != mLayersFragment.getView()) {
-            mLayersFragment.getView().setBackgroundColor(
-                    getResources().getColor(R.color.background_material_light));
+            mLayersFragment.getView().setBackgroundColor(getResources().getColor(R.color.color_grey_050));
             // Set up the drawer.
             mLayersFragment.setUp(R.id.layers, drawerLayout, (MapDrawable) app.getMap());
         }
@@ -180,6 +176,7 @@ public class MainActivity extends NGActivity
     }
 
     public void showEditToolbar() {
+        stopRefresh(mToolbar.getMenu().findItem(R.id.menu_refresh));
         mToolbar.getMenu().clear();
         mToolbar.inflateMenu(R.menu.edit_geometry);
 
@@ -212,8 +209,6 @@ public class MainActivity extends NGActivity
             // decide what to show in the action bar.
             getMenuInflater().inflate(R.menu.main, menu);
             //restoreActionBar();
-
-            mRefreshItem = menu.findItem(R.id.menu_refresh);
 
             return true;
         }
@@ -327,45 +322,34 @@ public class MainActivity extends NGActivity
     }
 
 
-    public synchronized void onRefresh(
-            boolean isRefresh,
-            int progress)
-    {
+    public synchronized void onRefresh(boolean isRefresh) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            if (!mLayersFragment.isDrawerToggleEnabled())
-                return;
-
-            if (null != mRefreshItem) {
+            MenuItem refreshItem = mToolbar.getMenu().findItem(R.id.menu_refresh);
+            if (null != refreshItem) {
                 if (isRefresh) {
-                    if (mRefreshItem.getActionView() == null) {
-                        RotateAnimation rotateAnimation = new RotateAnimation(
-                                0, 360, Animation.RELATIVE_TO_SELF, 0.5f,
-                                Animation.RELATIVE_TO_SELF, 0.5f);
-                        rotateAnimation.setDuration(1500);
-                        rotateAnimation.setRepeatCount(60);
-                        LayoutInflater inflater = LayoutInflater.from(this);
-                        ImageView iv = (ImageView) inflater.inflate(R.layout.layout_refresh, null);
-                        iv.startAnimation(rotateAnimation);
-                        mRefreshItem.setActionView(iv);
+                    if (refreshItem.getActionView() == null) {
+                        refreshItem.setActionView(R.layout.layout_refresh);
+                        ((ProgressBar) refreshItem.getActionView()).getIndeterminateDrawable()
+                                .setColorFilter(getResources().getColor(R.color.color_grey_100), PorterDuff.Mode.SRC_IN);
                     }
-                } else {
-                    Handler handler = new Handler(Looper.getMainLooper());
-                    final Runnable r = new Runnable()
-                    {
-                        @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-                        public void run()
-                        {
-                            if (mRefreshItem.getActionView() != null) {
-
-                                mRefreshItem.getActionView().clearAnimation();
-                                mRefreshItem.setActionView(null);
-                            }
-                        }
-                    };
-                    handler.postDelayed(r, 650);
-                }
+                } else
+                    stopRefresh(refreshItem);
             }
         }
+    }
+
+    protected void stopRefresh(final MenuItem refreshItem) {
+        Handler handler = new Handler(Looper.getMainLooper());
+        final Runnable r = new Runnable() {
+            @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+            public void run() {
+                if (refreshItem != null && refreshItem.getActionView() != null) {
+                    refreshItem.getActionView().clearAnimation();
+                    refreshItem.setActionView(null);
+                }
+            }
+        };
+        handler.post(r);
     }
 
 

@@ -6,7 +6,7 @@
   ~ Author:   NikitaFeodonit, nfeodonit@yandex.com
   ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2012-2015. NextGIS, info@nextgis.com
+  ~ Copyright (c) 2012-2016 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -22,13 +22,9 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:contentDescription="@string/refresh"
-           android:src="@drawable/ic_action_sync"
-           android:paddingLeft="8dp"
-           android:paddingStart="8dp"
-           android:paddingRight="8dp"
-           android:paddingEnd="8dp"
-    />
+<ProgressBar style="@style/Widget.AppCompat.ProgressBar"
+             xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:paddingBottom="16dp"
+             android:paddingTop="16dp"/>

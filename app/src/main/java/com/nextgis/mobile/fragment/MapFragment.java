@@ -807,7 +807,7 @@ public class MapFragment
         }*/
         if (percent >= 1.0 && id == mMap.getMap().getId()) {
             if (null != mActivity) {
-                mActivity.onRefresh(false, 1);
+                mActivity.onRefresh(false);
             }
         }
     }
@@ -817,7 +817,7 @@ public class MapFragment
     public void onLayerDrawStarted()
     {
         if (null != mActivity) {
-            mActivity.onRefresh(true, 0);
+            mActivity.onRefresh(true);
         }
     }
 
