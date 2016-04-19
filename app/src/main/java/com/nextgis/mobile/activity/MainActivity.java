@@ -329,8 +329,9 @@ public class MainActivity extends NGActivity
                 if (isRefresh) {
                     if (refreshItem.getActionView() == null) {
                         refreshItem.setActionView(R.layout.layout_refresh);
-                        ((ProgressBar) refreshItem.getActionView()).getIndeterminateDrawable()
-                                .setColorFilter(getResources().getColor(R.color.color_grey_100), PorterDuff.Mode.SRC_IN);
+                        ProgressBar progress = (ProgressBar) refreshItem.getActionView().findViewById(R.id.progress);
+                        if (progress != null)
+                            progress.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.color_grey_200), PorterDuff.Mode.SRC_IN);
                     }
                 } else
                     stopRefresh(refreshItem);
