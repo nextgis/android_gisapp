@@ -27,7 +27,7 @@
              android:layout_height="?attr/actionBarSize">
 
     <ProgressBar
-        android:id="@+id/progress"
+        android:id="@+id/refreshingProgress"
         style="@style/Widget.AppCompat.ProgressBar"
         android:layout_width="32dp"
         android:layout_height="32dp"

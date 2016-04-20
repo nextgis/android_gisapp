@@ -329,7 +329,7 @@ public class MainActivity extends NGActivity
                 if (isRefresh) {
                     if (refreshItem.getActionView() == null) {
                         refreshItem.setActionView(R.layout.layout_refresh);
-                        ProgressBar progress = (ProgressBar) refreshItem.getActionView().findViewById(R.id.progress);
+                        ProgressBar progress = (ProgressBar) refreshItem.getActionView().findViewById(R.id.refreshingProgress);
                         if (progress != null)
                             progress.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.color_grey_200), PorterDuff.Mode.SRC_IN);
                     }
