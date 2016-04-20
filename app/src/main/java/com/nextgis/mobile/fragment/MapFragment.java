@@ -1200,7 +1200,9 @@ public class MapFragment
 
     protected void addPointByTap()
     {
-        mSelectedLayer.setLocked(false);
+        if (mSelectedLayer != null)
+            mSelectedLayer.setLocked(false);
+
         //show select layer dialog if several layers, else start default or custom form
         List<ILayer> layers = mMap.getVectorLayersByType(GeoConstants.GTPointCheck | GeoConstants.GTMultiPointCheck);
         layers = removeHideLayers(layers);
