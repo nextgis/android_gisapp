@@ -288,7 +288,7 @@ public class MapFragment
                 mSelectedLayer.showFeature(id);
                 setMode(MODE_SELECT_ACTION);
             }
-        } else
+        } else if (mEditLayerOverlay.getSelectedFeatureGeometry() != null)
             mEditLayerOverlay.setHasEdits(true);
     }
 
