@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Project:  NextGIS Mobile
+  ~ Purpose:  Mobile GIS for Android.
+  ~ Author:   Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
+  ~ Author:   NikitaFeodonit, nfeodonit@yandex.com
+  ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
+  ~ ******************************************************************************
+  ~ Copyright (c) 2012-2016 NextGIS, info@nextgis.com
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="app_name">NextGIS Mobile</string>
+    <string name="navigation_drawer_open">ナビゲーションドロワーを開く</string>
+    <string name="navigation_drawer_close">ナビゲーションドロワーを閉じる</string>
+    <string name="action_settings">設定</string>
+    <string name="action_add">新しいレイヤー</string>
+    <string name="action_add_local">ローカルを開く</string>
+    <string name="action_add_ngw">NGWから追加する</string>
+    <string name="general">一般</string>
+    <string name="general_summary">一般設定</string>
+    <string name="keep_screen_on">地図画面を保持する</string>
+    <string name="keep_screen_on_summary">画面をスリープしない</string>
+    <string name="show_scale_ruler">スケールルーラーを表示する</string>
+    <string name="show_ruler_measuring">距離計測ボタンを表示する</string>
+    <string name="show_zoom_controls">ズームコントロールを表示する</string>
+    <string name="show_zoom_controls_summary">地図上にズームイン/ズームアウトを表示する</string>
+    <string name="show_compass">ミニコンパスを表示する</string>
+    <string name="map">地図</string>
+    <string name="map_summary">地図設定</string>
+    <string name="ngw">NextGIS Web</string>
+    <string name="ngw_summary">NextGIS Web 設定</string>
+    <string name="app_description">地理情報の収集とサーバーへの送信のためのモバイルGISアプリケーション。 NextGIS Mobileもまたトラック記録と位置情報をwebサーバに送信します。</string>
+    <string name="credits_intro">クレジット</string>
+    <string name="credits">本アプリケーションのいくつかのアイコンは <a href="http://icons8.com/android-icons">Icons8.com</a> から <a href="http://creativecommons.org/licenses/by-nd/3.0/">CC BY-ND 3.0 license</a> のライセンスで, <a href="http://materialdesignicons.com/">materialdesignicons.com</a> and <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a> から <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0 license</a> で使用しています。</string>
+    <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2012–2015]]></string>
+    <string name="contacts"><a href="http://nextgis.ru/en/contact/">Contact us</a></string>
+    <string name="action_about">このアプリケーションについて</string>
+    <string name="add_current_place">現在位置を追加</string>
+    <string name="add_new_geometry">新しいジオメトリを追加</string>
+    <string name="add_geometry_by_walk">歩行によりジオメトリを追加</string>
+    <string name="warning_no_edit_layers">編集可能なレイヤーがありません</string>
+    <string name="select_layer">編集するレイヤーを選択</string>
+    <string name="menu_locate">位置</string>
+    <string name="select_file">レイヤーを作成するファイルを選択</string>
+    <string name="warning_install_file_manager">ファイルマネージャーをインストールしてください</string>
+    <string name="error_file_unsupported">ファイルタイプがサポートされていません</string>
+    <string name="warning_not_implemented">まだ実装されていません</string>
+    <string name="pref_location_accuracy">位置精度</string>
+    <string name="pref_location_accuracy_gps">GPS</string>
+    <string name="pref_location_accuracy_cell">ネットワーク</string>
+    <string name="location">位置情報</string>
+    <string name="location_summary">歩行による位置とジオメトリ設定</string>
+    <string name="tracks_summary">トラック設定</string>
+    <string name="track_start">新しいトラックを開始する</string>
+    <string name="track_stop">トラックを停止する</string>
+    <string name="tracks_reload">現在のトラックを再開して追記する</string>
+    <string name="pref_min_time">最小更新時間</string>
+    <string name="pref_min_distance">最小更新距離</string>
+    <string name="meters">分</string>
+    <string name="seconds">秒</string>
+    <string name="coordinates_format">座標フォーマット</string>
+    <string name="coordinates_fraction_digits">小数点以下桁数</string>
+    <string name="select_coordinates_format">座標フォーマットの選択</string>
+    <string name="coordinates_format_summary">座標テキストフォーマット</string>
+    <string name="map_bg">地図背景</string>
+    <string name="map_bg_light">明るい</string>
+    <string name="map_bg_neutral">普通</string>
+    <string name="map_bg_dark">暗い</string>
+    <string name="map_path">地図のパス</string>
+    <string name="map_path_summary">地図データフォルダのパス。地図フォルダを変更するとアプリケーションがアンインストールされた後も地図データが残ります。</string>
+    <string name="select_map_path">地図フォルダーを選択</string>
+    <string name="moving">移動中…</string>
+    <string name="warning_map_moving">危険な操作! 地図データの新しいフォルダへの転送中はキャンセルやアプリケーションの強制終了は行わないでください。データが壊れたり、失われます。</string>
+    <string name="warning_folder_should_be_empty">フォルダは空である必要があります。操作をキャンセルします。</string>
+    <string name="frequentest">、可能な限り多く</string>
+    <string name="compass_vibrate">タッチで振動</string>
+    <string name="compass_true_north">真北の表示</string>
+    <string name="compass_magnetic">磁北の表示</string>
+    <string name="compass_keep_screen">コンパス表示を保持する</string>
+    <string name="accurate_measures_count">GPS計測カウント数</string>
+    <string name="action_delete">削除</string>
+    <string name="action_attributes">属性</string>
+    <string name="show_status_panel">ステータス情報パネルの表示</string>
+    <string name="show_current_location">現在位置の表示</string>
+    <string name="edit_layer"> \'%s\' レイヤーを編集する</string>
+    <string name="features_count_attributes">%1$d / %2$d</string>
+    <string name="coordinates">座標系</string>
+    <string name="length">長さ</string>
+    <string name="center">中心</string>
+    <string name="area">面積</string>
+    <string name="perimeter">周囲の長さ</string>
+    <string name="compass_title">コンパス</string>
+    <string name="refresh">更新</string>
+    <string name="points_for_edit">ポイント数 (編集可)</string>
+    <string name="lines_for_edit">ライン数 (編集可)</string>
+    <string name="polygons_for_edit">ポリゴン数 (編集可)</string>
+    <string name="press_aback_again">もう一度バックキーを押して終了</string>
+    <string name="self_intersection">自己交差が検出されました</string>
+    <string name="ring_outside">外部リングの外側に穴の一部があります</string>
+    <string name="rings_intersection">穴の交差</string>
+    <string name="interface_title">インターフェース</string>
+    <string name="theme">テーマ</string>
+    <string name="reset_settings">初期値にリセット</string>
+    <string name="reset_settings_title">よろしいですか？</string>
+    <string name="reset_settings_message">全てのレイヤーが削除されました！初期設定のレイヤーが復元されました。</string>
+    <string name="action_point_by_tap">新しいポイントの作成</string>
+    <string name="new_field">新規フィールド</string>
+    <string name="empty_name">名前は空白にできません</string>
+    <string name="same_field_name">既に同じ名前のフィールドがあります。</string>
+    <string name="same_layer_name">既に同じ名前のレイヤーがあります。</string>
+    <string name="default_field_name">説明</string>
+    <string name="pref_sync_notification">同期通知の表示</string>
+    <string name="tap_to_measure">地図をタップしてポイントをチェックする</string>
+    <string name="permissions">アクセス許可</string>
+    <string name="requested_permissions">アプリケーションが正しく動作するために幾つかのアクセス許可が必要です。これには外部ストレージの書き込み(カードへのデータの保存のため)、位置情報サービスへのアクセスと連絡先の取得(webアカウントの作成と管理のため)も含まれています。</string>
+</resources>
