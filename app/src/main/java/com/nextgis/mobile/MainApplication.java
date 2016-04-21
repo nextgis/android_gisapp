@@ -92,18 +92,23 @@ public class MainApplication extends GISApplication
                     int source;
                     if (mSharedPreferences.contains(SettingsConstants.KEY_PREF_LOCATION_SOURCE)) {
                         source = mSharedPreferences.getInt(SettingsConstants.KEY_PREF_LOCATION_SOURCE, 3);
-                        mSharedPreferences.edit().putString(SettingsConstants.KEY_PREF_LOCATION_SOURCE, source + "")
+                        mSharedPreferences.edit()
                                 .remove(SettingsConstants.KEY_PREF_LOCATION_SOURCE)
-                                .remove(SettingsConstants.KEY_PREF_LOCATION_SOURCE + "_str").commit();
+                                .remove(SettingsConstants.KEY_PREF_LOCATION_SOURCE + "_str")
+                                .putString(SettingsConstants.KEY_PREF_LOCATION_SOURCE, source + "").commit();
                     }
                     if (mSharedPreferences.contains(SettingsConstants.KEY_PREF_TRACKS_SOURCE)) {
                         source = mSharedPreferences.getInt(SettingsConstants.KEY_PREF_TRACKS_SOURCE, 1);
-                        mSharedPreferences.edit().putString(SettingsConstants.KEY_PREF_TRACKS_SOURCE, source + "")
+                        mSharedPreferences.edit()
                                 .remove(SettingsConstants.KEY_PREF_TRACKS_SOURCE)
-                                .remove(SettingsConstants.KEY_PREF_TRACKS_SOURCE + "_str").commit();
+                                .remove(SettingsConstants.KEY_PREF_TRACKS_SOURCE + "_str")
+                                .putString(SettingsConstants.KEY_PREF_TRACKS_SOURCE, source + "").commit();
                     }
+                case 13:
+                case 14:
                 case 15:
                     mSharedPreferences.edit().remove(SettingsConstantsUI.KEY_PREF_SHOW_STATUS_PANEL).commit();
+                    mSharedPreferences.edit().remove(SettingsConstantsUI.KEY_PREF_COORD_FORMAT).commit();
                 default:
                     break;
             }

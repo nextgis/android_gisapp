@@ -1006,7 +1006,7 @@ public class MapFragment
             mMap.addListener(this);
         }
 
-        mCoordinatesFormat = prefs.getInt(SettingsConstantsUI.KEY_PREF_COORD_FORMAT + "_int", Location.FORMAT_DEGREES);
+        mCoordinatesFormat = Integer.parseInt(prefs.getString(SettingsConstantsUI.KEY_PREF_COORD_FORMAT, Location.FORMAT_DEGREES + ""));
         mCoordinatesFraction = prefs.getInt(SettingsConstantsUI.KEY_PREF_COORD_FRACTION, 6);
 
         if (null != mCurrentLocationOverlay) {
