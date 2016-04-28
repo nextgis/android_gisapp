@@ -121,7 +121,6 @@ import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_ZOOM_LEVEL;
 public class MapFragment
         extends Fragment
         implements MapViewEventListener, GpsEventListener, EditEventListener, OnClickListener, RulerOverlay.OnRulerChanged {
-    protected final static int mMargins = 10;
     protected float mTolerancePX;
 
     protected MainApplication      mApp;
