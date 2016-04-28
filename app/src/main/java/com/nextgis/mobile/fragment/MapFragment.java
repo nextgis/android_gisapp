@@ -117,7 +117,9 @@ import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_SCALE_RULE
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_ZOOM_CONTROLS;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_ZOOM_LEVEL;
 
-
+/**
+ * Main map fragment
+ */
 public class MapFragment
         extends Fragment
         implements MapViewEventListener, GpsEventListener, EditEventListener, OnClickListener, RulerOverlay.OnRulerChanged {
