@@ -1406,7 +1406,9 @@ public class MapFragment
 
 
         if (intersects) {
-            //add geometry to overlay
+            if (mSelectedLayer != null)
+                mSelectedLayer.setLocked(false);
+
             mSelectedLayer = vectorLayer;
             mEditLayerOverlay.setSelectedLayer(vectorLayer);
             mEditLayerOverlay.setSelectedFeature(items.get(0));
