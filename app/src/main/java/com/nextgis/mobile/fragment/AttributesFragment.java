@@ -214,7 +214,7 @@ public class AttributesFragment
 
         String selection = Constants.FIELD_ID + " = ?";
         Cursor attributes = mLayer.query(null, selection, new String[]{mItemId + ""}, null, null);
-        if(null == attributes)
+        if (null == attributes || attributes.getCount() == 0)
             return;
 
         if (attributes.moveToFirst()) {
