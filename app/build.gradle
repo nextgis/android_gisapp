@@ -28,10 +28,10 @@ android {
     buildToolsVersion '23.0.3'
     defaultConfig {
         applicationId 'com.nextgis.mobile'
-        minSdkVersion 8
+        minSdkVersion 10
         targetSdkVersion 23
-        versionCode 16
-        versionName '2.4'
+        versionCode 19
+        versionName '3.0'
     }
     buildTypes {
         release {
