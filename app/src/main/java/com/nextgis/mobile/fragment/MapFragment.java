@@ -117,11 +117,12 @@ import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_SCALE_RULE
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_ZOOM_CONTROLS;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_ZOOM_LEVEL;
 
-
+/**
+ * Main map fragment
+ */
 public class MapFragment
         extends Fragment
         implements MapViewEventListener, GpsEventListener, EditEventListener, OnClickListener, RulerOverlay.OnRulerChanged {
-    protected final static int mMargins = 10;
     protected float mTolerancePX;
 
     protected MainApplication      mApp;
@@ -280,6 +281,9 @@ public class MapFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        if (mMode == MODE_INFO)
+            return;
+
         if (requestCode == IVectorLayerUI.MODIFY_REQUEST && data != null) {
             long id = data.getLongExtra(ConstantsUI.KEY_FEATURE_ID, NOT_FOUND);
 
@@ -288,7 +292,7 @@ public class MapFragment
                 mSelectedLayer.showFeature(id);
                 setMode(MODE_SELECT_ACTION);
             }
-        } else
+        } else if (mEditLayerOverlay.getSelectedFeatureGeometry() != null)
             mEditLayerOverlay.setHasEdits(true);
     }
 
@@ -1006,7 +1010,7 @@ public class MapFragment
             mMap.addListener(this);
         }
 
-        mCoordinatesFormat = prefs.getInt(SettingsConstantsUI.KEY_PREF_COORD_FORMAT + "_int", Location.FORMAT_DEGREES);
+        mCoordinatesFormat = Integer.parseInt(prefs.getString(SettingsConstantsUI.KEY_PREF_COORD_FORMAT, Location.FORMAT_DEGREES + ""));
         mCoordinatesFraction = prefs.getInt(SettingsConstantsUI.KEY_PREF_COORD_FRACTION, 6);
 
         if (null != mCurrentLocationOverlay) {
@@ -1402,7 +1406,9 @@ public class MapFragment
 
 
         if (intersects) {
-            //add geometry to overlay
+            if (mSelectedLayer != null)
+                mSelectedLayer.setLocked(false);
+
             mSelectedLayer = vectorLayer;
             mEditLayerOverlay.setSelectedLayer(vectorLayer);
             mEditLayerOverlay.setSelectedFeature(items.get(0));

@@ -214,7 +214,7 @@ public class AttributesFragment
 
         String selection = Constants.FIELD_ID + " = ?";
         Cursor attributes = mLayer.query(null, selection, new String[]{mItemId + ""}, null, null);
-        if(null == attributes)
+        if (null == attributes || attributes.getCount() == 0)
             return;
 
         if (attributes.moveToFirst()) {
@@ -358,7 +358,7 @@ public class AttributesFragment
         pt.project(CRS_WGS84);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-        int format = prefs.getInt(SettingsConstantsUI.KEY_PREF_COORD_FORMAT + "_int", Location.FORMAT_SECONDS);
+        int format = Integer.parseInt(prefs.getString(SettingsConstantsUI.KEY_PREF_COORD_FORMAT, Location.FORMAT_DEGREES + ""));
         int fraction = prefs.getInt(SettingsConstantsUI.KEY_PREF_COORD_FRACTION, 6);
 
         String lat = getString(com.nextgis.maplibui.R.string.latitude_caption_short) + ": " +

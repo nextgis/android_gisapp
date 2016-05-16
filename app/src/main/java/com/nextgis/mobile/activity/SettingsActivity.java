@@ -211,7 +211,6 @@ public class SettingsActivity
 
         if (null != lpCoordinateFormat) {
             lpCoordinateFormat.setSummary(lpCoordinateFormat.getEntry());
-
             lpCoordinateFormat.setOnPreferenceChangeListener(
                     new Preference.OnPreferenceChangeListener()
                     {
@@ -224,12 +223,6 @@ public class SettingsActivity
                             CharSequence summary =
                                     ((ListPreference) preference).getEntries()[value];
                             preference.setSummary(summary);
-
-                            String preferenceKey = preference.getKey() + "_int";
-                            preference.getSharedPreferences()
-                                    .edit()
-                                    .putInt(preferenceKey, value)
-                                    .commit();
 
                             return true;
                         }
@@ -490,7 +483,6 @@ public class SettingsActivity
         editor.remove(KEY_PREF_SHOW_COMPASS);
         editor.remove(SettingsConstantsUI.KEY_PREF_KEEPSCREENON);
         editor.remove(SettingsConstantsUI.KEY_PREF_COORD_FORMAT);
-        editor.remove(SettingsConstantsUI.KEY_PREF_COORD_FORMAT + "_int");
         editor.remove(KEY_PREF_SHOW_ZOOM_CONTROLS);
         editor.remove(SettingsConstants.KEY_PREF_LOCATION_SOURCE);
         editor.remove(SettingsConstants.KEY_PREF_LOCATION_MIN_TIME);

@@ -89,7 +89,9 @@ import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
 import static com.nextgis.maplibui.service.TrackerService.hasUnfinishedTracks;
 import static com.nextgis.maplibui.service.TrackerService.isTrackerServiceRunning;
 
-
+/**
+ * Main activity. Map and drawer with layers list created here
+ */
 public class MainActivity extends NGActivity
         implements GpsEventListener, IChooseLayerResult
 {
