@@ -41,8 +41,6 @@
     <string name="show_compass">मिनी कम्पास दिखाएं</string>
     <string name="map">मानचित्र</string>
     <string name="map_summary">नक्शा सेटिंग्स</string>
-    <string name="ngw">अगला जीआईएस जाला</string>
-    <string name="ngw_summary">अगला जीआईएस जाला सेटिंग्स</string>
     <string name="app_description">स्थानिक क्षेत्र डेटा संग्रह के लिए मोबाइल जीआईएस आवेदन और सर्वर के लिए इसे वापस भेजने. अगला जीआईएस  Mobile भी पटरियों रिकॉर्ड और वेब सर्वर से स्थिति की जानकारी भेजता है.</string>
     <string name="credits_intro">क्रेडिट्स</string>
     <string name="credits">कुछ आइकन्स used in the आवेदन are from <a href="http://icons8.com/android-icons">Icons8.com</a> licensed under a <a href="http://creativecommons.org/licenses/by-nd/3.0/">CC BY-ND 3.0 लाइसेंस</a>, <a href="http://materialdesignicons.com/">सामग्री डिजाइन माउसm.com</a> and <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a> के अंतर्गत लाइसेंस a <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0 लाइसेंस    </a></string>
@@ -64,8 +62,6 @@
     <string name="pref_location_accuracy_gps">GPS</string>
     <string name="pref_location_accuracy_cell">अन्य नेटवर्क</string>
     <string name="location">स्थान</string>
-    <string name="location_summary">स्थान और ज्यामिति चलने सेटिंग्स द्वारा</string>
-    <string name="tracks_summary">सेटिंग्स ट्रैक्स</string>
     <string name="track_start">नए ट्रैक शुरू</string>
     <string name="track_stop">बंद ट्रैक</string>
     <string name="tracks_reload">परिवर्तनों को लागू करने के लिए वर्तमान ट्रैक को पुनरारंभ</string>
@@ -130,4 +126,5 @@
     <string name="permissions">अनुमतियां</string>
     <string name="requested_permissions">आवेदन कुछ अनुमतियों को ठीक से काम करने की जरूरत है। यह बाह्य भंडारण के लिए लेखन भी शामिल है (कार्ड पर डेटा को बचाने के लिए),स्थान सेवाओं और हो रही संपर्कों को एक्सेस (बना सकते हैं और वेब खातों का प्रबंधन करने के लिए)
         .</string>
+    <string name="ngw_summary"></string>
 </resources>

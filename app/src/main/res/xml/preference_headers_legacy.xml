@@ -6,7 +6,7 @@
   ~ Author:   NikitaFeodonit, nfeodonit@yandex.com
   ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2012-2015. NextGIS, info@nextgis.com
+  ~ Copyright (c) 2012-2016 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -23,53 +23,34 @@
   -->
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <Preference
-        android:summary="@string/general_summary"
-        android:title="@string/general">
+    <Preference android:title="@string/general">
         <intent
             android:action="com.nextgis.mobile.PREFS_GENERAL"
             android:targetClass="com.nextgis.mobile.activity.SettingsActivity"
             android:targetPackage="com.nextgis.mobile"/>
     </Preference>
-    <Preference
-        android:summary="@string/map_summary"
-        android:title="@string/map"
-        >
+    <Preference android:title="@string/map">
         <intent
             android:action="com.nextgis.mobile.PREFS_MAP"
             android:targetClass="com.nextgis.mobile.activity.SettingsActivity"
-            android:targetPackage="com.nextgis.mobile"
-            />
+            android:targetPackage="com.nextgis.mobile"/>
     </Preference>
-    <Preference
-        android:summary="@string/location_summary"
-        android:title="@string/location"
-        >
+    <Preference android:title="@string/location">
         <intent
             android:action="com.nextgis.mobile.PREFS_LOCATION"
             android:targetClass="com.nextgis.mobile.activity.SettingsActivity"
-            android:targetPackage="com.nextgis.mobile"
-            />
+            android:targetPackage="com.nextgis.mobile"/>
     </Preference>
-    <Preference
-        android:summary="@string/tracks_summary"
-        android:title="@string/tracks"
-        >
+    <Preference android:title="@string/tracks">
         <intent
             android:action="com.nextgis.mobile.PREFS_TRACKING"
             android:targetClass="com.nextgis.mobile.activity.SettingsActivity"
-            android:targetPackage="com.nextgis.mobile"
-            />
+            android:targetPackage="com.nextgis.mobile"/>
     </Preference>
-    <Preference
-        android:summary="@string/ngw_summary"
-        android:title="@string/ngw"
-        >
+    <Preference android:title="@string/ngw_settings">
         <intent
             android:action="com.nextgis.mobile.PREFS_NGW"
             android:targetClass="com.nextgis.mobile.activity.NGWSettingsActivityProxy"
-            android:targetPackage="com.nextgis.mobile"
-            />
+            android:targetPackage="com.nextgis.mobile"/>
     </Preference>
-
 </PreferenceScreen>

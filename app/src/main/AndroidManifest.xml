@@ -100,7 +100,7 @@
 
         <activity
             android:name=".activity.NGWSettingsActivityProxy"
-            android:label="@string/nextgis_web"
+            android:label="@string/ngw_settings"
             />
 
         <activity

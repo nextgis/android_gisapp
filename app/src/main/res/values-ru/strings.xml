@@ -42,8 +42,6 @@
     <string name="show_compass">Показывать мини компас</string>
     <string name="map">Карта</string>
     <string name="map_summary">Настройки карты</string>
-    <string name="ngw">NextGIS Web</string>
-    <string name="ngw_summary">Настройки NextGIS Web</string>
     <string name="app_description">Мобильная ГИС для визуализации и сбора геоданных в поле и отправки результатов на сервер. NextGIS Mobile также записывает треки и отправляет координаты местоположения на сервер.</string>
     <string name="credits_intro">Лицензии</string>
     <string name="credits">Некоторые иконки использованные в приложении с <a href="http://icons8.com/android-icons">Icons8.com</a> под лицензией <a
@@ -65,8 +63,6 @@
     <string name="pref_location_accuracy_gps">GPS</string>
     <string name="pref_location_accuracy_cell">Другие сети</string>
     <string name="location">Местоположение</string>
-    <string name="location_summary">Настройки местоположения и ввода геометрий обходом</string>
-    <string name="tracks_summary">Настройки треков</string>
     <string name="track_start">Начать запись трека</string>
     <string name="track_stop">Завершить запись трека</string>
     <string name="tracks_reload">Перезапустите запись для применения изменений</string>
@@ -130,4 +126,5 @@
     <string name="permissions">Разрешения</string>
     <string name="requested_permissions">Приложению требуются некоторые разрешения для корректной работы: запись на устройство (для хранения данных), доступ
         к местоположению и получение контактов (для создания и управления веб аккаунтами).</string>
+    <string name="ngw_summary"></string>
 </resources>

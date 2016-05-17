@@ -39,8 +39,6 @@
     <string name="show_compass">Show mini compass</string>
     <string name="map">Map</string>
     <string name="map_summary">Map settings</string>
-    <string name="ngw">NextGIS Web</string>
-    <string name="ngw_summary">NextGIS Web settings</string>
     <string name="app_description">Mobile GIS application for visualize and gather spatial data in the field and send it back to server. NextGIS Mobile also writes tracks and sends position information to web server.</string>
     <string name="credits_intro">Credits</string>
     <string name="credits">Some icons used in the application are from <a href="http://icons8.com/android-icons">Icons8.com</a> licensed under a <a href="http://creativecommons.org/licenses/by-nd/3.0/">CC BY-ND 3.0 license</a>, <a href="http://materialdesignicons.com/">materialdesignicons.com</a> and <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a> licensed under a <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0 license</a></string>
@@ -61,8 +59,6 @@
     <string name="pref_location_accuracy_gps">GPS</string>
     <string name="pref_location_accuracy_cell">Other networks</string>
     <string name="location">Location</string>
-    <string name="location_summary">Location and geometry by walking settings</string>
-    <string name="tracks_summary">Tracks settings</string>
     <string name="track_start">Start new track</string>
     <string name="track_stop">Stop track</string>
     <string name="tracks_reload">Restart current track to apply changes</string>
@@ -126,4 +122,5 @@
     <string name="permissions">Permissions</string>
     <string name="requested_permissions">Application needs some permissions to work properly. It includes writing to external storage (to save data on card),
         access to location services and getting contacts (to create and manage web accounts).</string>
+    <string name="ngw_summary"></string>
 </resources>
