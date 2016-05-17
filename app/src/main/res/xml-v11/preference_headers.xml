@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Project:  NextGIS Mobile
+  ~ Purpose:  Mobile GIS for Android.
+  ~ Author:   Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
+  ~ Author:   NikitaFeodonit, nfeodonit@yandex.com
+  ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
+  ~ ******************************************************************************
+  ~ Copyright (c) 2012-2016 NextGIS, info@nextgis.com
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+    <header
+        android:fragment="com.nextgis.mobile.fragment.SettingsFragment"
+        android:title="@string/general">
+        <extra
+            android:name="settings"
+            android:value="general"/>
+    </header>
+    <header
+        android:fragment="com.nextgis.mobile.fragment.SettingsFragment"
+        android:title="@string/map">
+        <extra
+            android:name="settings"
+            android:value="map"/>
+    </header>
+    <header
+        android:fragment="com.nextgis.mobile.fragment.SettingsFragment"
+        android:title="@string/location">
+        <extra
+            android:name="settings"
+            android:value="location"/>
+    </header>
+    <header
+        android:fragment="com.nextgis.mobile.fragment.SettingsFragment"
+        android:title="@string/tracks">
+        <extra
+            android:name="settings"
+            android:value="tracks"/>
+    </header>
+    <header android:title="@string/ngw_settings">
+        <intent
+            android:action="com.nextgis.mobile.PREFS_NGW"
+            android:targetClass="com.nextgis.mobile.activity.NGWSettingsActivityProxy"
+            android:targetPackage="com.nextgis.mobile"/>
+    </header>
+</preference-headers>
