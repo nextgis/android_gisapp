@@ -29,7 +29,6 @@
     <string name="action_settings">設定</string>
     <string name="action_add">新しいレイヤー</string>
     <string name="action_add_local">ローカルを開く</string>
-    <string name="action_add_ngw">NGWから追加する</string>
     <string name="general">一般</string>
     <string name="general_summary">一般設定</string>
     <string name="keep_screen_on">地図画面を保持する</string>

@@ -1195,7 +1195,7 @@ public class MapFragment
             mChooseLayerDialog = new ChooseLayerDialog();
             mChooseLayerDialog.setLayerList(layers)
                     .setCode(EDIT_LAYER)
-                    .setTitle(getString(R.string.select_layer))
+                    .setTitle(getString(R.string.choose_layers))
                     .setTheme(mActivity.getThemeId())
                     .show(mActivity.getSupportFragmentManager(), "choose_layer");
         }
@@ -1238,7 +1238,7 @@ public class MapFragment
             mChooseLayerDialog = new ChooseLayerDialog();
             mChooseLayerDialog.setLayerList(layers)
                     .setCode(ADD_POINT_BY_TAP)
-                    .setTitle(getString(R.string.select_layer))
+                    .setTitle(getString(R.string.choose_layers))
                     .setTheme(mActivity.getThemeId())
                     .show(mActivity.getSupportFragmentManager(), "choose_layer");
         }
@@ -1278,7 +1278,7 @@ public class MapFragment
             mChooseLayerDialog = new ChooseLayerDialog();
             mChooseLayerDialog.setLayerList(layers)
                     .setCode(ADD_CURRENT_LOC)
-                    .setTitle(getString(R.string.select_layer))
+                    .setTitle(getString(R.string.choose_layers))
                     .setTheme(mActivity.getThemeId())
                     .show(mActivity.getSupportFragmentManager(), "choose_layer");
         }
@@ -1326,7 +1326,7 @@ public class MapFragment
             mChooseLayerDialog = new ChooseLayerDialog();
             mChooseLayerDialog.setLayerList(layers)
                     .setCode(ADD_GEOMETRY_BY_WALK)
-                    .setTitle(getString(R.string.select_layer))
+                    .setTitle(getString(R.string.choose_layers))
                     .setTheme(mActivity.getThemeId())
                     .show(mActivity.getSupportFragmentManager(), "choose_layer");
         }

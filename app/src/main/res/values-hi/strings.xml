@@ -30,7 +30,6 @@
     <string name="action_settings">सेटिंग्स</string>
     <string name="action_add">नई लेयर </string>
     <string name="action_add_local">लोक्कल खुला</string>
-    <string name="action_add_ngw"> NGW से जोड़ने</string>
     <string name="general">सामान्य</string>
     <string name="general_summary">सामान्य सेटिंग्स</string>
     <string name="keep_screen_on">नक्शा का स्क्रीन खोलके रखना</string>

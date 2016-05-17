@@ -28,7 +28,6 @@
     <string name="action_settings">Налаштування</string>
     <string name="action_add">Новий шар</string>
     <string name="action_add_local">Додати локальний</string>
-    <string name="action_add_ngw">Додати з NGW</string>
     <string name="general">Загальне</string>
     <string name="general_summary">Загальні налаштування</string>
     <string name="keep_screen_on">Тримати екран увімкненим</string>

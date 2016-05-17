@@ -35,5 +35,5 @@
 
     <item
         android:id="@+id/menu_add_ngw"
-        android:title="@string/action_add_ngw"/>
+        android:title="@string/add_nextgis"/>
 </menu>
