@@ -429,6 +429,11 @@ public class MapFragment
                 mEditLayerOverlay.setMode(EditLayerOverlay.MODE_NONE);
                 break;
             case MODE_EDIT:
+                if (mSelectedLayer == null) {
+                    setMode(MODE_NORMAL);
+                    return;
+                }
+
                 mSelectedLayer.setLocked(true);
                 mActivity.showEditToolbar();
                 mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT);
@@ -446,6 +451,11 @@ public class MapFragment
                 mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT_BY_WALK);
                 break;
             case MODE_SELECT_ACTION:
+                if (mSelectedLayer == null) {
+                    setMode(MODE_NORMAL);
+                    return;
+                }
+
                 mSelectedLayer.setLocked(true);
                 toolbar.setTitle(null);
                 toolbar.getMenu().clear();
@@ -496,6 +506,11 @@ public class MapFragment
                 mEditLayerOverlay.setMode(EditLayerOverlay.MODE_HIGHLIGHT);
                 break;
             case MODE_INFO:
+                if (mSelectedLayer == null) {
+                    setMode(MODE_NORMAL);
+                    return;
+                }
+
                 mSelectedLayer.setLocked(true);
                 boolean tabletSize = getResources().getBoolean(R.bool.isTablet);
                 FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
@@ -1010,7 +1025,11 @@ public class MapFragment
             mMap.addListener(this);
         }
 
-        mCoordinatesFormat = Integer.parseInt(prefs.getString(SettingsConstantsUI.KEY_PREF_COORD_FORMAT, Location.FORMAT_DEGREES + ""));
+        String coordinatesFormat = prefs.getString(SettingsConstantsUI.KEY_PREF_COORD_FORMAT, Location.FORMAT_DEGREES + "");
+        if (FileUtil.isIntegerParseInt(coordinatesFormat))
+            mCoordinatesFormat = Integer.parseInt(coordinatesFormat);
+        else
+            mCoordinatesFormat = Location.FORMAT_DEGREES;
         mCoordinatesFraction = prefs.getInt(SettingsConstantsUI.KEY_PREF_COORD_FRACTION, 6);
 
         if (null != mCurrentLocationOverlay) {
@@ -1058,6 +1077,8 @@ public class MapFragment
 
         mCurrentCenter = null;
     }
+
+
 
 
     protected void setMarginsToPanel() {

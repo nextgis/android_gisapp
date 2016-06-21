@@ -108,7 +108,8 @@ public class MainApplication extends GISApplication
                 case 14:
                 case 15:
                     mSharedPreferences.edit().remove(SettingsConstantsUI.KEY_PREF_SHOW_STATUS_PANEL)
-                            .remove(SettingsConstantsUI.KEY_PREF_COORD_FORMAT + "_int").commit();
+                            .remove(SettingsConstantsUI.KEY_PREF_COORD_FORMAT + "_int")
+                            .remove(SettingsConstantsUI.KEY_PREF_COORD_FORMAT).commit();
                 default:
                     break;
             }
