@@ -1205,7 +1205,6 @@ public class MapFragment
 
             mSelectedLayer = layer;
             mEditLayerOverlay.setSelectedLayer(layer);
-            mEditLayerOverlay.setSelectedFeature(new Feature());
             setMode(MODE_SELECT_ACTION);
 
             Toast.makeText(mActivity, String.format(getString(R.string.edit_layer), layer.getName()), Toast.LENGTH_SHORT).show();
