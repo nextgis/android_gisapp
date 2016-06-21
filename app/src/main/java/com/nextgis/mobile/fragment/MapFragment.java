@@ -1280,6 +1280,8 @@ public class MapFragment
             //open form
             ILayer vectorLayer = layers.get(0);
             if (vectorLayer instanceof ILayerUI) {
+                mSelectedLayer = (VectorLayer) vectorLayer;
+                mEditLayerOverlay.setSelectedLayer(mSelectedLayer);
                 IVectorLayerUI vectorLayerUI = (IVectorLayerUI) vectorLayer;
                 vectorLayerUI.showEditForm(mActivity, Constants.NOT_FOUND, null);
 
