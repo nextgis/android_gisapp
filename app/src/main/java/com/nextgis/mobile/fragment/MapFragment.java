@@ -574,8 +574,11 @@ public class MapFragment
 
         String featureName = String.format(getString(R.string.feature_n), featureId);
         String labelField = mSelectedLayer.getPreferences().getString(SettingsConstantsUI.KEY_PREF_LAYER_LABEL, FIELD_ID);
-        if (!labelField.equals(FIELD_ID) && !noFeature && featureId != NOT_FOUND)
-            featureName = mSelectedLayer.getFeature(featureId).getFieldValueAsString(labelField);
+        if (!labelField.equals(FIELD_ID) && !noFeature && featureId != NOT_FOUND) {
+            Feature feature = mSelectedLayer.getFeature(featureId);
+            if (feature != null)
+                featureName = feature.getFieldValueAsString(labelField);
+        }
 
         featureName = noFeature ? getString(R.string.nothing_selected) :
                 featureId == Constants.NOT_FOUND ? getString(R.string.new_feature) : featureName;
