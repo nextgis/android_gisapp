@@ -46,7 +46,6 @@ import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.maplibui.activity.NGPreferenceActivity;
-import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
@@ -452,7 +451,7 @@ public class SettingsActivity
             preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    AlertDialog.Builder confirm = new AlertDialog.Builder(activity, ControlHelper.getDialogTheme(activity, activity.getThemeId()));
+                    AlertDialog.Builder confirm = new AlertDialog.Builder(activity);
                     confirm.setTitle(R.string.reset_settings_title).setMessage(R.string.reset_settings_message)
                             .setNegativeButton(android.R.string.cancel, null)
                             .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
