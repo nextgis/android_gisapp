@@ -1371,6 +1371,9 @@ public class MapFragment
         if (layer == null)
             return; // TODO toast?
 
+        if (mSelectedLayer != null)
+            mSelectedLayer.setLocked(false);
+
         mSelectedLayer = vectorLayer;
         mEditLayerOverlay.setSelectedLayer(vectorLayer);
 
