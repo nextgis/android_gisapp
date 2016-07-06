@@ -1024,8 +1024,13 @@ public class MapFragment
                 mMapScrollY = 0;
             }
             mMap.setZoomAndCenter(mMapZoom, new GeoPoint(mMapScrollX, mMapScrollY));
-
             mMap.addListener(this);
+            mMap.post(new Runnable() {
+                @Override
+                public void run() {
+                    refresh();
+                }
+            });
         }
 
         String coordinatesFormat = prefs.getString(SettingsConstantsUI.KEY_PREF_COORD_FORMAT, Location.FORMAT_DEGREES + "");
