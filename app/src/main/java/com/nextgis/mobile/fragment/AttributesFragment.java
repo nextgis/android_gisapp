@@ -211,6 +211,7 @@ public class AttributesFragment
             return;
 
         ((MainActivity) activity).setSubtitle(String.format(getString(R.string.features_count_attributes), mItemPosition + 1, mFeatureIDs.size()));
+        checkNearbyItems();
 
         String selection = Constants.FIELD_ID + " = ?";
         Cursor attributes = mLayer.query(null, selection, new String[]{mItemId + ""}, null, null);
@@ -325,7 +326,6 @@ public class AttributesFragment
         }
 
         attributes.close();
-        checkNearbyItems();
     }
 
 

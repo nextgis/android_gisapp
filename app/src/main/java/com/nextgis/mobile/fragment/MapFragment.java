@@ -585,7 +585,7 @@ public class MapFragment
         mActivity.setTitle(featureName);
         mActivity.setSubtitle(mSelectedLayer.getName());
 
-        boolean hasSelectedFeature = mEditLayerOverlay.getSelectedFeature() != null;
+        boolean hasSelectedFeature = mEditLayerOverlay.getSelectedFeature() != null && !noFeature;
         BottomToolbar toolbar = mActivity.getBottomToolbar();
         for (int i = 0; i < toolbar.getMenu().size(); i++) {
             MenuItem item = toolbar.getMenu().findItem(R.id.menu_feature_delete);
@@ -1429,14 +1429,18 @@ public class MapFragment
             }
         }
 
-
         if (intersects) {
             if (mSelectedLayer != null)
                 mSelectedLayer.setLocked(false);
 
             mSelectedLayer = vectorLayer;
             mEditLayerOverlay.setSelectedLayer(vectorLayer);
-            mEditLayerOverlay.setSelectedFeature(items.get(0));
+            for (int i = 0; i < items.size(); i++) {    // FIXME hack for bad RTree cache
+                long featureId = items.get(i);
+                GeoGeometry geometry = mSelectedLayer.getGeometryForId(featureId);
+                if (geometry != null)
+                    mEditLayerOverlay.setSelectedFeature(featureId);
+            }
             setMode(MODE_SELECT_ACTION);
         }
 
