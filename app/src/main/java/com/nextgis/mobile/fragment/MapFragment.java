@@ -31,6 +31,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.location.Location;
 import android.location.LocationManager;
@@ -53,6 +54,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -102,6 +104,7 @@ import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
+import com.nextgis.store.NgsCoreAndroid;
 
 import java.io.IOException;
 import java.util.List;
@@ -635,13 +638,36 @@ public class MapFragment
 
         //search relative view of map, if not found - add it
         mMapRelativeLayout = (RelativeLayout) view.findViewById(R.id.maprl);
-        if (mMapRelativeLayout != null) {
-            mMapRelativeLayout.addView(
-                    mMap, 0, new RelativeLayout.LayoutParams(
-                            RelativeLayout.LayoutParams.MATCH_PARENT,
-                            RelativeLayout.LayoutParams.MATCH_PARENT));
-        }
-        mMap.invalidate();
+//        if (mMapRelativeLayout != null) {
+//            mMapRelativeLayout.addView(
+//                    mMap, 0, new RelativeLayout.LayoutParams(
+//                            RelativeLayout.LayoutParams.MATCH_PARENT,
+//                            RelativeLayout.LayoutParams.MATCH_PARENT));
+//        }
+//        mMap.invalidate();
+
+        final ImageView imageView = (ImageView) view.findViewById(R.id.test_image);
+        Button button = (Button) view.findViewById(R.id.test_button);
+        button.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Bitmap bitmap = Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888);
+
+                long imagePointer = NgsCoreAndroid.lockBitmapPixels(bitmap);
+                int imageWidth = bitmap.getWidth();
+                int imageHeight = bitmap.getHeight();
+                boolean isFilled = NgsCoreAndroid.fillImage(imagePointer, imageWidth, imageHeight);
+                NgsCoreAndroid.unlockBitmapPixels(bitmap);
+
+                if (!isFilled) {
+                    bitmap.eraseColor(Color.RED);
+                }
+                imageView.setImageBitmap(bitmap);
+            }
+        });
+
 
         mMainButton = view.findViewById(R.id.multiple_actions);
         mAddPointButton = (FloatingActionButton) view.findViewById(R.id.add_point_by_tap);
