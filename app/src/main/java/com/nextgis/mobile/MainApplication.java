@@ -32,6 +32,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
+import android.util.Log;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.datasource.Field;
 import com.nextgis.maplib.map.LayerGroup;
@@ -51,6 +52,8 @@ import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.activity.SettingsActivity;
 import com.nextgis.mobile.fragment.SettingsFragment;
+import com.nextgis.store.NgsCoreAndroid;
+import com.nextgis.store.Api;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -58,6 +61,7 @@ import java.util.List;
 
 import static com.nextgis.maplib.util.Constants.LAYERTYPE_LOCAL_TMS;
 import static com.nextgis.maplib.util.Constants.MAP_EXT;
+import static com.nextgis.maplib.util.Constants.TAG;
 import static com.nextgis.maplib.util.GeoConstants.TMSTYPE_OSM;
 import static com.nextgis.mobile.util.SettingsConstants.*;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_APP_VERSION;
@@ -80,6 +84,9 @@ public class MainApplication extends GISApplication
         updateFromOldVersion();
 
         super.onCreate();
+
+        NgsCoreAndroid.initLogger();
+        Log.d(TAG, "NGS version: " + Api.ngsGetVersionString(null));
     }
 
     private void updateFromOldVersion() {
