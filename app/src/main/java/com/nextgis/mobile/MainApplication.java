@@ -231,7 +231,7 @@ public class MainApplication extends GISApplication
             layer.setTMSType(TMSTYPE_OSM);
             layer.setVisible(true);
             layer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);
-            layer.setMaxZoom(18);
+            layer.setMaxZoom(19);
 
             mMap.addLayer(layer);
             mMap.moveLayer(0, layer);
