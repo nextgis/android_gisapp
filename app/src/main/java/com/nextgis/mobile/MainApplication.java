@@ -28,6 +28,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -40,26 +41,25 @@ import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.GeoConstants;
+import com.nextgis.maplib.util.NGException;
 import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.maplibui.GISApplication;
 import com.nextgis.maplibui.mapui.LayerFactoryUI;
 import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
 import com.nextgis.maplibui.mapui.TrackLayerUI;
 import com.nextgis.maplibui.mapui.VectorLayerUI;
-import com.nextgis.maplibui.service.LayerFillService;
-import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.activity.SettingsActivity;
 import com.nextgis.mobile.fragment.SettingsFragment;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.nextgis.maplib.util.Constants.LAYERTYPE_LOCAL_TMS;
 import static com.nextgis.maplib.util.Constants.MAP_EXT;
 import static com.nextgis.maplib.util.GeoConstants.TMSTYPE_OSM;
-import static com.nextgis.mobile.util.SettingsConstants.*;
+import static com.nextgis.mobile.util.SettingsConstants.AUTHORITY;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_APP_VERSION;
 
 /**
@@ -225,8 +225,7 @@ public class MainApplication extends GISApplication
             //add OpenStreetMap layer
             String layerName = getString(R.string.osm);
             String layerURL = SettingsConstantsUI.OSM_URL;
-            RemoteTMSLayerUI layer =
-                    new RemoteTMSLayerUI(getApplicationContext(), mMap.createLayerStorage(LAYER_OSM));
+            final RemoteTMSLayerUI layer = new RemoteTMSLayerUI(getApplicationContext(), mMap.createLayerStorage(LAYER_OSM));
             layer.setName(layerName);
             layer.setURL(layerURL);
             layer.setTMSType(TMSTYPE_OSM);
@@ -237,12 +236,16 @@ public class MainApplication extends GISApplication
             mMap.addLayer(layer);
             mMap.moveLayer(0, layer);
 
-            Intent intent = new Intent(this, LayerFillService.class);
-            intent.setAction(LayerFillService.ACTION_ADD_TASK);
-            intent.putExtra(ConstantsUI.KEY_LAYER_ID, layer.getId());
-            intent.putExtra(LayerFillService.KEY_INPUT_TYPE, LAYERTYPE_LOCAL_TMS);
-            intent.putExtra(LayerFillService.KEY_URI, Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.mapnik));
-            startService(intent);
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        layer.fillFromZip(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.mapnik), null);
+                    } catch (IOException | NGException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
         }
 
         // create empty layers for first experimental editing
