@@ -52,7 +52,7 @@ import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.activity.SettingsActivity;
 import com.nextgis.mobile.fragment.SettingsFragment;
-import com.nextgis.store.NgsCoreAndroid;
+//import com.nextgis.store.NgsCoreAndroid;
 import com.nextgis.store.Api;
 
 import java.io.File;
@@ -85,7 +85,7 @@ public class MainApplication extends GISApplication
 
         super.onCreate();
 
-        NgsCoreAndroid.initLogger();
+        //NgsCoreAndroid.initLogger();
         Log.d(TAG, "NGS version: " + Api.ngsGetVersionString(null));
     }
 
