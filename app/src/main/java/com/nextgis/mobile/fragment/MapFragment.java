@@ -1729,6 +1729,11 @@ public class MapFragment
         setMode(MODE_NORMAL);
     }
 
+    @Override
+    public void onFinishEditByWalkSession() {
+
+    }
+
 
     public void hideBottomBar() {
         mActivity.getBottomToolbar().setVisibility(View.GONE);
