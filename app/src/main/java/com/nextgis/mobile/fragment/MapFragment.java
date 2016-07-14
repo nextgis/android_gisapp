@@ -104,7 +104,7 @@ import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
-//import com.nextgis.store.NgsCoreAndroid;
+import com.nextgis.ngsandroid.NgsAndroidJni;
 
 import java.io.IOException;
 import java.util.List;
@@ -655,16 +655,15 @@ public class MapFragment
             {
                 Bitmap bitmap = Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888);
 
-                /*long imagePointer = NgsCoreAndroid.lockBitmapPixels(bitmap);
+                long imagePointer = NgsAndroidJni.lockBitmapPixels(bitmap);
                 int imageWidth = bitmap.getWidth();
                 int imageHeight = bitmap.getHeight();
-                boolean isFilled = NgsCoreAndroid.fillImage(imagePointer, imageWidth, imageHeight);
-                NgsCoreAndroid.unlockBitmapPixels(bitmap);
+                boolean isFilled = NgsAndroidJni.fillImage(imagePointer, imageWidth, imageHeight);
+                NgsAndroidJni.unlockBitmapPixels(bitmap);
 
                 if (!isFilled) {
                     bitmap.eraseColor(Color.RED);
                 }
-                */
                 imageView.setImageBitmap(bitmap);
             }
         });
