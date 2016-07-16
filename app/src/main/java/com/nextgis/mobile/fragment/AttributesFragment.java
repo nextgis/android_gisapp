@@ -26,12 +26,15 @@ package com.nextgis.mobile.fragment;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.text.Html;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -39,9 +42,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.keenfin.easypicker.PhotoPicker;
 import com.nextgis.maplib.api.IGISApplication;
@@ -63,6 +67,7 @@ import com.nextgis.maplibui.control.PhotoGallery;
 import com.nextgis.maplibui.fragment.BottomToolbar;
 import com.nextgis.maplibui.overlay.EditLayerOverlay;
 import com.nextgis.maplibui.util.ControlHelper;
+import com.nextgis.maplibui.util.NotificationHelper;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
@@ -200,11 +205,14 @@ public class AttributesFragment
 
     private void setAttributes()
     {
-        if (mAttributes == null) {
+        if (mAttributes == null)
             return;
-        }
 
         mAttributes.removeAllViews();
+
+        final WebView webView = new WebView(getContext());
+        webView.setVerticalScrollBarEnabled(false);
+        String data = "<!DOCTYPE html><html><head><meta charset='utf-8'><style>body{font-family:Roboto Light,sans-serif;font-weight:300;line-height:1.42em}.container td{font-size:1em;-webkit-box-shadow:0 2px 2px -2px #0e1119;-moz-box-shadow:0 2px 2px -2px #0e1119;box-shadow:0 2px 2px -2px #0e1119}.container{text-align:left;overflow:hidden;width:100%;display:table}.container td{padding-bottom:1%;padding-top:1%;padding-left:1%;width:50%;border:1px solid #e0e0e0}</style></head><body><table class='container'><tbody>";
 
         FragmentActivity activity = getActivity();
         if (null == activity)
@@ -231,7 +239,7 @@ public class AttributesFragment
                         case GTPoint:
                             try {
                                 GeoPoint pt = (GeoPoint) GeoGeometryFactory.fromBlob(attributes.getBlob(i));
-                                addRow(getString(R.string.coordinates), formatCoordinates(pt));
+                                data += getRow(getString(R.string.coordinates), formatCoordinates(pt));
                             } catch (IOException | ClassNotFoundException e) {
                                 e.printStackTrace();
                             }
@@ -239,7 +247,7 @@ public class AttributesFragment
                         case GTMultiPoint:
                             try {
                                 GeoMultiPoint mpt = (GeoMultiPoint) GeoGeometryFactory.fromBlob(attributes.getBlob(i));
-                                addRow(getString(R.string.center), formatCoordinates(mpt.getEnvelope().getCenter()));
+                                data += getRow(getString(R.string.center), formatCoordinates(mpt.getEnvelope().getCenter()));
                             } catch (IOException | ClassNotFoundException e) {
                                 e.printStackTrace();
                             }
@@ -247,7 +255,7 @@ public class AttributesFragment
                         case GTLineString:
                             try {
                                 GeoLineString line = (GeoLineString) GeoGeometryFactory.fromBlob(attributes.getBlob(i));
-                                addRow(getString(R.string.length), LocationUtil.formatLength(getContext(), line.getLength(), 3));
+                                data += getRow(getString(R.string.length), LocationUtil.formatLength(getContext(), line.getLength(), 3));
                             } catch (IOException | ClassNotFoundException e) {
                                 e.printStackTrace();
                             }
@@ -255,7 +263,7 @@ public class AttributesFragment
                         case GTMultiLineString:
                             try {
                                 GeoMultiLineString multiline = (GeoMultiLineString) GeoGeometryFactory.fromBlob(attributes.getBlob(i));
-                                addRow(getString(R.string.length), LocationUtil.formatLength(getContext(), multiline.getLength(), 3));
+                                data += getRow(getString(R.string.length), LocationUtil.formatLength(getContext(), multiline.getLength(), 3));
                             } catch (IOException | ClassNotFoundException e) {
                                 e.printStackTrace();
                             }
@@ -263,8 +271,8 @@ public class AttributesFragment
                         case GTPolygon:
                             try {
                                 GeoPolygon polygon = (GeoPolygon) GeoGeometryFactory.fromBlob(attributes.getBlob(i));
-                                addRow(getString(R.string.perimeter), LocationUtil.formatLength(getContext(), polygon.getPerimeter(), 3));
-                                addRow(getString(R.string.area), LocationUtil.formatArea(getContext(), polygon.getArea()));
+                                data += getRow(getString(R.string.perimeter), LocationUtil.formatLength(getContext(), polygon.getPerimeter(), 3));
+                                data += getRow(getString(R.string.area), LocationUtil.formatArea(getContext(), polygon.getArea()));
                             } catch (IOException | ClassNotFoundException e) {
                                 e.printStackTrace();
                             }
@@ -272,8 +280,8 @@ public class AttributesFragment
                         case GTMultiPolygon:
                             try {
                                 GeoMultiPolygon polygon = (GeoMultiPolygon) GeoGeometryFactory.fromBlob(attributes.getBlob(i));
-                                addRow(getString(R.string.perimeter), LocationUtil.formatLength(getContext(), polygon.getPerimeter(), 3));
-                                addRow(getString(R.string.area), LocationUtil.formatArea(getContext(), polygon.getArea()));
+                                data += getRow(getString(R.string.perimeter), LocationUtil.formatLength(getContext(), polygon.getPerimeter(), 3));
+                                data += getRow(getString(R.string.area), LocationUtil.formatArea(getContext(), polygon.getArea()));
                             } catch (IOException | ClassNotFoundException e) {
                                 e.printStackTrace();
                             }
@@ -305,15 +313,29 @@ public class AttributesFragment
                         break;
                 }
 
-            addRow(column, text);
+                data += getRow(column, text);
             }
+
+            data += "</tbody></table></body></html>";
+            webView.loadDataWithBaseURL(null, data, "text/html", "UTF-8", null);
+            mAttributes.addView(webView);
+            webView.setWebViewClient(new WebViewClient() {
+                @Override
+                public void onPageFinished(WebView view, String url) {
+                    webView.setBackgroundColor(Color.TRANSPARENT);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+                        webView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
+                }
+            });
 
             IGISApplication app = (GISApplication) getActivity().getApplication();
             final Map<String, Integer> mAttaches = new HashMap<>();
-        PhotoGallery.getAttaches(app, mLayer, mItemId, mAttaches);
+            PhotoGallery.getAttaches(app, mLayer, mItemId, mAttaches);
 
             if (mAttaches.size() > 0) {
                 final PhotoPicker gallery = new PhotoPicker(getActivity(), true);
+                int px = NotificationHelper.dpToPx(16, getResources());
+                gallery.setPadding(px, 0, px, 0);
                 gallery.post(new Runnable() {
                     @Override
                     public void run() {
@@ -329,27 +351,8 @@ public class AttributesFragment
     }
 
 
-    protected void addRow(String column, String text) {
-        LinearLayout row = new LinearLayout(getActivity());
-        row.setOrientation(LinearLayout.HORIZONTAL);
-        LinearLayout.LayoutParams params =
-                new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
-
-        TextView columnName = new TextView(getActivity());
-        columnName.setLayoutParams(params);
-        columnName.setText(column);
-        TextView data = new TextView(getActivity());
-        data.setLayoutParams(params);
-
-        try {
-            data.setText(text);
-        } catch (Exception ignored) {
-
-        }
-
-        row.addView(columnName);
-        row.addView(data);
-        mAttributes.addView(row);
+    protected String getRow(String column, String text) {
+        return String.format("<tr><td>%s</td><td>%s</td></tr><tr>", Html.fromHtml(column), Html.fromHtml(text));
     }
 
 
@@ -366,7 +369,7 @@ public class AttributesFragment
         String lon = getString(com.nextgis.maplibui.R.string.longitude_caption_short) + ": " +
                 LocationUtil.formatLongitude(pt.getX(), format, fraction, getResources());
 
-        return lat + "\r\n" + lon;
+        return lat + "<br \\>" + lon;
     }
 
 

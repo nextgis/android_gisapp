@@ -1,12 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Project:  NextGIS Mobile
   ~ Purpose:  Mobile GIS for Android.
   ~ Author:   Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
   ~ Author:   NikitaFeodonit, nfeodonit@yandex.com
   ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2012-2015. NextGIS, info@nextgis.com
+  ~ Copyright (c) 2012-2016 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -23,37 +22,33 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:background="@drawable/abc_popup_background_mtrl_mult"
-              android:layout_gravity="end"
-    >
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="end"
+    android:background="@drawable/abc_popup_background_mtrl_mult"
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp"
         android:layout_gravity="center"
         android:gravity="center"
+        android:padding="5dp"
         android:singleLine="true"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:text="@string/action_attributes"
-        />
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:padding="16dp"
-        >
+        android:layout_weight="1">
 
         <LinearLayout
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
             android:id="@+id/ll_attributes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            />
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingBottom="16dp" />
     </ScrollView>
 </LinearLayout>
