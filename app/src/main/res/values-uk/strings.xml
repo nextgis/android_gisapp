@@ -122,6 +122,5 @@
     <string name="permissions">Разрешения</string>
     <string name="requested_permissions">Приложению требуются некоторые разрешения для корректной работы: запись на устройство (для хранения данных), доступ
         к местоположению и получение контактов (для создания и управления веб аккаунтами).</string>
-    <string name="ngw_summary"></string>
     <string name="track_restore">Продолжать трек после перезагрузки</string>
 </resources>
