@@ -354,8 +354,8 @@ public class AttributesFragment
 
 
     protected String getRow(String column, String text) {
-        column = column == null ? null : Html.fromHtml(column).toString();
-        text = text == null ? null : Html.fromHtml(text).toString();
+        column = column == null ? "" : Html.fromHtml(column).toString();
+        text = text == null ? "" : Html.fromHtml(text).toString();
         return String.format("<tr><td>%s</td><td>%s</td></tr><tr>", column, text);
     }
 
