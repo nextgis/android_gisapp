@@ -3,7 +3,7 @@
  * Purpose:  Mobile GIS for Android.
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2015 NextGIS, info@nextgis.com
+ * Copyright (c) 2015-2016 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -24,8 +24,11 @@ package com.nextgis.mobile.activity;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -65,13 +68,12 @@ public class CreateVectorLayerActivity extends NGActivity implements View.OnClic
         setContentView(R.layout.activity_new_layer);
         setToolbar(R.id.main_toolbar);
 
-        findViewById(R.id.fab_ok).setOnClickListener(this);
         ImageButton ibNewField = (ImageButton) findViewById(R.id.ib_add_field);
         ibNewField.setOnClickListener(this);
 
         int[] attrs = new int[] { com.nextgis.maplibui.R.attr.colorAccent };
         TypedArray ta = obtainStyledAttributes(com.nextgis.maplibui.R.style.AppTheme, attrs);
-        mColor = ta.getColor(0, getResources().getColor(com.nextgis.maplibui.R.color.accent));
+        mColor = ta.getColor(0, ContextCompat.getColor(this, com.nextgis.maplibui.R.color.accent));
         ta.recycle();
         
         ControlHelper.tintDrawable(ibNewField.getDrawable(), mColor);
@@ -85,9 +87,17 @@ public class CreateVectorLayerActivity extends NGActivity implements View.OnClic
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.fab_ok:
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.edit_attributes, menu);
+        menu.findItem(R.id.menu_settings).setVisible(false);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_apply:
                 int info = R.string.error_layer_create;
 
                 if (TextUtils.isEmpty(mEtLayerName.getText().toString().trim()))
@@ -100,7 +110,15 @@ public class CreateVectorLayerActivity extends NGActivity implements View.OnClic
                 }
 
                 Toast.makeText(this, info, Toast.LENGTH_SHORT).show();
-                break;
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
             case R.id.ib_add_field:
                 addNewField();
                 break;
