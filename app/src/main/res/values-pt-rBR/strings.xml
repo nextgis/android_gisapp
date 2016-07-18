@@ -123,4 +123,5 @@
     <string name="requested_permissions">Application needs some permissions to work properly. It includes writing to external storage (to save data on card),
         access to location services and getting contacts (to create and manage web accounts).</string>
     <string name="ngw_summary"></string>
+    <string name="track_restore">Restore current track after reboot</string>
 </resources>

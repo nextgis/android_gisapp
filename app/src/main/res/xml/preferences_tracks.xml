@@ -1,12 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Project:  NextGIS Mobile
   ~ Purpose:  Mobile GIS for Android.
   ~ Author:   Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
   ~ Author:   NikitaFeodonit, nfeodonit@yandex.com
   ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2012-2015. NextGIS, info@nextgis.com
+  ~ Copyright (c) 2012-2016 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -24,27 +23,29 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <ListPreference
-        android:key="tracks_location_source"
-        android:title="@string/pref_location_accuracy"
-        android:entryValues="@array/location_accuracy_val"
         android:defaultValue="1"
-        />
+        android:entryValues="@array/location_accuracy_val"
+        android:key="tracks_location_source"
+        android:title="@string/pref_location_accuracy"/>
 
     <ListPreference
-        android:key="tracks_min_time"
-        android:title="@string/pref_min_time"
         android:defaultValue="2"
         android:entries="@array/tracker_min_time_between_updates"
         android:entryValues="@array/tracker_min_time_between_updates_val"
-        />
+        android:key="tracks_min_time"
+        android:title="@string/pref_min_time"/>
 
     <ListPreference
-        android:key="tracks_min_distance"
-        android:title="@string/pref_min_distance"
         android:defaultValue="10"
         android:entries="@array/tracker_min_dist_update"
         android:entryValues="@array/tracker_min_dist_update_val"
-        />
+        android:key="tracks_min_distance"
+        android:title="@string/pref_min_distance"/>
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="track_restore"
+        android:title="@string/track_restore"/>
 
     <!-- TODO: add
     1) account (or accounts?) to send current location

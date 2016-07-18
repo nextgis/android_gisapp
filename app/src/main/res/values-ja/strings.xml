@@ -123,4 +123,5 @@
     <string name="permissions">アクセス許可</string>
     <string name="requested_permissions">アプリケーションが正しく動作するために幾つかのアクセス許可が必要です。これには外部ストレージの書き込み(カードへのデータの保存のため)、位置情報サービスへのアクセスと連絡先の取得(webアカウントの作成と管理のため)も含まれています。</string>
     <string name="ngw_summary"></string>
+    <string name="track_restore">Restore current track after reboot</string>
 </resources>

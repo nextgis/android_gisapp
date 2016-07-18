@@ -254,9 +254,13 @@ public class MainActivity extends NGActivity
 
                 int title = R.string.track_start, icon = R.drawable.ic_action_maps_directions_walk;
                 if (isTrackerServiceRunning(this)) {
-                    stopService(trackerService);
+                    trackerService.setAction(TrackerService.ACTION_STOP);
+                    startService(trackerService);
                 } else if (hasUnfinishedTracks(this)) {
-                    TrackerService.closeTracks(this, app);
+                    trackerService.setAction(TrackerService.ACTION_STOP);
+                    startService(trackerService);
+                    trackerService.setAction(null);
+                    startService(trackerService);
                 } else {
                     startService(trackerService);
                     title = R.string.track_stop;

@@ -127,4 +127,5 @@
     <string name="requested_permissions">आवेदन कुछ अनुमतियों को ठीक से काम करने की जरूरत है। यह बाह्य भंडारण के लिए लेखन भी शामिल है (कार्ड पर डेटा को बचाने के लिए),स्थान सेवाओं और हो रही संपर्कों को एक्सेस (बना सकते हैं और वेब खातों का प्रबंधन करने के लिए)
         .</string>
     <string name="ngw_summary"></string>
+    <string name="track_restore">Restore current track after reboot</string>
 </resources>

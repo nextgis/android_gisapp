@@ -490,6 +490,7 @@ public class SettingsActivity
         editor.remove(SettingsConstants.KEY_PREF_TRACKS_SOURCE);
         editor.remove(SettingsConstants.KEY_PREF_TRACKS_MIN_TIME);
         editor.remove(SettingsConstants.KEY_PREF_TRACKS_MIN_DISTANCE);
+        editor.remove(SettingsConstants.KEY_PREF_TRACK_RESTORE);
         editor.remove(KEY_PREF_SHOW_MEASURING);
         editor.remove(KEY_PREF_SHOW_SCALE_RULER);
         editor.remove(SettingsConstantsUI.KEY_PREF_SHOW_GEO_DIALOG);

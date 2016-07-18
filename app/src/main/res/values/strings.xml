@@ -63,6 +63,7 @@
     <string name="location">Location</string>
     <string name="track_start">Start new track</string>
     <string name="track_stop">Stop track</string>
+    <string name="track_restore">Restore current track after reboot</string>
     <string name="tracks_reload">Restart current track to apply changes</string>
     <string name="pref_min_time">Minimum update time</string>
     <string name="pref_min_distance">Minimum update distance</string>
@@ -124,5 +125,4 @@
     <string name="permissions">Permissions</string>
     <string name="requested_permissions">Application needs some permissions to work properly. It includes writing to external storage (to save data on card),
         access to location services and getting contacts (to create and manage web accounts).</string>
-    <string name="ngw_summary"></string>
 </resources>
