@@ -27,15 +27,12 @@ import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.graphics.ColorUtils;
 import android.text.Html;
 import android.util.DisplayMetrics;
 import android.view.Display;
@@ -330,8 +327,6 @@ public class AttributesFragment
                 @Override
                 public void onPageFinished(WebView view, String url) {
                     webView.setBackgroundColor(Color.TRANSPARENT);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-                        webView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
                 }
             });
 
