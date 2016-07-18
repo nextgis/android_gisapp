@@ -299,7 +299,7 @@ public class MapFragment
 
     protected boolean isGeometryValid(GeoGeometry geometry) {
         if (!hasMinimumPoints(geometry)) {
-            Toast.makeText(getContext(), R.string.geometry_no_points, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.not_enough_points, Toast.LENGTH_SHORT).show();
             return false;
         }
 
