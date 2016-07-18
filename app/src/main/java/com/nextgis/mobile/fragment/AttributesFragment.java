@@ -27,6 +27,7 @@ import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -34,6 +35,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.graphics.ColorUtils;
 import android.text.Html;
 import android.util.DisplayMetrics;
 import android.view.Display;
@@ -210,9 +212,14 @@ public class AttributesFragment
 
         mAttributes.removeAllViews();
 
+        int[] attrs = new int[] {android.R.attr.textColorPrimary};
+        TypedArray ta = getContext().obtainStyledAttributes(attrs);
+        String textColor = Integer.toHexString(ta.getColor(0, Color.BLACK)).substring(2);
+        ta.recycle();
+
         final WebView webView = new WebView(getContext());
         webView.setVerticalScrollBarEnabled(false);
-        String data = "<!DOCTYPE html><html><head><meta charset='utf-8'><style>body{font-family:Roboto Light,sans-serif;font-weight:300;line-height:1.42em}.container td{font-size:1em;-webkit-box-shadow:0 2px 2px -2px #0e1119;-moz-box-shadow:0 2px 2px -2px #0e1119;box-shadow:0 2px 2px -2px #0e1119}.container{text-align:left;overflow:hidden;width:100%;display:table}.container td{padding-bottom:1%;padding-top:1%;padding-left:1%;width:50%;border:1px solid #e0e0e0}</style></head><body><table class='container'><tbody>";
+        String data = "<!DOCTYPE html><html><head><meta charset='utf-8'><style>body{color:#" + textColor + ";font-family:Roboto Light,sans-serif;font-weight:300;line-height:1.42em}.container td{font-size:1em;-webkit-box-shadow:0 2px 2px -2px #0e1119;-moz-box-shadow:0 2px 2px -2px #0e1119;box-shadow:0 2px 2px -2px #0e1119}.container{text-align:left;overflow:hidden;width:100%;display:table}.container td{padding-bottom:1%;padding-top:1%;padding-left:1%;width:50%;border:1px solid #e0e0e0}</style></head><body><table class='container'><tbody>";
 
         FragmentActivity activity = getActivity();
         if (null == activity)
