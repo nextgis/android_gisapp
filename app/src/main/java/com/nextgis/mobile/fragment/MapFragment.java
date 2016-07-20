@@ -935,7 +935,7 @@ public class MapFragment
                 else
                     mEditLayerOverlay.newGeometryByWalk();
 
-                GeoGeometry geometry = GeoGeometryFactory.fromWKT(preferences.getString(ConstantsUI.KEY_GEOMETRY, ""));
+                GeoGeometry geometry = GeoGeometryFactory.fromWKT(preferences.getString(ConstantsUI.KEY_GEOMETRY, ""), GeoConstants.CRS_WEB_MERCATOR);
                 if (geometry != null)
                     mEditLayerOverlay.setGeometryFromWalkEdit(geometry);
 
