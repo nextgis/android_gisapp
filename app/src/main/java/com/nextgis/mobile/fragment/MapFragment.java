@@ -36,14 +36,14 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -60,7 +60,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cocosw.undobar.UndoBarController;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.nextgis.maplib.api.GpsEventListener;
 import com.nextgis.maplib.api.ILayer;
@@ -105,6 +104,7 @@ import com.nextgis.mobile.activity.MainActivity;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 import static com.nextgis.maplib.util.Constants.FIELD_GEOM;
 import static com.nextgis.maplib.util.Constants.FIELD_ID;
@@ -609,24 +609,35 @@ public class MapFragment
         mEditLayerOverlay.setSelectedFeature(null);
         defineMenuItems();
 
-        new UndoBarController.UndoBar(mActivity)
-                .message(mActivity.getString(com.nextgis.maplibui.R.string.delete_item_done))
-                .listener(new UndoBarController.AdvancedUndoListener() {
+        Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.mainview), getActivity().getString(R.string.delete_item_done), Snackbar.LENGTH_LONG)
+                .setAction(R.string.undo, new OnClickListener() {
                     @Override
-                    public void onHide(@Nullable Parcelable parcelable) {
-                        mSelectedLayer.deleteAddChanges(selectedFeatureId);
-                    }
-
-                    @Override
-                    public void onClear(@NonNull Parcelable[] parcelables) { }
-
-                    @Override
-                    public void onUndo(@Nullable Parcelable parcelable) {
+                    public void onClick(View v) {
                         mSelectedLayer.showFeature(selectedFeatureId);
                         mEditLayerOverlay.setSelectedFeature(selectedFeatureId);
                         defineMenuItems();
                     }
-                }).show();
+                })
+                .setCallback(new Snackbar.Callback() {
+                    @Override
+                    public void onDismissed(Snackbar snackbar, int event) {
+                        super.onDismissed(snackbar, event);
+                        if (event == DISMISS_EVENT_MANUAL)
+                            return;
+                        if (event != DISMISS_EVENT_ACTION)
+                            mSelectedLayer.deleteAddChanges(selectedFeatureId);
+                    }
+
+                    @Override
+                    public void onShown(Snackbar snackbar) {
+                        super.onShown(snackbar);
+                    }
+                });
+
+        View view = snackbar.getView();
+        TextView textView = (TextView) view.findViewById(R.id.snackbar_text);
+        textView.setTextColor(ContextCompat.getColor(mActivity, com.nextgis.maplibui.R.color.color_white));
+        snackbar.show();
     }
 
 
@@ -712,7 +723,7 @@ public class MapFragment
         Bitmap ruler = Bitmap.createBitmap(px, px, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(ruler);
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setColor(getResources().getColor(R.color.primary_dark));
+        paint.setColor(ContextCompat.getColor(getActivity(), R.color.primary_dark));
         paint.setStrokeWidth(4);
         paint.setStyle(Paint.Style.STROKE);
         canvas.drawLine(0, px, px, px, paint);
@@ -1636,21 +1647,21 @@ public class MapFragment
 
                 mStatusSource.setText(text);
                 mStatusSource.setCompoundDrawablesWithIntrinsicBounds(
-                        getResources().getDrawable(R.drawable.ic_location), null, null, null);
+                        ContextCompat.getDrawable(getActivity(), R.drawable.ic_location), null, null, null);
             } else {
                 mStatusSource.setText("");
                 mStatusSource.setCompoundDrawablesWithIntrinsicBounds(
-                        getResources().getDrawable(R.drawable.ic_signal_wifi), null, null, null);
+                        ContextCompat.getDrawable(getActivity(), R.drawable.ic_signal_wifi), null, null, null);
             }
 
             mStatusAccuracy.setText(
-                    String.format(
+                    String.format(Locale.getDefault(),
                             "%.1f %s", location.getAccuracy(), getString(R.string.unit_meter)));
             mStatusAltitude.setText(
-                    String.format(
+                    String.format(Locale.getDefault(),
                             "%.1f %s", location.getAltitude(), getString(R.string.unit_meter)));
             mStatusSpeed.setText(
-                    String.format(
+                    String.format(Locale.getDefault(),
                             "%.1f %s/%s", location.getSpeed() * 3600 / 1000,
                             getString(R.string.unit_kilometer), getString(R.string.unit_hour)));
             mStatusLatitude.setText(
