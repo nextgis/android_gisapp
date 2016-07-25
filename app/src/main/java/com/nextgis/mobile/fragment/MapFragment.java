@@ -380,6 +380,11 @@ public class MapFragment
     }
 
 
+    public boolean hasEdits() {
+        return mEditLayerOverlay != null && mEditLayerOverlay.hasEdits();
+    }
+
+
     public void cancelEdits() {
 //        if (mEditLayerOverlay.hasEdits()) TODO prompt dialog
 //            return;
@@ -426,6 +431,7 @@ public class MapFragment
                 if (mStatusPanelMode != 0)
                     mStatusPanel.setVisibility(View.VISIBLE);
 
+                mEditLayerOverlay.showAllFeatures();
                 mEditLayerOverlay.setMode(EditLayerOverlay.MODE_NONE);
                 break;
             case MODE_EDIT:
@@ -466,7 +472,6 @@ public class MapFragment
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                mEditLayerOverlay.showAllFeatures();
                                 setMode(MODE_NORMAL);
                             }
                         });
