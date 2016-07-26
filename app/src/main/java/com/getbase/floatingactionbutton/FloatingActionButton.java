@@ -48,11 +48,12 @@ import android.support.annotation.DimenRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
-import android.support.v7.internal.widget.ThemeUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.mobile.R;
 
 import java.lang.annotation.Retention;
@@ -119,17 +120,10 @@ public class FloatingActionButton
             Context context,
             AttributeSet attributeSet)
     {
-        TypedArray attr = context.obtainStyledAttributes(
-                attributeSet, R.styleable.FloatingActionButton, 0, 0);
-        mColorNormal = attr.getColor(
-                R.styleable.FloatingActionButton_fab_colorNormal, ThemeUtils.getThemeAttrColor(
-                        context, R.attr.colorPrimary));
-        mColorPressed = attr.getColor(
-                R.styleable.FloatingActionButton_fab_colorPressed, ThemeUtils.getThemeAttrColor(
-                        context, R.attr.colorAccent));
-        mColorDisabled = attr.getColor(
-                R.styleable.FloatingActionButton_fab_colorDisabled,
-                getColor(android.R.color.darker_gray));
+        TypedArray attr = context.obtainStyledAttributes(attributeSet, R.styleable.FloatingActionButton, 0, 0);
+        mColorNormal = attr.getColor(R.styleable.FloatingActionButton_fab_colorNormal, ControlHelper.getColor(context, R.attr.colorPrimary));
+        mColorPressed = attr.getColor(R.styleable.FloatingActionButton_fab_colorPressed, ControlHelper.getColor(context, R.attr.colorAccent));
+        mColorDisabled = attr.getColor(R.styleable.FloatingActionButton_fab_colorDisabled, getColor(android.R.color.darker_gray));
         mSize = attr.getInt(R.styleable.FloatingActionButton_fab_size, SIZE_NORMAL);
         mIcon = attr.getResourceId(R.styleable.FloatingActionButton_fab_icon, 0);
         mTitle = attr.getString(R.styleable.FloatingActionButton_fab_title);

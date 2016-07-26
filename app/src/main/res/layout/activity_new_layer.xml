@@ -81,6 +81,7 @@
                 android:adjustViewBounds="true"
                 android:background="@null"
                 android:src="@drawable/ic_plus"
+                android:tint="@color/accent"
                 tools:ignore="ContentDescription"/>
         </LinearLayout>
 

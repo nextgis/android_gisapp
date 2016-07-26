@@ -336,7 +336,7 @@ public class AttributesFragment
 
             if (mAttaches.size() > 0) {
                 final PhotoPicker gallery = new PhotoPicker(getActivity(), true);
-                int px = NotificationHelper.dpToPx(16, getResources());
+                int px = ControlHelper.dpToPx(16, getResources());
                 gallery.setPadding(px, 0, px, 0);
                 gallery.post(new Runnable() {
                     @Override

@@ -32,7 +32,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
-import android.support.v7.internal.widget.ThemeUtils;
 import android.util.AttributeSet;
 import android.view.ContextThemeWrapper;
 import android.view.View;
@@ -41,6 +40,8 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.TextView;
+
+import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.mobile.R;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
@@ -127,24 +128,13 @@ public class FloatingActionsMenu
         mLabelsMargin = getResources().getDimensionPixelSize(R.dimen.fab_labels_margin);
         mLabelsVerticalOffset = getResources().getDimensionPixelSize(R.dimen.fab_shadow_offset);
 
-        TypedArray attr =
-                context.obtainStyledAttributes(attributeSet, R.styleable.FloatingActionsMenu, 0, 0);
-        mAddButtonPlusColor = attr.getColor(
-                R.styleable.FloatingActionsMenu_fab_addButtonPlusIconColor,
-                getColor(android.R.color.white));
-        mAddButtonColorNormal = attr.getColor(
-                R.styleable.FloatingActionsMenu_fab_addButtonColorNormal,
-                ThemeUtils.getThemeAttrColor(context, R.attr.colorPrimary));
-        mAddButtonColorPressed = attr.getColor(
-                R.styleable.FloatingActionsMenu_fab_addButtonColorPressed,
-                ThemeUtils.getThemeAttrColor(context, R.attr.colorAccent));
-        mAddButtonSize = attr.getInt(
-                R.styleable.FloatingActionsMenu_fab_addButtonSize,
-                FloatingActionButton.SIZE_NORMAL);
-        mAddButtonStrokeVisible =
-                attr.getBoolean(R.styleable.FloatingActionsMenu_fab_addButtonStrokeVisible, true);
-        mExpandDirection =
-                attr.getInt(R.styleable.FloatingActionsMenu_fab_expandDirection, EXPAND_UP);
+        TypedArray attr = context.obtainStyledAttributes(attributeSet, R.styleable.FloatingActionsMenu, 0, 0);
+        mAddButtonPlusColor = attr.getColor(R.styleable.FloatingActionsMenu_fab_addButtonPlusIconColor, getColor(android.R.color.white));
+        mAddButtonColorNormal = attr.getColor(R.styleable.FloatingActionsMenu_fab_addButtonColorNormal, ControlHelper.getColor(context, R.attr.colorPrimary));
+        mAddButtonColorPressed = attr.getColor(R.styleable.FloatingActionsMenu_fab_addButtonColorPressed, ControlHelper.getColor(context, R.attr.colorAccent));
+        mAddButtonSize = attr.getInt(R.styleable.FloatingActionsMenu_fab_addButtonSize, FloatingActionButton.SIZE_NORMAL);
+        mAddButtonStrokeVisible = attr.getBoolean(R.styleable.FloatingActionsMenu_fab_addButtonStrokeVisible, true);
+        mExpandDirection = attr.getInt(R.styleable.FloatingActionsMenu_fab_expandDirection, EXPAND_UP);
         mLabelsStyle = attr.getResourceId(R.styleable.FloatingActionsMenu_fab_labelStyle, 0);
         attr.recycle();
 

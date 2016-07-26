@@ -21,10 +21,8 @@
 
 package com.nextgis.mobile.activity;
 
-import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,7 +31,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -47,7 +44,6 @@ import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplib.util.LayerUtil;
 import com.nextgis.maplibui.activity.NGActivity;
-import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.dialog.NewFieldDialog;
@@ -60,7 +56,6 @@ public class CreateVectorLayerActivity extends NGActivity implements View.OnClic
     private EditText mEtLayerName;
     private Spinner mSpLayerType;
     private FieldAdapter mFieldAdapter;
-    private int mColor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,16 +63,8 @@ public class CreateVectorLayerActivity extends NGActivity implements View.OnClic
         setContentView(R.layout.activity_new_layer);
         setToolbar(R.id.main_toolbar);
 
-        ImageButton ibNewField = (ImageButton) findViewById(R.id.ib_add_field);
-        ibNewField.setOnClickListener(this);
+        findViewById(R.id.ib_add_field).setOnClickListener(this);
 
-        int[] attrs = new int[] { com.nextgis.maplibui.R.attr.colorAccent };
-        TypedArray ta = obtainStyledAttributes(com.nextgis.maplibui.R.style.AppTheme, attrs);
-        mColor = ta.getColor(0, ContextCompat.getColor(this, com.nextgis.maplibui.R.color.accent));
-        ta.recycle();
-        
-        ControlHelper.tintDrawable(ibNewField.getDrawable(), mColor);
-        
         mEtLayerName = (EditText) findViewById(R.id.et_layer_name);
         mSpLayerType = (Spinner) findViewById(R.id.sp_layer_type);
         ListView lvFields = (ListView) findViewById(R.id.lv_fields);
@@ -229,9 +216,7 @@ public class CreateVectorLayerActivity extends NGActivity implements View.OnClic
             fieldName.setText(field.getName());
             fieldType.setText(LayerUtil.typeToString(CreateVectorLayerActivity.this, field.getType()));
 
-            ImageButton removeField = (ImageButton) view.findViewById(R.id.ib_remove_field);
-            ControlHelper.tintDrawable(removeField.getDrawable(), mColor);
-            removeField.setOnClickListener(new View.OnClickListener() {
+            view.findViewById(R.id.ib_remove_field).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mFieldNames.remove(field.getName());

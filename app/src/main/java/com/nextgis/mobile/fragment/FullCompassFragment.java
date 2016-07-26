@@ -3,7 +3,7 @@
  * Purpose:  Mobile GIS for Android.
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2015 NextGIS, info@nextgis.com
+ * Copyright (c) 2015-2016 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,6 @@ import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.internal.widget.ThemeUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,6 +33,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.nextgis.maplibui.fragment.CompassFragment;
+import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
@@ -70,7 +70,7 @@ public class FullCompassFragment extends CompassFragment {
         ((MainActivity) getActivity()).setActionBarState(false);
         getActivity().setTitle(R.string.compass_title);
         assert getView() != null;
-        int accentColor = ThemeUtils.getThemeAttrColor(getContext(), R.attr.colorAccent);
+        int accentColor = ControlHelper.getColor(getContext(), R.attr.colorAccent);
         getView().setBackgroundColor(accentColor);
     }
 

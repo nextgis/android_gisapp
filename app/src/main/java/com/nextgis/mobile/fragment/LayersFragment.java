@@ -40,7 +40,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.internal.widget.ThemeUtils;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Display;
@@ -114,8 +113,7 @@ public class LayersFragment
 
         LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.action_space);
         if (null != linearLayout) {
-            linearLayout.setBackgroundColor(ThemeUtils.getThemeAttrColor(view.getContext(),
-                                                                         R.attr.colorPrimary));
+            linearLayout.setBackgroundColor(ControlHelper.getColor(view.getContext(), R.attr.colorPrimary));
         }
 
         mSyncButton = (ImageButton) view.findViewById(R.id.sync);

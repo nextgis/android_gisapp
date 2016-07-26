@@ -44,8 +44,8 @@ import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.internal.widget.ThemeUtils;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -71,6 +71,7 @@ import com.nextgis.maplibui.fragment.BottomToolbar;
 import com.nextgis.maplibui.fragment.LayerFillProgressDialogFragment;
 import com.nextgis.maplibui.service.TrackerService;
 import com.nextgis.maplibui.util.ConstantsUI;
+import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
@@ -129,8 +130,7 @@ public class MainActivity extends NGActivity
         }
 
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawerLayout.setStatusBarBackgroundColor(ThemeUtils.getThemeAttrColor(
-                this, R.attr.colorPrimaryDark));
+        drawerLayout.setStatusBarBackgroundColor(ControlHelper.getColor(this, R.attr.colorPrimaryDark));
 
         FragmentManager fm = getSupportFragmentManager();
         mMapFragment = (MapFragment) fm.findFragmentById(R.id.map);
@@ -141,7 +141,7 @@ public class MainActivity extends NGActivity
         mLayersFragment = (LayersFragment) fm.findFragmentById(R.id.layers);
 
         if (mLayersFragment != null && null != mLayersFragment.getView()) {
-            mLayersFragment.getView().setBackgroundColor(getResources().getColor(R.color.color_grey_050));
+            mLayersFragment.getView().setBackgroundColor(ContextCompat.getColor(this, R.color.color_grey_050));
             // Set up the drawer.
             mLayersFragment.setUp(R.id.layers, drawerLayout, (MapDrawable) app.getMap());
         }
@@ -337,7 +337,7 @@ public class MainActivity extends NGActivity
                         refreshItem.setActionView(R.layout.layout_refresh);
                         ProgressBar progress = (ProgressBar) refreshItem.getActionView().findViewById(R.id.refreshingProgress);
                         if (progress != null)
-                            progress.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.color_grey_200), PorterDuff.Mode.SRC_IN);
+                            progress.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(this, R.color.color_grey_200), PorterDuff.Mode.SRC_IN);
                     }
                 } else
                     stopRefresh(refreshItem);
