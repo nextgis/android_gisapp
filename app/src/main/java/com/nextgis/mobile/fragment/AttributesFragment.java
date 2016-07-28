@@ -66,7 +66,6 @@ import com.nextgis.maplibui.control.PhotoGallery;
 import com.nextgis.maplibui.fragment.BottomToolbar;
 import com.nextgis.maplibui.overlay.EditLayerOverlay;
 import com.nextgis.maplibui.util.ControlHelper;
-import com.nextgis.maplibui.util.NotificationHelper;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
@@ -332,7 +331,7 @@ public class AttributesFragment
 
             IGISApplication app = (GISApplication) getActivity().getApplication();
             final Map<String, Integer> mAttaches = new HashMap<>();
-            PhotoGallery.getAttaches(app, mLayer, mItemId, mAttaches);
+            PhotoGallery.getAttaches(app, mLayer, mItemId, mAttaches, false);
 
             if (mAttaches.size() > 0) {
                 final PhotoPicker gallery = new PhotoPicker(getActivity(), true);
