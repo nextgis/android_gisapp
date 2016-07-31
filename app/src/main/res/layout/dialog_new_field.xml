@@ -3,7 +3,7 @@
   ~ Purpose:  Mobile GIS for Android.
   ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2015 NextGIS, info@nextgis.com
+  ~ Copyright (c) 2015-2016 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as published by
@@ -36,7 +36,6 @@
         android:id="@+id/et_field_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:digits="0123456789qwertzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM_"
         android:inputType="text"/>
 
     <TextView

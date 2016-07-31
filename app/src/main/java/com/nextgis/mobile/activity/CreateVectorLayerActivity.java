@@ -131,13 +131,15 @@ public class CreateVectorLayerActivity extends NGActivity implements View.OnClic
     }
 
     @Override
-    public void OnFieldChosen(String name, int type) {
-        if (TextUtils.isEmpty(name))
+    public void OnFieldChosen(String alias, int type) {
+        String name = System.currentTimeMillis() + "";
+        name = "field_" + name.substring(8);
+        if (TextUtils.isEmpty(alias))
             Toast.makeText(this, R.string.empty_name, Toast.LENGTH_SHORT).show();
-        else if (mFieldAdapter.containsField(name))
+        else if (mFieldAdapter.containsField(alias))
             Toast.makeText(this, R.string.same_field_name, Toast.LENGTH_SHORT).show();
         else
-            mFieldAdapter.addField(new Field(type, name, name));
+            mFieldAdapter.addField(new Field(type, name, alias));
     }
 
     private boolean createNewLayer() {
@@ -147,8 +149,7 @@ public class CreateVectorLayerActivity extends NGActivity implements View.OnClic
         if (fields.size() == 0)
             fields.add(new Field(GeoConstants.FTString, "description", getString(R.string.default_field_name)));
 
-        VectorLayer layer = app.createEmptyVectorLayer(mEtLayerName.getText().toString().trim(),
-                null, geomType, fields);
+        VectorLayer layer = app.createEmptyVectorLayer(mEtLayerName.getText().toString().trim(), null, geomType, fields);
 
         SimpleFeatureRenderer sfr = (SimpleFeatureRenderer) layer.getRenderer();
         if (null != sfr) {
@@ -166,21 +167,22 @@ public class CreateVectorLayerActivity extends NGActivity implements View.OnClic
 
     protected class FieldAdapter extends BaseAdapter {
         private List<Field> mFields;
-        private List<String> mFieldNames;
 
         public FieldAdapter() {
             mFields = new ArrayList<>();
-            mFieldNames = new ArrayList<>();
         }
 
         public void addField(Field field) {
             mFields.add(field);
-            mFieldNames.add(field.getName().toLowerCase());
             notifyDataSetChanged();
         }
 
         public boolean containsField(String fieldName) {
-            return mFieldNames.contains(fieldName.toLowerCase());
+            for (Field field : mFields)
+                if (field.getAlias().equalsIgnoreCase(fieldName))
+                    return true;
+
+            return false;
         }
 
         public List<Field> getFields() {
@@ -213,13 +215,12 @@ public class CreateVectorLayerActivity extends NGActivity implements View.OnClic
             final Field field = mFields.get(position);
             TextView fieldName = (TextView) view.findViewById(R.id.tv_field_name);
             TextView fieldType = (TextView) view.findViewById(R.id.tv_field_type);
-            fieldName.setText(field.getName());
+            fieldName.setText(field.getAlias());
             fieldType.setText(LayerUtil.typeToString(CreateVectorLayerActivity.this, field.getType()));
 
             view.findViewById(R.id.ib_remove_field).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mFieldNames.remove(field.getName());
                     mFields.remove(field);
                     notifyDataSetChanged();
                 }

@@ -29,9 +29,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
 
-import com.nextgis.maplib.util.LayerUtil;
 import com.nextgis.maplibui.dialog.NGDialog;
 import com.nextgis.mobile.R;
 
@@ -62,21 +60,9 @@ public class NewFieldDialog extends NGDialog {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     if (mListener != null) {
-                        int fieldType = getResources()
-                                .getIntArray(R.array.field_types)[type.getSelectedItemPosition()];
-                        String normalizedName = name.getText().toString().trim();
-
-                        if (!LayerUtil.isFieldNameValid(normalizedName))
-                            normalizedName += "1";
-
-                        normalizedName = LayerUtil.normalizeFieldName(normalizedName);
-                        if (!normalizedName.equalsIgnoreCase(name.getText().toString().trim())) {
-                            String warning = getString(R.string.warning_replace_field);
-                            warning = String.format(warning, normalizedName);
-                            Toast.makeText(getActivity(), warning, Toast.LENGTH_SHORT).show();
-                        }
-
-                        mListener.OnFieldChosen(normalizedName, fieldType);
+                        int fieldType = getResources().getIntArray(R.array.field_types)[type.getSelectedItemPosition()];
+                        String alias = name.getText().toString().trim();
+                        mListener.OnFieldChosen(alias, fieldType);
                     }
                 }
             });
