@@ -215,7 +215,7 @@ public class AttributesFragment
 
         final WebView webView = new WebView(getContext());
         webView.setVerticalScrollBarEnabled(false);
-        String data = "<!DOCTYPE html><html><head><meta charset='utf-8'><style>body{color:#" + textColor + ";font-family:Roboto Light,sans-serif;font-weight:300;line-height:1.15em}.flat-table{margin-bottom:20px;width:100%;border-collapse:collapse;border:none;box-shadow:inset 1px -1px #ccc,inset -1px 1px #ccc}.flat-table td{box-shadow:inset -1px -1px #ccc,inset -1px -1px #ccc;padding:.5em}.flat-table tr{-webkit-transition:background .3s,box-shadow .3s;-moz-transition:background .3s,box-shadow .3s;transition:background .3s,box-shadow .3s}</style></head><body><table class='flat-table'><tbody>";
+        String data = "<!DOCTYPE html><html><head><meta charset='utf-8'><style>body{word-wrap:break-word;color:#" + textColor + ";font-family:Roboto Light,sans-serif;font-weight:300;line-height:1.15em}.flat-table{table-layout:fixed;margin-bottom:20px;width:100%;border-collapse:collapse;border:none;box-shadow:inset 1px -1px #ccc,inset -1px 1px #ccc}.flat-table td{box-shadow:inset -1px -1px #ccc,inset -1px -1px #ccc;padding:.5em}.flat-table tr{-webkit-transition:background .3s,box-shadow .3s;-moz-transition:background .3s,box-shadow .3s;transition:background .3s,box-shadow .3s}</style></head><body><table class='flat-table'><tbody>";
 
         FragmentActivity activity = getActivity();
         if (null == activity)
@@ -316,7 +316,7 @@ public class AttributesFragment
                         break;
                 }
 
-                data += getRow(column, text);
+                data += getRow(field != null ? field.getAlias() : "", text);
             }
 
             data += "</tbody></table></body></html>";
