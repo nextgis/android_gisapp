@@ -123,7 +123,6 @@ public class MainActivity extends NGActivity
         mMessageReceiver = new MessageReceiver();
 
         mToolbar = (Toolbar) findViewById(R.id.main_toolbar);
-        mToolbar.getBackground().setAlpha(128);
         setSupportActionBar(mToolbar);
         if (null != getSupportActionBar()) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -744,6 +743,7 @@ public class MainActivity extends NGActivity
     protected void onResume()
     {
         super.onResume();
+        mToolbar.getBackground().setAlpha(128);
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConstantsUI.MESSAGE_INTENT);
         registerReceiver(mMessageReceiver, intentFilter);

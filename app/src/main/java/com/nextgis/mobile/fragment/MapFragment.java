@@ -109,13 +109,10 @@ import java.util.Locale;
 import static com.nextgis.maplib.util.Constants.FIELD_GEOM;
 import static com.nextgis.maplib.util.Constants.FIELD_ID;
 import static com.nextgis.maplib.util.Constants.NOT_FOUND;
-import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SCROLL_X;
-import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SCROLL_Y;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_COMPASS;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_MEASURING;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_SCALE_RULER;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_ZOOM_CONTROLS;
-import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_ZOOM_LEVEL;
 
 /**
  * Main map fragment
@@ -982,10 +979,10 @@ public class MapFragment
         final SharedPreferences.Editor edit =
                 PreferenceManager.getDefaultSharedPreferences(mActivity).edit();
         if (null != mMap) {
-            edit.putFloat(KEY_PREF_ZOOM_LEVEL, mMap.getZoomLevel());
+            edit.putFloat(SettingsConstantsUI.KEY_PREF_ZOOM_LEVEL, mMap.getZoomLevel());
             GeoPoint point = mMap.getMapCenter();
-            edit.putLong(KEY_PREF_SCROLL_X, Double.doubleToRawLongBits(point.getX()));
-            edit.putLong(KEY_PREF_SCROLL_Y, Double.doubleToRawLongBits(point.getY()));
+            edit.putLong(SettingsConstantsUI.KEY_PREF_SCROLL_X, Double.doubleToRawLongBits(point.getX()));
+            edit.putLong(SettingsConstantsUI.KEY_PREF_SCROLL_Y, Double.doubleToRawLongBits(point.getY()));
 
             mMap.removeListener(this);
         }
@@ -1025,7 +1022,7 @@ public class MapFragment
             mMap.getMap().setBackground(mApp.getMapBackground());
             float mMapZoom;
             try {
-                mMapZoom = prefs.getFloat(KEY_PREF_ZOOM_LEVEL, mMap.getMinZoom());
+                mMapZoom = prefs.getFloat(SettingsConstantsUI.KEY_PREF_ZOOM_LEVEL, mMap.getMinZoom());
             } catch (ClassCastException e) {
                 mMapZoom = mMap.getMinZoom();
             }
@@ -1033,8 +1030,8 @@ public class MapFragment
             double mMapScrollX;
             double mMapScrollY;
             try {
-                mMapScrollX = Double.longBitsToDouble(prefs.getLong(KEY_PREF_SCROLL_X, 0));
-                mMapScrollY = Double.longBitsToDouble(prefs.getLong(KEY_PREF_SCROLL_Y, 0));
+                mMapScrollX = Double.longBitsToDouble(prefs.getLong(SettingsConstantsUI.KEY_PREF_SCROLL_X, 0));
+                mMapScrollY = Double.longBitsToDouble(prefs.getLong(SettingsConstantsUI.KEY_PREF_SCROLL_Y, 0));
             } catch (ClassCastException e) {
                 mMapScrollX = 0;
                 mMapScrollY = 0;
