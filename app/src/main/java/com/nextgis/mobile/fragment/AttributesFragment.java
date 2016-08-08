@@ -316,6 +316,9 @@ public class AttributesFragment
                         break;
                 }
 
+                if (field != null && column.equals(Constants.FIELD_ID))
+                    field.setAlias(getString(R.string.id));
+
                 data += getRow(field != null ? field.getAlias() : "", text);
             }
 
