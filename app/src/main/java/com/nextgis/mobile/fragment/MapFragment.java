@@ -104,7 +104,7 @@ import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
-import com.nextgis.ngsandroid.NgsAndroidJni;
+import com.nextgis.ngsandroid.MapView;
 
 import java.io.IOException;
 import java.util.List;
@@ -131,6 +131,7 @@ public class MapFragment
     protected MainApplication      mApp;
     protected MainActivity         mActivity;
     protected MapViewOverlays      mMap;
+    protected MapView              mMapView;
     protected FloatingActionButton mivZoomIn;
     protected FloatingActionButton mivZoomOut;
     protected FloatingActionButton mRuler;
@@ -200,6 +201,9 @@ public class MapFragment
 
         mMap = new MapViewOverlays(mActivity, (MapDrawable) mApp.getMap());
         mMap.setId(R.id.map_view);
+
+        mMapView = new MapView(mActivity);
+        mMapView.setId(R.id.map_view_native);
 
         mEditLayerOverlay = new EditLayerOverlay(mActivity, mMap);
     }
@@ -646,28 +650,12 @@ public class MapFragment
 //        }
 //        mMap.invalidate();
 
-        final ImageView imageView = (ImageView) view.findViewById(R.id.test_image);
-        Button button = (Button) view.findViewById(R.id.test_button);
-        button.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                Bitmap bitmap = Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888);
-
-                long imagePointer = NgsAndroidJni.lockBitmapPixels(bitmap);
-                int imageWidth = bitmap.getWidth();
-                int imageHeight = bitmap.getHeight();
-                boolean isFilled = NgsAndroidJni.fillImage(imagePointer, imageWidth, imageHeight);
-                NgsAndroidJni.unlockBitmapPixels(bitmap);
-
-                if (!isFilled) {
-                    bitmap.eraseColor(Color.RED);
-                }
-                imageView.setImageBitmap(bitmap);
-            }
-        });
-
+        if (mMapRelativeLayout != null) {
+            mMapRelativeLayout.addView(mMapView, 0, new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.MATCH_PARENT,
+                    RelativeLayout.LayoutParams.MATCH_PARENT));
+        }
+        mMapView.invalidate();
 
         mMainButton = view.findViewById(R.id.multiple_actions);
         mAddPointButton = (FloatingActionButton) view.findViewById(R.id.add_point_by_tap);
@@ -707,6 +695,12 @@ public class MapFragment
             mMap.removeListener(this);
             if (mMapRelativeLayout != null) {
                 mMapRelativeLayout.removeView(mMap);
+            }
+        }
+
+        if (mMapView != null) {
+            if (mMapRelativeLayout != null) {
+                mMapRelativeLayout.removeView(mMapView);
             }
         }
 

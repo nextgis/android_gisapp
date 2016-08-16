@@ -171,20 +171,4 @@
             fab:fab_size="mini"/>
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
-    <ImageView
-            android:id="@+id/test_image"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_centerHorizontal="true"
-            />
-
-    <Button
-            android:id="@+id/test_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Test"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@id/test_image"
-            />
-
 </RelativeLayout>

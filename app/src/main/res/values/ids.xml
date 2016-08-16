@@ -29,4 +29,6 @@
           type="id"/>
     <item name="map_view"
           type="id"/>
+    <item name="map_view_native"
+          type="id"/>
 </resources>
