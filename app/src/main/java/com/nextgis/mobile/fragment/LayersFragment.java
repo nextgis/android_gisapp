@@ -236,9 +236,10 @@ public class LayersFragment
             DrawerLayout drawerLayout,
             final MapDrawable map)
     {
-        mFragmentContainerView = getActivity().findViewById(fragmentId);
+        MainActivity activity = (MainActivity) getActivity();
+        mFragmentContainerView = activity.findViewById(fragmentId);
 
-        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        Display display = activity.getWindowManager().getDefaultDisplay();
 
         int displayWidth;
         if (android.os.Build.VERSION.SDK_INT >= 13) {
@@ -255,8 +256,8 @@ public class LayersFragment
         }
         mFragmentContainerView.setLayoutParams(params);
 
-        final MapFragment mapFragment = ((MainActivity) getActivity()).getMapFragment();
-        mListAdapter = new LayersListAdapter(getActivity(), map);
+        final MapFragment mapFragment = activity.getMapFragment();
+        mListAdapter = new LayersListAdapter(activity, map);
         mListAdapter.setDrawer(drawerLayout);
         mListAdapter.setOnPencilClickListener(new View.OnClickListener() {
             @Override
