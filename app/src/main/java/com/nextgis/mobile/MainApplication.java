@@ -53,7 +53,7 @@ import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.activity.SettingsActivity;
 import com.nextgis.mobile.fragment.SettingsFragment;
 import com.nextgis.ngsandroid.NgsAndroidJni;
-import com.nextgis.store.Api;
+import com.nextgis.store.bindings.Api;
 
 import java.io.File;
 import java.util.ArrayList;
