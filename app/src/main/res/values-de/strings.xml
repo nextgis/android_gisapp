@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Project:  NextGIS Mobile
+  ~ Purpose:  Mobile GIS for Android.
+  ~ Author:   Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
+  ~ Author:   NikitaFeodonit, nfeodonit@yandex.com
+  ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
+  ~ ******************************************************************************
+  ~ Copyright (c) 2012-2016 NextGIS, info@nextgis.com
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+
+    <string name="app_name">NextGIS Mobile</string>    
+    <string name="navigation_drawer_open">Open navigation drawer</string>    
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">Einstellungen</string>  
+    <string name="action_add">Neue Ebene</string> 
+    <string name="action_add_local">Lokale Datei öffnen</string> 
+    <string name="general">Allgemein</string> 
+    <string name="general_summary">Allgemeine Einstellungen</string> 
+    <string name="keep_screen_on">Karte geöffnet lassen</string> 
+    <string name="keep_screen_on_summary">Bildschirm nicht ausschalten</string> 
+    <string name="show_scale_ruler">Maßstab anzeigen</string> 
+    <string name="show_ruler_measuring">Werkzeug zur Längenmessung anzeigen</string> 
+    <string name="show_zoom_controls">Zoom anzeigen</string> 
+    <string name="show_zoom_controls_summary">Zeigt Knopf für das rein-/rauszoomen an</string> 
+    <string name="show_compass">Minikompass anzeigen</string> 
+    <string name="map">Karte</string> 
+    <string name="map_summary">Karteneinstellungen</string> 
+    <string name="app_description">Eine mobiles GIS-Program zur Erfassung von Geodaten und zum aufzeichnen von Tracks. Die Daten können mit auf einem Webserver synchronisiert und gespeichert werden.</string> 
+    <string name="credits_intro">Credits</string> 
+    <string name="credits">Einige Icons, die in dieser App verwendet werden sind von <a href="http://icons8.com/android-icons">Icons8.com</a> lizensiert unter <a href="http://creativecommons.org/licenses/by-nd/3.0/">CC BY-ND 3.0 license</a>, <a href="http://materialdesignicons.com/">materialdesignicons.com</a> und <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a> lizensiert unter <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0 license</a></string>
+
+    <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2012–2016]]></string>
+    <string name="contacts"><a href="http://nextgis.ru/en/contact/">Kontaktiere uns</a></string> 
+    <string name="action_about">Über</string> 
+    <string name="add_current_place">Standort hinzufügen</string> 
+    <string name="add_new_geometry">Neue Geometrie hinzufügen</string> 
+    <string name="add_geometry_by_walk">Neue Geometrie durch Laufen hinzufügen</string>  
+    <string name="warning_no_edit_layers">Keine bearbeitbaren Ebenen</string> 
+    <string name="select_layer">Ebene zum Bearbeiten auswählen</string> 
+    <string name="menu_locate">Standort festellen</string> 
+    <string name="select_file">Datei auswählen um Ebene zu erstellen</string>  
+    <string name="warning_install_file_manager">Bitte installieren Sie einen Dateimanager</string> 
+    <string name="error_file_unsupported">Der Dateityp wird nicht unterstützt</string>
+    <string name="warning_not_implemented">Noch nicht implementiert</string> 
+    <string name="pref_location_accuracy">Positionsgenauigkeit</string> 
+    <string name="pref_location_accuracy_gps">GPS</string>
+    <string name="pref_location_accuracy_cell">Andere Netzwerke</string>
+    <string name="location">Standort</string> 
+    <string name="track_start">Neue Route starten</string> 
+    <string name="track_stop"> Track stoppen</string>
+    <string name="track_restore">Aktuelle Route nach dem Neustart wiederherstellen</string> 
+    <string name="tracks_reload">Aktuelle Route neu starten um Änderungen anzuwenden</string> 
+    <string name="pref_min_time">Minimale Updatedauer</string> 
+    <string name="pref_min_distance">Minimale Updatedistanz</string> 
+    <string name="meters">m</string>
+    <string name="seconds">s</string>
+    <string name="coordinates_format">Koordinatenformatt</string> 
+    <string name="coordinates_fraction_digits">Dezimalstellen</string> 
+    <string name="select_coordinates_format">Koordinatenformat auswählen</string> 
+    <string name="coordinates_format_summary">Koordinaten-Textformat</string> 
+    <string name="map_bg">Kartenhintergrund</string> 
+    <string name="map_bg_light">Hell</string> 
+    <string name="map_bg_neutral">Neutral</string> 
+    <string name="map_bg_dark">Dunkel</string> 
+    <string name="map_path">Datei-Pfad zur Karte</string> 
+    <string name="map_path_summary">Der Datei-Pfad zum Ordner mit den Kartendaten. Das Ändern des Datei-Pfades könnte eine Datenverlust verhindern, falls die App deinstalliert wird. </string> 
+    <string name="select_map_path">Datei-Pfad zur Karte auswählen</string> 
+    <string name="moving">Verschieben...</string> 
+    <string name="warning_map_moving">Gefährlicher Vorgang! Während dem Datentransfer auf keinen Fall die Anwendung abbrechen oder beenden. Ihre Daten könnten sonst beschädigt werden oder verloren gehen.</string> 
+    <string name="warning_folder_should_be_empty">Der Ordner muss leer sein. Vorgang wird abgebrochen.</string> 
+    <string name="frequentest">, so oft wie möglich</string>
+    <string name="compass_vibrate">Vibrate on bezel touch</string> 
+    <string name="compass_true_north">Zeige geographisches Norden</string> 
+    <string name="compass_magnetic">Zeige magnetisches Norden</string> 
+    <string name="compass_keep_screen">Kompass-Anzeige angeschaltet lassen</string> 
+    <string name="accurate_measures_count">Anzahl der GPS Messungen</string> 
+    <string name="action_delete">Löschen</string> 
+    <string name="action_attributes">Eigenschaften</string> 
+    <string name="show_status_panel"> Zeige Infoleiste</string>
+    <string name="show_current_location">Zeige aktuelle Position</string> 
+    <string name="edit_layer">Ebene \'%s\' bearbeiten</string> 
+    <string name="features_count_attributes">%1$d von %2$d</string>
+    <string name="coordinates">Koordinaten</string> 
+    <string name="length">Länge</string> 
+    <string name="center">Zentrum</string> 
+    <string name="area">Fläche</string> 
+    <string name="perimeter">Umfang</string> 
+    <string name="compass_title">Kompass</string> 
+    <string name="refresh">Aktualisieren</string> 
+    <string name="points_for_edit">Punkte (bearbeitbar)</string> 
+    <string name="lines_for_edit">Linien (bearbeitbar)</string> 
+    <string name="polygons_for_edit">Polygone (bearbeitbar)</string> 
+    <string name="press_aback_again">Zum Beenden nochmal "Zurück" drücken</string> 
+    <string name="self_intersection">Selbstüberschneidung festgestellt</string> 
+    <string name="ring_outside">Eines der Löcher ist außerhalb des Umrings</string> 
+    <string name="rings_intersection">Löcher überschneiden sich</string>
+    <string name="interface_title">Interface</string> 
+    <string name="theme">Theme</string>
+    <string name="reset_settings">Auf Standardeinstellungen zurücksetzten</string> 
+    <string name="reset_settings_title">Bestätigen?</string>  
+    <string name="reset_settings_message">Alle Ebenen werden gelöscht! Nur ursprüngliche Ebenen werden wieder hergestellt.</string>
+    <string name="action_point_by_tap">Neuen Punkt erstellen</string> 
+    <string name="new_field">Neues Feld</string> 
+    <string name="empty_name">Name darf nicht leer sein</string> 
+    <string name="same_field_name">Es gibt schon ein Feld mit diesem Namen</string> 
+    <string name="same_layer_name">Es gibt schon einen Ebene mit diesem Namen</string> 
+    <string name="default_field_name">Beschreibung</string> 
+    <string name="pref_sync_notification">Zeige Sync-Benachrichtigung</string> 
+    <string name="tap_to_measure">Klicke auf die Karte um Punkte zu setzen</string> 
+    <string name="permissions">Berechtigungen</string> 
+    <string name="requested_permissions">Diese Anwendung benötigt einige Berechtigungen um gut funktionieren zu können. Die Berechtigungen beinhalten Schreibrechte für externe Speichermedien (z.B. um Daten auf die SD-Karte zu schreiben), Zugang zu Standortdaten und Zugriff auf Kontakte (um Internet-Accounts zu erstellen und zu verwalten)</string> 
+</resources>
