@@ -103,6 +103,7 @@ import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
 import com.nextgis.ngsandroid.MapNativeView;
+import com.nextgis.store.map.MapView;
 
 import java.io.IOException;
 import java.util.List;
@@ -130,6 +131,7 @@ public class MapFragment
     protected MainActivity         mActivity;
     protected MapViewOverlays      mMap;
     protected MapNativeView        mMapNativeView;
+    protected MapView              mMapView;
     protected FloatingActionButton mivZoomIn;
     protected FloatingActionButton mivZoomOut;
     protected FloatingActionButton mRuler;
@@ -200,8 +202,10 @@ public class MapFragment
         mMap = new MapViewOverlays(mActivity, (MapDrawable) mApp.getMap());
         mMap.setId(R.id.map_view);
 
-        mMapNativeView = new MapNativeView(mActivity);
-        mMapNativeView.setId(R.id.map_view_native);
+//        mMapNativeView = new MapNativeView(mActivity);
+//        mMapNativeView.setId(R.id.map_view_native);
+        mMapView = new MapView(mActivity);
+        mMapView.setId(R.id.map_view_native);
 
         mEditLayerOverlay = new EditLayerOverlay(mActivity, mMap);
     }
@@ -648,12 +652,19 @@ public class MapFragment
 //        }
 //        mMap.invalidate();
 
+//        if (mMapRelativeLayout != null) {
+//            mMapRelativeLayout.addView(mMapNativeView, 0, new RelativeLayout.LayoutParams(
+//                    RelativeLayout.LayoutParams.MATCH_PARENT,
+//                    RelativeLayout.LayoutParams.MATCH_PARENT));
+//        }
+//        mMapNativeView.invalidate();
+
         if (mMapRelativeLayout != null) {
-            mMapRelativeLayout.addView(mMapNativeView, 0, new RelativeLayout.LayoutParams(
+            mMapRelativeLayout.addView(mMapView, 0, new RelativeLayout.LayoutParams(
                     RelativeLayout.LayoutParams.MATCH_PARENT,
                     RelativeLayout.LayoutParams.MATCH_PARENT));
         }
-        mMapNativeView.invalidate();
+        mMapView.invalidate();
 
         mMainButton = view.findViewById(R.id.multiple_actions);
         mAddPointButton = (FloatingActionButton) view.findViewById(R.id.add_point_by_tap);
@@ -699,6 +710,12 @@ public class MapFragment
         if (mMapNativeView != null) {
             if (mMapRelativeLayout != null) {
                 mMapRelativeLayout.removeView(mMapNativeView);
+            }
+        }
+
+        if (mMapView != null) {
+            if (mMapRelativeLayout != null) {
+                mMapRelativeLayout.removeView(mMapView);
             }
         }
 
