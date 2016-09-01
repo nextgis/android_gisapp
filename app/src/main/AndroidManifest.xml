@@ -117,7 +117,6 @@
 
         <service
             android:name="com.nextgis.mobile.datasource.SyncService"
-            android:process=":sync"
             >
             <intent-filter>
                 <action
