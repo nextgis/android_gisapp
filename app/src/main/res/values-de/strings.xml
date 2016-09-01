@@ -43,7 +43,7 @@
     <string name="map_summary">Karteneinstellungen</string> 
     <string name="app_description">Eine mobiles GIS-Program zur Erfassung von Geodaten und zum aufzeichnen von Tracks. Die Daten können mit auf einem Webserver synchronisiert und gespeichert werden.</string> 
     <string name="credits_intro">Credits</string> 
-    <string name="credits">Einige Icons, die in dieser App verwendet werden sind von <a href="http://icons8.com/android-icons">Icons8.com</a> lizensiert unter <a href="http://creativecommons.org/licenses/by-nd/3.0/">CC BY-ND 3.0 license</a>, <a href="http://materialdesignicons.com/">materialdesignicons.com</a> und <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a> lizensiert unter <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0 license</a></string>
+    <string name="credits">Einige Icons, die in dieser App verwendet werden sind von <a href="http://icons8.com/android-icons">Icons8.com</a> lizenziert unter <a href="http://creativecommons.org/licenses/by-nd/3.0/">CC BY-ND 3.0 license</a>, <a href="http://materialdesignicons.com/">materialdesignicons.com</a> und <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a> lizenziert unter <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0 license</a></string>
 
     <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2012–2016]]></string>
     <string name="contacts"><a href="http://nextgis.ru/en/contact/">Kontaktiere uns</a></string> 
@@ -53,7 +53,7 @@
     <string name="add_geometry_by_walk">Neue Geometrie durch Laufen hinzufügen</string>  
     <string name="warning_no_edit_layers">Keine bearbeitbaren Ebenen</string> 
     <string name="select_layer">Ebene zum Bearbeiten auswählen</string> 
-    <string name="menu_locate">Standort festellen</string> 
+    <string name="menu_locate">Standort feststellen</string>
     <string name="select_file">Datei auswählen um Ebene zu erstellen</string>  
     <string name="warning_install_file_manager">Bitte installieren Sie einen Dateimanager</string> 
     <string name="error_file_unsupported">Der Dateityp wird nicht unterstützt</string>
@@ -81,7 +81,7 @@
     <string name="map_path">Datei-Pfad zur Karte</string> 
     <string name="map_path_summary">Der Datei-Pfad zum Ordner mit den Kartendaten. Das Ändern des Datei-Pfades könnte eine Datenverlust verhindern, falls die App deinstalliert wird. </string> 
     <string name="select_map_path">Datei-Pfad zur Karte auswählen</string> 
-    <string name="moving">Verschieben...</string> 
+    <string name="moving">Verschieben…</string>
     <string name="warning_map_moving">Gefährlicher Vorgang! Während dem Datentransfer auf keinen Fall die Anwendung abbrechen oder beenden. Ihre Daten könnten sonst beschädigt werden oder verloren gehen.</string> 
     <string name="warning_folder_should_be_empty">Der Ordner muss leer sein. Vorgang wird abgebrochen.</string> 
     <string name="frequentest">, so oft wie möglich</string>
