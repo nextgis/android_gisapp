@@ -102,7 +102,6 @@ import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
-import com.nextgis.ngsandroid.MapNativeView;
 import com.nextgis.store.map.MapView;
 
 import java.io.IOException;
@@ -130,7 +129,6 @@ public class MapFragment
     protected MainApplication      mApp;
     protected MainActivity         mActivity;
     protected MapViewOverlays      mMap;
-    protected MapNativeView        mMapNativeView;
     protected MapView              mMapView;
     protected FloatingActionButton mivZoomIn;
     protected FloatingActionButton mivZoomOut;
@@ -202,8 +200,6 @@ public class MapFragment
         mMap = new MapViewOverlays(mActivity, (MapDrawable) mApp.getMap());
         mMap.setId(R.id.map_view);
 
-//        mMapNativeView = new MapNativeView(mActivity);
-//        mMapNativeView.setId(R.id.map_view_native);
         mMapView = new MapView(mActivity);
         mMapView.setId(R.id.map_view_native);
 
@@ -652,13 +648,6 @@ public class MapFragment
 //        }
 //        mMap.invalidate();
 
-//        if (mMapRelativeLayout != null) {
-//            mMapRelativeLayout.addView(mMapNativeView, 0, new RelativeLayout.LayoutParams(
-//                    RelativeLayout.LayoutParams.MATCH_PARENT,
-//                    RelativeLayout.LayoutParams.MATCH_PARENT));
-//        }
-//        mMapNativeView.invalidate();
-
         if (mMapRelativeLayout != null) {
             mMapRelativeLayout.addView(mMapView, 0, new RelativeLayout.LayoutParams(
                     RelativeLayout.LayoutParams.MATCH_PARENT,
@@ -704,12 +693,6 @@ public class MapFragment
             mMap.removeListener(this);
             if (mMapRelativeLayout != null) {
                 mMapRelativeLayout.removeView(mMap);
-            }
-        }
-
-        if (mMapNativeView != null) {
-            if (mMapRelativeLayout != null) {
-                mMapRelativeLayout.removeView(mMapNativeView);
             }
         }
 
