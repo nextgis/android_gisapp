@@ -45,6 +45,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.keenfin.easypicker.PhotoPicker;
 import com.nextgis.maplib.api.IGISApplication;
@@ -117,8 +118,11 @@ public class AttributesFragment
             ViewGroup container,
             Bundle savedInstanceState)
     {
-        if (mLayer == null)
+        if (mLayer == null) {
             getActivity().getSupportFragmentManager().popBackStack();
+            Toast.makeText(getContext(), R.string.error_layer_not_inited, Toast.LENGTH_SHORT).show();
+            return null;
+        }
 
         getActivity().setTitle(mLayer.getName());
         setHasOptionsMenu(!isTablet());
