@@ -610,12 +610,13 @@ public class MapFragment
         mSelectedLayer.hideFeature(selectedFeatureId);
         mEditLayerOverlay.setSelectedFeature(null);
         defineMenuItems();
+        final VectorLayer layer = mSelectedLayer;
 
         Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.mainview), getActivity().getString(R.string.delete_item_done), Snackbar.LENGTH_LONG)
                 .setAction(R.string.undo, new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mSelectedLayer.showFeature(selectedFeatureId);
+                        layer.showFeature(selectedFeatureId);
                         mEditLayerOverlay.setSelectedFeature(selectedFeatureId);
                         defineMenuItems();
                     }
@@ -627,7 +628,7 @@ public class MapFragment
                         if (event == DISMISS_EVENT_MANUAL)
                             return;
                         if (event != DISMISS_EVENT_ACTION)
-                            mSelectedLayer.deleteAddChanges(selectedFeatureId);
+                            layer.deleteAddChanges(selectedFeatureId);
                     }
 
                     @Override
