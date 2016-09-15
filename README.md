@@ -7,6 +7,8 @@ GIS application for Android. Current version 2.4 is available in [Google Play](h
 
 The v.1.x versions can be found [here](https://github.com/nextgis/nextgismobile/releases)
 
+Official homepage: http://nextgis.com/nextgis-mobile
+
 Build status
 ============
 
