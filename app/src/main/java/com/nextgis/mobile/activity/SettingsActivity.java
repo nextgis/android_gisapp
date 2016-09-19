@@ -30,8 +30,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -46,6 +44,7 @@ import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.maplibui.activity.NGPreferenceActivity;
+import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
@@ -613,7 +612,7 @@ public class SettingsActivity
         protected void onPreExecute()
         {
             //not good solution but rare used so let it be
-            lockScreenOrientation();
+            ControlHelper.lockScreenOrientation(mActivity);
             mProgressDialog = ProgressDialog.show(
                     mActivity, mActivity.getString(R.string.moving),
                     mActivity.getString(R.string.warning_map_moving), true);
@@ -627,24 +626,7 @@ public class SettingsActivity
         protected void onPostExecute(Void aVoid)
         {
             mProgressDialog.dismiss();
-            unlockScreenOrientation();
-        }
-
-
-        protected void lockScreenOrientation()
-        {
-            int currentOrientation = mActivity.getResources().getConfiguration().orientation;
-            if (currentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-                mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-            } else {
-                mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-            }
-        }
-
-
-        protected void unlockScreenOrientation()
-        {
-            mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+            ControlHelper.unlockScreenOrientation(mActivity);
         }
     }
 }
