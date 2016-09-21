@@ -23,11 +23,13 @@
 
 package com.nextgis.mobile.fragment;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -80,6 +82,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.nextgis.maplib.util.GeoConstants.CRS_WEB_MERCATOR;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
@@ -97,6 +101,7 @@ import static com.nextgis.maplib.util.GeoConstants.GTPolygon;
 public class AttributesFragment
         extends Fragment
 {
+    protected static final String URL_PATTERN = "^(?i)(https?://)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?$";
     protected static final String KEY_ITEM_ID       = "item_id";
     protected static final String KEY_ITEM_POSITION = "item_pos";
 
@@ -146,7 +151,7 @@ public class AttributesFragment
         }
 
         mAttributes = (LinearLayout) view.findViewById(R.id.ll_attributes);
-        setAttributes();
+//        setAttributes();
 
         return view;
     }
@@ -316,7 +321,14 @@ public class AttributesFragment
                         text = formatDateTime(attributes.getLong(i), fieldType);
                         break;
                     default:
-                        text = attributes.getString(i);
+                        text = toString(attributes.getString(i));
+                        Pattern pattern = Pattern.compile(URL_PATTERN);
+                        Matcher match = pattern.matcher(text);
+                        while (match.matches()) {
+                            String url = text.substring(match.start(), match.end());
+                            text = text.replaceFirst(URL_PATTERN, "<a href = '" + url + "'>" + url + "</a>");
+                            match = pattern.matcher(text.substring(match.start() + url.length() * 2 + 17));
+                        }
                         break;
                 }
 
@@ -333,6 +345,10 @@ public class AttributesFragment
                 @Override
                 public void onPageFinished(WebView view, String url) {
                     webView.setBackgroundColor(Color.TRANSPARENT);
+                }
+                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                    view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                    return true;
                 }
             });
 
@@ -360,9 +376,14 @@ public class AttributesFragment
 
 
     protected String getRow(String column, String text) {
-        column = column == null ? "" : Html.fromHtml(column).toString();
-        text = text == null ? "" : Html.fromHtml(text).toString();
+        column = column == null ? "" : toString(column);
+        text = text == null ? "" : text;
         return String.format("<tr><td>%s</td><td>%s</td></tr><tr>", column, text);
+    }
+
+
+    protected String toString(String text) {
+        return text == null ? "" : Html.fromHtml(text).toString();
     }
 
 
@@ -468,7 +489,7 @@ public class AttributesFragment
             mItemPosition = savedInstanceState.getInt(KEY_ITEM_POSITION);
         }
 
-        setAttributes();
+//        setAttributes();
     }
 
 
