@@ -32,8 +32,8 @@
     <string name="action_add_local">Otevřít lokální soubor</string>
     <string name="general">Obecné</string>
     <string name="general_summary">Obecná nastavení</string>
-    <string name="keep_screen_on">Nevypínat mapu</string>
-    <string name="keep_screen_on_summary">Nevypínat zařízení, pokud je aplikace spuštěná</string>
+    <string name="keep_screen_on">Nezhasínat obrazovku</string>
+    <string name="keep_screen_on_summary">Nezhasínat obrazovku, pokud je aplikace spuštěná</string>
     <string name="show_scale_ruler">Zobrazit měřítko</string>
     <string name="show_ruler_measuring">Zobrazit nástroj pro měření</string>
     <string name="show_zoom_controls">Zobrazit nástroj pro přiblížení</string>
