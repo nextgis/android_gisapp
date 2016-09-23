@@ -37,6 +37,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.text.Html;
 import android.util.DisplayMetrics;
+import android.util.Patterns;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -101,7 +102,11 @@ import static com.nextgis.maplib.util.GeoConstants.GTPolygon;
 public class AttributesFragment
         extends Fragment
 {
-    protected static final String URL_PATTERN = "^(?i)(https?://)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?$";
+    protected static final String IP_ADDRESS = "((25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\\.(25[0-5]|2[0-4]"
+            + "[0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(25[0-5]|2[0-4][0-9]|[0-1]"
+            + "[0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}"
+            + "|[1-9][0-9]|[0-9]))";
+    protected static final String URL_PATTERN = "^(?i)(https?://)?(([\\da-z\\.-]+)\\.([a-z\\.]{2,6})|" + IP_ADDRESS + ")([\\/\\w\\,\\s \\.-]*)*\\/?$";
     protected static final String KEY_ITEM_ID       = "item_id";
     protected static final String KEY_ITEM_POSITION = "item_pos";
 
@@ -324,6 +329,7 @@ public class AttributesFragment
                         text = toString(attributes.getString(i));
                         Pattern pattern = Pattern.compile(URL_PATTERN);
                         Matcher match = pattern.matcher(text);
+//                        while (Patterns.IP_ADDRESS)
                         while (match.matches()) {
                             String url = text.substring(match.start(), match.end());
                             text = text.replaceFirst(URL_PATTERN, "<a href = '" + url + "'>" + url + "</a>");
