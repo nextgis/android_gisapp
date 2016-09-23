@@ -73,7 +73,7 @@
     <string name="coordinates_fraction_digits">Desetinné stupně</string>
     <string name="select_coordinates_format">Vyberte formát souřadnic</string>
     <string name="coordinates_format_summary">Textový formát souřadnic</string>
-    <string name="map_bg">POzadí mapy</string>
+    <string name="map_bg">Pozadí mapy</string>
     <string name="map_bg_light">Světlé</string>
     <string name="map_bg_neutral">Neutrální</string>
     <string name="map_bg_dark">Tmavé</string>
