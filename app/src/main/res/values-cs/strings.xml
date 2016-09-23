@@ -93,7 +93,7 @@
     <string name="action_attributes">Atributy</string>
     <string name="show_status_panel">Zobrazit status</string>
     <string name="show_current_location">Zobrazit aktuální pozici</string>
-    <string name="edit_layer">UEditovat vrstvu \'%s\'</string>
+    <string name="edit_layer">Editovat vrstvu \'%s\'</string>
     <string name="features_count_attributes">%1$d z %2$d</string>
     <string name="coordinates">Souřadnice</string>
     <string name="length">Délka</string>
