@@ -32,8 +32,8 @@
     <string name="action_add_local">Otevřít lokální soubor</string>
     <string name="general">Obecné</string>
     <string name="general_summary">Obecná nastavení</string>
-    <string name="keep_screen_on">Nevypínat mapu</string>
-    <string name="keep_screen_on_summary">Nevypínat zařízení, pokud je aplikace spuštěná</string>
+    <string name="keep_screen_on">Nezhasínat obrazovku</string>
+    <string name="keep_screen_on_summary">Nezhasínat obrazovku, pokud je aplikace spuštěná</string>
     <string name="show_scale_ruler">Zobrazit měřítko</string>
     <string name="show_ruler_measuring">Zobrazit nástroj pro měření</string>
     <string name="show_zoom_controls">Zobrazit nástroj pro přiblížení</string>
@@ -73,7 +73,7 @@
     <string name="coordinates_fraction_digits">Desetinné stupně</string>
     <string name="select_coordinates_format">Vyberte formát souřadnic</string>
     <string name="coordinates_format_summary">Textový formát souřadnic</string>
-    <string name="map_bg">POzadí mapy</string>
+    <string name="map_bg">Pozadí mapy</string>
     <string name="map_bg_light">Světlé</string>
     <string name="map_bg_neutral">Neutrální</string>
     <string name="map_bg_dark">Tmavé</string>
@@ -93,7 +93,7 @@
     <string name="action_attributes">Atributy</string>
     <string name="show_status_panel">Zobrazit status</string>
     <string name="show_current_location">Zobrazit aktuální pozici</string>
-    <string name="edit_layer">UEditovat vrstvu \'%s\'</string>
+    <string name="edit_layer">Editovat vrstvu \'%s\'</string>
     <string name="features_count_attributes">%1$d z %2$d</string>
     <string name="coordinates">Souřadnice</string>
     <string name="length">Délka</string>
