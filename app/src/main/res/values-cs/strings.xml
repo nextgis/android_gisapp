@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Project:  NextGIS Mobile
+  ~ Purpose:  Mobile GIS for Android.
+  ~ Author:   Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
+  ~ Author:   NikitaFeodonit, nfeodonit@yandex.com
+  ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
+  ~ ******************************************************************************
+  ~ Copyright (c) 2012-2016 NextGIS, info@nextgis.com
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+
+    <string name="app_name">NextGIS Mobile</string>
+    <string name="navigation_drawer_open">Otevřít nabídku</string>
+    <string name="navigation_drawer_close">Zavřít nabídku</string>
+    <string name="action_settings">Nastavení</string>
+    <string name="action_add">Nová vrstva</string>
+    <string name="action_add_local">Otevřít lokální soubor</string>
+    <string name="general">Obecné</string>
+    <string name="general_summary">Obecná nastavení</string>
+    <string name="keep_screen_on">Nezhasínat obrazovku</string>
+    <string name="keep_screen_on_summary">Nezhasínat obrazovku, pokud je aplikace spuštěná</string>
+    <string name="show_scale_ruler">Zobrazit měřítko</string>
+    <string name="show_ruler_measuring">Zobrazit nástroj pro měření</string>
+    <string name="show_zoom_controls">Zobrazit nástroj pro přiblížení</string>
+    <string name="show_zoom_controls_summary">Zobrazit nástroj pro přiblížení a oddálení mapy</string>
+    <string name="show_compass">Zobrazit kompas</string>
+    <string name="map">Mapa</string>
+    <string name="map_summary">Nastavení mapy</string>
+    <string name="app_description">Mobilní GIS aplikace pro terénní sběr dat. Aplikace také sleduje polohu a odesílá ji na server.</string>
+    <string name="credits_intro">Poděkování</string>
+    <string name="credits">Některé ikony použité v aplikaci pocházejí z <a href="http://icons8.com/android-icons">Icons8.com</a> (licence<a href="http://creativecommons.org/licenses/by-nd/3.0/">CC BY-ND 3.0</a>), <a href="http://materialdesignicons.com/">materialdesignicons.com</a> and <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a> (licence <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>)</string>
+    <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2012–2016]]></string>
+    <string name="contacts"><a href="http://nextgis.ru/en/contact/">Kontaktujte nás</a></string>
+    <string name="action_about">O aplikaci</string>
+    <string name="add_current_place">Přidejte současnou polohu</string>
+    <string name="add_new_geometry">Přidejte kresbu</string>
+    <string name="add_geometry_by_walk">Přidejte kresbu za chůze</string>
+    <string name="warning_no_edit_layers">Žádné editovatelné vrstvy</string>
+    <string name="select_layer">Vyverte vrstvu pro editaci</string>
+    <string name="menu_locate">Lokalizujte</string>
+    <string name="select_file">Vyberte soubor</string>
+    <string name="warning_install_file_manager">Instalujte prosím správce souborů</string>
+    <string name="error_file_unsupported">Typ souboru není podporován</string>
+    <string name="warning_not_implemented">Dosud není implementováno</string>
+    <string name="pref_location_accuracy">Přesnost lokalizace</string>
+    <string name="pref_location_accuracy_gps">GPS</string>
+    <string name="pref_location_accuracy_cell">Další sítě</string>
+    <string name="location">Umístění</string>
+    <string name="track_start">Zahájit trasování</string>
+    <string name="track_stop">Zastavit trasování</string>
+    <string name="track_restore">Obnovit současnou trasu po restartu</string>
+    <string name="tracks_reload">Restartujte trasu, aby se projevily změny</string>
+    <string name="pref_min_time">Minimální čas mezi záznamy</string>
+    <string name="pref_min_distance">MInimální vzdálenost mezi záznamy</string>
+    <string name="meters">m</string>
+    <string name="seconds">s</string>
+    <string name="coordinates_format">Formát souřadnic</string>
+    <string name="coordinates_fraction_digits">Desetinné stupně</string>
+    <string name="select_coordinates_format">Vyberte formát souřadnic</string>
+    <string name="coordinates_format_summary">Textový formát souřadnic</string>
+    <string name="map_bg">Pozadí mapy</string>
+    <string name="map_bg_light">Světlé</string>
+    <string name="map_bg_neutral">Neutrální</string>
+    <string name="map_bg_dark">Tmavé</string>
+    <string name="map_path">Cesta k mapě</string>
+    <string name="map_path_summary">Cesta k adresáři mapy. Změnou cesty k adresáři mapy můžete předejít ztrátě dat při odinstalování aplikace.</string>
+    <string name="select_map_path">Vyberte cestu k adresáři mapy</string>
+    <string name="moving">Přesouvání…</string>
+    <string name="warning_map_moving">Nebezpečná operace! Nezavírejte ani nezastavujte aplikaci během přesunu dat na nové místo, jinak mohou být vaše data poškozena nebo ztracena!</string>
+    <string name="warning_folder_should_be_empty">Adresář musí být prázdný. Zrušení operace.</string>
+    <string name="frequentest">, tak často, jak je možné.</string>
+    <string name="compass_vibrate">Vibrovat při dotyku</string>
+    <string name="compass_true_north">Ukázat pravý sever</string>
+    <string name="compass_magnetic">Ukázat magnetický sever</string>
+    <string name="compass_keep_screen">Nezavírat obrazovku s kompasem</string>
+    <string name="accurate_measures_count">Počet GPS měření</string>
+    <string name="action_delete">Smazat</string>
+    <string name="action_attributes">Atributy</string>
+    <string name="show_status_panel">Zobrazit status</string>
+    <string name="show_current_location">Zobrazit aktuální pozici</string>
+    <string name="edit_layer">Editovat vrstvu \'%s\'</string>
+    <string name="features_count_attributes">%1$d z %2$d</string>
+    <string name="coordinates">Souřadnice</string>
+    <string name="length">Délka</string>
+    <string name="center">Střed</string>
+    <string name="area">Plocha</string>
+    <string name="perimeter">Obvod</string>
+    <string name="compass_title">Kompas</string>
+    <string name="refresh">Obnovit</string>
+    <string name="points_for_edit">Body (možné editovat)</string>
+    <string name="lines_for_edit">Linie (možné editovat)</string>
+    <string name="polygons_for_edit">Polygony (možné editovat)</string>
+    <string name="press_aback_again">Pro ukončení stiskněte znovu Zpět</string>
+    <string name="self_intersection">Nalezeno překřížení</string>
+    <string name="ring_outside">Některá díra je mimo původní polygon</string>
+    <string name="rings_intersection">Rřekřížení děr</string>
+    <string name="interface_title">Rozhraní</string>
+    <string name="theme">Téma</string>
+    <string name="reset_settings">Obnovit původní nastavení</string>
+    <string name="reset_settings_title">Potvrdit?</string>
+    <string name="reset_settings_message">Všechny vrstvy budou smazány! Pouze výchozí vrstvy budou obnoveny.</string>
+    <string name="action_point_by_tap">Vytvořit nový bod</string>
+    <string name="new_field">Nové pole</string>
+    <string name="empty_name">Název nemůže být prázdný</string>
+    <string name="same_field_name">Pole se stejným názvem již existuje</string>
+    <string name="same_layer_name">Vrstva se stejným názvem již existuje</string>
+    <string name="default_field_name">Popis</string>
+    <string name="pref_sync_notification">Zobrazit upozornění na synchronizaci</string>
+    <string name="tap_to_measure">Klepněte na mapu pro kontrolu bodů</string>
+    <string name="permissions">Oprávnění</string>
+    <string name="requested_permissions">Aplikace pro správnou činnost potřebuje určitá oprávnění. Ta zahrnují: zápis na externí úložiště (pro uložení dat na SD kartu), přístup k zjištění polohy a přístup ke kontaktům (pro vytvoření a správu webového účtu).</string>
+</resources>
