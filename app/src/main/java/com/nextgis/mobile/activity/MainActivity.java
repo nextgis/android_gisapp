@@ -48,6 +48,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ProgressBar;
@@ -64,6 +65,7 @@ import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.FileUtil;
+import com.nextgis.maplib.util.NGWUtil;
 import com.nextgis.maplibui.activity.NGActivity;
 import com.nextgis.maplibui.api.IChooseLayerResult;
 import com.nextgis.maplibui.api.IVectorLayerUI;
@@ -454,7 +456,8 @@ public class MainActivity extends NGActivity
             ILayer layer = map.getLayer(i);
             if (layer instanceof NGWVectorLayer) {
                 ngwVectorLayer = (NGWVectorLayer) layer;
-                ngwVectorLayer.sync(application.getAuthority(), new SyncResult());
+                Pair<Integer, Integer> ver = NGWUtil.getNgwVersion(this, ngwVectorLayer.getAccountName());
+                ngwVectorLayer.sync(application.getAuthority(), ver, new SyncResult());
             }
         }
     }
