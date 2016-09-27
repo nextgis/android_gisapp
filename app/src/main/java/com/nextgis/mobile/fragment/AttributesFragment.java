@@ -37,7 +37,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.text.Html;
 import android.util.DisplayMetrics;
-import android.util.Patterns;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -156,8 +155,6 @@ public class AttributesFragment
         }
 
         mAttributes = (LinearLayout) view.findViewById(R.id.ll_attributes);
-//        setAttributes();
-
         return view;
     }
 
@@ -238,10 +235,50 @@ public class AttributesFragment
         ((MainActivity) activity).setSubtitle(String.format(getString(R.string.features_count_attributes), mItemPosition + 1, mFeatureIDs.size()));
         checkNearbyItems();
 
+        try {
+            data = parseAttributes(data);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
+
+        data += "</tbody></table></body></html>";
+        webView.loadDataWithBaseURL(null, data, "text/html", "UTF-8", null);
+        mAttributes.addView(webView);
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                webView.setBackgroundColor(Color.TRANSPARENT);
+            }
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                return true;
+            }
+        });
+
+        IGISApplication app = (GISApplication) getActivity().getApplication();
+        final Map<String, Integer> mAttaches = new HashMap<>();
+        PhotoGallery.getAttaches(app, mLayer, mItemId, mAttaches, false);
+
+        if (mAttaches.size() > 0) {
+            final PhotoPicker gallery = new PhotoPicker(getActivity(), true);
+            int px = ControlHelper.dpToPx(16, getResources());
+            gallery.setPadding(px, 0, px, 0);
+            gallery.post(new Runnable() {
+                @Override
+                public void run() {
+                    gallery.restoreImages(new ArrayList<>(mAttaches.keySet()));
+                }
+            });
+
+            mAttributes.addView(gallery);
+        }
+    }
+
+    private String parseAttributes(String data) throws RuntimeException {
         String selection = Constants.FIELD_ID + " = ?";
         Cursor attributes = mLayer.query(null, selection, new String[]{mItemId + ""}, null, null);
         if (null == attributes || attributes.getCount() == 0)
-            return;
+            return data;
 
         if (attributes.moveToFirst()) {
             for (int i = 0; i < attributes.getColumnCount(); i++) {
@@ -329,7 +366,6 @@ public class AttributesFragment
                         text = toString(attributes.getString(i));
                         Pattern pattern = Pattern.compile(URL_PATTERN);
                         Matcher match = pattern.matcher(text);
-//                        while (Patterns.IP_ADDRESS)
                         while (match.matches()) {
                             String url = text.substring(match.start(), match.end());
                             text = text.replaceFirst(URL_PATTERN, "<a href = '" + url + "'>" + url + "</a>");
@@ -343,41 +379,10 @@ public class AttributesFragment
 
                 data += getRow(field != null ? field.getAlias() : "", text);
             }
-
-            data += "</tbody></table></body></html>";
-            webView.loadDataWithBaseURL(null, data, "text/html", "UTF-8", null);
-            mAttributes.addView(webView);
-            webView.setWebViewClient(new WebViewClient() {
-                @Override
-                public void onPageFinished(WebView view, String url) {
-                    webView.setBackgroundColor(Color.TRANSPARENT);
-                }
-                public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                    view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-                    return true;
-                }
-            });
-
-            IGISApplication app = (GISApplication) getActivity().getApplication();
-            final Map<String, Integer> mAttaches = new HashMap<>();
-            PhotoGallery.getAttaches(app, mLayer, mItemId, mAttaches, false);
-
-            if (mAttaches.size() > 0) {
-                final PhotoPicker gallery = new PhotoPicker(getActivity(), true);
-                int px = ControlHelper.dpToPx(16, getResources());
-                gallery.setPadding(px, 0, px, 0);
-                gallery.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        gallery.restoreImages(new ArrayList<>(mAttaches.keySet()));
-                    }
-                });
-
-                mAttributes.addView(gallery);
-            }
         }
 
         attributes.close();
+        return data;
     }
 
 
@@ -494,8 +499,6 @@ public class AttributesFragment
             mItemId = savedInstanceState.getLong(KEY_ITEM_ID);
             mItemPosition = savedInstanceState.getInt(KEY_ITEM_POSITION);
         }
-
-//        setAttributes();
     }
 
 
