@@ -241,7 +241,7 @@ public class MainApplication extends GISApplication
                 public void run() {
                     try {
                         layer.fillFromZip(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.mapnik), null);
-                    } catch (IOException | NGException e) {
+                    } catch (IOException | NGException | RuntimeException e) {
                         e.printStackTrace();
                     }
                 }
