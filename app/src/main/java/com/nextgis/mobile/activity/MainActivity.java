@@ -347,6 +347,9 @@ public class MainActivity extends NGActivity
     }
 
     protected void stopRefresh(final MenuItem refreshItem) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB)
+            return;
+
         Handler handler = new Handler(Looper.getMainLooper());
         final Runnable r = new Runnable() {
             @TargetApi(Build.VERSION_CODES.HONEYCOMB)
