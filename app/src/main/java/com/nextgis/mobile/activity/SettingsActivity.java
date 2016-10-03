@@ -30,6 +30,8 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteException;
+import android.database.sqlite.SQLiteFullException;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -42,6 +44,7 @@ import android.widget.Toast;
 
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.map.MapBase;
+import com.nextgis.maplib.map.MapContentProviderHelper;
 import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.maplibui.activity.NGPreferenceActivity;
 import com.nextgis.maplibui.util.ControlHelper;
@@ -520,6 +523,12 @@ public class SettingsActivity
                     && !layer.getPath().getName().equals(MainApplication.LAYER_C)
                     && !layer.getPath().getName().equals(MainApplication.LAYER_TRACKS))
                 layer.delete();
+        }
+
+        try {
+            ((MapContentProviderHelper) MapBase.getInstance()).getDatabase(false).execSQL("VACUUM");
+        } catch (SQLiteException e) {
+            e.printStackTrace();
         }
     }
 
