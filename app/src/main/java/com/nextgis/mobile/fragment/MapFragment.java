@@ -159,6 +159,7 @@ public class MapFragment
     public static final int MODE_EDIT          = 2;
     public static final int MODE_INFO          = 3;
     public static final int MODE_EDIT_BY_WALK  = 4;
+    public static final int MODE_EDIT_BY_TOUCH = 5;
 
     protected static final String KEY_MODE = "mode";
     protected static final String BUNDLE_KEY_LAYER = "layer";
@@ -209,7 +210,7 @@ public class MapFragment
     }
 
     public boolean isEditMode() {
-        return mMode == MODE_EDIT || mMode == MODE_EDIT_BY_WALK;
+        return mMode == MODE_EDIT || mMode == MODE_EDIT_BY_WALK || mMode == MODE_EDIT_BY_TOUCH;
     }
 
     public int getMode() {
@@ -221,8 +222,15 @@ public class MapFragment
             case android.R.id.home:
                 cancelEdits();
                 return true;
+            case 0:
+                mMap.setLockMap(false);
+                setMode(MODE_EDIT);
+                return true;
             case R.id.menu_edit_by_walk:
                 setMode(MODE_EDIT_BY_WALK);
+                return mEditLayerOverlay.onOptionsItemSelected(id);
+            case R.id.menu_edit_by_touch:
+                setMode(MODE_EDIT_BY_TOUCH);
             default:
                 return mEditLayerOverlay.onOptionsItemSelected(id);
         }
@@ -242,9 +250,16 @@ public class MapFragment
         if (!isGeometryValid(geometry))
             return false;
 
+        mMap.setLockMap(false);
         mEditLayerOverlay.setHasEdits(false);
         if (mMode == MODE_EDIT_BY_WALK) {
             mEditLayerOverlay.stopGeometryByWalk();
+            setMode(MODE_EDIT);
+            mEditLayerOverlay.clearHistory();
+            mEditLayerOverlay.defineUndoRedo();
+        }
+
+        if (mMode == MODE_EDIT_BY_TOUCH) {
             setMode(MODE_EDIT);
             mEditLayerOverlay.clearHistory();
             mEditLayerOverlay.defineUndoRedo();
@@ -454,6 +469,11 @@ public class MapFragment
                 mSelectedLayer.setLocked(true);
                 mActivity.showEditToolbar();
                 mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT_BY_WALK);
+                break;
+            case MODE_EDIT_BY_TOUCH:
+                mSelectedLayer.setLocked(true);
+                mActivity.showEditToolbar();
+                mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT_BY_TOUCH);
                 break;
             case MODE_SELECT_ACTION:
                 if (mSelectedLayer == null) {
