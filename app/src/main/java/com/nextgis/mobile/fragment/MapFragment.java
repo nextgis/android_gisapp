@@ -294,8 +294,10 @@ public class MapFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (mMode == MODE_INFO || resultCode != Activity.RESULT_OK)
+        if (mMode == MODE_INFO || resultCode != Activity.RESULT_OK) {
+            mEditLayerOverlay.setHasEdits(true);
             return;
+        }
 
         if (requestCode == IVectorLayerUI.MODIFY_REQUEST && data != null) {
             long id = data.getLongExtra(ConstantsUI.KEY_FEATURE_ID, NOT_FOUND);
