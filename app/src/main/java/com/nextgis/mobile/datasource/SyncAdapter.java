@@ -58,7 +58,7 @@ public class SyncAdapter extends com.nextgis.maplib.datasource.ngw.SyncAdapter {
         if (isCanceled())
             sendNotification(getContext(), SYNC_CANCELED, null);
         else if (syncResult.hasError())
-            sendNotification(getContext(), SYNC_CHANGES, syncResult.toString());
+            sendNotification(getContext(), SYNC_CHANGES, mError);
         else
             sendNotification(getContext(), SYNC_FINISH, null);
     }
@@ -114,7 +114,7 @@ public class SyncAdapter extends com.nextgis.maplib.datasource.ngw.SyncAdapter {
                 largeIcon = NotificationHelper.getLargeIcon(R.drawable.ic_action_warning_dark, context.getResources());
                 builder.setProgress(0, 0, false)
                         .setTicker(context.getString(com.nextgis.maplib.R.string.sync_error))
-                        .setContentTitle(context.getString(com.nextgis.maplib.R.string.sync_error))
+                        .setContentTitle(context.getString(com.nextgis.maplib.R.string.synchronization))
                         .setContentText(message);
                 break;
         }

@@ -52,6 +52,7 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
@@ -478,8 +479,10 @@ public class LayersFragment
         {
             if (intent.getAction().equals(SyncAdapter.SYNC_START)) {
                 refresh(true);
-            } else if (intent.getAction().equals(SyncAdapter.SYNC_FINISH) ||
-                    intent.getAction().equals(SyncAdapter.SYNC_CANCELED)) {
+            } else if (intent.getAction().equals(SyncAdapter.SYNC_FINISH) || intent.getAction().equals(SyncAdapter.SYNC_CANCELED)) {
+                if (intent.hasExtra(SyncAdapter.EXCEPTION))
+                    Toast.makeText(getContext(), intent.getStringExtra(SyncAdapter.EXCEPTION), Toast.LENGTH_LONG).show();
+
                 refresh(false);
                 updateInfo();
             }
