@@ -94,6 +94,7 @@ import com.nextgis.maplibui.overlay.CurrentLocationOverlay;
 import com.nextgis.maplibui.overlay.CurrentTrackOverlay;
 import com.nextgis.maplibui.overlay.EditLayerOverlay;
 import com.nextgis.maplibui.overlay.RulerOverlay;
+import com.nextgis.maplibui.overlay.UndoRedoOverlay;
 import com.nextgis.maplibui.service.WalkEditService;
 import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.maplibui.util.ControlHelper;
@@ -146,6 +147,7 @@ public class MapFragment
     protected CurrentLocationOverlay mCurrentLocationOverlay;
     protected CurrentTrackOverlay    mCurrentTrackOverlay;
     protected EditLayerOverlay       mEditLayerOverlay;
+    protected UndoRedoOverlay        mUndoRedoOverlay;
     protected RulerOverlay           mRulerOverlay;
     protected GeoPoint               mCurrentCenter;
     protected VectorLayer            mSelectedLayer;
@@ -174,6 +176,7 @@ public class MapFragment
     public static final int EDIT_LAYER          = 2;
     protected final int ADD_GEOMETRY_BY_WALK    = 3;
     protected final int ADD_POINT_BY_TAP        = 4;
+    private boolean mNeedSave = false;
 
     public interface onModeChange {
         void onModeChangeListener();
@@ -209,6 +212,10 @@ public class MapFragment
         return mEditLayerOverlay;
     }
 
+    public UndoRedoOverlay getUndoRedoOverlay() {
+        return mUndoRedoOverlay;
+    }
+
     public boolean isEditMode() {
         return mMode == MODE_EDIT || mMode == MODE_EDIT_BY_WALK || mMode == MODE_EDIT_BY_TOUCH;
     }
@@ -218,6 +225,7 @@ public class MapFragment
     }
 
     public boolean onOptionsItemSelected(int id) {
+        boolean result;
         switch (id) {
             case android.R.id.home:
                 cancelEdits();
@@ -226,13 +234,38 @@ public class MapFragment
                 mMap.setLockMap(false);
                 setMode(MODE_EDIT);
                 return true;
-            case R.id.menu_edit_by_walk:
-                setMode(MODE_EDIT_BY_WALK);
-                return mEditLayerOverlay.onOptionsItemSelected(id);
             case R.id.menu_edit_by_touch:
                 setMode(MODE_EDIT_BY_TOUCH);
+                result = mEditLayerOverlay.onOptionsItemSelected(id);
+                if (result)
+                    mUndoRedoOverlay.saveToHistory(mEditLayerOverlay.getSelectedFeature());
+                return result;
+            case R.id.menu_edit_undo:
+            case R.id.menu_edit_redo:
+                result = mUndoRedoOverlay.onOptionsItemSelected(id);
+                if (result) {
+                    Feature undoRedoFeature = mUndoRedoOverlay.getFeature();
+                    Feature feature = mEditLayerOverlay.getSelectedFeature();
+                    feature.setGeometry(undoRedoFeature.getGeometry());
+                    mEditLayerOverlay.fillDrawItems(undoRedoFeature .getGeometry());
+
+                    GeoGeometry original = mSelectedLayer.getGeometryForId(feature.getId());
+                    boolean hasEdits = original != null && undoRedoFeature.getGeometry().equals(original);
+
+                    mEditLayerOverlay.setHasEdits(!hasEdits);
+
+                    mMap.buffer();
+                    mMap.postInvalidate();
+                }
+
+                return result;
+            case R.id.menu_edit_by_walk:
+                setMode(MODE_EDIT_BY_WALK);
             default:
-                return mEditLayerOverlay.onOptionsItemSelected(id);
+                result = mEditLayerOverlay.onOptionsItemSelected(id);
+                if (result)
+                    mUndoRedoOverlay.saveToHistory(mEditLayerOverlay.getSelectedFeature());
+                return result;
         }
     }
 
@@ -255,14 +288,14 @@ public class MapFragment
         if (mMode == MODE_EDIT_BY_WALK) {
             mEditLayerOverlay.stopGeometryByWalk();
             setMode(MODE_EDIT);
-            mEditLayerOverlay.clearHistory();
-            mEditLayerOverlay.defineUndoRedo();
+            mUndoRedoOverlay.clearHistory();
+            mUndoRedoOverlay.defineUndoRedo();
         }
 
         if (mMode == MODE_EDIT_BY_TOUCH) {
             setMode(MODE_EDIT);
-            mEditLayerOverlay.clearHistory();
-            mEditLayerOverlay.defineUndoRedo();
+            mUndoRedoOverlay.clearHistory();
+            mUndoRedoOverlay.defineUndoRedo();
         }
 
         if (mSelectedLayer != null) {
@@ -410,8 +443,8 @@ public class MapFragment
         if (mMode == MODE_EDIT_BY_WALK) {
             mEditLayerOverlay.stopGeometryByWalk(); // TODO toast?
             setMode(MODE_EDIT);
-            mEditLayerOverlay.clearHistory();
-            mEditLayerOverlay.defineUndoRedo();
+            mUndoRedoOverlay.clearHistory();
+            mUndoRedoOverlay.defineUndoRedo();
         }
 
         long featureId = mEditLayerOverlay.getSelectedFeatureId();
@@ -449,6 +482,7 @@ public class MapFragment
 
                 mEditLayerOverlay.showAllFeatures();
                 mEditLayerOverlay.setMode(EditLayerOverlay.MODE_NONE);
+                mUndoRedoOverlay.clearHistory();
                 break;
             case MODE_EDIT:
                 if (mSelectedLayer == null) {
@@ -471,6 +505,7 @@ public class MapFragment
                 mSelectedLayer.setLocked(true);
                 mActivity.showEditToolbar();
                 mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT_BY_WALK);
+                mUndoRedoOverlay.clearHistory();
                 break;
             case MODE_EDIT_BY_TOUCH:
                 mSelectedLayer.setLocked(true);
@@ -508,13 +543,14 @@ public class MapFragment
                                     case R.id.menu_feature_add:
                                         mEditLayerOverlay.setSelectedFeature(new Feature());
                                         mEditLayerOverlay.createNewGeometry();
+                                        mUndoRedoOverlay.clearHistory();
                                         setMode(MODE_EDIT);
-                                        mEditLayerOverlay.saveToHistory();
+                                        mUndoRedoOverlay.saveToHistory(mEditLayerOverlay.getSelectedFeature());
                                         mEditLayerOverlay.setHasEdits(true);
                                         break;
                                     case R.id.menu_feature_edit:
                                         setMode(MODE_EDIT);
-                                        mEditLayerOverlay.saveToHistory();
+                                        mUndoRedoOverlay.saveToHistory(mEditLayerOverlay.getSelectedFeature());
                                         mEditLayerOverlay.setHasEdits(false);
                                         break;
                                     case R.id.menu_feature_delete:
@@ -530,6 +566,7 @@ public class MapFragment
                         });
 
                 mEditLayerOverlay.setMode(EditLayerOverlay.MODE_HIGHLIGHT);
+                mUndoRedoOverlay.clearHistory();
                 break;
             case MODE_INFO:
                 if (mSelectedLayer == null) {
@@ -683,10 +720,12 @@ public class MapFragment
 
         mCurrentTrackOverlay = new CurrentTrackOverlay(mActivity, mMap);
         mRulerOverlay = new RulerOverlay(mActivity, mMap);
+        mUndoRedoOverlay = new UndoRedoOverlay(mActivity, mMap);
 
         mMap.addOverlay(mCurrentTrackOverlay);
         mMap.addOverlay(mCurrentLocationOverlay);
         mMap.addOverlay(mEditLayerOverlay);
+        mMap.addOverlay(mUndoRedoOverlay);
         mMap.addOverlay(mRulerOverlay);
 
         //search relative view of map, if not found - add it
@@ -1162,7 +1201,7 @@ public class MapFragment
 
     protected void checkCompass(boolean showCompass) {
         int compassContainer = R.id.fl_compass;
-        FrameLayout compass = (FrameLayout) mMapRelativeLayout.findViewById(compassContainer);
+        final FrameLayout compass = (FrameLayout) mMapRelativeLayout.findViewById(compassContainer);
 
         if (!showCompass) {
             compass.setVisibility(View.GONE);
@@ -1205,26 +1244,32 @@ public class MapFragment
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (!mIsCompassDragging)
-                    return false;
-
                 final int X = (int) event.getRawX();
                 final int Y = (int) event.getRawY();
-                switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                switch (event.getActionMasked()) {
                     case MotionEvent.ACTION_DOWN:
                         RelativeLayout.LayoutParams lParams = (RelativeLayout.LayoutParams) v.getLayoutParams();
                         _xDelta = X - lParams.leftMargin;
                         _yDelta = Y - lParams.topMargin;
-                        break;
+                        return false;
                     case MotionEvent.ACTION_UP:
                         mIsCompassDragging = false;
-                        break;
+                        return false;
                     case MotionEvent.ACTION_MOVE:
+                        if (!mIsCompassDragging)
+                            return false;
+
                         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) v.getLayoutParams();
-                        layoutParams.leftMargin = X - _xDelta;
-                        layoutParams.topMargin = Y - _yDelta;
-                        layoutParams.rightMargin = -250;
-                        layoutParams.bottomMargin = -250;
+                        int width = v.getWidth();
+                        int height = v.getHeight();
+                        int toolbarHeight = 0;
+                        if (mActivity.getSupportActionBar() != null)
+                            toolbarHeight = mActivity.getSupportActionBar().getHeight();
+                        if (X > width / 3 && X < v.getRootView().getWidth() - width / 3)
+                            layoutParams.leftMargin = X - _xDelta;
+                        if (Y > height / 2 + toolbarHeight && Y < v.getRootView().getHeight() - height / 2)
+                            layoutParams.topMargin = Y - _yDelta;
+
                         v.setLayoutParams(layoutParams);
                         break;
                 }
@@ -1286,12 +1331,7 @@ public class MapFragment
 
             mSelectedLayer = layer;
             mEditLayerOverlay.setSelectedLayer(layer);
-            mEditLayerOverlay.setSelectedFeature(new Feature());
-            mEditLayerOverlay.getSelectedFeature().setGeometry(new GeoPoint());
-            setMode(MODE_EDIT);
-            mEditLayerOverlay.clearHistory();
-            mEditLayerOverlay.createPointFromOverlay();
-            mEditLayerOverlay.setHasEdits(true);
+            createPointFromOverlay();
 
             Toast.makeText(
                     mActivity,
@@ -1310,6 +1350,15 @@ public class MapFragment
         }
     }
 
+    protected void createPointFromOverlay() {
+        mEditLayerOverlay.setSelectedFeature(new Feature());
+        mEditLayerOverlay.getSelectedFeature().setGeometry(new GeoPoint());
+        setMode(MODE_EDIT);
+        mUndoRedoOverlay.clearHistory();
+        mEditLayerOverlay.createPointFromOverlay();
+        mEditLayerOverlay.setHasEdits(true);
+        mUndoRedoOverlay.saveToHistory(mEditLayerOverlay.getSelectedFeature());
+    }
 
     protected void addCurrentLocation()
     {
@@ -1426,12 +1475,7 @@ public class MapFragment
             mEditLayerOverlay.newGeometryByWalk();
             setMode(MODE_EDIT_BY_WALK);
         } else if (code == ADD_POINT_BY_TAP) {
-            mEditLayerOverlay.setSelectedFeature(new Feature());
-            mEditLayerOverlay.getSelectedFeature().setGeometry(new GeoPoint());
-            setMode(MODE_EDIT);
-            mEditLayerOverlay.clearHistory();
-            mEditLayerOverlay.createPointFromOverlay();
-            mEditLayerOverlay.setHasEdits(true);
+            createPointFromOverlay();
         }
     }
 
@@ -1552,6 +1596,10 @@ public class MapFragment
     {
         switch (mMode) {
             case MODE_EDIT:
+                if (mEditLayerOverlay.selectGeometryInScreenCoordinates(event.getX(), event.getY()))
+                    mUndoRedoOverlay.saveToHistory(mEditLayerOverlay.getSelectedFeature());
+                defineMenuItems();
+                break;
             case MODE_SELECT_ACTION:
                 mEditLayerOverlay.selectGeometryInScreenCoordinates(event.getX(), event.getY());
                 defineMenuItems();
@@ -1560,14 +1608,9 @@ public class MapFragment
                 mEditLayerOverlay.selectGeometryInScreenCoordinates(event.getX(), event.getY());
 
                 if (null != mEditLayerOverlay) {
-                    AttributesFragment attributesFragment =
-                            (AttributesFragment) mActivity.getSupportFragmentManager()
-                                    .findFragmentByTag("ATTRIBUTES");
-
+                    AttributesFragment attributesFragment = (AttributesFragment) mActivity.getSupportFragmentManager().findFragmentByTag("ATTRIBUTES");
                     if (attributesFragment != null) {
-                        attributesFragment.setSelectedFeature(mSelectedLayer,
-                                mEditLayerOverlay.getSelectedFeatureId());
-
+                        attributesFragment.setSelectedFeature(mSelectedLayer, mEditLayerOverlay.getSelectedFeatureId());
                         mMap.postInvalidate();
                     }
                 }
@@ -1584,7 +1627,8 @@ public class MapFragment
     @Override
     public void panStart(MotionEvent e)
     {
-
+        if (mEditLayerOverlay.getMode() == EditLayerOverlay.MODE_CHANGE)
+            mNeedSave = true;
     }
 
 
@@ -1598,7 +1642,10 @@ public class MapFragment
     @Override
     public void panStop()
     {
-
+        if (mMode == MODE_EDIT_BY_TOUCH || mNeedSave) {
+            mNeedSave = false;
+            mUndoRedoOverlay.saveToHistory(mEditLayerOverlay.getSelectedFeature());
+        }
     }
 
 

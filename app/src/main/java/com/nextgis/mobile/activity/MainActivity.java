@@ -135,6 +135,7 @@ public class MainActivity extends NGActivity
 
         FragmentManager fm = getSupportFragmentManager();
         mMapFragment = (MapFragment) fm.findFragmentById(R.id.map);
+        mMapFragment.getUndoRedoOverlay().setTopToolbar(mToolbar);
         mMapFragment.getEditLayerOverlay().setTopToolbar(mToolbar);
         mMapFragment.getEditLayerOverlay().setBottomToolbar(getBottomToolbar());
 
