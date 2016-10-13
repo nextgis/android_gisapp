@@ -12,7 +12,9 @@ Official homepage: http://nextgis.com/nextgis-mobile
 Build status
 ============
 
-![build status](http://176.9.38.120/buildbot/png?builder=ngmob)
+![build status](http://176.9.38.120/buildbot/png?builder=ngmob) 
+[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/nextgis/android_gisapp.svg)](http://isitmaintained.com/project/nextgis/android_gisapp "Average time to resolve an issue") 
+[![Percentage of issues still open](http://isitmaintained.com/badge/open/nextgis/android_gisapp.svg)](http://isitmaintained.com/project/nextgis/android_gisapp "Percentage of issues still open")
 
 License
 =======
