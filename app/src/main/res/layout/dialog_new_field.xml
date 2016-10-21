@@ -23,12 +23,13 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
-              android:padding="16dp">
+              android:paddingLeft="?attr/dialogPreferredPadding"
+              android:paddingRight="?attr/dialogPreferredPadding">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"
+        android:paddingTop="16dp"
         android:text="@string/field_name"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
@@ -41,7 +42,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"
+        android:paddingBottom="8dp"
+        android:paddingTop="16dp"
         android:text="@string/field_type"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
