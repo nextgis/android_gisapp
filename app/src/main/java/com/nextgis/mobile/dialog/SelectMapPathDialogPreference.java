@@ -125,8 +125,7 @@ public class SelectMapPathDialogPreference
     {
         AlertDialog dialog = (AlertDialog) getDialog();
         if (null != dialog) {
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                    .setEnabled(mListAdapter.getCheckState().size() > 0);
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
         }
     }
 
