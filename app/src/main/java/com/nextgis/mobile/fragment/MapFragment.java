@@ -49,6 +49,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -190,6 +191,7 @@ public class MapFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         mActivity = (MainActivity) getActivity();
         mTolerancePX = mActivity.getResources().getDisplayMetrics().density * ConstantsUI.TOLERANCE_DP;
 
@@ -201,6 +203,17 @@ public class MapFragment
         mMap.setId(R.id.map_view);
 
         mEditLayerOverlay = new EditLayerOverlay(mActivity, mMap);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        if (mUndoRedoOverlay != null)
+            mUndoRedoOverlay.defineUndoRedo();
+
+        if (mEditLayerOverlay != null)
+            mEditLayerOverlay.setHasEdits(mEditLayerOverlay.hasEdits());
     }
 
     public void restartGpsListener() {
