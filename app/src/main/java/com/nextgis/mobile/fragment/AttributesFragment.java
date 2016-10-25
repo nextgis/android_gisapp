@@ -262,6 +262,7 @@ public class AttributesFragment
         if (mAttaches.size() > 0) {
             final PhotoPicker gallery = new PhotoPicker(getActivity(), true);
             int px = ControlHelper.dpToPx(16, getResources());
+            gallery.setDefaultPreview(true);
             gallery.setPadding(px, 0, px, 0);
             gallery.post(new Runnable() {
                 @Override
