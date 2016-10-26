@@ -17,7 +17,7 @@ Build status
 [![Percentage of issues still open](http://isitmaintained.com/badge/open/nextgis/android_gisapp.svg)](http://isitmaintained.com/project/nextgis/android_gisapp "Percentage of issues still open")
 [![Platform](https://img.shields.io/badge/Platform-Android-green.svg?maxAge=2592000)]()
 
-License
+License 
 =======
 
 The application is licensed under the terms of GNU GPL v3 or any later version.
