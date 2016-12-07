@@ -284,7 +284,7 @@ public class AttributesFragment
         if (attributes.moveToFirst()) {
             for (int i = 0; i < attributes.getColumnCount(); i++) {
                 String column = attributes.getColumnName(i);
-                String text;
+                String text, alias;
 
                 if (column.startsWith(Constants.FIELD_GEOM_))
                     continue;
@@ -375,10 +375,14 @@ public class AttributesFragment
                         break;
                 }
 
-                if (field != null && column.equals(Constants.FIELD_ID))
-                    field.setAlias(getString(R.string.id));
+                if (field != null)
+                    alias = field.getAlias();
+                else if (column.equals(Constants.FIELD_ID))
+                    alias = Constants.FIELD_ID;
+                else
+                    alias = "";
 
-                data += getRow(field != null ? field.getAlias() : "", text);
+                data += getRow(alias, text);
             }
         }
 
