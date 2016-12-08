@@ -775,6 +775,7 @@ public class MapFragment
         mStatusPanel = (FrameLayout) view.findViewById(R.id.fl_status_panel);
         mScaleRuler = (ImageView) view.findViewById(R.id.iv_ruler);
         mScaleRulerText = (TextView) view.findViewById(R.id.tv_ruler);
+        mScaleRulerText.setText(getRulerText());
         mScaleRulerLayout = (LinearLayout) view.findViewById(R.id.ll_ruler);
         drawScaleRuler();
 
@@ -875,13 +876,10 @@ public class MapFragment
 
 
     protected String getRulerText() {
-        GeoEnvelope left = new GeoEnvelope(mScaleRuler.getLeft(), mScaleRuler.getLeft(), mScaleRuler.getTop(), mScaleRuler.getTop());
-        left = mMap.screenToMap(left);
-        GeoEnvelope right = new GeoEnvelope(mScaleRuler.getRight(), mScaleRuler.getRight(), mScaleRuler.getTop(), mScaleRuler.getTop());
-        right = mMap.screenToMap(right);
-
-        GeoPoint p1 = new GeoPoint(left.getMaxX(), left.getMaxY());
-        GeoPoint p2 = new GeoPoint(right.getMaxX(), right.getMaxY());
+        GeoPoint p1 = new GeoPoint(mScaleRuler.getLeft(), mScaleRuler.getBottom());
+        GeoPoint p2 = new GeoPoint(mScaleRuler.getRight(), mScaleRuler.getBottom());
+        p1 = mMap.getMap().screenToMap(p1);
+        p2 = mMap.getMap().screenToMap(p2);
         p1.setCRS(GeoConstants.CRS_WEB_MERCATOR);
         p2.setCRS(GeoConstants.CRS_WEB_MERCATOR);
         GeoLineString s = new GeoLineString();
