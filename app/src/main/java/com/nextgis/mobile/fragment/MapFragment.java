@@ -125,6 +125,7 @@ public class MapFragment
         implements MapViewEventListener, GpsEventListener, EditEventListener, OnClickListener, RulerOverlay.OnRulerChanged {
     protected float mTolerancePX;
 
+    protected SharedPreferences    mPreferences;
     protected MainApplication      mApp;
     protected MainActivity         mActivity;
     protected MapViewOverlays      mMap;
@@ -195,6 +196,7 @@ public class MapFragment
         mActivity = (MainActivity) getActivity();
         mTolerancePX = mActivity.getResources().getDisplayMetrics().density * ConstantsUI.TOLERANCE_DP;
 
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity);
         mApp = (MainApplication) mActivity.getApplication();
         mVibrator = (Vibrator) mActivity.getSystemService(Context.VIBRATOR_SERVICE);
         mGpsEventSource = mApp.getGpsEventSource();
@@ -749,7 +751,24 @@ public class MapFragment
                             RelativeLayout.LayoutParams.MATCH_PARENT,
                             RelativeLayout.LayoutParams.MATCH_PARENT));
         }
-        mMap.invalidate();
+
+        float mapZoom;
+        try {
+            mapZoom = mPreferences.getFloat(SettingsConstantsUI.KEY_PREF_ZOOM_LEVEL, mMap.getMinZoom());
+        } catch (ClassCastException e) {
+            mapZoom = mMap.getMinZoom();
+        }
+
+        double mapScrollX;
+        double mapScrollY;
+        try {
+            mapScrollX = Double.longBitsToDouble(mPreferences.getLong(SettingsConstantsUI.KEY_PREF_SCROLL_X, 0));
+            mapScrollY = Double.longBitsToDouble(mPreferences.getLong(SettingsConstantsUI.KEY_PREF_SCROLL_Y, 0));
+        } catch (ClassCastException e) {
+            mapScrollX = 0;
+            mapScrollY = 0;
+        }
+        mMap.setZoomAndCenter(mapZoom, new GeoPoint(mapScrollX, mapScrollY));
 
         mMainButton = view.findViewById(R.id.multiple_actions);
         mAddPointButton = (FloatingActionButton) view.findViewById(R.id.add_point_by_tap);
@@ -838,8 +857,6 @@ public class MapFragment
                 v.setVisibility(View.GONE);
             }
         }
-
-        rl.invalidate();
     }
 
 
@@ -1051,8 +1068,7 @@ public class MapFragment
             mEditLayerOverlay.removeListener(this);
         }
 
-        final SharedPreferences.Editor edit =
-                PreferenceManager.getDefaultSharedPreferences(mActivity).edit();
+        final SharedPreferences.Editor edit = mPreferences.edit();
         if (null != mMap) {
             edit.putFloat(SettingsConstantsUI.KEY_PREF_ZOOM_LEVEL, mMap.getZoomLevel());
             GeoPoint point = mMap.getMapCenter();
@@ -1072,22 +1088,19 @@ public class MapFragment
     {
         super.onResume();
 
-        final SharedPreferences prefs =
-                PreferenceManager.getDefaultSharedPreferences(mActivity);
-
-        boolean showControls = prefs.getBoolean(KEY_PREF_SHOW_ZOOM_CONTROLS, false);
+        boolean showControls = mPreferences.getBoolean(KEY_PREF_SHOW_ZOOM_CONTROLS, false);
         showMapButtons(showControls, mMapRelativeLayout);
 
         if(Constants.DEBUG_MODE)
             Log.d(Constants.TAG, "KEY_PREF_SHOW_ZOOM_CONTROLS: " + (showControls ? "ON" : "OFF"));
 
-        showControls = prefs.getBoolean(KEY_PREF_SHOW_SCALE_RULER, true);
+        showControls = mPreferences.getBoolean(KEY_PREF_SHOW_SCALE_RULER, true);
         if (showControls)
             mScaleRulerLayout.setVisibility(View.VISIBLE);
         else
             mScaleRulerLayout.setVisibility(View.GONE);
 
-        showControls = prefs.getBoolean(KEY_PREF_SHOW_MEASURING, false);
+        showControls = mPreferences.getBoolean(KEY_PREF_SHOW_MEASURING, false);
         if (showControls)
             mRuler.setVisibility(View.VISIBLE);
         else
@@ -1095,43 +1108,18 @@ public class MapFragment
 
         if (null != mMap) {
             mMap.getMap().setBackground(mApp.getMapBackground());
-            float mMapZoom;
-            try {
-                mMapZoom = prefs.getFloat(SettingsConstantsUI.KEY_PREF_ZOOM_LEVEL, mMap.getMinZoom());
-            } catch (ClassCastException e) {
-                mMapZoom = mMap.getMinZoom();
-            }
-
-            double mMapScrollX;
-            double mMapScrollY;
-            try {
-                mMapScrollX = Double.longBitsToDouble(prefs.getLong(SettingsConstantsUI.KEY_PREF_SCROLL_X, 0));
-                mMapScrollY = Double.longBitsToDouble(prefs.getLong(SettingsConstantsUI.KEY_PREF_SCROLL_Y, 0));
-            } catch (ClassCastException e) {
-                mMapScrollX = 0;
-                mMapScrollY = 0;
-            }
-            mMap.setZoomAndCenter(mMapZoom, new GeoPoint(mMapScrollX, mMapScrollY));
             mMap.addListener(this);
-            mMap.post(new Runnable() {
-                @Override
-                public void run() {
-                    refresh();
-                }
-            });
         }
 
-        String coordinatesFormat = prefs.getString(SettingsConstantsUI.KEY_PREF_COORD_FORMAT, Location.FORMAT_DEGREES + "");
+        String coordinatesFormat = mPreferences.getString(SettingsConstantsUI.KEY_PREF_COORD_FORMAT, Location.FORMAT_DEGREES + "");
         if (FileUtil.isIntegerParseInt(coordinatesFormat))
             mCoordinatesFormat = Integer.parseInt(coordinatesFormat);
         else
             mCoordinatesFormat = Location.FORMAT_DEGREES;
-        mCoordinatesFraction = prefs.getInt(SettingsConstantsUI.KEY_PREF_COORD_FRACTION, 6);
+        mCoordinatesFraction = mPreferences.getInt(SettingsConstantsUI.KEY_PREF_COORD_FRACTION, 6);
 
         if (null != mCurrentLocationOverlay) {
-            mCurrentLocationOverlay.updateMode(
-                    PreferenceManager.getDefaultSharedPreferences(mActivity)
-                            .getString(SettingsConstantsUI.KEY_PREF_SHOW_CURRENT_LOC, "3"));
+            mCurrentLocationOverlay.updateMode(mPreferences.getString(SettingsConstantsUI.KEY_PREF_SHOW_CURRENT_LOC, "3"));
             mCurrentLocationOverlay.startShowingCurrentLocation();
         }
         if (null != mGpsEventSource) {
@@ -1143,7 +1131,7 @@ public class MapFragment
         }
 
         try {
-            String statusPanelModeStr = prefs.getString(SettingsConstantsUI.KEY_PREF_SHOW_STATUS_PANEL, "0");
+            String statusPanelModeStr = mPreferences.getString(SettingsConstantsUI.KEY_PREF_SHOW_STATUS_PANEL, "0");
             if (FileUtil.isIntegerParseInt(statusPanelModeStr))
                 mStatusPanelMode = Integer.parseInt(statusPanelModeStr);
             else
@@ -1168,7 +1156,7 @@ public class MapFragment
             setMarginsToPanel();
         }
 
-        boolean showCompass = prefs.getBoolean(KEY_PREF_SHOW_COMPASS, true);
+        boolean showCompass = mPreferences.getBoolean(KEY_PREF_SHOW_COMPASS, true);
         checkCompass(showCompass);
 
         mCurrentCenter = null;
@@ -1562,7 +1550,7 @@ public class MapFragment
 
 
     public void showRulerButton() {
-        if (PreferenceManager.getDefaultSharedPreferences(mActivity).getBoolean(KEY_PREF_SHOW_MEASURING, false))
+        if (mPreferences.getBoolean(KEY_PREF_SHOW_MEASURING, false))
             mRuler.setVisibility(View.VISIBLE);
     }
 

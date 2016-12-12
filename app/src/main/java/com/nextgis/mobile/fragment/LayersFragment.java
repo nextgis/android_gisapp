@@ -258,7 +258,7 @@ public class LayersFragment
         mFragmentContainerView.setLayoutParams(params);
 
         final MapFragment mapFragment = activity.getMapFragment();
-        mListAdapter = new LayersListAdapter(activity, map);
+        mListAdapter = new LayersListAdapter(activity, mapFragment.mMap);
         mListAdapter.setDrawer(drawerLayout);
         mListAdapter.setOnPencilClickListener(new View.OnClickListener() {
             @Override
