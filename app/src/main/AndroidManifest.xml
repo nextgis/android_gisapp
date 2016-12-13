@@ -106,7 +106,7 @@
 
         <activity
             android:name=".activity.AboutActivity"
-            android:label="@string/action_about"
+            android:label="@string/action_help"
             />
 
         <activity

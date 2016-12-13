@@ -23,60 +23,142 @@
 
 package com.nextgis.mobile.activity;
 
-import android.content.pm.PackageManager;
+import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nextgis.maplibui.activity.NGActivity;
+import com.nextgis.maplibui.util.ControlHelper;
+import com.nextgis.mobile.BuildConfig;
 import com.nextgis.mobile.R;
 
-
-public class AboutActivity
-        extends NGActivity
-{
+public class AboutActivity extends NGActivity {
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_about);
         setToolbar(R.id.main_toolbar);
 
-        TextView txtVersion = (TextView) findViewById(R.id.app_version);
-        try {
-            String pkgName = this.getPackageName();
-            PackageManager pm = this.getPackageManager();
-            String versionName = pm.getPackageInfo(pkgName, 0).versionName;
-            String versionCode =
-                    Integer.toString(pm.getPackageInfo(this.getPackageName(), 0).versionCode);
-            txtVersion.setText("v. " + versionName + " (rev. " + versionCode + ")");
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            txtVersion.setText("");
-        }
+        ViewPager viewPager = (ViewPager) findViewById(com.nextgis.maplibui.R.id.viewPager);
+        PagerAdapter adapter = new TabsAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(adapter);
 
-        findViewById(R.id.creditsInto).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog builder = new AlertDialog.Builder(v.getContext()).setTitle(R.string.credits_intro)
-                        .setMessage(R.string.credits)
-                        .setPositiveButton(android.R.string.ok, null).create();
-                builder.show();
-                ((TextView) builder.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
-                ((TextView) builder.findViewById(android.R.id.message)).setLinksClickable(true);
-            }
-        });
-
-        TextView contacts = (TextView) findViewById(R.id.contacts);
-        contacts.setMovementMethod(LinkMovementMethod.getInstance());
+        TabLayout tabLayout = (TabLayout) findViewById(com.nextgis.maplibui.R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
 
         TextView txtCopyrightText = (TextView) findViewById(R.id.copyright);
         txtCopyrightText.setText(Html.fromHtml(getString(R.string.copyright)));
         txtCopyrightText.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
+    private class TabsAdapter extends FragmentPagerAdapter {
+        TabsAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            switch (position) {
+                case 0:
+                    return new ContactsFragment();
+                case 1:
+                    return new AboutFragment();
+            }
+
+            return new Fragment();
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0:
+                    return getString(R.string.action_support);
+                case 1:
+                    return getString(R.string.action_about);
+            }
+
+            return getString(R.string.action_about);
+        }
+    }
+
+    public static class AboutFragment extends Fragment {
+        @Nullable
+        @Override
+        public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+            Context context = getContext();
+            View v = View.inflate(context, R.layout.fragment_about, null);
+
+            TextView txtVersion = (TextView) v.findViewById(R.id.app_version);
+            txtVersion.setText("v. " + BuildConfig.VERSION_NAME + " (rev. " + BuildConfig.VERSION_CODE + ")");
+
+            v.findViewById(R.id.creditsInto).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertDialog builder = new AlertDialog.Builder(v.getContext())
+                            .setTitle(R.string.credits_intro)
+                            .setMessage(R.string.credits)
+                            .setPositiveButton(android.R.string.ok, null)
+                            .show();
+
+                    TextView message = (TextView) builder.findViewById(android.R.id.message);
+                    if (message != null) {
+                        message.setMovementMethod(LinkMovementMethod.getInstance());
+                        message.setLinksClickable(true);
+                    }
+                }
+            });
+
+            TextView contacts = (TextView) v.findViewById(R.id.contacts);
+            contacts.setMovementMethod(LinkMovementMethod.getInstance());
+
+            return v;
+        }
+    }
+
+    public static class ContactsFragment extends Fragment {
+        @Nullable
+        @Override
+        public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+            final Context context = getContext();
+            final View v = View.inflate(context, R.layout.fragment_contacts, null);
+
+            TextView telegram = (TextView) v.findViewById(R.id.telegram);
+            ControlHelper.highlightText(telegram);
+            telegram.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        Intent telegram = new Intent(Intent.ACTION_VIEW, Uri.parse("tg://resolve?domain=nextgis_support"));
+                        startActivity(telegram);
+                    } catch (ActivityNotFoundException e) {
+                        Toast.makeText(context, R.string.not_installed, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+            return v;
+        }
+    }
 }

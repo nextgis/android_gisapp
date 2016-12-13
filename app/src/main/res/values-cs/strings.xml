@@ -124,4 +124,16 @@
     <string name="tap_to_measure">Klepněte na mapu pro kontrolu bodů</string>
     <string name="permissions">Oprávnění</string>
     <string name="requested_permissions">Aplikace pro správnou činnost potřebuje určitá oprávnění. Ta zahrnují: zápis na externí úložiště (pro uložení dat na SD kartu), přístup k zjištění polohy a přístup ke kontaktům (pro vytvoření a správu webového účtu).</string>
+    <string name="action_support">Support</string>
+    <string name="app_support">Please write us with questions, bug-reports and new features suggestions. Commercial support is available.</string>
+    <string name="email">Email</string>
+    <string name="email_src">info@nextgis.com</string>
+    <string name="telegram">Telegram</string>
+    <string name="telegram_src">\@nextgis_support</string>
+    <string name="github">Github</string>
+    <string name="github_src">http://github.com/nextgis/android_gisapp/issues</string>
+    <string name="web">Website</string>
+    <string name="web_src">http://nextgis.com/nextgis-mobile</string>
+    <string name="not_installed">Application not installed</string>
+    <string name="action_help">Help</string>
 </resources>

@@ -127,4 +127,16 @@
     <string name="requested_permissions">Приложению требуются некоторые разрешения для корректной работы: запись на устройство (для хранения данных), доступ
         к местоположению и получение контактов (для создания и управления веб аккаунтами).</string>
     <string name="track_restore">Продолжать трек после перезагрузки</string>
+    <string name="action_support">Поддержка</string>
+    <string name="app_support">Please write us with questions, bug-reports and new features suggestions. Commercial support is available.</string>
+    <string name="email">Email</string>
+    <string name="email_src">info@nextgis.com</string>
+    <string name="telegram">Telegram</string>
+    <string name="telegram_src">\@nextgis_support</string>
+    <string name="github">Github</string>
+    <string name="github_src">http://github.com/nextgis/android_gisapp/issues</string>
+    <string name="web">Website</string>
+    <string name="web_src">http://nextgis.com/nextgis-mobile</string>
+    <string name="not_installed">Application not installed</string>
+    <string name="action_help">Help</string>
 </resources>

@@ -22,43 +22,41 @@
   -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <item
         android:id="@+id/menu_locate"
-        android:title="@string/menu_locate"
-        android:orderInCategory="100"
-        app:showAsAction="always"
         android:icon="@drawable/ic_action_location_found"
-        />
+        android:orderInCategory="0"
+        android:title="@string/menu_locate"
+        app:showAsAction="always"/>
+
     <item
         android:id="@+id/menu_refresh"
-        android:title="@string/refresh"
-        android:orderInCategory="100"
-        app:showAsAction="always"
         android:icon="@drawable/ic_action_sync"
-        />
+        android:orderInCategory="25"
+        android:title="@string/refresh"
+        app:showAsAction="always"/>
+
     <item
         android:id="@+id/menu_track"
-        android:title="@string/track_start"
-        android:orderInCategory="100"
-        app:showAsAction="ifRoom"
         android:icon="@drawable/ic_action_maps_directions_walk"
-        />
+        android:orderInCategory="50"
+        android:title="@string/track_start"
+        app:showAsAction="ifRoom"/>
+
     <item
         android:id="@+id/menu_settings"
-        android:title="@string/action_settings"
-        android:orderInCategory="100"
-        app:showAsAction="never"
         android:icon="@drawable/ic_action_settings"
-        />
+        android:orderInCategory="75"
+        android:title="@string/action_settings"
+        app:showAsAction="never"/>
+
     <item
         android:id="@+id/menu_about"
-        android:title="@string/action_about"
         android:orderInCategory="100"
-        app:showAsAction="never"
-        android:icon="@drawable/ic_launcher"
-        />
+        android:title="@string/action_help"
+        app:showAsAction="never"/>
 
     <!--item
         android:id="@+id/menu_test"
