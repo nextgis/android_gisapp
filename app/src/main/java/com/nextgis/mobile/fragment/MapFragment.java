@@ -1950,6 +1950,7 @@ public class MapFragment
 
     protected void startMeasuring() {
         mRulerOverlay.startMeasuring(this);
+        hideOverlayPoint();
         hideMainButton();
         hideRulerButton();
         showAddByTapButton();

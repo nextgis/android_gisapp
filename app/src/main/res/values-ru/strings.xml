@@ -139,4 +139,5 @@
     <string name="web_src">http://nextgis.com/nextgis-mobile</string>
     <string name="not_installed">Application not installed</string>
     <string name="action_help">Помощь</string>
+    <string name="location_distance_to">Distance to (m)</string>
 </resources>

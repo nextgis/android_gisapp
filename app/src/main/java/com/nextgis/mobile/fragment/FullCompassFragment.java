@@ -22,7 +22,6 @@
 package com.nextgis.mobile.fragment;
 
 import android.content.SharedPreferences;
-import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
@@ -44,16 +43,15 @@ public class FullCompassFragment extends CompassFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         ((MainActivity) getActivity()).hideBottomBar();
+        View view = inflater.inflate(R.layout.fragment_compass_full, container, false);
+        FrameLayout compassContainer = (FrameLayout) view.findViewById(R.id.compass_container);
+        compassContainer.addView(super.onCreateView(inflater, container, savedInstanceState));
+        view.findViewById(R.id.action_add_point).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-        assert view != null;
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(view.getLayoutParams());
-        int[] attrs = {R.attr.actionBarSize};
-        TypedArray ta = getActivity().obtainStyledAttributes(attrs);
-        lp.topMargin = ta.getDimensionPixelSize(0, 0);
-        ta.recycle();
-        view.setLayoutParams(lp);
-
+            }
+        });
         return view;
     }
 
@@ -69,9 +67,6 @@ public class FullCompassFragment extends CompassFragment {
 
         ((MainActivity) getActivity()).setActionBarState(false);
         getActivity().setTitle(R.string.compass_title);
-        assert getView() != null;
-        int accentColor = ControlHelper.getColor(getContext(), R.attr.colorAccent);
-        getView().setBackgroundColor(accentColor);
     }
 
     @Override
