@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Project:  NextGIS Mobile
+  ~ Purpose:  Mobile GIS for Android.
+  ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
+  ~ *****************************************************************************
+  ~ Copyright (c) 2016 NextGIS, info@nextgis.com
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources xmlns:tools="http://schemas.android.com/tools"
+           tools:ignore="TypographyDashes">
+
+    <string name="ga_trackingId">UA-89437449-1</string>
+    <string name="ga_logLevel">verbose</string>
+    <bool name="ga_autoActivityTracking">true</bool>
+    <bool name="ga_reportUncaughtExceptions">true</bool>
+
+    <screenName name="com.nextgis.mobile.activity.MainActivity">Main Screen</screenName>
+    <screenName name="com.nextgis.mobile.activity.AboutActivity">About Screen</screenName>
+    <screenName name="com.nextgis.mobile.activity.CreateVectorLayerActivity">Create Empty Vector Layer Screen</screenName>
+    <screenName name="com.nextgis.mobile.activity.SettingsActivity">Settings Screen</screenName>
+    <screenName name="com.nextgis.maplibui.activity.AttributesActivity">Attributes Screen</screenName>
+    <screenName name="com.nextgis.maplibui.activity.FormBuilderModifyAttributesActivity">FB Modify Screen</screenName>
+    <screenName name="com.nextgis.maplibui.activity.ModifyAttributesActivity">Modify Screen</screenName>
+    <screenName name="com.nextgis.maplibui.activity.NGWSettingsActivity">NGW Settings Screen</screenName>
+    <screenName name="com.nextgis.maplibui.activity.NGWLoginActivity">NGW Login Screen</screenName>
+    <screenName name="com.nextgis.maplibui.activity.SelectNGWResourceActivity">NGW Select Resource Screen</screenName>
+    <screenName name="com.nextgis.maplibui.activity.TMSLayerSettingsActivity">TMS Settings Screen</screenName>
+    <screenName name="com.nextgis.maplibui.activity.VectorLayerSettingsActivity">Vector Settings Screen</screenName>
+    <screenName name="com.nextgis.maplibui.activity.TracksActivity">My Tracks Screen</screenName>
+</resources>

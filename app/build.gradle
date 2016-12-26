@@ -57,4 +57,5 @@ dependencies {
     compile project(':maplibui')
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.android.support:appcompat-v7:25.1.0'
+    compile 'com.google.android.gms:play-services-analytics:10.0.1'
 }

@@ -33,6 +33,9 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.datasource.Field;
 import com.nextgis.maplib.map.LayerGroup;
@@ -57,6 +60,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.nextgis.maplib.util.Constants.DEBUG_MODE;
 import static com.nextgis.maplib.util.Constants.MAP_EXT;
 import static com.nextgis.maplib.util.GeoConstants.TMSTYPE_OSM;
 import static com.nextgis.mobile.util.SettingsConstants.AUTHORITY;
@@ -74,12 +78,24 @@ public class MainApplication extends GISApplication
     public static final String LAYER_C = "vector_c";
     public static final String LAYER_TRACKS = "tracks";
 
+    private Tracker mTracker;
+
     @Override
     public void onCreate() {
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         updateFromOldVersion();
 
+        GoogleAnalytics.getInstance(this).setDryRun(DEBUG_MODE);
+        getTracker();
+
         super.onCreate();
+    }
+
+    public synchronized Tracker getTracker() {
+        if (mTracker == null)
+            mTracker = GoogleAnalytics.getInstance(this).newTracker(R.xml.app_tracker);
+
+        return mTracker;
     }
 
     private void updateFromOldVersion() {
@@ -95,27 +111,27 @@ public class MainApplication extends GISApplication
                         mSharedPreferences.edit()
                                 .remove(SettingsConstants.KEY_PREF_LOCATION_SOURCE)
                                 .remove(SettingsConstants.KEY_PREF_LOCATION_SOURCE + "_str")
-                                .putString(SettingsConstants.KEY_PREF_LOCATION_SOURCE, source + "").commit();
+                                .putString(SettingsConstants.KEY_PREF_LOCATION_SOURCE, source + "").apply();
                     }
                     if (mSharedPreferences.contains(SettingsConstants.KEY_PREF_TRACKS_SOURCE)) {
                         source = mSharedPreferences.getInt(SettingsConstants.KEY_PREF_TRACKS_SOURCE, 1);
                         mSharedPreferences.edit()
                                 .remove(SettingsConstants.KEY_PREF_TRACKS_SOURCE)
                                 .remove(SettingsConstants.KEY_PREF_TRACKS_SOURCE + "_str")
-                                .putString(SettingsConstants.KEY_PREF_TRACKS_SOURCE, source + "").commit();
+                                .putString(SettingsConstants.KEY_PREF_TRACKS_SOURCE, source + "").apply();
                     }
                 case 13:
                 case 14:
                 case 15:
                     mSharedPreferences.edit().remove(SettingsConstantsUI.KEY_PREF_SHOW_STATUS_PANEL)
                             .remove(SettingsConstantsUI.KEY_PREF_COORD_FORMAT + "_int")
-                            .remove(SettingsConstantsUI.KEY_PREF_COORD_FORMAT).commit();
+                            .remove(SettingsConstantsUI.KEY_PREF_COORD_FORMAT).apply();
                 default:
                     break;
             }
 
             if(savedVersionCode < currentVersionCode) {
-                mSharedPreferences.edit().putInt(KEY_PREF_APP_VERSION, currentVersionCode).commit();
+                mSharedPreferences.edit().putInt(KEY_PREF_APP_VERSION, currentVersionCode).apply();
             }
         } catch (PackageManager.NameNotFoundException ignored) { }
     }
