@@ -98,6 +98,16 @@ public class MainApplication extends GISApplication
         return mTracker;
     }
 
+    @Override
+    public void sendEvent(String category, String action, String label) {
+        HitBuilders.EventBuilder event = new HitBuilders.EventBuilder()
+                .setCategory(category)
+                .setAction(action)
+                .setLabel(label);
+
+        getTracker().send(event.build());
+    }
+
     private void updateFromOldVersion() {
         try {
             int currentVersionCode = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
