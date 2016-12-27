@@ -29,10 +29,12 @@
     <bool name="ga_reportUncaughtExceptions">true</bool>
 
     <screenName name="com.nextgis.mobile.activity.MainActivity">Main Screen</screenName>
-    <screenName name="com.nextgis.mobile.activity.AboutActivity">About Screen</screenName>
+    <screenName name="com.nextgis.mobile.activity.AboutActivity">Support Screen</screenName>
     <screenName name="com.nextgis.mobile.activity.CreateVectorLayerActivity">Create Empty Vector Layer Screen</screenName>
     <screenName name="com.nextgis.mobile.activity.SettingsActivity">Settings Screen</screenName>
-    <screenName name="com.nextgis.maplibui.activity.AttributesActivity">Attributes Screen</screenName>
+    <screenName name="com.nextgis.mobile.fragment.FullCompassFragment">Compass Screen</screenName>
+    <screenName name="com.nextgis.mobile.fragment.AttributesFragment">Attributes Screen</screenName>
+    <screenName name="com.nextgis.maplibui.activity.AttributesActivity">Attributes Table Screen</screenName>
     <screenName name="com.nextgis.maplibui.activity.FormBuilderModifyAttributesActivity">FB Modify Screen</screenName>
     <screenName name="com.nextgis.maplibui.activity.ModifyAttributesActivity">Modify Screen</screenName>
     <screenName name="com.nextgis.maplibui.activity.NGWSettingsActivity">NGW Settings Screen</screenName>

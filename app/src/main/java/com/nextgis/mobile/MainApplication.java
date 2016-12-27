@@ -99,6 +99,12 @@ public class MainApplication extends GISApplication
     }
 
     @Override
+    public void sendScreen(String name) {
+        mTracker.setScreenName(name);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+    }
+
+    @Override
     public void sendEvent(String category, String action, String label) {
         HitBuilders.EventBuilder event = new HitBuilders.EventBuilder()
                 .setCategory(category)

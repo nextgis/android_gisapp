@@ -62,4 +62,7 @@ public interface SettingsConstants
     String KEY_PREF_SHOW_MEASURING      = "show_ruler_measuring";
 
     int FIRSTSTART_DOWNLOADZOOM = 5;
+
+    String GA_SCREEN_ABOUT = "About Screen";
+    String GA_SCREEN_SUPPORT = "Support Screen";
 }

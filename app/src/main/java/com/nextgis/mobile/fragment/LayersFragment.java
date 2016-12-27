@@ -74,8 +74,15 @@ import java.util.List;
 
 import static com.nextgis.maplib.util.Constants.NGW_ACCOUNT_TYPE;
 import static com.nextgis.maplib.util.Constants.TAG;
+import static com.nextgis.maplibui.util.ConstantsUI.GA_CREATE;
+import static com.nextgis.maplibui.util.ConstantsUI.GA_EDIT;
+import static com.nextgis.maplibui.util.ConstantsUI.GA_GEOSERVICE;
+import static com.nextgis.maplibui.util.ConstantsUI.GA_IMPORT;
+import static com.nextgis.maplibui.util.ConstantsUI.GA_LAYER;
+import static com.nextgis.maplibui.util.ConstantsUI.GA_LOCAL;
+import static com.nextgis.maplibui.util.ConstantsUI.GA_MENU;
+import static com.nextgis.maplibui.util.ConstantsUI.GA_NGW;
 import static com.nextgis.mobile.util.SettingsConstants.AUTHORITY;
-
 
 /**
  * A layers fragment class
@@ -136,18 +143,23 @@ public class LayersFragment
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
+        IGISApplication application = (IGISApplication) getActivity().getApplication();
         switch (item.getItemId()) {
             case R.id.menu_new:
+                application.sendEvent(GA_LAYER, GA_CREATE, GA_LOCAL);
                 Intent intentNewLayer = new Intent(getActivity(), CreateVectorLayerActivity.class);
                 startActivity(intentNewLayer);
                 return true;
             case R.id.menu_add_local:
+                application.sendEvent(GA_LAYER, GA_CREATE, GA_IMPORT);
                 ((MainActivity) getActivity()).addLocalLayer();
                 return true;
             case R.id.menu_add_remote:
+                application.sendEvent(GA_LAYER, GA_CREATE, GA_GEOSERVICE);
                 ((MainActivity) getActivity()).addRemoteLayer();
                 return true;
             case R.id.menu_add_ngw:
+                application.sendEvent(GA_LAYER, GA_CREATE, GA_NGW);
                 ((MainActivity) getActivity()).addNGWLayer();
                 return true;
             default:
@@ -291,6 +303,8 @@ public class LayersFragment
         mListAdapter.setOnLayerEditListener(new LayersListAdapter.onEdit() {
             @Override
             public void onLayerEdit(ILayer layer) {
+                IGISApplication application = (IGISApplication) getActivity().getApplication();
+                application.sendEvent(GA_LAYER, GA_EDIT, GA_MENU);
                 mapFragment.onFinishChooseLayerDialog(MapFragment.EDIT_LAYER, layer);
                 toggle();
             }

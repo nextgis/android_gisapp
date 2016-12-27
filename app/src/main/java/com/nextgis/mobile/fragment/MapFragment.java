@@ -112,6 +112,9 @@ import java.util.Locale;
 import static com.nextgis.maplib.util.Constants.FIELD_GEOM;
 import static com.nextgis.maplib.util.Constants.FIELD_ID;
 import static com.nextgis.maplib.util.Constants.NOT_FOUND;
+import static com.nextgis.maplibui.util.ConstantsUI.GA_EDIT;
+import static com.nextgis.maplibui.util.ConstantsUI.GA_FAB;
+import static com.nextgis.maplibui.util.ConstantsUI.GA_LAYER;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_COMPASS;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_MEASURING;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_SCALE_RULER;
@@ -697,7 +700,7 @@ public class MapFragment
                         defineMenuItems();
                     }
                 })
-                .setCallback(new Snackbar.Callback() {
+                .addCallback(new Snackbar.Callback() {
                     @Override
                     public void onDismissed(Snackbar snackbar, int event) {
                         super.onDismissed(snackbar, event);
@@ -1077,7 +1080,7 @@ public class MapFragment
 
             mMap.removeListener(this);
         }
-        edit.commit();
+        edit.apply();
 
         super.onPause();
     }
@@ -1281,6 +1284,8 @@ public class MapFragment
 
     protected void addNewGeometry()
     {
+        mApp.sendEvent(GA_LAYER, GA_EDIT, GA_FAB);
+
         //show select layer dialog if several layers, else start default or custom form
         List<ILayer> layers = mMap.getVectorLayersByType(
                 GeoConstants.GTPointCheck | GeoConstants.GTMultiPointCheck |

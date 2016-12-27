@@ -47,25 +47,50 @@ import android.widget.Toast;
 import com.nextgis.maplibui.activity.NGActivity;
 import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.mobile.BuildConfig;
+import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
+import com.nextgis.mobile.util.SettingsConstants;
 
-public class AboutActivity extends NGActivity {
+public class AboutActivity extends NGActivity implements ViewPager.OnPageChangeListener {
+    private ViewPager mViewPager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
         setToolbar(R.id.main_toolbar);
 
-        ViewPager viewPager = (ViewPager) findViewById(com.nextgis.maplibui.R.id.viewPager);
+        mViewPager = (ViewPager) findViewById(com.nextgis.maplibui.R.id.viewPager);
         PagerAdapter adapter = new TabsAdapter(getSupportFragmentManager());
-        viewPager.setAdapter(adapter);
+        mViewPager.setAdapter(adapter);
+        mViewPager.addOnPageChangeListener(this);
 
         TabLayout tabLayout = (TabLayout) findViewById(com.nextgis.maplibui.R.id.tabs);
-        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setupWithViewPager(mViewPager);
 
         TextView txtCopyrightText = (TextView) findViewById(R.id.copyright);
         txtCopyrightText.setText(Html.fromHtml(getString(R.string.copyright)));
         txtCopyrightText.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mViewPager.removeOnPageChangeListener(this);
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        ((MainApplication) getApplication()).sendScreen(position == 1 ? SettingsConstants.GA_SCREEN_ABOUT : SettingsConstants.GA_SCREEN_SUPPORT);
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
     }
 
     private class TabsAdapter extends FragmentPagerAdapter {
