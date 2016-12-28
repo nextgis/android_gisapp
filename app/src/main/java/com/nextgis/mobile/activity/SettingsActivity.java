@@ -31,7 +31,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteException;
-import android.database.sqlite.SQLiteFullException;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -42,6 +41,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapContentProviderHelper;
@@ -60,6 +60,7 @@ import java.util.List;
 
 import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_MAP;
 import static com.nextgis.maplibui.service.TrackerService.isTrackerServiceRunning;
+import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_GA;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_COMPASS;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_MEASURING;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_SCALE_RULER;
@@ -167,6 +168,8 @@ public class SettingsActivity
     protected void onPause() {
         super.onPause();
         mIsPaused = true;
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        GoogleAnalytics.getInstance(this).setAppOptOut(!preferences.getBoolean(KEY_PREF_GA, true));
     }
 
     public static void initializeMapBG(final Activity activity, final ListPreference mapBG) {
@@ -312,10 +315,7 @@ public class SettingsActivity
                         String preferenceKey = isTracks
                                                ? SettingsConstants.KEY_PREF_TRACKS_MIN_TIME
                                                : SettingsConstants.KEY_PREF_LOCATION_MIN_TIME;
-                        preference.getSharedPreferences()
-                                .edit()
-                                .putString(preferenceKey, (String) newValue)
-                                .commit();
+                        preference.getSharedPreferences().edit().putString(preferenceKey, (String) newValue).apply();
 
                         sectionWork(preference.getContext(), isTracks);
 
@@ -340,10 +340,7 @@ public class SettingsActivity
                         String preferenceKey = isTracks
                                                ? SettingsConstants.KEY_PREF_TRACKS_MIN_DISTANCE
                                                : SettingsConstants.KEY_PREF_LOCATION_MIN_DISTANCE;
-                        preference.getSharedPreferences()
-                                .edit()
-                                .putString(preferenceKey, (String) newValue)
-                                .commit();
+                        preference.getSharedPreferences().edit().putString(preferenceKey, (String) newValue).apply();
 
                         sectionWork(preference.getContext(), isTracks);
 
@@ -496,13 +493,14 @@ public class SettingsActivity
         editor.remove(KEY_PREF_SHOW_MEASURING);
         editor.remove(KEY_PREF_SHOW_SCALE_RULER);
         editor.remove(SettingsConstantsUI.KEY_PREF_SHOW_GEO_DIALOG);
+        editor.remove(KEY_PREF_GA);
 
         File defaultPath = activity.getExternalFilesDir(KEY_PREF_MAP);
         if (defaultPath == null)
             defaultPath = new File(activity.getFilesDir(), KEY_PREF_MAP);
 
         editor.putString(SettingsConstants.KEY_PREF_MAP_PATH, defaultPath.getPath());
-        editor.commit();
+        editor.apply();
 
         PreferenceManager.setDefaultValues(activity, R.xml.preferences_general, true);
         PreferenceManager.setDefaultValues(activity, R.xml.preferences_map, true);

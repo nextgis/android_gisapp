@@ -140,4 +140,6 @@
     <string name="not_installed">Application not installed</string>
     <string name="action_help">Help</string>
     <string name="location_distance_to">Distance to (m)</string>
+    <string name="pref_ga">Collect statistics</string>
+    <string name="pref_ga_sum">Send anonymous Google Analytics data to improve app quality and stability</string>
 </resources>

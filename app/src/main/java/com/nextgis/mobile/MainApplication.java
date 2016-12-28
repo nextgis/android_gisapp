@@ -65,6 +65,7 @@ import static com.nextgis.maplib.util.Constants.MAP_EXT;
 import static com.nextgis.maplib.util.GeoConstants.TMSTYPE_OSM;
 import static com.nextgis.mobile.util.SettingsConstants.AUTHORITY;
 import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_APP_VERSION;
+import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_GA;
 
 /**
  * Main application class
@@ -85,6 +86,7 @@ public class MainApplication extends GISApplication
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         updateFromOldVersion();
 
+        GoogleAnalytics.getInstance(this).setAppOptOut(!mSharedPreferences.getBoolean(KEY_PREF_GA, true));
         GoogleAnalytics.getInstance(this).setDryRun(DEBUG_MODE);
         getTracker();
 

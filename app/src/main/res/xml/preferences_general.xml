@@ -38,6 +38,11 @@
         <Preference
             android:key="reset_settings"
             android:title="@string/reset_settings"/>
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="ga_enabled"
+            android:summary="@string/pref_ga_sum"
+            android:title="@string/pref_ga"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/compass_title">
