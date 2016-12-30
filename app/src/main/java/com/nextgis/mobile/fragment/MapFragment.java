@@ -45,6 +45,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -159,6 +160,7 @@ public class MapFragment
 
     protected int mCoordinatesFormat, mCoordinatesFraction;
     protected ChooseLayerDialog mChooseLayerDialog;
+    protected AlertDialog mGPSDialog;
     protected Vibrator mVibrator;
 
     public static final int MODE_NORMAL        = 0;
@@ -1127,7 +1129,8 @@ public class MapFragment
         }
         if (null != mGpsEventSource) {
             mGpsEventSource.addListener(this);
-            NotificationHelper.showLocationInfo(getActivity());
+            if (mGPSDialog == null || !mGPSDialog.isShowing())
+                mGPSDialog = NotificationHelper.showLocationInfo(getActivity());
         }
         if (null != mEditLayerOverlay) {
             mEditLayerOverlay.addListener(this);
