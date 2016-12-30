@@ -46,7 +46,7 @@
     <string name="credits_intro">Лицензии</string>
     <string name="credits">Некоторые иконки использованные в приложении с <a href="http://icons8.com/android-icons">Icons8.com</a> под лицензией <a
         href="http://creativecommons.org/licenses/by-nd/3.0/">CC BY-ND 3.0</a>, <a href="http://materialdesignicons.com/">materialdesignicons.com</a> и <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a> под лицензией <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a></string>
-    <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2012–2016]]></string>
+    <string name="copyright"><![CDATA[© <a href=\"http://nextgis.ru\">NextGIS</a>, 2012–2016]]></string>
     <string name="contacts"><a href="http://nextgis.ru/contact/">Связаться с нами</a></string>
     <string name="action_about">О программе</string>
     <string name="add_current_place">Добавить текущую точку</string>
@@ -128,18 +128,18 @@
         к местоположению и получение контактов (для создания и управления веб аккаунтами).</string>
     <string name="track_restore">Продолжать трек после перезагрузки</string>
     <string name="action_support">Поддержка</string>
-    <string name="app_support">Please write us with questions, bug-reports and new features suggestions. Commercial support is available.</string>
-    <string name="email">Email</string>
+    <string name="app_support">Задавайте вопросы, сообщайте об ошибках или предлагайте новые функции используя любой удобный для вас способ. Доступна коммерческая поддержка.</string>
+    <string name="email">Электронная почта</string>
     <string name="email_src">info@nextgis.com</string>
     <string name="telegram">Telegram</string>
     <string name="telegram_src">\@nextgis_support</string>
     <string name="github">Github</string>
     <string name="github_src">http://github.com/nextgis/android_gisapp/issues</string>
-    <string name="web">Website</string>
-    <string name="web_src">http://nextgis.com/nextgis-mobile</string>
-    <string name="not_installed">Application not installed</string>
+    <string name="web">Сайт</string>
+    <string name="web_src">http://nextgis.ru/nextgis-mobile</string>
+    <string name="not_installed">Приложение не установлено</string>
     <string name="action_help">Помощь</string>
-    <string name="location_distance_to">Distance to (m)</string>
+    <string name="location_distance_to">Расстояние до (м)</string>
     <string name="pref_ga">Собирать статистику</string>
     <string name="pref_ga_sum">Отправлять анонимные данные Google Analytics для улучшения приложения</string>
 </resources>

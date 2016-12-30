@@ -44,7 +44,7 @@
     <string name="app_description">Mobilní GIS aplikace pro terénní sběr dat. Aplikace také sleduje polohu a odesílá ji na server.</string>
     <string name="credits_intro">Poděkování</string>
     <string name="credits">Některé ikony použité v aplikaci pocházejí z <a href="http://icons8.com/android-icons">Icons8.com</a> (licence<a href="http://creativecommons.org/licenses/by-nd/3.0/">CC BY-ND 3.0</a>), <a href="http://materialdesignicons.com/">materialdesignicons.com</a> and <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a> (licence <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>)</string>
-    <string name="copyright"><![CDATA[Copyright © <a href=\"http://nextgis.com\">NextGIS</a>, 2012–2016]]></string>
+    <string name="copyright"><![CDATA[© <a href=\"http://nextgis.com\">NextGIS</a>, 2012–2016]]></string>
     <string name="contacts"><a href="http://nextgis.ru/en/contact/">Kontaktujte nás</a></string>
     <string name="action_about">O aplikaci</string>
     <string name="add_current_place">Přidejte současnou polohu</string>
