@@ -178,6 +178,7 @@ public class MapFragment
     protected boolean mIsCompassDragging;
     protected int mStatusPanelMode;
     protected onModeChange mModeListener;
+    protected OnClickListener mFinishListener;
 
     protected final int ADD_CURRENT_LOC         = 1;
     public static final int EDIT_LAYER          = 2;
@@ -544,13 +545,13 @@ public class MapFragment
                 toolbar.inflateMenu(R.menu.select_action);
                 toolbar.setNavigationIcon(R.drawable.ic_action_cancel_dark);
 
-                toolbar.setNavigationOnClickListener(
-                        new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                setMode(MODE_NORMAL);
-                            }
-                        });
+                mFinishListener = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        setMode(MODE_NORMAL);
+                    }
+                };
+                toolbar.setNavigationOnClickListener(mFinishListener);
 
                 toolbar.setOnMenuItemClickListener(
                         new BottomToolbar.OnMenuItemClickListener() {
@@ -599,12 +600,7 @@ public class MapFragment
                 FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 //get or create fragment
-                AttributesFragment attributesFragment =
-                        (AttributesFragment) fragmentManager.findFragmentByTag("ATTRIBUTES");
-
-                if (null == attributesFragment)
-                    attributesFragment = new AttributesFragment();
-
+                final AttributesFragment attributesFragment = getAttributesFragment(fragmentManager);
                 attributesFragment.setTablet(tabletSize);
                 int container = R.id.mainview;
 
@@ -629,10 +625,25 @@ public class MapFragment
 
                 fragmentTransaction.commit();
 
-                attributesFragment.setSelectedFeature(mSelectedLayer,
-                        mEditLayerOverlay.getSelectedFeatureId());
-
+                attributesFragment.setSelectedFeature(mSelectedLayer, mEditLayerOverlay.getSelectedFeatureId());
                 attributesFragment.setToolbar(toolbar, mEditLayerOverlay);
+
+                mFinishListener = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ((MainActivity) getActivity()).finishFragment();
+
+                        if (attributesFragment.isTablet())
+                            getActivity().getSupportFragmentManager().beginTransaction().remove(attributesFragment).commit();
+
+                        if (view == null)
+                            setMode(MODE_NORMAL);
+                    }
+                };
+
+                toolbar.setNavigationIcon(R.drawable.ic_action_cancel_dark);
+                toolbar.setNavigationOnClickListener(mFinishListener);
+
                 break;
         }
 
@@ -641,6 +652,14 @@ public class MapFragment
 
         setMarginsToPanel();
         defineMenuItems();
+    }
+
+    private AttributesFragment getAttributesFragment(FragmentManager fragmentManager) {
+        AttributesFragment attributesFragment = (AttributesFragment) fragmentManager.findFragmentByTag("ATTRIBUTES");
+        if (null == attributesFragment)
+            attributesFragment = new AttributesFragment();
+
+        return attributesFragment;
     }
 
     protected void defineMenuItems() {

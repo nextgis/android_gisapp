@@ -276,7 +276,7 @@ public class LayersFragment
             @Override
             public void onClick(View v) {
                 if (!mapFragment.hasEdits()) {
-                    mapFragment.setMode(MapFragment.MODE_NORMAL);
+                    mapFragment.mFinishListener.onClick(null);
                     return;
                 }
 

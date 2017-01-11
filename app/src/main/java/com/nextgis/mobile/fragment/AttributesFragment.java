@@ -528,18 +528,6 @@ public class AttributesFragment
 
         mEditLayerOverlay = overlay;
 
-        toolbar.setNavigationIcon(R.drawable.ic_action_cancel_dark);
-        toolbar.setNavigationOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        ((MainActivity) getActivity()).finishFragment();
-
-                        if (isTablet())
-                            getActivity().getSupportFragmentManager().beginTransaction().remove(AttributesFragment.this).commit();
-                    }
-                });
-
         if (!isTablet())
             toolbar.getBackground().setAlpha(255);
 
