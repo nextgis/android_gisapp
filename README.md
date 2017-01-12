@@ -5,7 +5,7 @@ NextGIS Mobile
 
 GIS application for Android. Current version 2.4 is available in [Google Play](https://play.google.com/store/apps/details?id=com.nextgis.mobile) and [here](https://github.com/nextgis/android_gisapp/releases/tag/v2.4).
 
-The v.1.x versions can be found [here](https://github.com/nextgis/nextgismobile/releases)
+The v.1.x versions can be found [here](https://github.com/nextgis/nextgismobile_old/releases)
 
 Official homepage: http://nextgis.com/nextgis-mobile
 
