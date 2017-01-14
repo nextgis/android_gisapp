@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2016 NextGIS, info@nextgis.com
+ * Copyright (c) 2012-2017 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -258,8 +258,6 @@ public class MapFragment
             case R.id.menu_edit_by_touch:
                 setMode(MODE_EDIT_BY_TOUCH);
                 result = mEditLayerOverlay.onOptionsItemSelected(id);
-                if (result)
-                    mUndoRedoOverlay.saveToHistory(mEditLayerOverlay.getSelectedFeature());
                 return result;
             case R.id.menu_edit_undo:
             case R.id.menu_edit_redo:
@@ -268,7 +266,7 @@ public class MapFragment
                     Feature undoRedoFeature = mUndoRedoOverlay.getFeature();
                     Feature feature = mEditLayerOverlay.getSelectedFeature();
                     feature.setGeometry(undoRedoFeature.getGeometry());
-                    mEditLayerOverlay.fillDrawItems(undoRedoFeature .getGeometry());
+                    mEditLayerOverlay.fillDrawItems(undoRedoFeature.getGeometry());
 
                     GeoGeometry original = mSelectedLayer.getGeometryForId(feature.getId());
                     boolean hasEdits = original != null && undoRedoFeature.getGeometry().equals(original);
@@ -532,6 +530,13 @@ public class MapFragment
                 mSelectedLayer.setLocked(true);
                 mActivity.showEditToolbar();
                 mEditLayerOverlay.setMode(EditLayerOverlay.MODE_EDIT_BY_TOUCH);
+                toolbar.setOnMenuItemClickListener(
+                        new BottomToolbar.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem menuItem) {
+                                return onOptionsItemSelected(menuItem.getItemId());
+                            }
+                        });
                 break;
             case MODE_SELECT_ACTION:
                 if (mSelectedLayer == null) {
