@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2015. NextGIS, info@nextgis.com
+ * Copyright (c) 2012-2017 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplibui.api.ISelectResourceDialog;
 import com.nextgis.maplibui.dialog.LocalResourcesListAdapter;
@@ -206,7 +207,7 @@ public class SelectMapPathDialogPreference
 
 
     /**
-     * Saves the text to the {@link SharedPreferences}.
+     * Saves the text to the {@link android.content.SharedPreferences}.
      *
      * @param text
      *         The text to save
@@ -224,7 +225,7 @@ public class SelectMapPathDialogPreference
 
 
     /**
-     * Gets the text from the {@link SharedPreferences}.
+     * Gets the text from the {@link android.content.SharedPreferences}.
      *
      * @return The current preference value.
      */
