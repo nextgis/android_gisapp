@@ -7,7 +7,7 @@
   ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
   ~ Author:   Maxim Dubinin, maxim.dubinin@nextgis.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2012-2016 NextGIS, info@nextgis.com
+  ~ Copyright (c) 2012-2017 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -142,4 +142,6 @@
     <string name="location_distance_to">Расстояние до (м)</string>
     <string name="pref_ga">Собирать статистику</string>
     <string name="pref_ga_sum">Отправлять анонимные данные Google Analytics для улучшения приложения</string>
+    <string name="new_update">Найдена версия %1$s. Вы хотите обновиться?</string>
+    <string name="update_title">Обновить?</string>
 </resources>

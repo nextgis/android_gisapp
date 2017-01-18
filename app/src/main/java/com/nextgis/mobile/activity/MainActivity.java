@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2016 NextGIS, info@nextgis.com
+ * Copyright (c) 2012-2017 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,6 +80,7 @@ import com.nextgis.mobile.R;
 import com.nextgis.mobile.fragment.LayersFragment;
 import com.nextgis.mobile.fragment.MapFragment;
 import com.nextgis.mobile.util.SettingsConstants;
+import com.nextgis.mobile.util.Updater;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -159,6 +160,8 @@ public class MainActivity extends NGActivity
                     Manifest.permission.GET_ACCOUNTS, Manifest.permission.WRITE_EXTERNAL_STORAGE};
             requestPermissions(R.string.permissions, R.string.requested_permissions, PERMISSIONS_REQUEST, permissions);
         }
+
+        new Updater().execute(this);
     }
 
     protected boolean hasPermissions() {

@@ -3,8 +3,9 @@
   ~ Project:  NextGIS Mobile
   ~ Purpose:  Mobile GIS for Android.
   ~ Author:   Maxim Dubinin, maxim.dubinin@nextgis.com
+  ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2012-2016 NextGIS, info@nextgis.com
+  ~ Copyright (c) 2012-2017 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -138,4 +139,6 @@
     <string name="location_distance_to">Distance to (m)</string>
     <string name="pref_ga">Collect statistics</string>
     <string name="pref_ga_sum">Send anonymous Google Analytics data to improve app quality and stability</string>
+    <string name="new_update">Version %1$s found. Would you like to update?</string>
+    <string name="update_title">Update?</string>
 </resources>
