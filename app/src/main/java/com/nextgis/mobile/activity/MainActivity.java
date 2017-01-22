@@ -29,6 +29,7 @@ import android.content.BroadcastReceiver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SyncResult;
@@ -46,6 +47,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.Pair;
@@ -74,13 +76,18 @@ import com.nextgis.maplibui.fragment.LayerFillProgressDialogFragment;
 import com.nextgis.maplibui.service.TrackerService;
 import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.maplibui.util.ControlHelper;
+import com.nextgis.maplibui.util.NGIDUtils;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
+import com.nextgis.mobile.BuildConfig;
 import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.fragment.LayersFragment;
 import com.nextgis.mobile.fragment.MapFragment;
+import com.nextgis.mobile.util.ApkDownloader;
 import com.nextgis.mobile.util.SettingsConstants;
-import com.nextgis.mobile.util.Updater;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -161,7 +168,34 @@ public class MainActivity extends NGActivity
             requestPermissions(R.string.permissions, R.string.requested_permissions, PERMISSIONS_REQUEST, permissions);
         }
 
-        new Updater().execute(this);
+        NGIDUtils.get(this, SettingsConstants.APK_VERSION_UPDATE, new NGIDUtils.OnFinish() {
+            @Override
+            public void onFinish(String data) {
+                if (data != null) {
+                    try {
+                        JSONObject json = new JSONObject(data);
+                        if (json.getInt("versionCode") <= BuildConfig.VERSION_CODE)
+                            return;
+
+                        // there is new version, create download dialog
+                        final String url = json.getString("path");
+                        DialogInterface.OnClickListener dcl = new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int button) {
+                                new ApkDownloader(MainActivity.this).execute(url, mPreferences.getString(NGIDUtils.PREF_ACCESS_TOKEN, ""));
+                            }
+                        };
+
+                        AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
+                        String update = String.format(getString(R.string.new_update), json.getString("versionName"));
+                        adb.setMessage(update).setTitle(R.string.update_title)
+                           .setPositiveButton(R.string.yes, dcl).setNegativeButton(R.string.no, null).show();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
     }
 
     protected boolean hasPermissions() {
