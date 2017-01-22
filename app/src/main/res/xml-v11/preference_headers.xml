@@ -6,7 +6,7 @@
   ~ Author:   NikitaFeodonit, nfeodonit@yandex.com
   ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2012-2016 NextGIS, info@nextgis.com
+  ~ Copyright (c) 2012-2017 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -51,10 +51,16 @@
             android:name="settings"
             android:value="tracks"/>
     </header>
-    <header android:title="@string/ngw_settings">
+    <header android:title="@string/ngw_accounts">
         <intent
             android:action="com.nextgis.mobile.PREFS_NGW"
-            android:targetClass="com.nextgis.mobile.activity.NGWSettingsActivityProxy"
+            android:targetClass="com.nextgis.maplibui.activity.NGWSettingsActivity"
+            android:targetPackage="com.nextgis.mobile"/>
+    </header>
+    <header android:title="@string/ngid_settings">
+        <intent
+            android:action="com.nextgis.mobile.PREFS_NGID"
+            android:targetClass="com.nextgis.maplibui.activity.NGIDSettingsActivity"
             android:targetPackage="com.nextgis.mobile"/>
     </header>
 </preference-headers>
