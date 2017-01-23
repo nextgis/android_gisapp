@@ -144,4 +144,6 @@
     <string name="update_title">Update?</string>
     <string name="update_check">Check updates</string>
     <string name="update_no">No updates found</string>
+    <string name="intro1">Welcome to NextGIS Mobile!\n\nThis app can:\n* Create and navigate multi-layered maps\n* Add and create geodata\n* Help in field data collection\n* Write tracks\nand much more!</string>
+    <string name="intro2">Log in to get the most out of this app, syncronize your data and get regular updates (support plan is needed). You can log in later in Settings.</string>
 </resources>

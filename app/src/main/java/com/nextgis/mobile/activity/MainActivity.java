@@ -129,6 +129,12 @@ public class MainActivity extends NGActivity
         PreferenceManager.setDefaultValues(this, R.xml.preferences_location, false);
         PreferenceManager.setDefaultValues(this, R.xml.preferences_tracks, false);
 
+        if (!mPreferences.getBoolean(SettingsConstants.KEY_PREF_INTRO, false)) {
+            startActivity(new Intent(this, IntroActivity.class));
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_main);
         mMessageReceiver = new MessageReceiver();
 

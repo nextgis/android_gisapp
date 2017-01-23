@@ -61,6 +61,7 @@ public interface SettingsConstants
     String KEY_PREF_SHOW_SCALE_RULER    = "show_scale_ruler";
     String KEY_PREF_SHOW_MEASURING      = "show_ruler_measuring";
     String KEY_PREF_GA                  = "ga_enabled";
+    String KEY_PREF_INTRO               = "app_intro";
 
     int FIRSTSTART_DOWNLOADZOOM = 5;
 

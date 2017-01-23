@@ -96,7 +96,7 @@ public class ApkDownloader extends AsyncTask<String, Integer, String> {
 
             connection.connect();
             int fileLength = connection.getContentLength() / 1024;
-            InputStream input = new BufferedInputStream(url.openStream());
+            InputStream input = new BufferedInputStream(connection.getInputStream());
             OutputStream output = new FileOutputStream(mApkPath);
 
             byte data[] = new byte[1024];
