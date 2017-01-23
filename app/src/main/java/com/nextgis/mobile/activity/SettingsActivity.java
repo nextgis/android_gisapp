@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2016 NextGIS, info@nextgis.com
+ * Copyright (c) 2012-2017 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,6 +53,7 @@ import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.dialog.SelectMapPathDialogPreference;
 import com.nextgis.mobile.fragment.SettingsFragment;
+import com.nextgis.mobile.util.ApkDownloader;
 import com.nextgis.mobile.util.IntEditTextPreference;
 
 import java.io.File;
@@ -146,6 +147,9 @@ public class SettingsActivity
                     final ListPreference minDistance = (ListPreference) findPreference(
                             SettingsConstants.KEY_PREF_TRACKS_MIN_DISTANCE);
                     initializeLocationMins(minTime, minDistance, true);
+                    break;
+                case SettingsConstantsUI.ACTION_PREFS_UPDATE:
+                    ApkDownloader.check(this, true);
                     break;
             }
         } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {

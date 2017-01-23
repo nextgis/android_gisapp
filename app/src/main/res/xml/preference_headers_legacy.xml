@@ -59,4 +59,10 @@
             android:targetClass="com.nextgis.maplibui.activity.NGIDSettingsActivity"
             android:targetPackage="com.nextgis.mobile"/>
     </Preference>
+    <Preference android:title="@string/update_check">
+        <intent
+            android:action="com.nextgis.mobile.PREFS_UPDATE"
+            android:targetClass="com.nextgis.mobile.activity.SettingsActivity"
+            android:targetPackage="com.nextgis.mobile"/>
+    </Preference>
 </PreferenceScreen>

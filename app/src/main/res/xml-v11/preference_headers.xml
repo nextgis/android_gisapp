@@ -63,4 +63,11 @@
             android:targetClass="com.nextgis.maplibui.activity.NGIDSettingsActivity"
             android:targetPackage="com.nextgis.mobile"/>
     </header>
+    <header
+        android:fragment="com.nextgis.mobile.fragment.SettingsFragment"
+        android:title="@string/update_check">
+        <extra
+            android:name="updater"
+            android:value="true"/>
+    </header>
 </preference-headers>

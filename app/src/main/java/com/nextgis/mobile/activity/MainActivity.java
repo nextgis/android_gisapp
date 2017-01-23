@@ -168,34 +168,7 @@ public class MainActivity extends NGActivity
             requestPermissions(R.string.permissions, R.string.requested_permissions, PERMISSIONS_REQUEST, permissions);
         }
 
-        NGIDUtils.get(this, SettingsConstants.APK_VERSION_UPDATE, new NGIDUtils.OnFinish() {
-            @Override
-            public void onFinish(String data) {
-                if (data != null) {
-                    try {
-                        JSONObject json = new JSONObject(data);
-                        if (json.getInt("versionCode") <= BuildConfig.VERSION_CODE)
-                            return;
-
-                        // there is new version, create download dialog
-                        final String url = json.getString("path");
-                        DialogInterface.OnClickListener dcl = new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int button) {
-                                new ApkDownloader(MainActivity.this).execute(url, mPreferences.getString(NGIDUtils.PREF_ACCESS_TOKEN, ""));
-                            }
-                        };
-
-                        AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-                        String update = String.format(getString(R.string.new_update), json.getString("versionName"));
-                        adb.setMessage(update).setTitle(R.string.update_title)
-                           .setPositiveButton(R.string.yes, dcl).setNegativeButton(R.string.no, null).show();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
+        ApkDownloader.check(this, false);
     }
 
     protected boolean hasPermissions() {

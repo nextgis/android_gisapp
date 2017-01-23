@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2016 NextGIS, info@nextgis.com
+ * Copyright (c) 2012-2017 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.SettingsActivity;
 import com.nextgis.mobile.dialog.SelectMapPathDialogPreference;
+import com.nextgis.mobile.util.ApkDownloader;
 import com.nextgis.mobile.util.IntEditTextPreference;
 
 import static com.nextgis.mobile.activity.SettingsActivity.*;
@@ -51,6 +52,11 @@ public class SettingsFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        if (getArguments().containsKey("updater")) {
+            ApkDownloader.check(getActivity(), true);
+            return;
+        }
+
         String settings = getArguments().getString("settings");
         if (settings == null)
             return;

@@ -29,11 +29,19 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.v4.content.FileProvider;
+import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.nextgis.maplibui.util.ControlHelper;
+import com.nextgis.maplibui.util.NGIDUtils;
+import com.nextgis.mobile.BuildConfig;
 import com.nextgis.mobile.R;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -50,9 +58,11 @@ public class ApkDownloader extends AsyncTask<String, Integer, String> {
     private Activity mActivity;
     private ProgressDialog mProgress;
     private String mApkPath;
+    private boolean mAutoClose;
 
-    public ApkDownloader(Activity activity) {
+    private ApkDownloader(Activity activity, boolean showToast) {
         mActivity = activity;
+        mAutoClose = showToast;
     }
 
     @Override
@@ -133,6 +143,8 @@ public class ApkDownloader extends AsyncTask<String, Integer, String> {
             Toast.makeText(mActivity, result, Toast.LENGTH_LONG).show();    // show some info
 
         ControlHelper.unlockScreenOrientation(mActivity);
+        if (mAutoClose)
+            mActivity.finish();
     }
 
     @Override
@@ -148,5 +160,51 @@ public class ApkDownloader extends AsyncTask<String, Integer, String> {
         }
 
         mProgress.setProgress(values[0]);
+    }
+
+    public static void check(final Activity activity, final boolean showToast) {
+        final String token = PreferenceManager.getDefaultSharedPreferences(activity).getString(NGIDUtils.PREF_ACCESS_TOKEN, "");
+        if (showToast && TextUtils.isEmpty(token)) {
+            Toast.makeText(activity, R.string.error_401, Toast.LENGTH_SHORT).show();
+            activity.finish();
+            return;
+        }
+
+        NGIDUtils.get(activity, SettingsConstants.APK_VERSION_UPDATE, new NGIDUtils.OnFinish() {
+            @Override
+            public void onFinish(String data) {
+                if (data != null) {
+                    try {
+                        JSONObject json = new JSONObject(data);
+                        if (json.getInt("versionCode") <= BuildConfig.VERSION_CODE) {
+                            if (showToast) {
+                                Toast.makeText(activity, R.string.update_no, Toast.LENGTH_SHORT).show();
+                                activity.finish();
+                            }
+                            return;
+                        }
+
+                        // there is new version, create download dialog
+                        final String url = json.getString("path");
+                        DialogInterface.OnClickListener dcl = new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int button) {
+                                if (button == DialogInterface.BUTTON_POSITIVE)
+                                    new ApkDownloader(activity, showToast).execute(url, token);
+                                else if (showToast)
+                                    activity.finish();
+                            }
+                        };
+
+                        AlertDialog.Builder adb = new AlertDialog.Builder(activity);
+                        String update = String.format(activity.getString(R.string.update_new), json.getString("versionName"));
+                        adb.setMessage(update).setTitle(R.string.update_title)
+                           .setPositiveButton(R.string.yes, dcl).setNegativeButton(R.string.no, dcl).show();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
     }
 }
