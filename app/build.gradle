@@ -30,8 +30,8 @@ android {
         applicationId 'com.nextgis.mobile'
         minSdkVersion 9
         targetSdkVersion 25
-        versionCode 23
-        versionName '2.5.4'
+        versionCode 24
+        versionName '2.5.5'
     }
     productFlavors {
     }
