@@ -75,14 +75,16 @@ public class SelectMapPathDialogPreference
             @NonNull
             View view)
     {
-        ListView dialogListView = (ListView) view.findViewById(com.nextgis.maplibui.R.id.listView);
         mListAdapter.setTypeMask(Constants.FILETYPE_FOLDER);
         mListAdapter.setCurrentPath(mPath);
         mListAdapter.setCheckState(new ArrayList<String>());
         mListAdapter.setCanWrite(true);
         mListAdapter.setCanSelectMulti(false);
-        dialogListView.setAdapter(mListAdapter);
-        dialogListView.setOnItemClickListener(mListAdapter);
+        ListView dialogListView = (ListView) view.findViewById(com.nextgis.maplibui.R.id.listView);
+        if (dialogListView != null) {
+            dialogListView.setAdapter(mListAdapter);
+            dialogListView.setOnItemClickListener(mListAdapter);
+        }
 
         LinearLayout pathView = (LinearLayout) view.findViewById(com.nextgis.maplibui.R.id.path);
         mListAdapter.setPathLayout(pathView);
@@ -196,8 +198,8 @@ public class SelectMapPathDialogPreference
     protected void onDialogClosed(boolean positiveResult)
     {
         super.onDialogClosed(positiveResult);
-        if (positiveResult && mListAdapter.getCheckState().size() > 0) {
-            String value = mListAdapter.getCheckState().get(0);
+        if (positiveResult) {
+            String value = mListAdapter.getCurrentPath().getAbsolutePath();
             if (callChangeListener(value)) {
                 setText(value);
                 setSummary(value);

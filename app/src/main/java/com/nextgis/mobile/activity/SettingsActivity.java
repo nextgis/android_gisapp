@@ -414,10 +414,7 @@ public class SettingsActivity
 
                             File newPath = new File((String) o);
                             if (newPath.listFiles().length != 0) {
-                                Toast.makeText(
-                                        context, context.getString(
-                                                R.string.warning_folder_should_be_empty),
-                                        Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, context.getString(R.string.warning_folder_should_be_empty), Toast.LENGTH_LONG).show();
                                 return false;
                             }
 
@@ -591,51 +588,39 @@ public class SettingsActivity
     }
 
 
-    protected static class BackgroundMoveTask
-            extends AsyncTask<Void, Void, Void>
-    {
-        protected ProgressDialog mProgressDialog;
-        protected Activity       mActivity;
-        protected MapBase        mMap;
-        protected File           mPath;
+    protected static class BackgroundMoveTask extends AsyncTask<Void, Void, Void> {
+        private ProgressDialog mProgressDialog;
+        private Activity mActivity;
+        private MapBase mMap;
+        private File mPath;
 
-
-        public BackgroundMoveTask(
-                Activity activity,
-                MapBase map,
-                File path)
-        {
+        BackgroundMoveTask(Activity activity, MapBase map, File path) {
             mActivity = activity;
             mMap = map;
             mPath = path;
         }
 
-
         @Override
-        protected Void doInBackground(Void... voids)
-        {
+        protected Void doInBackground(Void... voids) {
             mMap.moveTo(mPath);
             return null;
         }
 
-
         @Override
-        protected void onPreExecute()
-        {
+        protected void onPreExecute() {
             //not good solution but rare used so let it be
             ControlHelper.lockScreenOrientation(mActivity);
-            mProgressDialog = ProgressDialog.show(
-                    mActivity, mActivity.getString(R.string.moving),
-                    mActivity.getString(R.string.warning_map_moving), true);
+            mProgressDialog = new ProgressDialog(mActivity);
+            mProgressDialog.setTitle(R.string.moving);
+            mProgressDialog.setMessage(mActivity.getString(R.string.warning_map_moving));
+            mProgressDialog.setIndeterminate(true);
             mProgressDialog.setCancelable(false);
-            mProgressDialog.setIcon(
-                    mActivity.getResources().getDrawable(R.drawable.ic_action_warning_light));
+            mProgressDialog.setIcon(R.drawable.ic_action_warning_light);
+            mProgressDialog.show();
         }
 
-
         @Override
-        protected void onPostExecute(Void aVoid)
-        {
+        protected void onPostExecute(Void aVoid) {
             mProgressDialog.dismiss();
             ControlHelper.unlockScreenOrientation(mActivity);
         }
