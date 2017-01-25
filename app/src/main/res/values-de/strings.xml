@@ -24,8 +24,7 @@
 
 <resources>
 
-    <string name="app_name">NextGIS Mobile</string>    
-    <string name="navigation_drawer_open">Open navigation drawer</string>    
+    <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_settings">Einstellungen</string>  
     <string name="action_add">Neue Ebene</string> 

@@ -24,7 +24,6 @@
 
 <resources>
 
-    <string name="app_name">NextGIS Mobile</string>
     <string name="navigation_drawer_open">नेविगेशन दराज खुला</string>
     <string name="navigation_drawer_close">नेविगेशन दराज बंद</string>
     <string name="action_settings">सेटिंग्स</string>

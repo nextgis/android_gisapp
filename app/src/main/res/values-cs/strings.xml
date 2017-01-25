@@ -24,7 +24,6 @@
 
 <resources>
 
-    <string name="app_name">NextGIS Mobile</string>
     <string name="navigation_drawer_open">Otevřít nabídku</string>
     <string name="navigation_drawer_close">Zavřít nabídku</string>
     <string name="action_settings">Nastavení</string>

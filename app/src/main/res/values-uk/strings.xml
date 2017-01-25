@@ -23,7 +23,6 @@
 
 <resources>
 
-    <string name="app_name">NextGIS Mobile</string>
     <string name="navigation_drawer_open">Відкрити панель навігації</string>
     <string name="navigation_drawer_close">Закрити панель навігації</string>
     <string name="action_settings">Налаштування</string>
