@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2016 NextGIS, info@nextgis.com
+ * Copyright (c) 2012-2017 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,9 +32,12 @@ import android.os.Handler;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 
+import com.google.android.gms.analytics.ExceptionReporter;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.StandardExceptionParser;
 import com.google.android.gms.analytics.Tracker;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.datasource.Field;
@@ -89,8 +92,23 @@ public class MainApplication extends GISApplication
         GoogleAnalytics.getInstance(this).setAppOptOut(!mSharedPreferences.getBoolean(KEY_PREF_GA, true));
         GoogleAnalytics.getInstance(this).setDryRun(DEBUG_MODE);
         getTracker();
+        setExceptionHandler();
 
         super.onCreate();
+    }
+
+    private void setExceptionHandler() {
+        ExceptionReporter handler = new ExceptionReporter(getTracker(), Thread.getDefaultUncaughtExceptionHandler(), this);
+        StandardExceptionParser exceptionParser =
+                new StandardExceptionParser(getApplicationContext(), null) {
+                    @Override
+                    public String getDescription(String threadName, Throwable t) {
+                        return "{" + threadName + "} " + Log.getStackTraceString(t);
+                    }
+                };
+
+        handler.setExceptionParser(exceptionParser);
+        Thread.setDefaultUncaughtExceptionHandler(handler);
     }
 
     public synchronized Tracker getTracker() {
