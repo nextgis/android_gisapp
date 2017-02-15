@@ -20,32 +20,18 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical">
-
-    <include
-        layout="@layout/actionbar"/>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/intro"
+    android:orientation="vertical">
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"/>
-
-    <com.tech.freak.wizardpager.ui.StepPagerStrip
-        android:id="@+id/strip"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:gravity="center"
-        android:paddingBottom="8dp"
-        android:paddingEnd="@dimen/list_item_padding_right"
-        android:paddingLeft="@dimen/list_item_padding_left"
-        android:paddingRight="@dimen/list_item_padding_right"
-        android:paddingStart="@dimen/list_item_padding_left"/>
 
     <View
         android:id="@+id/divider"

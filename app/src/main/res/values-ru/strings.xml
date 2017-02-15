@@ -147,4 +147,18 @@
     <string name="update_no">Обновлений не найдено</string>
     <string name="intro1">Добро пожаловать в NextGIS Mobile!\n\nЭто приложение поможет вам:\n* Показывать карты из одного или нескольких слоёв\n* Загружать и создавать геоданные\n* Осуществлять полевой сбор данных\n* Записывать треки\nи многое другое!</string>
     <string name="intro2">Войдите для эффективной работы, синхронизации и получения регулярных обновлений (необходима подписка). Вы можете войти позже через настройки.</string>
+    <string name="support_available">Доступна поддерживаемая версия</string>
+    <string name="more">Подробнее</string>
+    <string name="pricing">http://nextgis.ru/pricing/</string>
+    <string name="intro1_2">Загружайте и создавайте геоданные</string>
+    <string name="intro1_3">Собирайте полевые данные</string>
+    <string name="intro1_4">Записывайте треки</string>
+    <string name="intro1_1">Создавайте многослойные карты</string>
+    <string name="intro2_1">Новые функции, недоступные в бесплатной версии</string>
+    <string name="intro2_2">Регулярные обновления</string>
+    <string name="intro2_3">Быстрое исправление ошибок</string>
+    <string name="intro2_4">Прямая поддержка</string>
+    <string name="intro_more">Получите больше:</string>
+    <string name="intro_free">У вас бесплатная версия приложения</string>
+    <string name="intro_get_pro">Получить NextGIS Mobile Pro</string>
 </resources>

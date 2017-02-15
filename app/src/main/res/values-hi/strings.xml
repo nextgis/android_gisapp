@@ -147,4 +147,18 @@
     <string name="update_no">No updates found</string>
     <string name="intro1">Welcome to NextGIS Mobile!\n\nThis app can:\n* Create and navigate multi-layered maps\n* Add and create geodata\n* Help in field data collection\n* Write tracks\nand much more!</string>
     <string name="intro2">Log in to get the most out of this app, syncronize your data and get regular updates (support plan is needed). You can log in later in Settings.</string>
+    <string name="support_available">Supported version available</string>
+    <string name="more">More</string>
+    <string name="pricing">http://nextgis.com/pricing/</string>
+    <string name="intro1_1">Create multi-layered maps</string>
+    <string name="intro1_2">Add and create geodata</string>
+    <string name="intro1_3">Collect field data</string>
+    <string name="intro1_4">Record tracks</string>
+    <string name="intro2_1">New functionality, unavailable in trial version</string>
+    <string name="intro2_2">Regular updates</string>
+    <string name="intro2_3">Quick bug-fixing</string>
+    <string name="intro2_4">Direct support</string>
+    <string name="intro_more">Get more:</string>
+    <string name="intro_free">Your app version is free</string>
+    <string name="intro_get_pro">Get NextGIS Mobile Pro</string>
 </resources>

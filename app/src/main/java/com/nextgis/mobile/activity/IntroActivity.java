@@ -23,8 +23,7 @@ package com.nextgis.mobile.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -35,11 +34,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.nextgis.maplibui.activity.NGActivity;
-import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.util.SettingsConstants;
 import com.tech.freak.wizardpager.model.AbstractWizardModel;
@@ -48,21 +44,14 @@ import com.tech.freak.wizardpager.model.Page;
 import com.tech.freak.wizardpager.model.PageList;
 import com.tech.freak.wizardpager.model.ReviewItem;
 import com.tech.freak.wizardpager.ui.PageFragmentCallbacks;
-import com.tech.freak.wizardpager.ui.StepPagerStrip;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 public class IntroActivity extends NGActivity implements PageFragmentCallbacks, ViewPager.OnPageChangeListener, View.OnClickListener {
-    private static final String IMAGE_ID = "IMAGE";
-    private static final String TEXT_ID = "TEXT";
-
     private AbstractWizardModel mWizardModel = new IntroWizardModel(this);
 
     private ViewPager mPager;
-    private StepPagerStrip mStepPagerStrip;
-    private IntroPagerAdapter mPagerAdapter;
     private List<Page> mCurrentPageSequence;
     private Button mNextButton, mPrevButton;
 
@@ -70,28 +59,17 @@ public class IntroActivity extends NGActivity implements PageFragmentCallbacks, 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
-        setToolbar(R.id.main_toolbar);
 
         mCurrentPageSequence = mWizardModel.getCurrentPageSequence();
-        mPagerAdapter = new IntroPagerAdapter(getSupportFragmentManager());
+        IntroPagerAdapter pagerAdapter = new IntroPagerAdapter(getSupportFragmentManager());
         mPager = (ViewPager) findViewById(R.id.pager);
-        mPager.setAdapter(mPagerAdapter);
-        mStepPagerStrip = (StepPagerStrip) findViewById(R.id.strip);
-        mStepPagerStrip.setOnPageSelectedListener(new StepPagerStrip.OnPageSelectedListener() {
-            @Override
-            public void onPageStripSelected(int position) {
-                position = Math.min(mPagerAdapter.getCount() - 1, position);
-                if (mPager.getCurrentItem() != position)
-                    mPager.setCurrentItem(position);
-            }
-        });
+        mPager.setAdapter(pagerAdapter);
 
         mPager.addOnPageChangeListener(this);
         mNextButton = (Button) findViewById(R.id.next_button);
         mPrevButton = (Button) findViewById(R.id.prev_button);
         mNextButton.setOnClickListener(this);
         mPrevButton.setOnClickListener(this);
-        mStepPagerStrip.setPageCount(mCurrentPageSequence.size());
         updateBottomBar();
     }
 
@@ -136,7 +114,6 @@ public class IntroActivity extends NGActivity implements PageFragmentCallbacks, 
 
     @Override
     public void onPageSelected(int position) {
-        mStepPagerStrip.setCurrentPage(position);
         updateBottomBar();
     }
 
@@ -173,7 +150,7 @@ public class IntroActivity extends NGActivity implements PageFragmentCallbacks, 
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
     }
 
@@ -185,8 +162,7 @@ public class IntroActivity extends NGActivity implements PageFragmentCallbacks, 
 
         @Override
         protected PageList onNewRootPageList() {
-            return new PageList(new IntroPage(this, "1").setText(R.string.intro1).setImage(R.drawable.intro_logo),
-                                new IntroPage(this, "2").setText(R.string.intro2));
+            return new PageList(new IntroPage(this, "1"), new IntroPage(this, "2"), new IntroPage(this, "3"));
         }
     }
 
@@ -205,24 +181,12 @@ public class IntroActivity extends NGActivity implements PageFragmentCallbacks, 
         public void getReviewItems(ArrayList<ReviewItem> dest) {
 
         }
-
-        public IntroPage setImage(int imageId) {
-            mData.putInt(IMAGE_ID, imageId);
-            return this;
-        }
-
-        public IntroPage setText(int stringId) {
-            mData.putInt(TEXT_ID, stringId);
-            return this;
-        }
     }
 
     public static class IntroFragment extends Fragment {
         private static final String ARG_KEY = "key";
 
-        private PageFragmentCallbacks mCallbacks;
         private String mKey;
-        private Page mPage;
 
         public static IntroFragment newInstance(String key) {
             Bundle args = new Bundle();
@@ -239,49 +203,29 @@ public class IntroActivity extends NGActivity implements PageFragmentCallbacks, 
 
             Bundle args = getArguments();
             mKey = args.getString(ARG_KEY);
-            mPage = mCallbacks.onGetPage(mKey);
-        }
-
-        @Override
-        public void onAttach(Context context) {
-            super.onAttach(context);
-            mCallbacks = (PageFragmentCallbacks) context;
-        }
-
-        @Override
-        public void onDetach() {
-            super.onDetach();
-            mCallbacks = null;
         }
 
         @Nullable
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            View rootView;
-            if (mKey.equals("2")) {
-                rootView = inflater.inflate(R.layout.fragment_intro_login, container, false);
-            } else {
-                rootView = inflater.inflate(R.layout.fragment_intro, container, false);
-
-                final int image = mPage.getData().getInt(IMAGE_ID);
-                final ImageView imageView = (ImageView) rootView.findViewById(R.id.imageView);
-                imageView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        InputStream is = getResources().openRawResource(image);
-                        BitmapFactory.Options options = ControlHelper.getOptions(is, imageView.getMeasuredWidth(), imageView.getMeasuredWidth());
-                        is = getResources().openRawResource(image);
-                        Bitmap bitmap = ControlHelper.getBitmap(is, options);
-                        imageView.setImageBitmap(bitmap);
-                    }
-                });
+            switch (mKey) {
+                case "1":
+                    return inflater.inflate(R.layout.fragment_intro1, container, false);
+                case "2":
+                    View v = inflater.inflate(R.layout.fragment_intro2, container, false);
+                    v.findViewById(R.id.get_pro).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent pricing = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.pricing)));
+                            startActivity(pricing);
+                        }
+                    });
+                    return v;
+                case "3":
+                    return inflater.inflate(R.layout.fragment_intro_login, container, false);
+                default:
+                    return null;
             }
-
-            int text = mPage.getData().getInt(TEXT_ID);
-            TextView textView = (TextView) rootView.findViewById(R.id.textView);
-            textView.setText(text);
-
-            return rootView;
         }
     }
 }
