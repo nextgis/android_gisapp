@@ -41,56 +41,28 @@
         android:textSize="32sp"/>
 
     <TextView
-        android:id="@+id/tip1"
-        style="@style/TextAppearance.AppCompat.Medium"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="8dp"
+        style="@style/IntroTip"
         android:drawableLeft="@drawable/point_yellow"
         android:drawableStart="@drawable/point_yellow"
-        android:gravity="center_vertical"
-        android:text="@string/intro2_1"
-        android:textColor="@color/color_white"/>
+        android:text="@string/intro2_1"/>
 
     <TextView
-        android:id="@+id/tip2"
-        style="@style/TextAppearance.AppCompat.Medium"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="8dp"
+        style="@style/IntroTip"
         android:drawableLeft="@drawable/point_indigo"
         android:drawableStart="@drawable/point_indigo"
-        android:gravity="center_vertical"
-        android:text="@string/intro2_2"
-        android:textColor="@color/color_white"/>
+        android:text="@string/intro2_2"/>
 
     <TextView
-        android:id="@+id/tip3"
-        style="@style/TextAppearance.AppCompat.Medium"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="8dp"
+        style="@style/IntroTip"
         android:drawableLeft="@drawable/point_blue"
         android:drawableStart="@drawable/point_blue"
-        android:gravity="center_vertical"
-        android:text="@string/intro2_3"
-        android:textColor="@color/color_white"/>
+        android:text="@string/intro2_3"/>
 
     <TextView
-        android:id="@+id/tip4"
-        style="@style/TextAppearance.AppCompat.Medium"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="8dp"
+        style="@style/IntroTip"
         android:drawableLeft="@drawable/point_red"
         android:drawableStart="@drawable/point_red"
-        android:gravity="center_vertical"
-        android:text="@string/intro2_4"
-        android:textColor="@color/color_white"/>
+        android:text="@string/intro2_4"/>
 
     <View
         android:layout_width="1dp"
