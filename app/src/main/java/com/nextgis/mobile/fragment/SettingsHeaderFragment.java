@@ -21,42 +21,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextgis.mobile.util;
+package com.nextgis.mobile.fragment;
 
-import android.content.Context;
-import android.support.v7.preference.EditTextPreference;
-import android.util.AttributeSet;
+import android.support.v7.preference.PreferenceScreen;
+import com.nextgis.maplibui.fragment.NGPreferenceHeaderFragment;
+import com.nextgis.mobile.R;
 
-public class IntEditTextPreference extends EditTextPreference
+
+public class SettingsHeaderFragment
+        extends NGPreferenceHeaderFragment
 {
-	public IntEditTextPreference(Context context) {
-		super(context);
-	}
-
-	public IntEditTextPreference(Context context, AttributeSet attrs) {
-		super(context, attrs);
-	}
-
-	public IntEditTextPreference(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-	}
-
-    public IntEditTextPreference(
-            Context context,
-            AttributeSet attrs,
-            int defStyleAttr,
-            int defStyleRes)
-    {
-        super(context, attrs, defStyleAttr, defStyleRes);
-    }
-
     @Override
-	public String getPersistedString(String defaultReturnValue) {
-		return String.valueOf(getPersistedInt(-1));
-	}
-
-	@Override
-	public boolean persistString(String value) {
-		return persistInt(Integer.valueOf(value));
-	}
+    protected void createHeaders(PreferenceScreen screen)
+    {
+        addPreferencesFromResource(R.xml.preference_headers);
+    }
 }

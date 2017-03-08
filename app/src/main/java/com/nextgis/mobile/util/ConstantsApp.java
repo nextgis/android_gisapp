@@ -23,40 +23,13 @@
 
 package com.nextgis.mobile.util;
 
-import android.content.Context;
-import android.support.v7.preference.EditTextPreference;
-import android.util.AttributeSet;
-
-public class IntEditTextPreference extends EditTextPreference
+public interface ConstantsApp
 {
-	public IntEditTextPreference(Context context) {
-		super(context);
-	}
+    /**
+     * Fragments tags
+     */
+    String FRAGMENT_SETTINGS_HEADER_FRAGMENT = "settings_header_fragment";
+    String FRAGMENT_SETTINGS_FRAGMENT = "settings_fragment";
 
-	public IntEditTextPreference(Context context, AttributeSet attrs) {
-		super(context, attrs);
-	}
-
-	public IntEditTextPreference(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-	}
-
-    public IntEditTextPreference(
-            Context context,
-            AttributeSet attrs,
-            int defStyleAttr,
-            int defStyleRes)
-    {
-        super(context, attrs, defStyleAttr, defStyleRes);
-    }
-
-    @Override
-	public String getPersistedString(String defaultReturnValue) {
-		return String.valueOf(getPersistedInt(-1));
-	}
-
-	@Override
-	public boolean persistString(String value) {
-		return persistInt(Integer.valueOf(value));
-	}
+    int DEFAULT_COORDINATES_FRACTION_DIGITS = 6;
 }

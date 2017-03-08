@@ -27,9 +27,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Handler;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -226,43 +224,23 @@ public class MainApplication extends GISApplication
     @Override
     public void showSettings(String settings)
     {
-        if(TextUtils.isEmpty(settings) || settings.equals(SettingsConstantsUI.ACTION_PREFS_GENERAL)) {
-            Intent intentSet = new Intent(this, SettingsActivity.class);
-            intentSet.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intentSet);
+        if(TextUtils.isEmpty(settings)) {
+            settings = SettingsConstantsUI.ACTION_PREFS_GENERAL;
         }
-        else if(settings.equals(SettingsConstantsUI.ACTION_PREFS_LOCATION)){
-            Intent locationSettings = new Intent(this, SettingsActivity.class);
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-                locationSettings.setAction(SettingsConstantsUI.ACTION_PREFS_LOCATION);
-            } else {
-                locationSettings.putExtra("settings", "location");
-                locationSettings.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
-                locationSettings.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT,
-                        SettingsFragment.class.getName());
-                locationSettings.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT_ARGUMENTS,
-                        locationSettings.getExtras());
-            }
 
-            locationSettings.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(locationSettings);
+        switch (settings) {
+            case SettingsConstantsUI.ACTION_PREFS_GENERAL:
+            case SettingsConstantsUI.ACTION_PREFS_LOCATION:
+            case SettingsConstantsUI.ACTION_PREFS_TRACKING:
+                break;
+            default:
+                return;
         }
-        else if(settings.equals(SettingsConstantsUI.ACTION_PREFS_TRACKING)){
-            Intent locationSettings = new Intent(this, SettingsActivity.class);
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-                locationSettings.setAction(SettingsConstantsUI.ACTION_PREFS_TRACKING);
-            } else {
-                locationSettings.putExtra("settings", "location");
-                locationSettings.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
-                locationSettings.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT,
-                        SettingsFragment.class.getName());
-                locationSettings.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT_ARGUMENTS,
-                        locationSettings.getExtras());
-            }
 
-            locationSettings.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(locationSettings);
-        }
+        Intent intent = new Intent(this, SettingsActivity.class);
+        intent.setAction(settings);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     @Override

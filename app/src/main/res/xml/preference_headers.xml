@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Project:  NextGIS Mobile
+  ~ Purpose:  Mobile GIS for Android.
+  ~ Author:   Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
+  ~ Author:   NikitaFeodonit, nfeodonit@yandex.com
+  ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
+  ~ ******************************************************************************
+  ~ Copyright (c) 2012-2017 NextGIS, info@nextgis.com
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<PreferenceScreen
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+    <PreferenceScreen
+            android:title="@string/general"
+            android:key="com.nextgis.mobile.PREFS_GENERAL"
+            >
+        <!-- We need the stub preference -->
+        <Preference android:title="@string/cancel"/>
+    </PreferenceScreen>
+
+    <PreferenceScreen
+            android:title="@string/map"
+            android:key="com.nextgis.mobile.PREFS_MAP"
+            >
+        <!-- We need the stub preference -->
+        <Preference android:title="@string/cancel"/>
+    </PreferenceScreen>
+
+    <PreferenceScreen
+            android:title="@string/location"
+            android:key="com.nextgis.mobile.PREFS_LOCATION"
+            >
+        <!-- We need the stub preference -->
+        <Preference android:title="@string/cancel"/>
+    </PreferenceScreen>
+
+    <PreferenceScreen
+            android:title="@string/tracks"
+            android:key="com.nextgis.mobile.PREFS_TRACKING"
+            >
+        <!-- We need the stub preference -->
+        <Preference android:title="@string/cancel"/>
+    </PreferenceScreen>
+
+    <PreferenceScreen
+            android:title="@string/ngw_accounts"
+            android:key="com.nextgis.mobile.PREFS_NGW"
+            >
+        <!-- We need the stub preference -->
+        <Preference android:title="@string/cancel"/>
+    </PreferenceScreen>
+
+    <PreferenceScreen
+            android:title="@string/ngid_settings"
+            android:key="com.nextgis.mobile.PREFS_NGID"
+            >
+        <!-- We need the stub preference -->
+        <Preference android:title="@string/cancel"/>
+    </PreferenceScreen>
+
+    <PreferenceScreen
+            android:title="@string/update_check"
+            android:key="com.nextgis.mobile.PREFS_UPDATE"
+            >
+        <!-- We need the stub preference -->
+        <Preference android:title="@string/cancel"/>
+    </PreferenceScreen>
+
+</PreferenceScreen>
