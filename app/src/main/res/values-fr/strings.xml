@@ -33,16 +33,16 @@
     <string name="action_add_local">Ouvrir localement</string>
     <string name="general">Général</string>
     <string name="general_summary">Paramètres généraux</string>
-    <string name="keep_screen_on">Garder l'écran allumé</string>
-    <string name="keep_screen_on_summary">Ne pas éteindre l'écran</string>
-    <string name="show_scale_ruler">Afficher l'échelle</string>
+    <string name="keep_screen_on">Garder l\'écran allumé</string>
+    <string name="keep_screen_on_summary">Ne pas éteindre l\'écran</string>
+    <string name="show_scale_ruler">Afficher l\'échelle</string>
     <string name="show_ruler_measuring">Afficher le bouton de mesure</string>
     <string name="show_zoom_controls">Afficher le contrôle du zoom</string>
     <string name="show_zoom_controls_summary">Afficher le contrôles du zoom sur la carte</string>
     <string name="show_compass">Afficher le compas</string>
     <string name="map">Carte</string>
     <string name="map_summary">Paramètres de carte</string>
-    <string name="app_description">Application mobile de SIG pour la collecte de données et leurs envoi vers un serveur. L'application permet aussi d'enregistrer des parcours et se synchronise avec un serveur.</string>
+    <string name="app_description">Application mobile de SIG pour la collecte de données et leurs envoi vers un serveur. L\'application permet aussi d\'enregistrer des parcours et se synchronise avec un serveur.</string>
     <string name="credits_intro">Crédits</string>
     <string name="credits">Certains icônes proviennent de <a href="http://icons8.com/android-icons">Icons8.com</a> sous licence <a href="http://creativecommons.org/licenses/by-nd/3.0/">CC BY-ND 3.0 license</a>, <a href="http://materialdesignicons.com/">materialdesignicons.com</a> et <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a> sous licence <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0 license</a></string>
     <string name="copyright"><![CDATA[© <a href=\"http://nextgis.com\">NextGIS</a>, 2012–2016]]></string>
@@ -55,8 +55,8 @@
     <string name="select_layer">Choisir la couche à éditer</string>
     <string name="menu_locate">Localiser</string>
     <string name="select_file">Choisir le fichier pour créer la couche</string>
-    <string name="warning_install_file_manager">Merci d'installer un explorateur de fichier</string>
-    <string name="error_file_unsupported">Le format n'est pas supporté</string>
+    <string name="warning_install_file_manager">Merci d\'installer un explorateur de fichier</string>
+    <string name="error_file_unsupported">Le format n\'est pas supporté</string>
     <string name="warning_not_implemented">Pas encore supporté</string>
     <string name="pref_location_accuracy">Précision de la position</string>
     <string name="pref_location_accuracy_gps">GPS</string>
@@ -79,16 +79,16 @@
     <string name="map_bg_neutral">Neutre</string>
     <string name="map_bg_dark">Sombre</string>
     <string name="map_path">Emplacement de la carte</string>
-    <string name="map_path_summary">Le chemin vers les fichiers de la carte. Modifier le dossier de stockage des cartes peut éviter de supprimer les données lors de la désinstallation de l'application.</string>
+    <string name="map_path_summary">Le chemin vers les fichiers de la carte. Modifier le dossier de stockage des cartes peut éviter de supprimer les données lors de la désinstallation de l\'application.</string>
     <string name="select_map_path">Choisir le chemin du dossier des cartes</string>
     <string name="moving">Déplacement…</string>
-    <string name="warning_map_moving">Opération dangereuse! Ne pas annuler ou forcer la fermeture de l'application durant le transfert des données vers un nouveau dossier! Vos données risqueraient d'être corrompues ou perdues!</string>
-    <string name="warning_folder_should_be_empty">Le dossier doit être vide. Annulation de l'opération.</string>
+    <string name="warning_map_moving">Opération dangereuse! Ne pas annuler ou forcer la fermeture de l\'application durant le transfert des données vers un nouveau dossier! Vos données risqueraient d\'être corrompues ou perdues!</string>
+    <string name="warning_folder_should_be_empty">Le dossier doit être vide. Annulation de l\'opération.</string>
     <string name="frequentest">, aussi souvent que possible</string>
     <string name="compass_vibrate">Vibrer au contact</string>
     <string name="compass_true_north">Afficher le nord vrai</string>
     <string name="compass_magnetic">Afficher le nord magnétique</string>
-    <string name="compass_keep_screen">Garder l'écran du compas allumé</string>
+    <string name="compass_keep_screen">Garder l\'écran du compas allumé</string>
     <string name="accurate_measures_count">Comptes des mesures GPS</string>
     <string name="action_delete">Supprimer</string>
     <string name="action_attributes">Attributs</string>
@@ -108,7 +108,7 @@
     <string name="polygons_for_edit">Polygones (éditable)</string>
     <string name="press_aback_again">Appuyer une nouvelle fois sur retour pour sortir</string>
     <string name="self_intersection">Entrecroisement détecté</string>
-    <string name="ring_outside">Un des trou est à l'extérieur de la limite externe</string>
+    <string name="ring_outside">Un des trou est à l\'extérieur de la limite externe</string>
     <string name="rings_intersection">Intersection de trous</string>
     <string name="interface_title">Interface</string>
     <string name="theme">Thème</string>
@@ -122,10 +122,10 @@
     <string name="same_layer_name">Il y a déja une couche avec le même nom</string>
     <string name="default_field_name">Description</string>
     <string name="pref_sync_notification">Afficher les notification de synchronisation</string>
-    <string name="tap_to_measure">Toucher l'écran pour placer les marqueurs</string>
+    <string name="tap_to_measure">Toucher l\'écran pour placer les marqueurs</string>
     <string name="permissions">Permissions</string>
-    <string name="requested_permissions">L'application nécessite certaines permissions pour fonctionner correctement. Notamment un accès en écriture sur les stockages externes (pour sauvegarder sur la carte sd),
-        , un accès au service de positionnement et l'accès aux contacts (afin de créer et modifier les comptes web).</string>
+    <string name="requested_permissions">L\'application nécessite certaines permissions pour fonctionner correctement. Notamment un accès en écriture sur les stockages externes (pour sauvegarder sur la carte sd),
+        , un accès au service de positionnement et l\'accès aux contacts (afin de créer et modifier les comptes web).</string>
     <string name="action_support">Support</string>
     <string name="app_support">Merci de nous écrire pour des questions, des rapports de bug et des suggestions de nouvelles fonctionnalités. Nous avons un support commercial.</string>
     <string name="email">Email</string>
@@ -140,13 +140,13 @@
     <string name="action_help">Aide</string>
     <string name="location_distance_to">Distance vers (m)</string>
     <string name="pref_ga">Collecte de données</string>
-    <string name="pref_ga_sum">Envoyer des données anonyme vers Google Analytics pour améliorer la qualité et la stabilité de l'application.</string>
-    <string name="update_new">La version %1$s est disponible. Voulez vous l'installer?</string>
+    <string name="pref_ga_sum">Envoyer des données anonyme vers Google Analytics pour améliorer la qualité et la stabilité de l\'application.</string>
+    <string name="update_new">La version %1$s est disponible. Voulez vous l\'installer?</string>
     <string name="update_title">Mettre à jour?</string>
     <string name="update_check">Vérifier les mise à jour</string>
     <string name="update_no">Pas de mise à jour trouvée</string>
     <string name="intro1">Bienvenue sur NextGIS Mobile!\n\nCette application peut:\n* Créé et naviguer sur des cartes multi-couches\n* Ajouter et manipuler des geodata\n* Aider à la collecte de donnée terrain\n* Enregistrer des parcours\n et beaucoup plus!</string>
-    <string name="intro2">Enregistrez vous pour tirer un maximum d'avantage de cette application, synchronisé vos données et optenez des mises à jour régulières (inscription au service de support nécessaire). Vous pouvez vous inscrire plus tard dans les paramètres.</string>
+    <string name="intro2">Enregistrez vous pour tirer un maximum d\'avantage de cette application, synchronisé vos données et optenez des mises à jour régulières (inscription au service de support nécessaire). Vous pouvez vous inscrire plus tard dans les paramètres.</string>
     <string name="support_available">Une version avec support et disponible</string>
     <string name="more">Plus</string>
     <string name="pricing">http://nextgis.com/pricing/</string>
@@ -154,11 +154,11 @@
     <string name="intro1_2">Ajouter et créer des geodata</string>
     <string name="intro1_3">Collecter des données terrain</string>
     <string name="intro1_4">Enregistrer des parcours</string>
-    <string name="intro2_1">Nouvelle fonctionalité, non disponible en version d'essai</string>
+    <string name="intro2_1">Nouvelle fonctionalité, non disponible en version d\'essai</string>
     <string name="intro2_2">Mise à jour régulière</string>
     <string name="intro2_3">Correction de bug rapide</string>
     <string name="intro2_4">Support direct</string>
     <string name="intro_more">Obtenez plus:</string>
-    <string name="intro_free">Votre version d'application est gratuite</string>
+    <string name="intro_free">Votre version d\'application est gratuite</string>
     <string name="intro_get_pro">Obtenez NextGIS Mobile Pro</string>
 </resources>
