@@ -50,14 +50,14 @@ import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.util.SelectMapPathPreference;
 import com.nextgis.mobile.util.ApkDownloader;
-import com.nextgis.mobile.util.ConstantsApp;
+import com.nextgis.mobile.util.AppConstants;
 import com.nextgis.mobile.util.IntEditTextPreference;
 
 import java.io.File;
 
 import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_MAP;
 import static com.nextgis.maplibui.service.TrackerService.isTrackerServiceRunning;
-import static com.nextgis.mobile.util.SettingsConstants.*;
+import static com.nextgis.mobile.util.AppSettingsConstants.*;
 
 
 public class SettingsFragment
@@ -65,7 +65,7 @@ public class SettingsFragment
         implements SelectMapPathPreference.OnAttachedListener
 {
     @Override
-    protected void createSettings(PreferenceScreen screen)
+    protected void createPreferences(PreferenceScreen screen)
     {
         switch (mAction) {
             case SettingsConstantsUI.ACTION_PREFS_GENERAL:
@@ -253,7 +253,7 @@ public class SettingsFragment
 
         if (etCoordinateFraction != null) {
             etCoordinateFraction.setSummary(etCoordinateFraction.getPersistedString(
-                    "" + ConstantsApp.DEFAULT_COORDINATES_FRACTION_DIGITS));
+                    "" + AppConstants.DEFAULT_COORDINATES_FRACTION_DIGITS));
 
             etCoordinateFraction.setOnPreferenceChangeListener(
                     new Preference.OnPreferenceChangeListener()

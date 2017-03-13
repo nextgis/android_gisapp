@@ -23,7 +23,7 @@
 
 package com.nextgis.mobile.util;
 
-public interface ConstantsApp
+public interface AppConstants
 {
     /**
      * Fragments tags

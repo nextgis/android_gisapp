@@ -33,7 +33,7 @@
             android:key="com.nextgis.mobile.PREFS_GENERAL"
             >
         <!-- We need the stub preference -->
-        <Preference android:title="@string/cancel"/>
+        <Preference/>
     </PreferenceScreen>
 
     <PreferenceScreen
@@ -41,7 +41,7 @@
             android:key="com.nextgis.mobile.PREFS_MAP"
             >
         <!-- We need the stub preference -->
-        <Preference android:title="@string/cancel"/>
+        <Preference/>
     </PreferenceScreen>
 
     <PreferenceScreen
@@ -49,7 +49,7 @@
             android:key="com.nextgis.mobile.PREFS_LOCATION"
             >
         <!-- We need the stub preference -->
-        <Preference android:title="@string/cancel"/>
+        <Preference/>
     </PreferenceScreen>
 
     <PreferenceScreen
@@ -57,7 +57,7 @@
             android:key="com.nextgis.mobile.PREFS_TRACKING"
             >
         <!-- We need the stub preference -->
-        <Preference android:title="@string/cancel"/>
+        <Preference/>
     </PreferenceScreen>
 
     <PreferenceScreen
@@ -65,7 +65,7 @@
             android:key="com.nextgis.mobile.PREFS_NGW"
             >
         <!-- We need the stub preference -->
-        <Preference android:title="@string/cancel"/>
+        <Preference/>
     </PreferenceScreen>
 
     <PreferenceScreen
@@ -73,7 +73,7 @@
             android:key="com.nextgis.mobile.PREFS_NGID"
             >
         <!-- We need the stub preference -->
-        <Preference android:title="@string/cancel"/>
+        <Preference/>
     </PreferenceScreen>
 
     <PreferenceScreen
@@ -81,7 +81,7 @@
             android:key="com.nextgis.mobile.PREFS_UPDATE"
             >
         <!-- We need the stub preference -->
-        <Preference android:title="@string/cancel"/>
+        <Preference/>
     </PreferenceScreen>
 
 </PreferenceScreen>

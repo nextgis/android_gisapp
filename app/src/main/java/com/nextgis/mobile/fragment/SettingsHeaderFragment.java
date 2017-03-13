@@ -32,7 +32,7 @@ public class SettingsHeaderFragment
         extends NGPreferenceHeaderFragment
 {
     @Override
-    protected void createHeaders(PreferenceScreen screen)
+    protected void createPreferences(PreferenceScreen screen)
     {
         addPreferencesFromResource(R.xml.preference_headers);
     }

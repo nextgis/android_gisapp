@@ -54,7 +54,6 @@ import com.nextgis.maplibui.mapui.TrackLayerUI;
 import com.nextgis.maplibui.mapui.VectorLayerUI;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.activity.SettingsActivity;
-import com.nextgis.mobile.fragment.SettingsFragment;
 
 import java.io.File;
 import java.io.IOException;
@@ -64,9 +63,9 @@ import java.util.List;
 import static com.nextgis.maplib.util.Constants.DEBUG_MODE;
 import static com.nextgis.maplib.util.Constants.MAP_EXT;
 import static com.nextgis.maplib.util.GeoConstants.TMSTYPE_OSM;
-import static com.nextgis.mobile.util.SettingsConstants.AUTHORITY;
-import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_APP_VERSION;
-import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_GA;
+import static com.nextgis.mobile.util.AppSettingsConstants.AUTHORITY;
+import static com.nextgis.mobile.util.AppSettingsConstants.KEY_PREF_APP_VERSION;
+import static com.nextgis.mobile.util.AppSettingsConstants.KEY_PREF_GA;
 
 /**
  * Main application class

@@ -37,7 +37,7 @@ import android.widget.Button;
 
 import com.nextgis.maplibui.activity.NGActivity;
 import com.nextgis.mobile.R;
-import com.nextgis.mobile.util.SettingsConstants;
+import com.nextgis.mobile.util.AppSettingsConstants;
 import com.tech.freak.wizardpager.model.AbstractWizardModel;
 import com.tech.freak.wizardpager.model.ModelCallbacks;
 import com.tech.freak.wizardpager.model.Page;
@@ -76,7 +76,7 @@ public class IntroActivity extends NGActivity implements PageFragmentCallbacks, 
     @Override
     public void finish() {
         super.finish();
-        mPreferences.edit().putBoolean(SettingsConstants.KEY_PREF_INTRO, true).apply();
+        mPreferences.edit().putBoolean(AppSettingsConstants.KEY_PREF_INTRO, true).apply();
         startActivity(new Intent(this, MainActivity.class));
     }
 

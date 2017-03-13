@@ -82,7 +82,7 @@ import static com.nextgis.maplibui.util.ConstantsUI.GA_LAYER;
 import static com.nextgis.maplibui.util.ConstantsUI.GA_LOCAL;
 import static com.nextgis.maplibui.util.ConstantsUI.GA_MENU;
 import static com.nextgis.maplibui.util.ConstantsUI.GA_NGW;
-import static com.nextgis.mobile.util.SettingsConstants.AUTHORITY;
+import static com.nextgis.mobile.util.AppSettingsConstants.AUTHORITY;
 
 /**
  * A layers fragment class

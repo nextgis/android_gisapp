@@ -29,7 +29,6 @@ import android.content.BroadcastReceiver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SyncResult;
@@ -47,7 +46,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.Pair;
@@ -76,18 +74,13 @@ import com.nextgis.maplibui.fragment.LayerFillProgressDialogFragment;
 import com.nextgis.maplibui.service.TrackerService;
 import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.maplibui.util.ControlHelper;
-import com.nextgis.maplibui.util.NGIDUtils;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
-import com.nextgis.mobile.BuildConfig;
 import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.fragment.LayersFragment;
 import com.nextgis.mobile.fragment.MapFragment;
 import com.nextgis.mobile.util.ApkDownloader;
-import com.nextgis.mobile.util.SettingsConstants;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.nextgis.mobile.util.AppSettingsConstants;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -129,7 +122,7 @@ public class MainActivity extends NGActivity
         PreferenceManager.setDefaultValues(this, R.xml.preferences_location, false);
         PreferenceManager.setDefaultValues(this, R.xml.preferences_tracks, false);
 
-        if (!mPreferences.getBoolean(SettingsConstants.KEY_PREF_INTRO, false)) {
+        if (!mPreferences.getBoolean(AppSettingsConstants.KEY_PREF_INTRO, false)) {
             startActivity(new Intent(this, IntroActivity.class));
             finish();
             return;
@@ -498,7 +491,7 @@ public class MainActivity extends NGActivity
         }
         if (null != ngwVectorLayer) {
             Uri uri = Uri.parse(
-                    "content://" + SettingsConstants.AUTHORITY + "/" +
+                    "content://" + AppSettingsConstants.AUTHORITY + "/" +
                     ngwVectorLayer.getPath().getName());
             Uri updateUri = ContentUris.withAppendedId(uri, 29);
             ContentValues values = new ContentValues();
@@ -549,7 +542,7 @@ public class MainActivity extends NGActivity
                                       ngwVectorLayer.getPath().getName() + "/36/attach/1000");
         */
         Uri updateUri = Uri.parse(
-                "content://" + SettingsConstants.AUTHORITY +
+                "content://" + AppSettingsConstants.AUTHORITY +
                 "/layer_20150210140455993/36/attach/2");
 
         ContentValues values = new ContentValues();
@@ -585,7 +578,7 @@ public class MainActivity extends NGActivity
                                 ngwVectorLayer.getPath().getName() + "/36/attach/1000");
         */
         Uri deleteUri = Uri.parse(
-                "content://" + SettingsConstants.AUTHORITY +
+                "content://" + AppSettingsConstants.AUTHORITY +
                         "/layer_20150210140455993/36/attach/1");
         int result = getContentResolver().delete(deleteUri, null, null);
         if(Constants.DEBUG_MODE){
@@ -615,7 +608,7 @@ public class MainActivity extends NGActivity
             Uri uri = Uri.parse("content://" + SettingsConstants.AUTHORITY + "/" + ngwVectorLayer.getPath().getName() + "/36/attach");
         */
         Uri uri = Uri.parse(
-                "content://" + SettingsConstants.AUTHORITY + "/layer_20150210140455993/36/attach");
+                "content://" + AppSettingsConstants.AUTHORITY + "/layer_20150210140455993/36/attach");
         ContentValues values = new ContentValues();
         values.put(VectorLayer.ATTACH_DISPLAY_NAME, "test_image.jpg");
         values.put(VectorLayer.ATTACH_MIME_TYPE, "image/jpeg");
@@ -656,7 +649,7 @@ public class MainActivity extends NGActivity
         }
         if (null != ngwVectorLayer) {
             Uri uri = Uri.parse(
-                    "content://" + SettingsConstants.AUTHORITY + "/" +
+                    "content://" + AppSettingsConstants.AUTHORITY + "/" +
                             ngwVectorLayer.getPath().getName());
             ContentValues values = new ContentValues();
             //values.put(VectorLayer.FIELD_ID, 26);
@@ -704,7 +697,7 @@ public class MainActivity extends NGActivity
         }
         if (null != ngwVectorLayer) {
             Uri uri = Uri.parse(
-                    "content://" + SettingsConstants.AUTHORITY + "/" +
+                    "content://" + AppSettingsConstants.AUTHORITY + "/" +
                     ngwVectorLayer.getPath().getName());
             Uri deleteUri = ContentUris.withAppendedId(uri, 27);
             int result = getContentResolver().delete(deleteUri, null, null);

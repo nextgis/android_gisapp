@@ -36,7 +36,7 @@ import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.fragment.SettingsFragment;
 import com.nextgis.mobile.fragment.SettingsHeaderFragment;
-import com.nextgis.mobile.util.ConstantsApp;
+import com.nextgis.mobile.util.AppConstants;
 
 
 /**
@@ -48,7 +48,7 @@ public class SettingsActivity
     @Override
     protected String getPreferenceHeaderFragmentTag()
     {
-        return ConstantsApp.FRAGMENT_SETTINGS_HEADER_FRAGMENT;
+        return AppConstants.FRAGMENT_SETTINGS_HEADER_FRAGMENT;
     }
 
 
@@ -62,7 +62,7 @@ public class SettingsActivity
     @Override
     protected String getPreferenceSettingsFragmentTag()
     {
-        return ConstantsApp.FRAGMENT_SETTINGS_FRAGMENT;
+        return AppConstants.FRAGMENT_SETTINGS_FRAGMENT;
     }
 
 

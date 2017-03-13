@@ -36,7 +36,7 @@ import android.support.v4.app.NotificationCompat;
 import com.nextgis.maplibui.util.NotificationHelper;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
-import com.nextgis.mobile.util.SettingsConstants;
+import com.nextgis.mobile.util.AppSettingsConstants;
 
 public class SyncAdapter extends com.nextgis.maplib.datasource.ngw.SyncAdapter {
     private static final int NOTIFICATION_ID = 517;
@@ -68,7 +68,7 @@ public class SyncAdapter extends com.nextgis.maplib.datasource.ngw.SyncAdapter {
             String notificationType,
             String message)
     {
-        if (!PreferenceManager.getDefaultSharedPreferences(context).getBoolean(SettingsConstants.KEY_PREF_SHOW_SYNC, false))
+        if (!PreferenceManager.getDefaultSharedPreferences(context).getBoolean(AppSettingsConstants.KEY_PREF_SHOW_SYNC, false))
             return;
 
         Intent notificationIntent = new Intent(context, MainActivity.class);

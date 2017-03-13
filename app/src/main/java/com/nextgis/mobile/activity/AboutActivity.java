@@ -49,7 +49,7 @@ import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.mobile.BuildConfig;
 import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
-import com.nextgis.mobile.util.SettingsConstants;
+import com.nextgis.mobile.util.AppSettingsConstants;
 
 public class AboutActivity extends NGActivity implements ViewPager.OnPageChangeListener {
     private ViewPager mViewPager;
@@ -85,7 +85,7 @@ public class AboutActivity extends NGActivity implements ViewPager.OnPageChangeL
 
     @Override
     public void onPageSelected(int position) {
-        ((MainApplication) getApplication()).sendScreen(position == 1 ? SettingsConstants.GA_SCREEN_ABOUT : SettingsConstants.GA_SCREEN_SUPPORT);
+        ((MainApplication) getApplication()).sendScreen(position == 1 ? AppSettingsConstants.GA_SCREEN_ABOUT : AppSettingsConstants.GA_SCREEN_SUPPORT);
     }
 
     @Override

@@ -116,10 +116,10 @@ import static com.nextgis.maplib.util.Constants.NOT_FOUND;
 import static com.nextgis.maplibui.util.ConstantsUI.GA_EDIT;
 import static com.nextgis.maplibui.util.ConstantsUI.GA_FAB;
 import static com.nextgis.maplibui.util.ConstantsUI.GA_LAYER;
-import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_COMPASS;
-import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_MEASURING;
-import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_SCALE_RULER;
-import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_SHOW_ZOOM_CONTROLS;
+import static com.nextgis.mobile.util.AppSettingsConstants.KEY_PREF_SHOW_COMPASS;
+import static com.nextgis.mobile.util.AppSettingsConstants.KEY_PREF_SHOW_MEASURING;
+import static com.nextgis.mobile.util.AppSettingsConstants.KEY_PREF_SHOW_SCALE_RULER;
+import static com.nextgis.mobile.util.AppSettingsConstants.KEY_PREF_SHOW_ZOOM_CONTROLS;
 
 /**
  * Main map fragment

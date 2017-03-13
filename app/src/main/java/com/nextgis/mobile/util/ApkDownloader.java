@@ -170,7 +170,7 @@ public class ApkDownloader extends AsyncTask<String, Integer, String> {
             return;
         }
 
-        NGIDUtils.get(activity, SettingsConstants.APK_VERSION_UPDATE, new NGIDUtils.OnFinish() {
+        NGIDUtils.get(activity, AppSettingsConstants.APK_VERSION_UPDATE, new NGIDUtils.OnFinish() {
             @Override
             public void onFinish(String data) {
                 if (data != null) {
