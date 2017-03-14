@@ -122,6 +122,11 @@ public class MainApplication extends GISApplication
     }
 
     @Override
+    public String getAccountsType() {
+        return Constants.NGW_ACCOUNT_TYPE;
+    }
+
+    @Override
     public void sendEvent(String category, String action, String label) {
         HitBuilders.EventBuilder event = new HitBuilders.EventBuilder()
                 .setCategory(category)
