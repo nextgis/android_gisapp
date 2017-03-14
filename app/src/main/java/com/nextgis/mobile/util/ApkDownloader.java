@@ -133,7 +133,7 @@ public class ApkDownloader extends AsyncTask<String, Integer, String> {
             File apk = new File(mApkPath);
             Uri uri;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                uri = FileProvider.getUriForFile(mActivity, "com.keenfin.easypicker.provider", apk);
+                uri = FileProvider.getUriForFile(mActivity, BuildConfig.APPLICATION_ID + ".easypicker.provider", apk);
                 install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             } else
                 uri = Uri.fromFile(apk);
