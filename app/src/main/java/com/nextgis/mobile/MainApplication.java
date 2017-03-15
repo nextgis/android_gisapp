@@ -37,6 +37,7 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.StandardExceptionParser;
 import com.google.android.gms.analytics.Tracker;
+import com.joshdholtz.sentry.Sentry;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.datasource.Field;
 import com.nextgis.maplib.map.LayerGroup;
@@ -83,6 +84,9 @@ public class MainApplication extends GISApplication
 
     @Override
     public void onCreate() {
+        Sentry.init(this, BuildConfig.SENTRY_DSN);
+        Sentry.captureMessage("NGM2 Sentry is init.", Sentry.SentryEventLevel.DEBUG);
+
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         updateFromOldVersion();
 

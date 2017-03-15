@@ -10,3 +10,6 @@ captures/
 
 # Temp files
 *~
+
+# Sentry settings
+sentry.properties
