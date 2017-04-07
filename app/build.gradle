@@ -73,7 +73,7 @@ dependencies {
     compile project(':maplibui')
     compile 'com.joshdholtz.sentry:sentry-android:1.6.0'
     compile 'com.nineoldandroids:library:2.4.0'
-    compile 'com.android.support:appcompat-v7:25.3.0'
+    compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.google.android.gms:play-services-analytics:10.0.1'
     compile 'com.github.TechFreak:WizardPager:1.0.3'
 }

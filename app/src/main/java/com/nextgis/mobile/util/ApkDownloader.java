@@ -35,6 +35,7 @@ import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.nextgis.maplib.util.HttpResponse;
 import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.maplibui.util.NGIDUtils;
 import com.nextgis.mobile.BuildConfig;
@@ -172,10 +173,10 @@ public class ApkDownloader extends AsyncTask<String, Integer, String> {
 
         NGIDUtils.get(activity, AppSettingsConstants.APK_VERSION_UPDATE, new NGIDUtils.OnFinish() {
             @Override
-            public void onFinish(String data) {
-                if (data != null) {
+            public void onFinish(HttpResponse response) {
+                if (response.isOk()) {
                     try {
-                        JSONObject json = new JSONObject(data);
+                        JSONObject json = new JSONObject(response.getResponseBody());
                         if (json.getInt("versionCode") <= BuildConfig.VERSION_CODE) {
                             if (showToast) {
                                 Toast.makeText(activity, R.string.update_no, Toast.LENGTH_SHORT).show();
