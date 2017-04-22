@@ -105,9 +105,6 @@
     <string name="lines_for_edit">Linie (možné editovat)</string>
     <string name="polygons_for_edit">Polygony (možné editovat)</string>
     <string name="press_aback_again">Pro ukončení stiskněte znovu Zpět</string>
-    <string name="self_intersection">Nalezeno překřížení</string>
-    <string name="ring_outside">Některá díra je mimo původní polygon</string>
-    <string name="rings_intersection">Rřekřížení děr</string>
     <string name="interface_title">Rozhraní</string>
     <string name="theme">Téma</string>
     <string name="reset_settings">Obnovit původní nastavení</string>

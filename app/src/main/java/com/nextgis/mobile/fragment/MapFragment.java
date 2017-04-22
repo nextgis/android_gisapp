@@ -72,11 +72,7 @@ import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplib.datasource.GeoGeometry;
 import com.nextgis.maplib.datasource.GeoGeometryFactory;
 import com.nextgis.maplib.datasource.GeoLineString;
-import com.nextgis.maplib.datasource.GeoLinearRing;
-import com.nextgis.maplib.datasource.GeoMultiLineString;
-import com.nextgis.maplib.datasource.GeoMultiPolygon;
 import com.nextgis.maplib.datasource.GeoPoint;
-import com.nextgis.maplib.datasource.GeoPolygon;
 import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.map.VectorLayer;
@@ -113,6 +109,7 @@ import java.util.Locale;
 import static com.nextgis.maplib.util.Constants.FIELD_GEOM;
 import static com.nextgis.maplib.util.Constants.FIELD_ID;
 import static com.nextgis.maplib.util.Constants.NOT_FOUND;
+import static com.nextgis.maplib.util.MapUtil.isGeometryIntersects;
 import static com.nextgis.maplibui.util.ConstantsUI.GA_EDIT;
 import static com.nextgis.maplibui.util.ConstantsUI.GA_FAB;
 import static com.nextgis.maplibui.util.ConstantsUI.GA_LAYER;
@@ -299,7 +296,11 @@ public class MapFragment
             featureId = feature.getId();
         }
 
-        if (!isGeometryValid(geometry))
+        if (geometry == null || !geometry.isValid()) {
+            Toast.makeText(getContext(), R.string.not_enough_points, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (!isGeometryIntersects(getContext(), geometry))
             return false;
 
         mMap.setLockMap(false);
@@ -362,89 +363,6 @@ public class MapFragment
             }
         } else if (mEditLayerOverlay.getSelectedFeatureGeometry() != null)
             mEditLayerOverlay.setHasEdits(true);
-    }
-
-
-    protected boolean isGeometryValid(GeoGeometry geometry) {
-        if (!hasMinimumPoints(geometry)) {
-            Toast.makeText(getContext(), R.string.not_enough_points, Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        if (geometry instanceof GeoPolygon) {
-            if (((GeoPolygon) geometry).intersects()) {
-                Toast.makeText(getContext(), R.string.self_intersection, Toast.LENGTH_SHORT).show();
-                return false;
-            }
-
-            if (!((GeoPolygon) geometry).isHolesInside()) {
-                Toast.makeText(getContext(), R.string.ring_outside, Toast.LENGTH_SHORT).show();
-                return false;
-            }
-
-            if (((GeoPolygon) geometry).isHolesIntersect()) {
-                Toast.makeText(getContext(), R.string.rings_intersection, Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        }
-
-        if (geometry instanceof GeoMultiPolygon) {
-            if (((GeoMultiPolygon) geometry).isSelfIntersects()) {
-                Toast.makeText(getContext(), R.string.self_intersection, Toast.LENGTH_SHORT).show();
-                return false;
-            }
-
-            if (!((GeoMultiPolygon) geometry).isHolesInside()) {
-                Toast.makeText(getContext(), R.string.ring_outside, Toast.LENGTH_SHORT).show();
-                return false;
-            }
-
-            if (((GeoMultiPolygon) geometry).isHolesIntersect()) {
-                Toast.makeText(getContext(), R.string.rings_intersection, Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-
-    protected boolean hasMinimumPoints(GeoGeometry geometry) {
-        if (null == geometry)
-            return false;
-
-        switch (geometry.getType()) {
-            case GeoConstants.GTPoint:
-            case GeoConstants.GTMultiPoint:
-                return true;
-            case GeoConstants.GTLineString:
-                GeoLineString line = (GeoLineString) geometry;
-                return line.getPointCount() > 1;
-            case GeoConstants.GTMultiLineString:
-                GeoMultiLineString multiLine = (GeoMultiLineString) geometry;
-                for (int i = 0; i < multiLine.size(); i++) {
-                    GeoLineString subLine = multiLine.get(i);
-                    if (subLine.getPointCount() > 1) {
-                        return true;
-                    }
-                }
-                return false;
-            case GeoConstants.GTPolygon:
-                GeoPolygon polygon = (GeoPolygon) geometry;
-                GeoLinearRing ring = polygon.getOuterRing();
-                return ring.getPointCount() > 2;
-            case GeoConstants.GTMultiPolygon:
-                GeoMultiPolygon multiPolygon = (GeoMultiPolygon) geometry;
-                for (int i = 0; i < multiPolygon.size(); i++) {
-                    GeoPolygon subPolygon = multiPolygon.get(i);
-                    if (subPolygon.getOuterRing().getPointCount() > 2) {
-                        return true;
-                    }
-                }
-                return false;
-            default:
-                return false;
-        }
     }
 
 

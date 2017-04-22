@@ -103,9 +103,6 @@
     <string name="lines_for_edit">ライン数 (編集可)</string>
     <string name="polygons_for_edit">ポリゴン数 (編集可)</string>
     <string name="press_aback_again">もう一度バックキーを押して終了</string>
-    <string name="self_intersection">自己交差が検出されました</string>
-    <string name="ring_outside">外部リングの外側に穴の一部があります</string>
-    <string name="rings_intersection">穴の交差</string>
     <string name="interface_title">インターフェース</string>
     <string name="theme">テーマ</string>
     <string name="reset_settings">初期値にリセット</string>

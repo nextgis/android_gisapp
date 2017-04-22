@@ -105,9 +105,6 @@
     <string name="lines_for_edit">लाइन्स (संपादित किया जा सकता है)</string>
     <string name="polygons_for_edit">बहुभुज (संपादित किया जा सकता है)</string>
     <string name="press_aback_again">प्रेस फिर से वापस बाहर निकलने के लिए</string>
-    <string name="self_intersection">स्व चौराहे का पता लगाने</string>
-    <string name="ring_outside">बाहरी रिंग के बाहर छेद में से एक</string>
-    <string name="rings_intersection">छेद चौराहे</string>
     <string name="interface_title">इंटरफेस</string>
     <string name="theme">थीम</string>
     <string name="reset_settings">डिफ़ॉल्ट पर पुनः सेट करें</string>

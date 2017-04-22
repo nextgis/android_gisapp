@@ -103,9 +103,6 @@
     <string name="lines_for_edit">Лінії (можна редагувати)</string>
     <string name="polygons_for_edit">Полігони (можна редагувати)</string>
     <string name="press_aback_again">Натисніть назад ще раз для виходу</string>
-    <string name="self_intersection">Виявлено самоперетин</string>
-    <string name="ring_outside">Одна з дірок за межами полігону</string>
-    <string name="rings_intersection">Пересічення дірок</string>
     <string name="interface_title">Інтерфейс</string>
     <string name="theme">Тема</string>
     <string name="reset_settings">Очистити всі налаштування</string>

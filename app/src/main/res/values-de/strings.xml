@@ -105,10 +105,7 @@
     <string name="points_for_edit">Punkte (bearbeitbar)</string> 
     <string name="lines_for_edit">Linien (bearbeitbar)</string> 
     <string name="polygons_for_edit">Polygone (bearbeitbar)</string> 
-    <string name="press_aback_again">Zum Beenden nochmal "Zurück" drücken</string> 
-    <string name="self_intersection">Selbstüberschneidung festgestellt</string> 
-    <string name="ring_outside">Eines der Löcher ist außerhalb des Umrings</string> 
-    <string name="rings_intersection">Löcher überschneiden sich</string>
+    <string name="press_aback_again">Zum Beenden nochmal "Zurück" drücken</string>
     <string name="interface_title">Interface</string> 
     <string name="theme">Theme</string>
     <string name="reset_settings">Auf Standardeinstellungen zurücksetzten</string> 

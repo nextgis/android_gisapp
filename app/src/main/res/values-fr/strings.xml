@@ -107,9 +107,6 @@
     <string name="lines_for_edit">Lignes (éditable)</string>
     <string name="polygons_for_edit">Polygones (éditable)</string>
     <string name="press_aback_again">Appuyer une nouvelle fois sur retour pour sortir</string>
-    <string name="self_intersection">Entrecroisement détecté</string>
-    <string name="ring_outside">Un des trou est à l\'extérieur de la limite externe</string>
-    <string name="rings_intersection">Intersection de trous</string>
     <string name="interface_title">Interface</string>
     <string name="theme">Thème</string>
     <string name="reset_settings">Restaurer la configuration</string>
