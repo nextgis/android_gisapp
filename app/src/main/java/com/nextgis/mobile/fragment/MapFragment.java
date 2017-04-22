@@ -300,7 +300,7 @@ public class MapFragment
             Toast.makeText(getContext(), R.string.not_enough_points, Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (!isGeometryIntersects(getContext(), geometry))
+        if (isGeometryIntersects(getContext(), geometry))
             return false;
 
         mMap.setLockMap(false);
