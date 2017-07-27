@@ -24,8 +24,6 @@
   -->
 
 <resources>
-
-    <string name="app_name" translatable="false">NextGIS Mobile</string>
     <string name="navigation_drawer_open">Ouvrir le tiroir de navigation</string>
     <string name="navigation_drawer_close">Fermer le tiroir de navigation</string>
     <string name="action_settings">Paramètres</string>
