@@ -308,8 +308,7 @@ public class MainApplication extends GISApplication
             int layerType,
             List<Field> fields)
     {
-        VectorLayerUI vectorLayer = new VectorLayerUI(this, layerPath == null ?
-                mMap.createLayerStorage() : mMap.createLayerStorage(layerPath));
+        VectorLayerUI vectorLayer = new VectorLayerUI(this, mMap.createLayerStorage(layerPath));
         vectorLayer.setName(layerName);
         vectorLayer.setVisible(true);
         vectorLayer.setMinZoom(GeoConstants.DEFAULT_MIN_ZOOM);

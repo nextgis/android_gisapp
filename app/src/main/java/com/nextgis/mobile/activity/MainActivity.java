@@ -65,6 +65,7 @@ import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.FileUtil;
+import com.nextgis.maplib.util.HttpResponse;
 import com.nextgis.maplib.util.NGWUtil;
 import com.nextgis.maplibui.activity.NGActivity;
 import com.nextgis.maplibui.api.IChooseLayerResult;
@@ -74,19 +75,30 @@ import com.nextgis.maplibui.fragment.LayerFillProgressDialogFragment;
 import com.nextgis.maplibui.service.TrackerService;
 import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.maplibui.util.ControlHelper;
+import com.nextgis.maplibui.util.NGIDUtils;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.fragment.LayersFragment;
 import com.nextgis.mobile.fragment.MapFragment;
-import com.nextgis.mobile.util.ApkDownloader;
 import com.nextgis.mobile.util.AppSettingsConstants;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import static com.nextgis.maplib.util.AccountUtil.verifySignature;
+import static com.nextgis.maplib.util.Constants.JSON_END_DATE_KEY;
+import static com.nextgis.maplib.util.Constants.JSON_SIGNATURE_KEY;
+import static com.nextgis.maplib.util.Constants.JSON_START_DATE_KEY;
+import static com.nextgis.maplib.util.Constants.JSON_SUPPORTED_KEY;
+import static com.nextgis.maplib.util.Constants.JSON_USER_ID_KEY;
+import static com.nextgis.maplib.util.Constants.SUPPORT;
 import static com.nextgis.maplib.util.Constants.TAG;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WEB_MERCATOR;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
@@ -113,8 +125,7 @@ public class MainActivity extends NGActivity
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // initialize the default settings
         PreferenceManager.setDefaultValues(this, R.xml.preferences_general, false);
@@ -162,12 +173,42 @@ public class MainActivity extends NGActivity
         }
 
         if (!hasPermissions()) {
-            String[] permissions = new String[] {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.GET_ACCOUNTS, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            String[] permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.GET_ACCOUNTS,
+                                                Manifest.permission.WRITE_EXTERNAL_STORAGE};
             requestPermissions(R.string.permissions, R.string.requested_permissions, PERMISSIONS_REQUEST, permissions);
         }
 
-        ApkDownloader.check(this, false);
+        String support = NGIDUtils.USER_SUPPORT;
+        NGIDUtils.get(this, support, new NGIDUtils.OnFinish() {
+            @Override
+            public void onFinish(HttpResponse response) {
+                if (response.isOk()) {
+                    File support = getExternalFilesDir(null);
+                    if (support == null)
+                        support = new File(getFilesDir(), SUPPORT);
+                    else
+                        support = new File(support, SUPPORT);
+
+                    try {
+                        FileUtil.writeToFile(support, response.getResponseBody());
+                    } catch (IOException ignored) {}
+
+                    try {
+                        String jsonString = FileUtil.readFromFile(support);
+                        JSONObject json = new JSONObject(jsonString);
+                        if (json.getBoolean(JSON_SUPPORTED_KEY)) {
+                            final String id = json.getString(JSON_USER_ID_KEY);
+                            final String start = json.getString(JSON_START_DATE_KEY);
+                            final String end = json.getString(JSON_END_DATE_KEY);
+                            final String data = id + start + end + "true";
+                            final String signature = json.getString(JSON_SIGNATURE_KEY);
+
+                            boolean verify = verifySignature(data, signature);
+                        }
+                    } catch (JSONException | IOException ignored) { }
+                }
+            }
+        });
     }
 
     protected boolean hasPermissions() {

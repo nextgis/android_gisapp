@@ -39,6 +39,7 @@ import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.preference.PreferenceScreen;
 import android.widget.Toast;
+
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapContentProviderHelper;
@@ -48,16 +49,19 @@ import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
-import com.nextgis.mobile.util.SelectMapPathPreference;
-import com.nextgis.mobile.util.ApkDownloader;
 import com.nextgis.mobile.util.AppConstants;
 import com.nextgis.mobile.util.IntEditTextPreference;
+import com.nextgis.mobile.util.SelectMapPathPreference;
 
 import java.io.File;
 
 import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_MAP;
 import static com.nextgis.maplibui.service.TrackerService.isTrackerServiceRunning;
-import static com.nextgis.mobile.util.AppSettingsConstants.*;
+import static com.nextgis.mobile.util.AppSettingsConstants.KEY_PREF_GA;
+import static com.nextgis.mobile.util.AppSettingsConstants.KEY_PREF_SHOW_COMPASS;
+import static com.nextgis.mobile.util.AppSettingsConstants.KEY_PREF_SHOW_MEASURING;
+import static com.nextgis.mobile.util.AppSettingsConstants.KEY_PREF_SHOW_SCALE_RULER;
+import static com.nextgis.mobile.util.AppSettingsConstants.KEY_PREF_SHOW_ZOOM_CONTROLS;
 
 
 public class SettingsFragment
@@ -134,9 +138,6 @@ public class SettingsFragment
                 final ListPreference minDistance = (ListPreference) findPreference(
                         SettingsConstants.KEY_PREF_TRACKS_MIN_DISTANCE);
                 initializeLocationMins(minTime, minDistance, true);
-                break;
-            case SettingsConstantsUI.ACTION_PREFS_UPDATE:
-                ApkDownloader.check(getActivity(), true);
                 break;
         }
     }

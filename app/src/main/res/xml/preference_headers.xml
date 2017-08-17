@@ -76,12 +76,4 @@
         <Preference/>
     </PreferenceScreen>
 
-    <PreferenceScreen
-            android:title="@string/update_check"
-            android:key="com.nextgis.mobile.PREFS_UPDATE"
-            >
-        <!-- We need the stub preference -->
-        <Preference/>
-    </PreferenceScreen>
-
 </PreferenceScreen>
