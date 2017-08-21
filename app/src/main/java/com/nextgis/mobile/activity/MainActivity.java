@@ -83,21 +83,12 @@ import com.nextgis.mobile.fragment.LayersFragment;
 import com.nextgis.mobile.fragment.MapFragment;
 import com.nextgis.mobile.util.AppSettingsConstants;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import static com.nextgis.maplib.util.AccountUtil.verifySignature;
-import static com.nextgis.maplib.util.Constants.JSON_END_DATE_KEY;
-import static com.nextgis.maplib.util.Constants.JSON_SIGNATURE_KEY;
-import static com.nextgis.maplib.util.Constants.JSON_START_DATE_KEY;
-import static com.nextgis.maplib.util.Constants.JSON_SUPPORTED_KEY;
-import static com.nextgis.maplib.util.Constants.JSON_USER_ID_KEY;
 import static com.nextgis.maplib.util.Constants.SUPPORT;
 import static com.nextgis.maplib.util.Constants.TAG;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WEB_MERCATOR;
@@ -192,20 +183,6 @@ public class MainActivity extends NGActivity
                     try {
                         FileUtil.writeToFile(support, response.getResponseBody());
                     } catch (IOException ignored) {}
-
-                    try {
-                        String jsonString = FileUtil.readFromFile(support);
-                        JSONObject json = new JSONObject(jsonString);
-                        if (json.getBoolean(JSON_SUPPORTED_KEY)) {
-                            final String id = json.getString(JSON_USER_ID_KEY);
-                            final String start = json.getString(JSON_START_DATE_KEY);
-                            final String end = json.getString(JSON_END_DATE_KEY);
-                            final String data = id + start + end + "true";
-                            final String signature = json.getString(JSON_SIGNATURE_KEY);
-
-                            boolean verify = verifySignature(data, signature);
-                        }
-                    } catch (JSONException | IOException ignored) { }
                 }
             }
         });
