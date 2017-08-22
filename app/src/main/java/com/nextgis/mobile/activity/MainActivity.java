@@ -43,15 +43,19 @@ import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nextgis.maplib.api.GpsEventListener;
@@ -186,8 +190,27 @@ public class MainActivity extends NGActivity
                 }
 
                 mToolbar.setTitle(getAppName());
+                boolean isLoggedIn = !TextUtils.isEmpty(mPreferences.getString(NGIDUtils.PREF_ACCESS_TOKEN, ""));
+                if (!isLoggedIn)
+                    showSnack();
             }
         });
+    }
+
+    private void showSnack() {
+        Snackbar snackbar = Snackbar.make(findViewById(R.id.mainview), getString(R.string.support_available), Snackbar.LENGTH_SHORT)
+                                    .setAction(R.string.more, new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            Intent pricing = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.pricing)));
+                                            startActivity(pricing);
+                                        }
+                                    });
+
+        View view = snackbar.getView();
+        TextView textView = (TextView) view.findViewById(R.id.snackbar_text);
+        textView.setTextColor(ContextCompat.getColor(view.getContext(), R.color.color_white));
+        snackbar.show();
     }
 
     protected boolean hasPermissions() {
