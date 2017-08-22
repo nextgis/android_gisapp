@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2016 NextGIS, info@nextgis.com
+ * Copyright (c) 2012-2017 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,6 +44,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.nextgis.maplib.util.AccountUtil;
 import com.nextgis.maplibui.activity.NGActivity;
 import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.mobile.BuildConfig;
@@ -132,8 +133,14 @@ public class AboutActivity extends NGActivity implements ViewPager.OnPageChangeL
         @Nullable
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            Context context = getContext();
-            View v = View.inflate(context, R.layout.fragment_about, null);
+            final NGActivity activity = (NGActivity) getActivity();
+            View v = View.inflate(activity, R.layout.fragment_about, null);
+
+            TextView appName = (TextView) v.findViewById(R.id.app_name);
+            appName.setText(activity.getAppName());
+
+            if (!AccountUtil.isProUser(activity))
+                v.findViewById(R.id.app_status).setVisibility(View.VISIBLE);
 
             TextView txtVersion = (TextView) v.findViewById(R.id.app_version);
             txtVersion.setText("v. " + BuildConfig.VERSION_NAME + " (rev. " + BuildConfig.VERSION_CODE + ")");
@@ -141,7 +148,7 @@ public class AboutActivity extends NGActivity implements ViewPager.OnPageChangeL
             v.findViewById(R.id.creditsInto).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    AlertDialog builder = new AlertDialog.Builder(v.getContext())
+                    AlertDialog builder = new AlertDialog.Builder(activity)
                             .setTitle(R.string.credits_intro)
                             .setMessage(R.string.credits)
                             .setPositiveButton(android.R.string.ok, null)

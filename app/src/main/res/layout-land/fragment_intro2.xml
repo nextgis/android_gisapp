@@ -97,23 +97,27 @@
         <Button
             android:id="@+id/get_pro"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
+            android:layout_weight="1"
             android:background="@drawable/white_rounded_button"
             android:text="@string/intro_get_pro"
             android:textColor="@color/primary_dark"/>
 
-        <View
+        <FrameLayout
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
-    </LinearLayout>
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:text="@string/intro_free"
-        android:textColor="@color/color_white"/>
+            <TextView
+                android:id="@+id/sign_in"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/login"
+                android:textColor="@color/primary_dark"
+                android:textSize="14sp"/>
+        </FrameLayout>
+    </LinearLayout>
 </LinearLayout>

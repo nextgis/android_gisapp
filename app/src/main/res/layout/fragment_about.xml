@@ -6,7 +6,7 @@
   ~ Author:   NikitaFeodonit, nfeodonit@yandex.com
   ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2012-2016 NextGIS, info@nextgis.com
+  ~ Copyright (c) 2012-2017 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -60,7 +60,6 @@
                     android:layout_gravity="center_horizontal|top"
                     android:layout_margin="5dp"
                     android:gravity="center_horizontal"
-                    android:text="@string/app_name"
                     android:textAppearance="?android:attr/textAppearanceLarge"/>
 
                 <TextView
@@ -73,6 +72,15 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"/>
             </LinearLayout>
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/app_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="@string/intro_free"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/app_description"

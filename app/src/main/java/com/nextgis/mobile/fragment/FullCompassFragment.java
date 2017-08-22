@@ -3,7 +3,7 @@
  * Purpose:  Mobile GIS for Android.
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2015-2016 NextGIS, info@nextgis.com
+ * Copyright (c) 2015-2017 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,17 +32,20 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.nextgis.maplibui.fragment.CompassFragment;
-import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
 import com.nineoldandroids.view.ViewHelper;
 
 public class FullCompassFragment extends CompassFragment {
+    protected MainActivity mActivity;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        ((MainActivity) getActivity()).hideBottomBar();
+        mActivity = (MainActivity) getActivity();
+        mActivity.hideBottomBar();
+
         View view = inflater.inflate(R.layout.fragment_compass_full, container, false);
         FrameLayout compassContainer = (FrameLayout) view.findViewById(R.id.compass_container);
         compassContainer.addView(super.onCreateView(inflater, container, savedInstanceState));
@@ -59,14 +62,14 @@ public class FullCompassFragment extends CompassFragment {
     public void onResume() {
         super.onResume();
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mActivity);
         mIsVibrationOn = prefs.getBoolean(SettingsConstantsUI.KEY_PREF_COMPASS_VIBRATE, true);
         mParent.setKeepScreenOn(prefs.getBoolean(SettingsConstantsUI.KEY_PREF_COMPASS_KEEP_SCREEN, true));
         mTrueNorth = prefs.getBoolean(SettingsConstantsUI.KEY_PREF_COMPASS_TRUE_NORTH, true);
         mShowMagnetic = prefs.getBoolean(SettingsConstantsUI.KEY_PREF_COMPASS_MAGNETIC, true);
 
-        ((MainActivity) getActivity()).setActionBarState(false);
-        getActivity().setTitle(R.string.compass_title);
+        mActivity.setActionBarState(false);
+        mActivity.setTitle(R.string.compass_title);
     }
 
     @Override
@@ -85,8 +88,8 @@ public class FullCompassFragment extends CompassFragment {
     @Override
     public void onDestroyView()
     {
-        ((MainActivity) getActivity()).restoreBottomBar(-1);
-        getActivity().setTitle(R.string.app_name);
+        mActivity.restoreBottomBar(-1);
+        mActivity.setTitle(mActivity.getAppName());
         super.onDestroyView();
     }
 

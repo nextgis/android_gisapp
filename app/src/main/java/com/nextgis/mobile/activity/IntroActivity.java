@@ -34,6 +34,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.nextgis.maplibui.activity.NGActivity;
 import com.nextgis.mobile.R;
@@ -134,10 +135,17 @@ public class IntroActivity extends NGActivity implements PageFragmentCallbacks, 
                 else
                     mPager.setCurrentItem(mPager.getCurrentItem() + 1);
                 break;
+            case R.id.sign_in:
+                mPager.setCurrentItem(mPager.getCurrentItem() + 1);
+                break;
+            case R.id.get_pro:
+                Intent pricing = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.pricing)));
+                startActivity(pricing);
+                break;
         }
     }
 
-    public class IntroPagerAdapter extends FragmentStatePagerAdapter {
+    private class IntroPagerAdapter extends FragmentStatePagerAdapter {
 
         IntroPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -213,13 +221,11 @@ public class IntroActivity extends NGActivity implements PageFragmentCallbacks, 
                     return inflater.inflate(R.layout.fragment_intro1, container, false);
                 case "2":
                     View v = inflater.inflate(R.layout.fragment_intro2, container, false);
-                    v.findViewById(R.id.get_pro).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Intent pricing = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.pricing)));
-                            startActivity(pricing);
-                        }
-                    });
+                    TextView signIn = (TextView) v.findViewById(R.id.sign_in);
+                    signIn.setText(signIn.getText().toString().toUpperCase());
+                    signIn.setOnClickListener((View.OnClickListener) getActivity());
+                    v.findViewById(R.id.sign_in).setOnClickListener((View.OnClickListener) getActivity());
+                    v.findViewById(R.id.get_pro).setOnClickListener((View.OnClickListener) getActivity());
                     return v;
                 case "3":
                     return inflater.inflate(R.layout.fragment_intro_login, container, false);

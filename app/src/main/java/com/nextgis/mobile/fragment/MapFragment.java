@@ -1886,7 +1886,7 @@ public class MapFragment
                     showRulerButton();
                     hideAddByTapButton();
                     mAddPointButton.setIcon(R.drawable.ic_action_add_point);
-                    mActivity.setTitle(R.string.app_name);
+                    mActivity.setTitle(mActivity.getAppName());
                     mActivity.setSubtitle(null);
                 } else
                     addPointByTap();

@@ -79,8 +79,12 @@
         android:textColor="@color/primary_dark"/>
 
     <TextView
+        android:id="@+id/sign_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/intro_free"
-        android:textColor="@color/color_white"/>
+        android:layout_gravity="center"
+        android:layout_marginBottom="8dp"
+        android:text="@string/login"
+        android:textColor="@color/primary_dark"
+        android:textSize="14sp"/>
 </LinearLayout>

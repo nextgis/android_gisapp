@@ -184,6 +184,8 @@ public class MainActivity extends NGActivity
                         FileUtil.writeToFile(support, response.getResponseBody());
                     } catch (IOException ignored) {}
                 }
+
+                mToolbar.setTitle(getAppName());
             }
         });
     }
@@ -223,7 +225,7 @@ public class MainActivity extends NGActivity
 
 
     public void showDefaultToolbar() {
-        mToolbar.setTitle(R.string.app_name);
+        mToolbar.setTitle(getAppName());
         mToolbar.setSubtitle(null);
         mToolbar.getMenu().clear();
         mToolbar.inflateMenu(R.menu.main);
