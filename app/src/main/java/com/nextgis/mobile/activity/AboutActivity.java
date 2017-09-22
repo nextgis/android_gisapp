@@ -162,6 +162,17 @@ public class AboutActivity extends NGActivity implements ViewPager.OnPageChangeL
                 }
             });
 
+            if (!AccountUtil.isProUser(activity))
+                v.findViewById(R.id.getPro).setVisibility(View.VISIBLE);
+
+            v.findViewById(R.id.getPro).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent pricing = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.pricing)));
+                    startActivity(pricing);
+                }
+            });
+
             TextView contacts = (TextView) v.findViewById(R.id.contacts);
             contacts.setMovementMethod(LinkMovementMethod.getInstance());
 

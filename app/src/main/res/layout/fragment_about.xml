@@ -22,8 +22,8 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<ScrollView android:id="@+id/scrollView"
-            xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -105,5 +105,14 @@
             android:layout_margin="10dp"
             android:text="@string/credits_intro"
             android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+        <Button
+            android:id="@+id/getPro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="@string/intro_get_pro"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:visibility="gone"/>
     </LinearLayout>
 </ScrollView>
