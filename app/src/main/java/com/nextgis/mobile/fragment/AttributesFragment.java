@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2016 NextGIS, info@nextgis.com
+ * Copyright (c) 2012-2017 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,13 +74,13 @@ import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
 
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -420,19 +420,19 @@ public class AttributesFragment
     }
 
 
-    protected String formatDateTime(long millis, int type) {
+    public static String formatDateTime(long millis, int type) {
         String result = millis + "";
         SimpleDateFormat sdf = null;
 
         switch (type) {
             case FTDate:
-                sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                sdf = (SimpleDateFormat) DateFormat.getDateInstance();
                 break;
             case FTTime:
-                sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+                sdf = (SimpleDateFormat) DateFormat.getTimeInstance();
                 break;
             case FTDateTime:
-                sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+                sdf = (SimpleDateFormat) DateFormat.getDateTimeInstance();
                 break;
         }
 
