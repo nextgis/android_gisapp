@@ -24,8 +24,8 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.2'
+    compileSdkVersion 26
+    buildToolsVersion '26.0.2'
 
     // Setup the Sentry DSN from the file 'sentry.properties', which should contain
     // sentry.dsn=https://publicKey:secretKey@host:port/1?options
@@ -40,10 +40,11 @@ android {
 
     defaultConfig {
         applicationId 'com.nextgis.mobile'
-        minSdkVersion 9
-        targetSdkVersion 25
-        versionCode 30
-        versionName '2.5.6.5'
+        minSdkVersion 14
+        targetSdkVersion 26
+        versionCode 32
+        versionName '2.5.6.6'
+        archivesBaseName = "ngmobile-$versionName"
         buildConfigField "String", "SENTRY_DSN", "\"${sentryDsn}\""
     }
 
@@ -54,11 +55,6 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            applicationVariants.all { variant ->
-                variant.outputs.each { output ->
-                    output.outputFile = new File(output.outputFile.parent, "ngmobile-" + defaultConfig.versionName + ".apk")
-                }
-            }
         }
     }
 
@@ -73,7 +69,7 @@ dependencies {
     compile project(':maplibui')
     compile 'com.joshdholtz.sentry:sentry-android:1.6.0'
     compile 'com.nineoldandroids:library:2.4.0'
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.google.android.gms:play-services-analytics:10.0.1'
+    compile 'com.android.support:appcompat-v7:26.1.0'
+    compile 'com.google.android.gms:play-services-analytics:11.4.2'
     compile 'com.github.TechFreak:WizardPager:1.0.3'
 }
