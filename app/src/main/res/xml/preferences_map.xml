@@ -24,7 +24,7 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <ListPreference
-        android:defaultValue="0"
+        android:defaultValue="1"
         android:entries="@array/status_panel_mode"
         android:entryValues="@array/status_panel_mode_val"
         android:key="show_status_panel"
@@ -49,7 +49,7 @@
         android:title="@string/keep_screen_on"/>
 
     <CheckBoxPreference
-        android:defaultValue="false"
+        android:defaultValue="true"
         android:key="show_zoom_controls"
         android:summary="@string/show_zoom_controls_summary"
         android:title="@string/show_zoom_controls"/>

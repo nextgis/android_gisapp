@@ -31,7 +31,7 @@ android {
     // sentry.dsn=https://publicKey:secretKey@host:port/1?options
     // DO NOT PUBLIC the file 'sentry.properties' !!!
     File sentryPropFile = rootProject.file('sentry.properties')
-    def String sentryDsn = ""
+    String sentryDsn = ""
     if (sentryPropFile.exists()) {
         Properties sentryProp = new Properties()
         sentryProp.load(sentryPropFile.newDataInputStream())
@@ -70,6 +70,6 @@ dependencies {
     compile 'com.joshdholtz.sentry:sentry-android:1.6.0'
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.android.support:appcompat-v7:26.1.0'
-    compile 'com.google.android.gms:play-services-analytics:11.4.2'
+    compile 'com.google.android.gms:play-services-analytics:11.6.0'
     compile 'com.github.TechFreak:WizardPager:1.0.3'
 }
