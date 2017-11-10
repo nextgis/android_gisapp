@@ -86,7 +86,7 @@ public class SettingsActivity
 
 
     @Override
-    protected String getTitleString()
+    public String getTitleString()
     {
         return getString(R.string.action_settings);
     }
