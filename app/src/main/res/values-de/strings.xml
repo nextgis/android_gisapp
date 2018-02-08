@@ -6,7 +6,7 @@
   ~ Author:   NikitaFeodonit, nfeodonit@yandex.com
   ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2012-2017 NextGIS, info@nextgis.com
+  ~ Copyright (c) 2012-2018 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -121,7 +121,7 @@
     <string name="permissions">Berechtigungen</string> 
     <string name="requested_permissions">Diese Anwendung benötigt einige Berechtigungen um gut funktionieren zu können. Die Berechtigungen beinhalten Schreibrechte für externe Speichermedien (z.B. um Daten auf die SD-Karte zu schreiben), Zugang zu Standortdaten und Zugriff auf Kontakte (um Internet-Accounts zu erstellen und zu verwalten)</string>
     <string name="action_support">Support</string>
-    <string name="app_support">Please write us with questions, bug-reports and new features suggestions. Commercial support is available.</string>
+    <string name="app_support">Please send us questions, bug-reports and new features suggestions. Commercial support is available.</string>
     <string name="email">Email</string>
     <string name="email_src">info@nextgis.com</string>
     <string name="telegram">Telegram</string>

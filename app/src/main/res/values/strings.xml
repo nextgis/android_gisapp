@@ -6,7 +6,7 @@
   ~ Author:   NikitaFeodonit, nfeodonit@yandex.com
   ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2012-2017 NextGIS, info@nextgis.com
+  ~ Copyright (c) 2012-2018 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@
     <string name="app_description">Mobile GIS application for spatial field data collection and sending it back to server. NextGIS Mobile also records tracks and sends position information to web server.</string>
     <string name="credits_intro">Credits</string>
     <string name="credits">Some icons used in the application are from <a href="http://icons8.com/android-icons">Icons8.com</a> licensed under a <a href="http://creativecommons.org/licenses/by-nd/3.0/">CC BY-ND 3.0 license</a>, <a href="http://materialdesignicons.com/">materialdesignicons.com</a> and <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a> licensed under a <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0 license</a></string>
-    <string name="copyright" translatable="false"><![CDATA[© <a href=\"https://nextgis.com\">NextGIS</a>, 2012–2017]]></string>
+    <string name="copyright" translatable="false"><![CDATA[© <a href=\"https://nextgis.com\">NextGIS</a>, 2012–2018]]></string>
     <string name="contacts"><a href="http://nextgis.ru/en/contact/">Contact us</a></string>
     <string name="action_about">About</string>
     <string name="add_current_place">Add current place</string>
@@ -123,7 +123,7 @@
     <string name="requested_permissions">Application needs some permissions to work properly. It includes writing to external storage (to save data on card),
         access to location services and getting contacts (to create and manage web accounts).</string>
     <string name="action_support">Support</string>
-    <string name="app_support">Please write us with questions, bug-reports and new features suggestions. Commercial support is available.</string>
+    <string name="app_support">Please send us questions, bug-reports and new features suggestions. Commercial support is available.</string>
     <string name="email">Email</string>
     <string name="email_src">info@nextgis.com</string>
     <string name="telegram">Telegram</string>

@@ -198,7 +198,7 @@ public class MainActivity extends NGActivity
     }
 
     private void showSnack() {
-        Snackbar snackbar = Snackbar.make(findViewById(R.id.mainview), getString(R.string.support_available), Snackbar.LENGTH_SHORT)
+        Snackbar snackbar = Snackbar.make(findViewById(R.id.mainview), getString(R.string.support_available), Snackbar.LENGTH_LONG)
                                     .setAction(R.string.more, new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {

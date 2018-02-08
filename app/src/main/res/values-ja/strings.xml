@@ -6,7 +6,7 @@
   ~ Author:   NikitaFeodonit, nfeodonit@yandex.com
   ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2012-2017 NextGIS, info@nextgis.com
+  ~ Copyright (c) 2012-2018 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -119,7 +119,7 @@
     <string name="requested_permissions">アプリケーションが正しく動作するために幾つかのアクセス許可が必要です。これには外部ストレージの書き込み(カードへのデータの保存のため)、位置情報サービスへのアクセスと連絡先の取得(webアカウントの作成と管理のため)も含まれています。</string>
     <string name="track_restore">Restore current track after reboot</string>
     <string name="action_support">Support</string>
-    <string name="app_support">Please write us with questions, bug-reports and new features suggestions. Commercial support is available.</string>
+    <string name="app_support">Please send us questions, bug-reports and new features suggestions. Commercial support is available.</string>
     <string name="email">Email</string>
     <string name="email_src">info@nextgis.com</string>
     <string name="telegram">Telegram</string>
