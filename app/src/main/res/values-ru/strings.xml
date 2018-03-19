@@ -7,7 +7,7 @@
   ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
   ~ Author:   Maxim Dubinin, maxim.dubinin@nextgis.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2012-2017 NextGIS, info@nextgis.com
+  ~ Copyright (c) 2012-2018 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -157,4 +157,6 @@
     <string name="intro_more">Получите больше:</string>
     <string name="intro_free">У вас бесплатная версия приложения</string>
     <string name="intro_get_pro">Получить NextGIS Mobile Pro</string>
+    <string name="track_uid">Ваш UID: %1$s</string>
+    <string name="track_send">Отправлять местоположение на сервер</string>
 </resources>

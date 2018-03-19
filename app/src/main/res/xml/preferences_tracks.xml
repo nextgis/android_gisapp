@@ -5,7 +5,7 @@
   ~ Author:   NikitaFeodonit, nfeodonit@yandex.com
   ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2012-2016 NextGIS, info@nextgis.com
+  ~ Copyright (c) 2012-2016, 2018 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -47,8 +47,14 @@
         android:key="track_restore"
         android:title="@string/track_restore"/>
 
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:enabled="false"
+        android:key="track_send"
+        android:title="@string/track_send"/>
+
     <!-- TODO: add
-    1) account (or accounts?) to send current location
+    1) account (or accounts?) to send current location done
     2) tracks group rules - daily, weekly, monthly etc.
     -->
 

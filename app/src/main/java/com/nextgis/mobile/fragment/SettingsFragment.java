@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2017 NextGIS, info@nextgis.com
+ * Copyright (c) 2012-2018 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 
 package com.nextgis.mobile.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -31,8 +32,10 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteException;
 import android.os.AsyncTask;
+import android.provider.Settings;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.EditTextPreference;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
@@ -43,6 +46,8 @@ import android.widget.Toast;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapContentProviderHelper;
+import com.nextgis.maplib.util.HttpResponse;
+import com.nextgis.maplib.util.NetworkUtil;
 import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.maplibui.fragment.NGPreferenceSettingsFragment;
 import com.nextgis.maplibui.util.ControlHelper;
@@ -53,9 +58,15 @@ import com.nextgis.mobile.util.AppConstants;
 import com.nextgis.mobile.util.IntEditTextPreference;
 import com.nextgis.mobile.util.SelectMapPathPreference;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.IOException;
 
 import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_MAP;
+import static com.nextgis.maplibui.service.TrackerService.URL;
+import static com.nextgis.maplibui.service.TrackerService.getUid;
 import static com.nextgis.maplibui.service.TrackerService.isTrackerServiceRunning;
 import static com.nextgis.mobile.util.AppSettingsConstants.KEY_PREF_GA;
 import static com.nextgis.mobile.util.AppSettingsConstants.KEY_PREF_SHOW_COMPASS;
@@ -138,6 +149,9 @@ public class SettingsFragment
                 final ListPreference minDistance = (ListPreference) findPreference(
                         SettingsConstants.KEY_PREF_TRACKS_MIN_DISTANCE);
                 initializeLocationMins(minTime, minDistance, true);
+
+                final CheckBoxPreference uid = (CheckBoxPreference) findPreference(SettingsConstants.KEY_PREF_TRACK_SEND);
+                initializeUid(uid);
                 break;
         }
     }
@@ -382,6 +396,55 @@ public class SettingsFragment
         }
     }
 
+    public static void initializeUid(CheckBoxPreference preference) {
+        // async check
+        // registered = true - enabled = true; keep state
+        // registered = false - enabled = false; checked = false
+        // no network - enabled = false; keep state; no network info
+        Context context = preference.getContext();
+        String uid = getUid(context);
+        preference.setSummary(context.getString(R.string.track_uid, uid));
+        new CheckRegistration(preference).execute();
+    }
+
+    private static class CheckRegistration extends AsyncTask<Void, Void, Boolean> {
+        private CheckBoxPreference mPreference;
+
+        CheckRegistration(CheckBoxPreference preference) {
+            mPreference = preference;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            try {
+                String url = String.format("%s/%s/registered", URL, getUid(mPreference.getContext()));
+                HttpResponse response = NetworkUtil.get(url, null, null, false);
+                JSONObject json = new JSONObject(response.getResponseBody());
+                return json.optBoolean("registered");
+            } catch (IOException | JSONException e) {
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            if (result == null) {
+                mPreference.setSummary(R.string.error_connect_failed);
+                return;
+            }
+
+            Context context = mPreference.getContext();
+            String uid = getUid(context);
+            mPreference.setSummary(context.getString(R.string.track_uid, uid));
+
+            if (result) {
+                mPreference.setEnabled(true);
+            } else {
+                mPreference.setChecked(false);
+            }
+        }
+    }
 
     public static void initializeLocationMins(
             ListPreference minTime,
@@ -525,6 +588,7 @@ public class SettingsFragment
         editor.remove(SettingsConstants.KEY_PREF_TRACKS_MIN_TIME);
         editor.remove(SettingsConstants.KEY_PREF_TRACKS_MIN_DISTANCE);
         editor.remove(SettingsConstants.KEY_PREF_TRACK_RESTORE);
+        editor.remove(SettingsConstants.KEY_PREF_TRACK_SEND);
         editor.remove(KEY_PREF_SHOW_MEASURING);
         editor.remove(KEY_PREF_SHOW_SCALE_RULER);
         editor.remove(SettingsConstantsUI.KEY_PREF_SHOW_GEO_DIALOG);
