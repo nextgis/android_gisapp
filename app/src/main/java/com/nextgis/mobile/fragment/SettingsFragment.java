@@ -419,7 +419,8 @@ public class SettingsFragment
             try {
                 String url = String.format("%s/%s/registered", URL, getUid(mPreference.getContext()));
                 HttpResponse response = NetworkUtil.get(url, null, null, false);
-                JSONObject json = new JSONObject(response.getResponseBody());
+                String body = response.getResponseBody();
+                JSONObject json = new JSONObject(body == null ? "" : body);
                 return json.optBoolean("registered");
             } catch (IOException | JSONException e) {
                 return null;
