@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2017 NextGIS, info@nextgis.com
+ * Copyright (c) 2012-2018 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -105,7 +105,7 @@ public class AttributesFragment
             + "[0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(25[0-5]|2[0-4][0-9]|[0-1]"
             + "[0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}"
             + "|[1-9][0-9]|[0-9]))";
-    protected static final String URL_PATTERN = "^(?i)(https?://)?(([\\da-z\\.-]+)\\.([a-z\\.]{2,6})|" + IP_ADDRESS + ")([\\/\\w\\,\\s \\.-]*)*\\/?$";
+    protected static final String URL_PATTERN = "^(?i)((ftp|https?)://)?(([\\da-z\\.-]+)\\.([a-z\\.]{2,6})|" + IP_ADDRESS + ")(/\\S*)?$";
     protected static final String KEY_ITEM_ID       = "item_id";
     protected static final String KEY_ITEM_POSITION = "item_pos";
 
