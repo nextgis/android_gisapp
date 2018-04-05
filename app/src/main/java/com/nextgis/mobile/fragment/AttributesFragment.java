@@ -96,16 +96,11 @@ import static com.nextgis.maplib.util.GeoConstants.GTMultiPoint;
 import static com.nextgis.maplib.util.GeoConstants.GTMultiPolygon;
 import static com.nextgis.maplib.util.GeoConstants.GTPoint;
 import static com.nextgis.maplib.util.GeoConstants.GTPolygon;
-
+import static com.nextgis.maplib.util.NetworkUtil.URL_PATTERN;
 
 public class AttributesFragment
         extends Fragment
 {
-    protected static final String IP_ADDRESS = "((25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\\.(25[0-5]|2[0-4]"
-            + "[0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(25[0-5]|2[0-4][0-9]|[0-1]"
-            + "[0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}"
-            + "|[1-9][0-9]|[0-9]))";
-    protected static final String URL_PATTERN = "^(?i)((ftp|https?)://)?(([\\da-z\\.-]+)\\.([a-z\\.]{2,6})|" + IP_ADDRESS + ")(/\\S*)?$";
     protected static final String KEY_ITEM_ID       = "item_id";
     protected static final String KEY_ITEM_POSITION = "item_pos";
 
@@ -154,7 +149,7 @@ public class AttributesFragment
             view.setLayoutParams(lp);
         }
 
-        mAttributes = (LinearLayout) view.findViewById(R.id.ll_attributes);
+        mAttributes = view.findViewById(R.id.ll_attributes);
         return view;
     }
 
@@ -282,6 +277,7 @@ public class AttributesFragment
             return data;
 
         if (attributes.moveToFirst()) {
+            StringBuilder dataBuilder = new StringBuilder(data);
             for (int i = 0; i < attributes.getColumnCount(); i++) {
                 String column = attributes.getColumnName(i);
                 String text, alias;
@@ -294,7 +290,7 @@ public class AttributesFragment
                         case GTPoint:
                             try {
                                 GeoPoint pt = (GeoPoint) GeoGeometryFactory.fromBlob(attributes.getBlob(i));
-                                data += getRow(getString(R.string.coordinates), formatCoordinates(pt));
+                                dataBuilder.append(getRow(getString(R.string.coordinates), formatCoordinates(pt)));
                             } catch (IOException | ClassNotFoundException e) {
                                 e.printStackTrace();
                             }
@@ -302,7 +298,7 @@ public class AttributesFragment
                         case GTMultiPoint:
                             try {
                                 GeoMultiPoint mpt = (GeoMultiPoint) GeoGeometryFactory.fromBlob(attributes.getBlob(i));
-                                data += getRow(getString(R.string.center), formatCoordinates(mpt.getEnvelope().getCenter()));
+                                dataBuilder.append(getRow(getString(R.string.center), formatCoordinates(mpt.getEnvelope().getCenter())));
                             } catch (IOException | ClassNotFoundException e) {
                                 e.printStackTrace();
                             }
@@ -310,7 +306,7 @@ public class AttributesFragment
                         case GTLineString:
                             try {
                                 GeoLineString line = (GeoLineString) GeoGeometryFactory.fromBlob(attributes.getBlob(i));
-                                data += getRow(getString(R.string.length), LocationUtil.formatLength(getContext(), line.getLength(), 3));
+                                dataBuilder.append(getRow(getString(R.string.length), LocationUtil.formatLength(getContext(), line.getLength(), 3)));
                             } catch (IOException | ClassNotFoundException e) {
                                 e.printStackTrace();
                             }
@@ -318,7 +314,7 @@ public class AttributesFragment
                         case GTMultiLineString:
                             try {
                                 GeoMultiLineString multiline = (GeoMultiLineString) GeoGeometryFactory.fromBlob(attributes.getBlob(i));
-                                data += getRow(getString(R.string.length), LocationUtil.formatLength(getContext(), multiline.getLength(), 3));
+                                dataBuilder.append(getRow(getString(R.string.length), LocationUtil.formatLength(getContext(), multiline.getLength(), 3)));
                             } catch (IOException | ClassNotFoundException e) {
                                 e.printStackTrace();
                             }
@@ -326,8 +322,8 @@ public class AttributesFragment
                         case GTPolygon:
                             try {
                                 GeoPolygon polygon = (GeoPolygon) GeoGeometryFactory.fromBlob(attributes.getBlob(i));
-                                data += getRow(getString(R.string.perimeter), LocationUtil.formatLength(getContext(), polygon.getPerimeter(), 3));
-                                data += getRow(getString(R.string.area), LocationUtil.formatArea(getContext(), polygon.getArea()));
+                                dataBuilder.append(getRow(getString(R.string.perimeter), LocationUtil.formatLength(getContext(), polygon.getPerimeter(), 3)));
+                                dataBuilder.append(getRow(getString(R.string.area), LocationUtil.formatArea(getContext(), polygon.getArea())));
                             } catch (IOException | ClassNotFoundException e) {
                                 e.printStackTrace();
                             }
@@ -335,8 +331,8 @@ public class AttributesFragment
                         case GTMultiPolygon:
                             try {
                                 GeoMultiPolygon polygon = (GeoMultiPolygon) GeoGeometryFactory.fromBlob(attributes.getBlob(i));
-                                data += getRow(getString(R.string.perimeter), LocationUtil.formatLength(getContext(), polygon.getPerimeter(), 3));
-                                data += getRow(getString(R.string.area), LocationUtil.formatArea(getContext(), polygon.getArea()));
+                                dataBuilder.append(getRow(getString(R.string.perimeter), LocationUtil.formatLength(getContext(), polygon.getPerimeter(), 3)));
+                                dataBuilder.append(getRow(getString(R.string.area), LocationUtil.formatArea(getContext(), polygon.getArea())));
                             } catch (IOException | ClassNotFoundException e) {
                                 e.printStackTrace();
                             }
@@ -382,8 +378,9 @@ public class AttributesFragment
                 else
                     alias = "";
 
-                data += getRow(alias, text);
+                dataBuilder.append(getRow(alias, text));
             }
+            data = dataBuilder.toString();
         }
 
         attributes.close();
