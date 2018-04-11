@@ -106,6 +106,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import static android.content.Context.MODE_MULTI_PROCESS;
 import static com.nextgis.maplib.util.Constants.FIELD_GEOM;
 import static com.nextgis.maplib.util.Constants.FIELD_ID;
 import static com.nextgis.maplib.util.Constants.NOT_FOUND;
@@ -116,6 +117,7 @@ import static com.nextgis.maplibui.util.ConstantsUI.GA_LAYER;
 import static com.nextgis.mobile.util.AppSettingsConstants.KEY_PREF_SHOW_COMPASS;
 import static com.nextgis.mobile.util.AppSettingsConstants.KEY_PREF_SHOW_MEASURING;
 import static com.nextgis.mobile.util.AppSettingsConstants.KEY_PREF_SHOW_SCALE_RULER;
+import static com.nextgis.mobile.util.AppSettingsConstants.KEY_PREF_SHOW_ZOOM;
 import static com.nextgis.mobile.util.AppSettingsConstants.KEY_PREF_SHOW_ZOOM_CONTROLS;
 
 /**
@@ -140,7 +142,7 @@ public class MapFragment
             mStatusLatitude, mStatusLongitude;
     protected FrameLayout mStatusPanel;
     protected LinearLayout mScaleRulerLayout;
-    protected TextView mScaleRulerText;
+    protected TextView mScaleRulerText, mZoomLevel;
     protected ImageView mScaleRuler;
 
     protected RelativeLayout         mMapRelativeLayout;
@@ -661,7 +663,7 @@ public class MapFragment
                 });
 
         View view = snackbar.getView();
-        TextView textView = (TextView) view.findViewById(R.id.snackbar_text);
+        TextView textView = view.findViewById(R.id.snackbar_text);
         textView.setTextColor(ContextCompat.getColor(mActivity, com.nextgis.maplibui.R.color.color_white));
         snackbar.show();
     }
@@ -691,7 +693,7 @@ public class MapFragment
         mMap.addOverlay(mRulerOverlay);
 
         //search relative view of map, if not found - add it
-        mMapRelativeLayout = (RelativeLayout) view.findViewById(R.id.maprl);
+        mMapRelativeLayout = view.findViewById(R.id.maprl);
         if (mMapRelativeLayout != null) {
             mMapRelativeLayout.addView(
                     mMap, 0, new RelativeLayout.LayoutParams(
@@ -718,31 +720,33 @@ public class MapFragment
         mMap.setZoomAndCenter(mapZoom, new GeoPoint(mapScrollX, mapScrollY));
 
         mMainButton = view.findViewById(R.id.multiple_actions);
-        mAddPointButton = (FloatingActionButton) view.findViewById(R.id.add_point_by_tap);
+        mAddPointButton = view.findViewById(R.id.add_point_by_tap);
         mAddPointButton.setOnClickListener(this);
 
         View addCurrentLocation = view.findViewById(R.id.add_current_location);
         addCurrentLocation.setOnClickListener(this);
 
-        mAddNewGeometry = (FloatingActionButton) view.findViewById(R.id.add_new_geometry);
+        mAddNewGeometry = view.findViewById(R.id.add_new_geometry);
         mAddNewGeometry.setOnClickListener(this);
-        mRuler = (FloatingActionButton) view.findViewById(R.id.action_ruler);
+        mRuler = view.findViewById(R.id.action_ruler);
         mRuler.setOnClickListener(this);
 
         View addGeometryByWalk = view.findViewById(R.id.add_geometry_by_walk);
         addGeometryByWalk.setOnClickListener(this);
 
-        mivZoomIn = (FloatingActionButton) view.findViewById(R.id.action_zoom_in);
+        mivZoomIn = view.findViewById(R.id.action_zoom_in);
         mivZoomIn.setOnClickListener(this);
 
-        mivZoomOut = (FloatingActionButton) view.findViewById(R.id.action_zoom_out);
+        mivZoomOut = view.findViewById(R.id.action_zoom_out);
         mivZoomOut.setOnClickListener(this);
 
-        mStatusPanel = (FrameLayout) view.findViewById(R.id.fl_status_panel);
-        mScaleRuler = (ImageView) view.findViewById(R.id.iv_ruler);
-        mScaleRulerText = (TextView) view.findViewById(R.id.tv_ruler);
+        mStatusPanel = view.findViewById(R.id.fl_status_panel);
+        mScaleRuler = view.findViewById(R.id.iv_ruler);
+        mScaleRulerText = view.findViewById(R.id.tv_ruler);
         mScaleRulerText.setText(getRulerText());
-        mScaleRulerLayout = (LinearLayout) view.findViewById(R.id.ll_ruler);
+        mZoomLevel = view.findViewById(R.id.tv_zoom_level);
+        mZoomLevel.setText(getZoomText());
+        mScaleRulerLayout = view.findViewById(R.id.ll_ruler);
         drawScaleRuler();
 
         return view;
@@ -836,6 +840,12 @@ public class MapFragment
         setZoomInEnabled(mMap.canZoomIn());
         setZoomOutEnabled(mMap.canZoomOut());
         mScaleRulerText.setText(getRulerText());
+        mZoomLevel.setText(getZoomText());
+    }
+
+
+    protected String getZoomText() {
+        return String.format("%.0fz", mMap.getZoomLevel());
     }
 
 
@@ -850,7 +860,7 @@ public class MapFragment
         s.add(p1);
         s.add(p2);
 
-        return LocationUtil.formatLength(getContext(), s.getLength(), 0);
+        return LocationUtil.formatLength(getContext(), s.getLength(), 1);
     }
 
 
@@ -974,7 +984,7 @@ public class MapFragment
         }
 
         if (WalkEditService.isServiceRunning(getContext())) {
-            SharedPreferences preferences = getContext().getSharedPreferences(WalkEditService.TEMP_PREFERENCES, Constants.MODE_MULTI_PROCESS);
+            SharedPreferences preferences = getContext().getSharedPreferences(WalkEditService.TEMP_PREFERENCES, MODE_MULTI_PROCESS);
             int layerId = preferences.getInt(ConstantsUI.KEY_LAYER_ID, NOT_FOUND);
             long featureId = preferences.getLong(ConstantsUI.KEY_FEATURE_ID, NOT_FOUND);
             ILayer layer = mMap.getMap().getLayerById(layerId);
@@ -1046,6 +1056,12 @@ public class MapFragment
             mScaleRulerLayout.setVisibility(View.VISIBLE);
         else
             mScaleRulerLayout.setVisibility(View.GONE);
+
+        showControls = mPreferences.getBoolean(KEY_PREF_SHOW_ZOOM, false);
+        if (showControls)
+            mZoomLevel.setVisibility(View.VISIBLE);
+        else
+            mZoomLevel.setVisibility(View.GONE);
 
         showControls = mPreferences.getBoolean(KEY_PREF_SHOW_MEASURING, false);
         if (showControls)
@@ -1148,7 +1164,7 @@ public class MapFragment
 
     protected void checkCompass(boolean showCompass) {
         int compassContainer = R.id.fl_compass;
-        final FrameLayout compass = (FrameLayout) mMapRelativeLayout.findViewById(compassContainer);
+        final FrameLayout compass = mMapRelativeLayout.findViewById(compassContainer);
 
         if (!showCompass) {
             compass.setVisibility(View.GONE);
@@ -1735,12 +1751,12 @@ public class MapFragment
 
     private void defineTextViews(View panel)
     {
-        mStatusSource = (TextView) panel.findViewById(R.id.tv_source);
-        mStatusAccuracy = (TextView) panel.findViewById(R.id.tv_accuracy);
-        mStatusSpeed = (TextView) panel.findViewById(R.id.tv_speed);
-        mStatusAltitude = (TextView) panel.findViewById(R.id.tv_altitude);
-        mStatusLatitude = (TextView) panel.findViewById(R.id.tv_latitude);
-        mStatusLongitude = (TextView) panel.findViewById(R.id.tv_longitude);
+        mStatusSource = panel.findViewById(R.id.tv_source);
+        mStatusAccuracy = panel.findViewById(R.id.tv_accuracy);
+        mStatusSpeed = panel.findViewById(R.id.tv_speed);
+        mStatusAltitude = panel.findViewById(R.id.tv_altitude);
+        mStatusLatitude = panel.findViewById(R.id.tv_latitude);
+        mStatusLongitude = panel.findViewById(R.id.tv_longitude);
     }
 
 

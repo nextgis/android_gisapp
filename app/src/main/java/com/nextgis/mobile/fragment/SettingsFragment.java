@@ -23,7 +23,6 @@
 
 package com.nextgis.mobile.fragment;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -32,7 +31,6 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteException;
 import android.os.AsyncTask;
-import android.provider.Settings;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.CheckBoxPreference;
@@ -43,6 +41,7 @@ import android.support.v7.preference.PreferenceManager;
 import android.support.v7.preference.PreferenceScreen;
 import android.widget.Toast;
 
+import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapContentProviderHelper;
@@ -65,6 +64,7 @@ import java.io.File;
 import java.io.IOException;
 
 import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_MAP;
+import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_UNITS;
 import static com.nextgis.maplibui.service.TrackerService.URL;
 import static com.nextgis.maplibui.service.TrackerService.getUid;
 import static com.nextgis.maplibui.service.TrackerService.isTrackerServiceRunning;
@@ -106,6 +106,9 @@ public class SettingsFragment
                         (IntEditTextPreference) findPreference(
                                 SettingsConstantsUI.KEY_PREF_COORD_FRACTION);
                 initializeCoordinates(lpCoordinateFormat, etCoordinateFraction);
+
+                final ListPreference lpUnits = (ListPreference) findPreference(KEY_PREF_UNITS);
+                initializeUnits(lpUnits);
 
                 final SelectMapPathPreference mapPath = (SelectMapPathPreference) findPreference(
                         SettingsConstants.KEY_PREF_MAP_PATH);
@@ -239,6 +242,20 @@ public class SettingsFragment
                 return true;
             }
         });
+    }
+
+
+    public static void initializeUnits(final ListPreference lpUnits) {
+        lpUnits.setSummary(lpUnits.getEntry());
+        lpUnits.setOnPreferenceChangeListener(
+                new Preference.OnPreferenceChangeListener() {
+                    @Override
+                    public boolean onPreferenceChange(Preference preference, Object newValue) {
+                        boolean metric = newValue.equals("metric");
+                        preference.setSummary(lpUnits.getEntries()[metric ? 0 : 1]);
+                        return true;
+                    }
+                });
     }
 
 

@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2017 NextGIS, info@nextgis.com
+ * Copyright (c) 2012-2018 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,6 +62,7 @@ public interface AppSettingsConstants
     String KEY_PREF_SHOW_MEASURING      = "show_ruler_measuring";
     String KEY_PREF_GA                  = "ga_enabled";
     String KEY_PREF_INTRO               = "app_intro";
+    String KEY_PREF_SHOW_ZOOM           = "show_zoom_level";
 
     int FIRSTSTART_DOWNLOADZOOM = 5;
 

@@ -36,7 +36,7 @@
     <string name="keep_screen_on_summary">Держать экран включенным</string>
     <string name="show_scale_ruler">Шкала масштаба</string>
     <string name="show_ruler_measuring">Линейка измерений</string>
-    <string name="show_zoom_controls">Включить управление масштабами</string>
+    <string name="show_zoom_controls">Кнопки масштаба</string>
     <string name="show_zoom_controls_summary">Показывать кнопки +/- на карте для увеличения/уменьшения</string>
     <string name="show_compass">Показывать мини компас</string>
     <string name="map">Карта</string>
@@ -159,4 +159,6 @@
     <string name="intro_get_pro">Получить NextGIS Mobile Pro</string>
     <string name="track_uid">Ваш UID: %1$s</string>
     <string name="track_send">Отправлять местоположение на сервер</string>
+    <string name="preferred_units">Система измерений</string>
+    <string name="show_zoom_level">Показывать уровень зума</string>
 </resources>

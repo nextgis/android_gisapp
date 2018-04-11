@@ -6,7 +6,7 @@
   ~ Author:   NikitaFeodonit, nfeodonit@yandex.com
   ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2012-2017 NextGIS, info@nextgis.com
+  ~ Copyright (c) 2012-2018 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -54,10 +54,23 @@
         android:summary="@string/show_zoom_controls_summary"
         android:title="@string/show_zoom_controls"/>
 
+    <ListPreference
+        android:defaultValue="metric"
+        android:dialogTitle="@string/preferred_units"
+        android:entries="@array/units"
+        android:entryValues="@array/units_val"
+        android:key="preferred_units"
+        android:title="@string/preferred_units"/>
+
     <CheckBoxPreference
         android:defaultValue="true"
         android:key="show_scale_ruler"
         android:title="@string/show_scale_ruler"/>
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="show_zoom_level"
+        android:title="@string/show_zoom_level"/>
 
     <CheckBoxPreference
         android:defaultValue="false"
