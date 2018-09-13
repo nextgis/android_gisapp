@@ -24,8 +24,8 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '26.0.2'
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
 
     // Setup the Sentry DSN from the file 'sentry.properties', which should contain
     // sentry.dsn=https://publicKey:secretKey@host:port/1?options
@@ -41,9 +41,9 @@ android {
     defaultConfig {
         applicationId 'com.nextgis.mobile'
         minSdkVersion 14
-        targetSdkVersion 26
-        versionCode 39
-        versionName '2.5.7.3'
+        targetSdkVersion 27
+        versionCode 40
+        versionName '2.5.7.4'
         archivesBaseName = "ngmobile-$versionName"
         buildConfigField "String", "SENTRY_DSN", "\"${sentryDsn}\""
     }
@@ -69,7 +69,7 @@ dependencies {
     compile project(':maplibui')
     compile 'com.joshdholtz.sentry:sentry-android:1.6.0'
     compile 'com.nineoldandroids:library:2.4.0'
-    compile 'com.android.support:appcompat-v7:26.1.0'
-    compile 'com.google.android.gms:play-services-analytics:11.6.0'
+    compile 'com.android.support:appcompat-v7:27.1.1'
+    compile 'com.google.android.gms:play-services-analytics:16.0.3'
     compile 'com.github.TechFreak:WizardPager:1.0.3'
 }
