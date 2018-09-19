@@ -65,11 +65,11 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':maplibui')
-    compile 'com.joshdholtz.sentry:sentry-android:1.6.0'
-    compile 'com.nineoldandroids:library:2.4.0'
-    compile 'com.android.support:appcompat-v7:27.1.1'
-    compile 'com.google.android.gms:play-services-analytics:16.0.3'
-    compile 'com.github.TechFreak:WizardPager:1.0.3'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':maplibui')
+    implementation 'com.joshdholtz.sentry:sentry-android:1.6.0'
+    implementation 'com.nineoldandroids:library:2.4.0'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.google.android.gms:play-services-analytics:16.0.3'
+    implementation 'com.github.TechFreak:WizardPager:1.0.3'
 }
