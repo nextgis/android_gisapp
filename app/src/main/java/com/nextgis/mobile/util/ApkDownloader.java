@@ -3,7 +3,7 @@
  * Purpose:  Mobile GIS for Android.
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * ****************************************************************************
- * Copyright (c) 2017 NextGIS, info@nextgis.com
+ * Copyright (c) 2017-2018 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,9 +36,9 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.nextgis.maplib.util.HttpResponse;
+import com.nextgis.maplibui.BuildConfig;
 import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.maplibui.util.NGIDUtils;
-import com.nextgis.mobile.BuildConfig;
 import com.nextgis.mobile.R;
 
 import org.json.JSONException;
@@ -153,9 +153,7 @@ public class ApkDownloader extends AsyncTask<String, Integer, String> {
         super.onProgressUpdate(values);
 
         if (mProgress.isIndeterminate()) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-                mProgress.setProgressNumberFormat(String.format(Locale.getDefault(), "%.2f Mb", values[1] / 1024f));
-
+            mProgress.setProgressNumberFormat(String.format(Locale.getDefault(), "%.2f Mb", values[1] / 1024f));
             mProgress.setIndeterminate(false);
             mProgress.setMax(values[1]);
         }
