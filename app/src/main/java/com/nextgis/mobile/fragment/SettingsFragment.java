@@ -41,7 +41,6 @@ import android.support.v7.preference.PreferenceManager;
 import android.support.v7.preference.PreferenceScreen;
 import android.widget.Toast;
 
-import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapContentProviderHelper;

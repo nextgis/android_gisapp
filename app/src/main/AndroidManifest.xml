@@ -144,5 +144,15 @@
             android:exported="false"
             android:syncable="true"/>
 
+        <provider
+            android:name="com.nextgis.maplibui.util.UriFileProvider"
+            android:authorities="com.nextgis.maplibui.easypicker.provider"
+            android:exported="false"
+            android:grantUriPermissions="true" >
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
     </application>
 </manifest>
