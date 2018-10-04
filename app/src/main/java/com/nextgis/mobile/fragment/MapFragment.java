@@ -1023,6 +1023,7 @@ public class MapFragment
         }
         if (null != mEditLayerOverlay) {
             mEditLayerOverlay.removeListener(this);
+            mEditLayerOverlay.onPause();
         }
 
         final SharedPreferences.Editor edit = mPreferences.edit();
@@ -1090,8 +1091,10 @@ public class MapFragment
             if (mGPSDialog == null || !mGPSDialog.isShowing())
                 mGPSDialog = NotificationHelper.showLocationInfo(getActivity());
         }
+
         if (null != mEditLayerOverlay) {
             mEditLayerOverlay.addListener(this);
+            mEditLayerOverlay.onResume();
         }
 
         try {
