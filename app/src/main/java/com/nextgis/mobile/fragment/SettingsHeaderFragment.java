@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2017 NextGIS, info@nextgis.com
+ * Copyright (c) 2012-2018 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,10 @@
 package com.nextgis.mobile.fragment;
 
 import android.support.v7.preference.PreferenceScreen;
+
+import com.nextgis.maplib.util.AccountUtil;
 import com.nextgis.maplibui.fragment.NGPreferenceHeaderFragment;
+import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.R;
 
 
@@ -35,5 +38,7 @@ public class SettingsHeaderFragment
     protected void createPreferences(PreferenceScreen screen)
     {
         addPreferencesFromResource(R.xml.preference_headers);
+        if (getActivity() != null && !AccountUtil.isProUser(getActivity()))
+            screen.findPreference(SettingsConstantsUI.ACTION_PREFS_NGW).setIcon(R.drawable.ic_lock_black_24dp);
     }
 }

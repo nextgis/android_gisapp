@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2017 NextGIS, info@nextgis.com
+ * Copyright (c) 2012-2018 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,9 +40,10 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.PopupMenu;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -60,11 +61,13 @@ import com.nextgis.maplib.api.INGWLayer;
 import com.nextgis.maplib.datasource.ngw.SyncAdapter;
 import com.nextgis.maplib.map.MapContentProviderHelper;
 import com.nextgis.maplib.map.MapDrawable;
+import com.nextgis.maplib.util.AccountUtil;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.maplibui.fragment.LayersListAdapter;
 import com.nextgis.maplibui.fragment.ReorderedLayerView;
 import com.nextgis.maplibui.util.ControlHelper;
+import com.nextgis.maplibui.util.UiUtil;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.CreateVectorLayerActivity;
 import com.nextgis.mobile.activity.MainActivity;
@@ -87,7 +90,7 @@ import static com.nextgis.mobile.util.AppSettingsConstants.AUTHORITY;
  * A layers fragment class
  */
 public class LayersFragment
-        extends Fragment implements View.OnClickListener {
+        extends Fragment implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
     protected ActionBarDrawerToggle mDrawerToggle;
     protected DrawerLayout          mDrawerLayout;
     protected ReorderedLayerView    mLayersListView;
@@ -118,52 +121,20 @@ public class LayersFragment
     {
         View view = inflater.inflate(R.layout.fragment_layers, container, false);
 
-        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.action_space);
+        LinearLayout linearLayout = view.findViewById(R.id.action_space);
         if (null != linearLayout) {
             linearLayout.setBackgroundColor(ControlHelper.getColor(view.getContext(), R.attr.colorPrimary));
         }
 
-        mSyncButton = (ImageButton) view.findViewById(R.id.sync);
-        mNewLayer = (ImageButton) view.findViewById(R.id.new_layer);
+        mSyncButton = view.findViewById(R.id.sync);
+        mNewLayer = view.findViewById(R.id.new_layer);
         mNewLayer.setOnClickListener(this);
-        mInfoText = (TextView) view.findViewById(R.id.info);
+        mInfoText = view.findViewById(R.id.info);
 
         setupSyncOptions();
 
         updateInfo();
         return view;
-    }
-
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        getActivity().getMenuInflater().inflate(R.menu.add_layer, menu);
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        IGISApplication application = (IGISApplication) getActivity().getApplication();
-        switch (item.getItemId()) {
-            case R.id.menu_new:
-                application.sendEvent(GA_LAYER, GA_CREATE, GA_LOCAL);
-                Intent intentNewLayer = new Intent(getActivity(), CreateVectorLayerActivity.class);
-                startActivity(intentNewLayer);
-                return true;
-            case R.id.menu_add_local:
-                application.sendEvent(GA_LAYER, GA_CREATE, GA_IMPORT);
-                ((MainActivity) getActivity()).addLocalLayer();
-                return true;
-            case R.id.menu_add_remote:
-                application.sendEvent(GA_LAYER, GA_CREATE, GA_GEOSERVICE);
-                ((MainActivity) getActivity()).addRemoteLayer();
-                return true;
-            case R.id.menu_add_ngw:
-                application.sendEvent(GA_LAYER, GA_CREATE, GA_NGW);
-                ((MainActivity) getActivity()).addNGWLayer();
-                return true;
-            default:
-                return super.onContextItemSelected(item);
-        }
     }
 
     protected void setupSyncOptions()
@@ -225,7 +196,6 @@ public class LayersFragment
         super.onActivityCreated(savedInstanceState);
         // Indicate that this fragment would like to influence the set of actions in the action bar.
         setHasOptionsMenu(true);
-        registerForContextMenu(mNewLayer);
     }
 
 
@@ -316,7 +286,7 @@ public class LayersFragment
             }
         });
 
-        mLayersListView = (ReorderedLayerView) mFragmentContainerView.findViewById(R.id.layer_list);
+        mLayersListView = mFragmentContainerView.findViewById(R.id.layer_list);
         mLayersListView.setAdapter(mListAdapter);
         mLayersListView.setDrawer(drawerLayout);
 
@@ -476,11 +446,52 @@ public class LayersFragment
                 updateInfo();
                 break;
             case R.id.new_layer:
-                mNewLayer.showContextMenu();
+                if (getActivity() != null) {
+//                    View view = getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
+                    View view = getActivity().findViewById(R.id.new_layer);
+                    PopupMenu popup = new PopupMenu(getActivity(), view);
+                    UiUtil.setForceShowIcon(popup);
+                    popup.getMenuInflater().inflate(R.menu.add_layer, popup.getMenu());
+                    popup.setOnMenuItemClickListener(this);
+                    if (!AccountUtil.isProUser(getActivity())) {
+                        popup.getMenu().findItem(R.id.menu_add_ngw).setIcon(R.drawable.ic_lock_black_24dp);
+                    }
+                    popup.show();
+                }
+
                 break;
         }
     }
 
+    @Override
+    public boolean onMenuItemClick(MenuItem menuItem) {
+        IGISApplication application = (IGISApplication) getActivity().getApplication();
+        switch (menuItem.getItemId()) {
+            case R.id.menu_new:
+                application.sendEvent(GA_LAYER, GA_CREATE, GA_LOCAL);
+                Intent intentNewLayer = new Intent(getActivity(), CreateVectorLayerActivity.class);
+                startActivity(intentNewLayer);
+                return true;
+            case R.id.menu_add_local:
+                application.sendEvent(GA_LAYER, GA_CREATE, GA_IMPORT);
+                ((MainActivity) getActivity()).addLocalLayer();
+                return true;
+            case R.id.menu_add_remote:
+                application.sendEvent(GA_LAYER, GA_CREATE, GA_GEOSERVICE);
+                ((MainActivity) getActivity()).addRemoteLayer();
+                return true;
+            case R.id.menu_add_ngw:
+                if (!AccountUtil.isProUser(getActivity())) {
+                    ControlHelper.showProDialog(getActivity());
+                } else {
+                    application.sendEvent(GA_LAYER, GA_CREATE, GA_NGW);
+                    ((MainActivity) getActivity()).addNGWLayer();
+                }
+                return true;
+            default:
+                return super.onContextItemSelected(menuItem);
+        }
+    }
 
     protected class SyncReceiver
             extends BroadcastReceiver

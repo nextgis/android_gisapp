@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2017 NextGIS, info@nextgis.com
+ * Copyright (c) 2012-2018 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,8 @@ package com.nextgis.mobile.activity;
 
 import android.content.Intent;
 import android.support.v7.preference.PreferenceScreen;
+
+import com.nextgis.maplib.util.AccountUtil;
 import com.nextgis.maplibui.activity.NGIDSettingsActivity;
 import com.nextgis.maplibui.activity.NGPreferenceActivity;
 import com.nextgis.maplibui.activity.NGWSettingsActivity;
@@ -32,6 +34,7 @@ import com.nextgis.maplibui.fragment.NGIDSettingsFragment;
 import com.nextgis.maplibui.fragment.NGPreferenceSettingsFragment;
 import com.nextgis.maplibui.fragment.NGPreferenceHeaderFragment;
 import com.nextgis.maplibui.fragment.NGWSettingsFragment;
+import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.fragment.SettingsFragment;
@@ -115,6 +118,10 @@ public class SettingsActivity
                 super.onStartSubScreen(preferenceScreen);
                 return;
             case SettingsConstantsUI.ACTION_PREFS_NGW:
+                if (!AccountUtil.isProUser(this)) {
+                    ControlHelper.showProDialog(this);
+                    return;
+                }
                 intent = new Intent(this, NGWSettingsActivity.class);
                 break;
             case SettingsConstantsUI.ACTION_PREFS_NGID:
