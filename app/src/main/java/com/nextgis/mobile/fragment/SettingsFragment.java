@@ -154,6 +154,7 @@ public class SettingsFragment
 
                 final CheckBoxPreference uid = (CheckBoxPreference) findPreference(SettingsConstants.KEY_PREF_TRACK_SEND);
                 initializeUid(uid);
+                uid.setVisible(false);
                 break;
         }
     }
