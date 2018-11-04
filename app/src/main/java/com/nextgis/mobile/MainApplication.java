@@ -23,6 +23,7 @@
 
 package com.nextgis.mobile;
 
+import android.accounts.Account;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -38,12 +39,15 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.StandardExceptionParser;
 import com.google.android.gms.analytics.Tracker;
 import com.joshdholtz.sentry.Sentry;
+import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.datasource.Field;
 import com.nextgis.maplib.map.LayerGroup;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapDrawable;
+import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.map.VectorLayer;
+import com.nextgis.maplib.util.AccountUtil;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplib.util.NGException;
@@ -64,6 +68,7 @@ import java.util.List;
 import static com.nextgis.maplib.util.Constants.DEBUG_MODE;
 import static com.nextgis.maplib.util.Constants.MAP_EXT;
 import static com.nextgis.maplib.util.GeoConstants.TMSTYPE_OSM;
+import static com.nextgis.maplibui.fragment.NGWSettingsFragment.setAccountSyncEnabled;
 import static com.nextgis.mobile.util.AppSettingsConstants.AUTHORITY;
 import static com.nextgis.mobile.util.AppSettingsConstants.KEY_PREF_APP_VERSION;
 import static com.nextgis.mobile.util.AppSettingsConstants.KEY_PREF_GA;
@@ -88,7 +93,6 @@ public class MainApplication extends GISApplication
 //        Sentry.captureMessage("NGM2 Sentry is init.", Sentry.SentryEventLevel.DEBUG);
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        updateFromOldVersion();
 
         GoogleAnalytics.getInstance(this).setAppOptOut(!mSharedPreferences.getBoolean(KEY_PREF_GA, true));
         GoogleAnalytics.getInstance(this).setDryRun(DEBUG_MODE);
@@ -96,6 +100,7 @@ public class MainApplication extends GISApplication
         setExceptionHandler();
 
         super.onCreate();
+        updateFromOldVersion();
     }
 
     private void setExceptionHandler() {
@@ -170,6 +175,23 @@ public class MainApplication extends GISApplication
                             .remove(SettingsConstantsUI.KEY_PREF_COORD_FORMAT).apply();
                 default:
                     break;
+            }
+
+            if (savedVersionCode < 44) {
+                if (!AccountUtil.isProUser(this)) {
+                    if (isAccountManagerValid())
+                        for (final Account account : mAccountManager.getAccountsByType(getAccountsType()))
+                            setAccountSyncEnabled(account, getAuthority(), false);
+
+                    for (int i = 0; i < mMap.getLayerCount(); i++) {
+                        ILayer layer = mMap.getLayer(i);
+                        if (layer instanceof NGWVectorLayer) {
+                            NGWVectorLayer ngwLayer = (NGWVectorLayer) layer;
+                            ngwLayer.setSyncType(Constants.SYNC_NONE);
+                            ngwLayer.save();
+                        }
+                    }
+                }
             }
 
             if(savedVersionCode < currentVersionCode) {
