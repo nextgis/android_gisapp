@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2017 NextGIS, info@nextgis.com
+ * Copyright (c) 2012-2018 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,6 +76,7 @@ import com.nextgis.maplibui.api.IChooseLayerResult;
 import com.nextgis.maplibui.api.IVectorLayerUI;
 import com.nextgis.maplibui.fragment.BottomToolbar;
 import com.nextgis.maplibui.fragment.LayerFillProgressDialogFragment;
+import com.nextgis.maplibui.overlay.EditLayerOverlay;
 import com.nextgis.maplibui.service.TrackerService;
 import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.maplibui.util.ControlHelper;
@@ -189,7 +190,8 @@ public class MainActivity extends NGActivity
                     } catch (IOException ignored) {}
                 }
 
-                mToolbar.setTitle(getAppName());
+                if (mMapFragment.getEditLayerOverlay().getMode() == EditLayerOverlay.MODE_NONE)
+                    mToolbar.setTitle(getAppName());
                 boolean isLoggedIn = !TextUtils.isEmpty(mPreferences.getString(NGIDUtils.PREF_ACCESS_TOKEN, ""));
                 if (!isLoggedIn)
                     showSnack();
