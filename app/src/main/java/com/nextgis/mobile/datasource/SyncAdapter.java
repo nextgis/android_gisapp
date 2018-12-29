@@ -3,7 +3,7 @@
  * Purpose:  Mobile GIS for Android.
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * ****************************************************************************
- * Copyright (c) 2016 NextGIS, info@nextgis.com
+ * Copyright (c) 2016-2018 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,8 @@ import com.nextgis.maplibui.util.NotificationHelper;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
 import com.nextgis.mobile.util.AppSettingsConstants;
+
+import static com.nextgis.maplibui.util.NotificationHelper.createBuilder;
 
 public class SyncAdapter extends com.nextgis.maplib.datasource.ngw.SyncAdapter {
     private static final int NOTIFICATION_ID = 517;
@@ -77,7 +79,7 @@ public class SyncAdapter extends com.nextgis.maplib.datasource.ngw.SyncAdapter {
         PendingIntent contentIntent = PendingIntent.getActivity(
                 context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+        NotificationCompat.Builder builder = createBuilder(context, com.nextgis.maplibui.R.string.sync);
         builder.setSmallIcon(R.drawable.ic_action_sync)
                 .setWhen(System.currentTimeMillis())
                 .setContentIntent(contentIntent)
