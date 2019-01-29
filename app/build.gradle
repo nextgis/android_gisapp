@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2018 NextGIS, info@nextgis.com
+ * Copyright (c) 2014-2019 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,8 +42,8 @@ android {
         applicationId 'com.nextgis.mobile'
         minSdkVersion 14
         targetSdkVersion 28
-        versionCode 46
-        versionName '2.6.1'
+        versionCode 47
+        versionName '2.6.2'
         archivesBaseName = "ngmobile-$versionName"
         buildConfigField "String", "SENTRY_DSN", "\"${sentryDsn}\""
     }
