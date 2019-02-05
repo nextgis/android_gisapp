@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2018 NextGIS, info@nextgis.com
+ * Copyright (c) 2015-2019 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -378,18 +378,20 @@ public class SettingsFragment
     }
 
 
+    public static CharSequence[] getAccuracyEntries(Context context) {
+        CharSequence[] entries = new CharSequence[3];
+        entries[0] = context.getString(R.string.pref_location_accuracy_gps);
+        entries[1] = context.getString(R.string.pref_location_accuracy_cell);
+        entries[2] = entries[0] + " & " + entries[1];
+        return entries;
+    }
+
     public static void initializeLocationAccuracy(
             final ListPreference listPreference,
             final boolean isTracks)
     {
         if (listPreference != null) {
-            Context ctx = listPreference.getContext();
-            CharSequence[] entries = new CharSequence[3];
-            entries[0] = ctx.getString(R.string.pref_location_accuracy_gps);
-            entries[1] = ctx.getString(R.string.pref_location_accuracy_cell);
-            entries[2] = ctx.getString(R.string.pref_location_accuracy_gps) +
-                    " & " +
-                    ctx.getString(R.string.pref_location_accuracy_cell);
+            CharSequence[] entries = getAccuracyEntries(listPreference.getContext());
             listPreference.setEntries(entries);
             listPreference.setSummary(listPreference.getEntry());
 

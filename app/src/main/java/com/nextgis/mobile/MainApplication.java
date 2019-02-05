@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2018 NextGIS, info@nextgis.com
+ * Copyright (c) 2012-2019 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -154,14 +154,22 @@ public class MainApplication extends GISApplication
                 case 0:
                     int source;
                     if (mSharedPreferences.contains(SettingsConstants.KEY_PREF_LOCATION_SOURCE)) {
-                        source = mSharedPreferences.getInt(SettingsConstants.KEY_PREF_LOCATION_SOURCE, 3);
+                        try {
+                            source = mSharedPreferences.getInt(SettingsConstants.KEY_PREF_LOCATION_SOURCE, 3);
+                        } catch (ClassCastException e) {
+                            source = 3;
+                        }
                         mSharedPreferences.edit()
                                 .remove(SettingsConstants.KEY_PREF_LOCATION_SOURCE)
                                 .remove(SettingsConstants.KEY_PREF_LOCATION_SOURCE + "_str")
                                 .putString(SettingsConstants.KEY_PREF_LOCATION_SOURCE, source + "").apply();
                     }
                     if (mSharedPreferences.contains(SettingsConstants.KEY_PREF_TRACKS_SOURCE)) {
-                        source = mSharedPreferences.getInt(SettingsConstants.KEY_PREF_TRACKS_SOURCE, 1);
+                        try {
+                            source = mSharedPreferences.getInt(SettingsConstants.KEY_PREF_TRACKS_SOURCE, 1);
+                        } catch (ClassCastException e) {
+                            source = 3;
+                        }
                         mSharedPreferences.edit()
                                 .remove(SettingsConstants.KEY_PREF_TRACKS_SOURCE)
                                 .remove(SettingsConstants.KEY_PREF_TRACKS_SOURCE + "_str")
