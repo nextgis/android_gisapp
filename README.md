@@ -22,7 +22,7 @@ License
 
 The application is licensed under the terms of GNU GPL v3 or any later version.
 
-[![License](https://img.shields.io/badge/License-GPL v3-blue.svg?maxAge=2592000)]()
+[![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg?maxAge=2592000)]()
 
 Commercial support
 ==================
