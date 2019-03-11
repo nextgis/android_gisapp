@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2018 NextGIS, info@nextgis.com
+ * Copyright (c) 2014-2019 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,7 +43,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.util.Log;
 import android.view.Display;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -75,6 +74,7 @@ import com.nextgis.mobile.activity.MainActivity;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.Context.MODE_MULTI_PROCESS;
 import static com.nextgis.maplib.util.Constants.TAG;
 import static com.nextgis.maplibui.util.ConstantsUI.GA_CREATE;
 import static com.nextgis.maplibui.util.ConstantsUI.GA_EDIT;
@@ -174,16 +174,13 @@ public class LayersFragment
     }
 
 
-    protected void updateInfo()
-    {
-        if (null == mInfoText) {
+    protected void updateInfo() {
+        if (null == mInfoText || getContext() == null) {
             return;
         }
 
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
-                Constants.PREFERENCES, Constants.MODE_MULTI_PROCESS);
-        long timeStamp =
-                sharedPreferences.getLong(SettingsConstants.KEY_PREF_LAST_SYNC_TIMESTAMP, 0);
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences(Constants.PREFERENCES, MODE_MULTI_PROCESS);
+        long timeStamp = sharedPreferences.getLong(SettingsConstants.KEY_PREF_LAST_SYNC_TIMESTAMP, 0);
         if (timeStamp > 0) {
             mInfoText.setText(ControlHelper.getSyncTime(getContext(), timeStamp));
         }
@@ -218,19 +215,17 @@ public class LayersFragment
             DrawerLayout drawerLayout,
             final MapDrawable map)
     {
-        MainActivity activity = (MainActivity) getActivity();
+        final MainActivity activity = (MainActivity) getActivity();
+        if (activity == null)
+            return;
         mFragmentContainerView = activity.findViewById(fragmentId);
 
         Display display = activity.getWindowManager().getDefaultDisplay();
 
         int displayWidth;
-        if (android.os.Build.VERSION.SDK_INT >= 13) {
-            Point size = new Point();
-            display.getSize(size);
-            displayWidth = size.x;
-        } else {
-            displayWidth = display.getWidth();
-        }
+        Point size = new Point();
+        display.getSize(size);
+        displayWidth = size.x;
 
         ViewGroup.LayoutParams params = mFragmentContainerView.getLayoutParams();
         if (params.width >= displayWidth) {
@@ -250,7 +245,7 @@ public class LayersFragment
                     return;
                 }
 
-                AlertDialog builder = new AlertDialog.Builder(getContext())
+                AlertDialog builder = new AlertDialog.Builder(activity)
                         .setTitle(R.string.save)
                         .setMessage(R.string.has_edits)
                         .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
@@ -273,7 +268,7 @@ public class LayersFragment
         mListAdapter.setOnLayerEditListener(new LayersListAdapter.onEdit() {
             @Override
             public void onLayerEdit(ILayer layer) {
-                IGISApplication application = (IGISApplication) getActivity().getApplication();
+                IGISApplication application = (IGISApplication) activity.getApplication();
                 application.sendEvent(GA_LAYER, GA_EDIT, GA_MENU);
                 mapFragment.onFinishChooseLayerDialog(MapFragment.EDIT_LAYER, layer);
                 toggle();
