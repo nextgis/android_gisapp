@@ -89,7 +89,8 @@ public class MainApplication extends GISApplication
 
     @Override
     public void onCreate() {
-        Sentry.init(this, BuildConfig.SENTRY_DSN);
+        if (!BuildConfig.DEBUG)
+            Sentry.init(this, BuildConfig.SENTRY_DSN);
 //        Sentry.captureMessage("NGM2 Sentry is init.", Sentry.SentryEventLevel.DEBUG);
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
