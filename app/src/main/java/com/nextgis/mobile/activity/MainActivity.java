@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2018 NextGIS, info@nextgis.com
+ * Copyright (c) 2012-2019 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -386,29 +386,23 @@ public class MainActivity extends NGActivity
 
 
     public synchronized void onRefresh(boolean isRefresh) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            MenuItem refreshItem = mToolbar.getMenu().findItem(R.id.menu_refresh);
-            if (null != refreshItem) {
-                if (isRefresh) {
-                    if (refreshItem.getActionView() == null) {
-                        refreshItem.setActionView(R.layout.layout_refresh);
-                        ProgressBar progress = (ProgressBar) refreshItem.getActionView().findViewById(R.id.refreshingProgress);
-                        if (progress != null)
-                            progress.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(this, R.color.color_grey_200), PorterDuff.Mode.SRC_IN);
-                    }
-                } else
-                    stopRefresh(refreshItem);
-            }
+        MenuItem refreshItem = mToolbar.getMenu().findItem(R.id.menu_refresh);
+        if (null != refreshItem) {
+            if (isRefresh) {
+                if (refreshItem.getActionView() == null) {
+                    refreshItem.setActionView(R.layout.layout_refresh);
+                    ProgressBar progress = (ProgressBar) refreshItem.getActionView().findViewById(R.id.refreshingProgress);
+                    if (progress != null)
+                        progress.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(this, R.color.color_grey_200), PorterDuff.Mode.SRC_IN);
+                }
+            } else
+                stopRefresh(refreshItem);
         }
     }
 
     protected void stopRefresh(final MenuItem refreshItem) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB)
-            return;
-
         Handler handler = new Handler(Looper.getMainLooper());
         final Runnable r = new Runnable() {
-            @TargetApi(Build.VERSION_CODES.HONEYCOMB)
             public void run() {
                 if (refreshItem != null && refreshItem.getActionView() != null) {
                     refreshItem.getActionView().clearAnimation();
@@ -464,7 +458,7 @@ public class MainActivity extends NGActivity
                     // Get the Uri of the selected file
                     Uri uri = data.getData();
                     if(Constants.DEBUG_MODE)
-                        Log.d(TAG, "File Uri: " + uri.toString());
+                        Log.d(TAG, "File Uri: " + (uri != null ? uri.toString() : ""));
                     //check the file type from extension
                     String fileName = FileUtil.getFileNameByUri(this, uri, "");
                     if (fileName.toLowerCase().endsWith("ngrc") ||
