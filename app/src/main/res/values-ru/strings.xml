@@ -145,7 +145,7 @@
     <string name="intro2">Войдите для эффективной работы, синхронизации и получения регулярных обновлений (необходима подписка). Вы можете войти позже через настройки.</string>
     <string name="support_available">Доступна поддерживаемая версия</string>
     <string name="more">Подробнее</string>
-    <string name="pricing">http://nextgis.ru/pricing/</string>
+    <string name="pricing">http://nextgis.ru/pricing-base/</string>
     <string name="intro1_2">Загружайте и создавайте геоданные</string>
     <string name="intro1_3">Собирайте полевые данные</string>
     <string name="intro1_4">Записывайте треки</string>

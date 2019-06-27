@@ -145,7 +145,7 @@
     <string name="intro2">Sign in to get the most out of this app, synchronize your data and get regular updates (support plan is needed). You can sign in later in Settings.</string>
     <string name="support_available">Supported version available</string>
     <string name="more">More</string>
-    <string name="pricing">http://nextgis.com/pricing/</string>
+    <string name="pricing">http://nextgis.com/pricing-base/</string>
     <string name="intro1_1">Create multi-layered maps</string>
     <string name="intro1_2">Add and create geodata</string>
     <string name="intro1_3">Collect field data</string>
