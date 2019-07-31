@@ -72,7 +72,9 @@ import com.nextgis.maplib.datasource.GeoEnvelope;
 import com.nextgis.maplib.datasource.GeoGeometry;
 import com.nextgis.maplib.datasource.GeoGeometryFactory;
 import com.nextgis.maplib.datasource.GeoLineString;
+import com.nextgis.maplib.datasource.GeoMultiPolygon;
 import com.nextgis.maplib.datasource.GeoPoint;
+import com.nextgis.maplib.datasource.GeoPolygon;
 import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.map.VectorLayer;
@@ -1461,15 +1463,21 @@ public class MapFragment
         double dMaxY = event.getY() + mTolerancePX;
 
         GeoEnvelope mapEnv = mMap.screenToMap(new GeoEnvelope(dMinX, dMaxX, dMinY, dMaxY));
-        if (null == mapEnv) {
+        if (null == mapEnv)
             return;
-        }
+
+        GeoEnvelope exactEnv = new GeoEnvelope(event.getX(), event.getX(), event.getY(), event.getY());
+        exactEnv = mMap.screenToMap(exactEnv);
+        if (null == exactEnv)
+            return;
+        GeoPoint point = new GeoPoint(exactEnv.getMaxX(), exactEnv.getMinY());
+        point.setCRS(GeoConstants.CRS_WEB_MERCATOR);
 
         //show actions dialog
         List<ILayer> layers = mMap.getVectorLayersByType(GeoConstants.GTAnyCheck);
-        List<Long> items = null;
-        VectorLayer vectorLayer = null;
-        boolean intersects = false;
+        List<Long> items;
+        VectorLayer vectorLayer;
+        layersLoop:
         for (ILayer layer : layers) {
             if (!layer.isValid()) {
                 continue;
@@ -1481,25 +1489,24 @@ public class MapFragment
 
             vectorLayer = (VectorLayer) layer;
             items = vectorLayer.query(mapEnv);
-            if (!items.isEmpty()) {
-                intersects = true;
-                break;
-            }
-        }
-
-        if (intersects) {
-            if (mSelectedLayer != null)
-                mSelectedLayer.setLocked(false);
-
-            mSelectedLayer = vectorLayer;
-            mEditLayerOverlay.setSelectedLayer(vectorLayer);
             for (int i = 0; i < items.size(); i++) {    // FIXME hack for bad RTree cache
                 long featureId = items.get(i);
-                GeoGeometry geometry = mSelectedLayer.getGeometryForId(featureId);
+                GeoGeometry geometry = vectorLayer.getGeometryForId(featureId);
+                if (mEditLayerOverlay.notContains(geometry, point))
+                    continue;
+
+                if (mSelectedLayer != null)
+                    mSelectedLayer.setLocked(false);
+
+                mSelectedLayer = vectorLayer;
+                mEditLayerOverlay.setSelectedLayer(vectorLayer);
+
                 if (geometry != null)
                     mEditLayerOverlay.setSelectedFeature(featureId);
+
+                setMode(MODE_SELECT_ACTION);
+                break layersLoop;
             }
-            setMode(MODE_SELECT_ACTION);
         }
 
         showOverlayPoint(event);
