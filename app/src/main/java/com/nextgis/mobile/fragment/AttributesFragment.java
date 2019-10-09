@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2018 NextGIS, info@nextgis.com
+ * Copyright (c) 2012-2019 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -97,6 +97,7 @@ import static com.nextgis.maplib.util.GeoConstants.GTMultiPolygon;
 import static com.nextgis.maplib.util.GeoConstants.GTPoint;
 import static com.nextgis.maplib.util.GeoConstants.GTPolygon;
 import static com.nextgis.maplib.util.NetworkUtil.URL_PATTERN;
+import static com.nextgis.mobile.util.AppConstants.DEFAULT_COORDINATES_FRACTION_DIGITS;
 
 public class AttributesFragment
         extends Fragment
@@ -406,7 +407,7 @@ public class AttributesFragment
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         int format = Integer.parseInt(prefs.getString(SettingsConstantsUI.KEY_PREF_COORD_FORMAT, Location.FORMAT_DEGREES + ""));
-        int fraction = prefs.getInt(SettingsConstantsUI.KEY_PREF_COORD_FRACTION, 6);
+        int fraction = prefs.getInt(SettingsConstantsUI.KEY_PREF_COORD_FRACTION, DEFAULT_COORDINATES_FRACTION_DIGITS);
 
         String lat = getString(com.nextgis.maplibui.R.string.latitude_caption_short) + ": " +
                 LocationUtil.formatLatitude(pt.getY(), format, fraction, getResources());

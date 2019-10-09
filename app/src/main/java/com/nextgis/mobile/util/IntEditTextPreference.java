@@ -1,11 +1,10 @@
 /*
  * Project:  NextGIS Mobile
  * Purpose:  Mobile GIS for Android.
- * Author:   Dmitry Baryshnikov (aka Bishop), bishop.dev@gmail.com
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2017 NextGIS, info@nextgis.com
+ * Copyright (c) 2016-2017, 2019 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,7 +51,11 @@ public class IntEditTextPreference extends EditTextPreference
 
     @Override
 	public String getPersistedString(String defaultReturnValue) {
-		return String.valueOf(getPersistedInt(-1));
+		int def = -1;
+		try {
+			def = Integer.parseInt(defaultReturnValue);
+		} catch (Exception ignored) {}
+		return String.valueOf(getPersistedInt(def));
 	}
 
 	@Override

@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2018 NextGIS, info@nextgis.com
+ * Copyright (c) 2012-2019 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -116,6 +116,7 @@ import static com.nextgis.maplib.util.MapUtil.isGeometryIntersects;
 import static com.nextgis.maplibui.util.ConstantsUI.GA_EDIT;
 import static com.nextgis.maplibui.util.ConstantsUI.GA_FAB;
 import static com.nextgis.maplibui.util.ConstantsUI.GA_LAYER;
+import static com.nextgis.mobile.util.AppConstants.DEFAULT_COORDINATES_FRACTION_DIGITS;
 import static com.nextgis.mobile.util.AppSettingsConstants.KEY_PREF_SHOW_COMPASS;
 import static com.nextgis.mobile.util.AppSettingsConstants.KEY_PREF_SHOW_MEASURING;
 import static com.nextgis.mobile.util.AppSettingsConstants.KEY_PREF_SHOW_SCALE_RULER;
@@ -1082,7 +1083,7 @@ public class MapFragment
             mCoordinatesFormat = Integer.parseInt(coordinatesFormat);
         else
             mCoordinatesFormat = Location.FORMAT_DEGREES;
-        mCoordinatesFraction = mPreferences.getInt(SettingsConstantsUI.KEY_PREF_COORD_FRACTION, 6);
+        mCoordinatesFraction = mPreferences.getInt(SettingsConstantsUI.KEY_PREF_COORD_FRACTION, DEFAULT_COORDINATES_FRACTION_DIGITS);
 
         if (null != mCurrentLocationOverlay) {
             mCurrentLocationOverlay.updateMode(mPreferences.getString(SettingsConstantsUI.KEY_PREF_SHOW_CURRENT_LOC, "3"));
@@ -1100,7 +1101,7 @@ public class MapFragment
         }
 
         try {
-            String statusPanelModeStr = mPreferences.getString(SettingsConstantsUI.KEY_PREF_SHOW_STATUS_PANEL, "0");
+            String statusPanelModeStr = mPreferences.getString(SettingsConstantsUI.KEY_PREF_SHOW_STATUS_PANEL, "1");
             if (FileUtil.isIntegerParseInt(statusPanelModeStr))
                 mStatusPanelMode = Integer.parseInt(statusPanelModeStr);
             else
