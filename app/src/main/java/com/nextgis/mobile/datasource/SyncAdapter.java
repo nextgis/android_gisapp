@@ -36,6 +36,7 @@ import android.support.v4.app.NotificationCompat;
 import com.joshdholtz.sentry.Sentry;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapContentProviderHelper;
+import com.nextgis.maplib.util.NetworkUtil;
 import com.nextgis.maplibui.util.NotificationHelper;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
@@ -63,12 +64,15 @@ public class SyncAdapter extends com.nextgis.maplib.datasource.ngw.SyncAdapter {
         if (mapContentProviderHelper == null)
             Sentry.captureMessage("SyncIssue: mapContentProviderHelper is null");
 
+        NetworkUtil mNet = new NetworkUtil(getContext());
+        Sentry.captureMessage("SyncIssue: Network " + mNet.isNetworkAvailable());
+
         super.onPerformSync(account, bundle, authority, contentProviderClient, syncResult);
 
         if (syncResult.stats.numIoExceptions >= 100000000)
-            mError += "IoError";
+            mError += "Malformed or NotFound";
         else if (syncResult.stats.numIoExceptions >= 10000)
-            mError += "OutOfMemory";
+            mError += "Response is not 200";
 
         if (mError != null && !mError.equals("")) {
             Sentry.captureMessage("SyncIssue: " + mError);
