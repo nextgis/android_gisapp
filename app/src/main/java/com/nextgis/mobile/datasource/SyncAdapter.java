@@ -3,7 +3,7 @@
  * Purpose:  Mobile GIS for Android.
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * ****************************************************************************
- * Copyright (c) 2016-2018 NextGIS, info@nextgis.com
+ * Copyright (c) 2016-2019 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 
+import com.joshdholtz.sentry.Sentry;
+import com.nextgis.maplib.map.MapBase;
+import com.nextgis.maplib.map.MapContentProviderHelper;
 import com.nextgis.maplibui.util.NotificationHelper;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
@@ -53,9 +56,24 @@ public class SyncAdapter extends com.nextgis.maplib.datasource.ngw.SyncAdapter {
 
     @Override
     public void onPerformSync(Account account, Bundle bundle, String authority, ContentProviderClient contentProviderClient, SyncResult syncResult) {
+        Sentry.captureMessage("SyncIssue: onPerformSync");
         sendNotification(getContext(), SYNC_START, null);
 
+        MapContentProviderHelper mapContentProviderHelper =(MapContentProviderHelper) MapBase.getInstance();
+        if (mapContentProviderHelper == null)
+            Sentry.captureMessage("SyncIssue: mapContentProviderHelper is null");
+
         super.onPerformSync(account, bundle, authority, contentProviderClient, syncResult);
+
+        if (syncResult.stats.numIoExceptions >= 100000000)
+            mError += "IoError";
+        else if (syncResult.stats.numIoExceptions >= 10000)
+            mError += "OutOfMemory";
+
+        if (mError != null && !mError.equals("")) {
+            Sentry.captureMessage("SyncIssue: " + mError);
+            Sentry.captureMessage("SyncIssue: numIoExceptions " + syncResult.stats.numIoExceptions);
+        }
 
         if (isCanceled())
             sendNotification(getContext(), SYNC_CANCELED, null);
@@ -63,6 +81,16 @@ public class SyncAdapter extends com.nextgis.maplib.datasource.ngw.SyncAdapter {
             sendNotification(getContext(), SYNC_CHANGES, mError);
         else
             sendNotification(getContext(), SYNC_FINISH, null);
+
+        Sentry.captureMessage("SyncIssue: Finished");
+    }
+
+    @Override
+    public boolean isCanceled() {
+        boolean c = super.isCanceled();
+        if (c)
+            Sentry.captureMessage("SyncIssue: isCancelled");
+        return c;
     }
 
     public void sendNotification(

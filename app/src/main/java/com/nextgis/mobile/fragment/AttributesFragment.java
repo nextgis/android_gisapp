@@ -292,7 +292,7 @@ public class AttributesFragment
                             try {
                                 GeoPoint pt = (GeoPoint) GeoGeometryFactory.fromBlob(attributes.getBlob(i));
                                 dataBuilder.append(getRow(getString(R.string.coordinates), formatCoordinates(pt)));
-                            } catch (IOException | ClassNotFoundException e) {
+                            } catch (IOException e) {
                                 e.printStackTrace();
                             }
                             continue;
@@ -300,7 +300,7 @@ public class AttributesFragment
                             try {
                                 GeoMultiPoint mpt = (GeoMultiPoint) GeoGeometryFactory.fromBlob(attributes.getBlob(i));
                                 dataBuilder.append(getRow(getString(R.string.center), formatCoordinates(mpt.getEnvelope().getCenter())));
-                            } catch (IOException | ClassNotFoundException e) {
+                            } catch (IOException e) {
                                 e.printStackTrace();
                             }
                             continue;
@@ -308,7 +308,7 @@ public class AttributesFragment
                             try {
                                 GeoLineString line = (GeoLineString) GeoGeometryFactory.fromBlob(attributes.getBlob(i));
                                 dataBuilder.append(getRow(getString(R.string.length), LocationUtil.formatLength(getContext(), line.getLength(), 3)));
-                            } catch (IOException | ClassNotFoundException e) {
+                            } catch (IOException e) {
                                 e.printStackTrace();
                             }
                             continue;
@@ -316,7 +316,7 @@ public class AttributesFragment
                             try {
                                 GeoMultiLineString multiline = (GeoMultiLineString) GeoGeometryFactory.fromBlob(attributes.getBlob(i));
                                 dataBuilder.append(getRow(getString(R.string.length), LocationUtil.formatLength(getContext(), multiline.getLength(), 3)));
-                            } catch (IOException | ClassNotFoundException e) {
+                            } catch (IOException e) {
                                 e.printStackTrace();
                             }
                             continue;
@@ -325,7 +325,7 @@ public class AttributesFragment
                                 GeoPolygon polygon = (GeoPolygon) GeoGeometryFactory.fromBlob(attributes.getBlob(i));
                                 dataBuilder.append(getRow(getString(R.string.perimeter), LocationUtil.formatLength(getContext(), polygon.getPerimeter(), 3)));
                                 dataBuilder.append(getRow(getString(R.string.area), LocationUtil.formatArea(getContext(), polygon.getArea())));
-                            } catch (IOException | ClassNotFoundException e) {
+                            } catch (IOException e) {
                                 e.printStackTrace();
                             }
                             continue;
@@ -334,7 +334,7 @@ public class AttributesFragment
                                 GeoMultiPolygon polygon = (GeoMultiPolygon) GeoGeometryFactory.fromBlob(attributes.getBlob(i));
                                 dataBuilder.append(getRow(getString(R.string.perimeter), LocationUtil.formatLength(getContext(), polygon.getPerimeter(), 3)));
                                 dataBuilder.append(getRow(getString(R.string.area), LocationUtil.formatArea(getContext(), polygon.getArea())));
-                            } catch (IOException | ClassNotFoundException e) {
+                            } catch (IOException e) {
                                 e.printStackTrace();
                             }
                             continue;

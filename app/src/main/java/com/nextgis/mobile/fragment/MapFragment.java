@@ -972,7 +972,7 @@ public class MapFragment
 
                     try {
                         geometry = GeoGeometryFactory.fromBlob(savedInstanceState.getByteArray(BUNDLE_KEY_SAVED_FEATURE));
-                    } catch (IOException | ClassNotFoundException e) {
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
 
