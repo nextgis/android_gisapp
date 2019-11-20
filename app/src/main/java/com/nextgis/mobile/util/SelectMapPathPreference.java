@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2017 NextGIS, info@nextgis.com
+ * Copyright (c) 2017, 2019 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,12 +79,14 @@ public class SelectMapPathPreference
             path = context.getFilesDir();
         }
 
-        LocalResourceSelectDialog dialog = new LocalResourceSelectDialog();
-        dialog.setPath(path);
-        dialog.setTypeMask(Constants.FILETYPE_FOLDER);
-        dialog.setCanSelectMultiple(false);
-        dialog.setOnSelectionListener(this);
-        dialog.show(mFragmentManager, ConstantsUI.FRAGMENT_SELECT_RESOURCE);
+        if (mFragmentManager != null) {
+            LocalResourceSelectDialog dialog = new LocalResourceSelectDialog();
+            dialog.setPath(path);
+            dialog.setTypeMask(Constants.FILETYPE_FOLDER);
+            dialog.setCanSelectMultiple(false);
+            dialog.setOnSelectionListener(this);
+            dialog.show(mFragmentManager, ConstantsUI.FRAGMENT_SELECT_RESOURCE);
+        }
     }
 
 
