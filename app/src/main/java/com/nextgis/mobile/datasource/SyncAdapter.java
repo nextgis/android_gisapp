@@ -29,16 +29,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SyncResult;
 import android.graphics.Bitmap;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 
-import com.joshdholtz.sentry.Sentry;
-import com.nextgis.maplib.map.MapBase;
-import com.nextgis.maplib.map.MapContentProviderHelper;
-import com.nextgis.maplib.util.NetworkUtil;
 import com.nextgis.maplibui.util.NotificationHelper;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
@@ -59,49 +53,9 @@ public class SyncAdapter extends com.nextgis.maplib.datasource.ngw.SyncAdapter {
 
     @Override
     public void onPerformSync(Account account, Bundle bundle, String authority, ContentProviderClient contentProviderClient, SyncResult syncResult) {
-        Sentry.captureMessage("SyncIssue2: onPerformSync");
         sendNotification(getContext(), SYNC_START, null);
 
-        MapContentProviderHelper mapContentProviderHelper =(MapContentProviderHelper) MapBase.getInstance();
-        if (mapContentProviderHelper == null)
-            Sentry.captureMessage("SyncIssue2: mapContentProviderHelper is null");
-
-        NetworkUtil mNet = new NetworkUtil(getContext());
-        if (mNet.mConnectionManager == null) {
-            Sentry.captureMessage("SyncIssue2: ConnectionManager is null");
-        } else {
-            NetworkInfo info = mNet.mConnectionManager.getActiveNetworkInfo();
-            if (info == null) {
-                Sentry.captureMessage("SyncIssue2: NetworkInfo is null");
-            } else {
-                int netType = info.getType();
-                Sentry.captureMessage("SyncIssue2: Network type: " + info.getType());
-                if (netType == ConnectivityManager.TYPE_WIFI) {
-                    Sentry.captureMessage("SyncIssue2: Network (WiFi) is connected: " + info.isConnected());
-                } else if (netType == ConnectivityManager.TYPE_MOBILE) { // netSubtype == TelephonyManager.NETWORK_TYPE_UMTS
-                    if (mNet.mTelephonyManager == null) {
-                        Sentry.captureMessage("SyncIssue2: TelephonyManager is null");
-                    } else {
-                        if (mNet.mTelephonyManager.isNetworkRoaming()) {
-                            Sentry.captureMessage("SyncIssue2: Network is roaming");
-                        }
-                        Sentry.captureMessage("SyncIssue2: Network (mobile) is connected: " + info.isConnected());
-                    }
-                }
-            }
-        }
-
         super.onPerformSync(account, bundle, authority, contentProviderClient, syncResult);
-
-        if (syncResult.stats.numIoExceptions >= 1000000)
-            mError += "Response is not 200";
-        else if (syncResult.stats.numIoExceptions >= 1000)
-            mError += "Network is unavailable";
-
-        if (mError != null && !mError.equals("")) {
-            Sentry.captureMessage("SyncIssue2: " + mError);
-            Sentry.captureMessage("SyncIssue2: numIoExceptions " + syncResult.stats.numIoExceptions);
-        }
 
         if (isCanceled())
             sendNotification(getContext(), SYNC_CANCELED, null);
@@ -109,16 +63,6 @@ public class SyncAdapter extends com.nextgis.maplib.datasource.ngw.SyncAdapter {
             sendNotification(getContext(), SYNC_CHANGES, mError);
         else
             sendNotification(getContext(), SYNC_FINISH, null);
-
-        Sentry.captureMessage("SyncIssue2: Finished");
-    }
-
-    @Override
-    public boolean isCanceled() {
-        boolean c = super.isCanceled();
-        if (c)
-            Sentry.captureMessage("SyncIssue2: isCancelled");
-        return c;
     }
 
     public void sendNotification(
