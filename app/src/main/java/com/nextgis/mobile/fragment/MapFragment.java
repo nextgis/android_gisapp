@@ -582,13 +582,12 @@ public class MapFragment
         defineMenuItems();
     }
 
-    private AttributesFragment getAttributesFragment(FragmentManager fragmentManager) {
-        AttributesFragment attributesFragment = (AttributesFragment) fragmentManager.findFragmentByTag("ATTRIBUTES");
-        if (null == attributesFragment)
-            attributesFragment = new AttributesFragment();
-
-        return attributesFragment;
-    }
+    private static AttributesFragment getAttributesFragment(FragmentManager fragmentManager) {
+		AttributesFragment attributesFragment = (AttributesFragment) fragmentManager.findFragmentByTag("ATTRIBUTES");
+		if (null == attributesFragment)
+			attributesFragment = new AttributesFragment();
+		return attributesFragment;
+	}
 
     protected void defineMenuItems() {
         if (mMode == MODE_NORMAL || mMode == MODE_INFO)
