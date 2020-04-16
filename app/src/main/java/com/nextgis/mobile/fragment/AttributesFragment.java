@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2019 NextGIS, info@nextgis.com
+ * Copyright (c) 2015-2020 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -353,7 +353,10 @@ public class AttributesFragment
                         NumberFormat nf = NumberFormat.getInstance();
                         nf.setMaximumFractionDigits(4);
                         nf.setGroupingUsed(false);
-                        text = nf.format(attributes.getDouble(i));
+                        Double value = attributes.getDouble(i);
+                        if (value.isNaN())
+                            continue;
+                        text = nf.format(value);
                         break;
                     case GeoConstants.FTDate:
                     case GeoConstants.FTTime:
