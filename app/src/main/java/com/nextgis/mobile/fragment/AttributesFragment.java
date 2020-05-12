@@ -253,7 +253,7 @@ public class AttributesFragment
 
         IGISApplication app = (GISApplication) getActivity().getApplication();
         final Map<String, Integer> mAttaches = new HashMap<>();
-        PhotoGallery.getAttaches(app, mLayer, mItemId, mAttaches, false);
+        PhotoGallery.getAttaches(app, mLayer, mItemId, mAttaches, false, null);
 
         if (mAttaches.size() > 0) {
             final PhotoPicker gallery = new PhotoPicker(getActivity(), true);
