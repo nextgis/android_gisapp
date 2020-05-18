@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2019 NextGIS, info@nextgis.com
+ * Copyright (c) 2012-2020 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -296,6 +296,14 @@ public class MapFragment
         long featureId = NOT_FOUND;
         GeoGeometry geometry = null;
 
+        if (mMode == MODE_EDIT_BY_WALK) {
+            mEditLayerOverlay.stopGeometryByWalk();
+            setMode(MODE_EDIT);
+            mUndoRedoOverlay.clearHistory();
+            mUndoRedoOverlay.defineUndoRedo();
+            return true;
+        }
+
         if (feature != null) {
             geometry = feature.getGeometry();
             featureId = feature.getId();
@@ -310,12 +318,6 @@ public class MapFragment
 
         mMap.setLockMap(false);
         mEditLayerOverlay.setHasEdits(false);
-        if (mMode == MODE_EDIT_BY_WALK) {
-            mEditLayerOverlay.stopGeometryByWalk();
-            setMode(MODE_EDIT);
-            mUndoRedoOverlay.clearHistory();
-            mUndoRedoOverlay.defineUndoRedo();
-        }
 
         if (mMode == MODE_EDIT_BY_TOUCH) {
             setMode(MODE_EDIT);
