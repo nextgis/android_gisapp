@@ -3,7 +3,7 @@
  * Purpose:  Mobile GIS for Android.
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2015-2016 NextGIS, info@nextgis.com
+ * Copyright (c) 2015-2016, 2020 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -132,14 +132,12 @@ public class CreateVectorLayerActivity extends NGActivity implements View.OnClic
 
     @Override
     public void OnFieldChosen(String alias, int type) {
-        String name = System.currentTimeMillis() + "";
-        name = "field_" + name.substring(8);
         if (TextUtils.isEmpty(alias))
             Toast.makeText(this, R.string.empty_name, Toast.LENGTH_SHORT).show();
         else if (mFieldAdapter.containsField(alias))
-            Toast.makeText(this, R.string.same_field_name, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.same_field_name, Toast.LENGTH_LONG).show();
         else
-            mFieldAdapter.addField(new Field(type, name, alias));
+            mFieldAdapter.addField(new Field(type, null, alias));
     }
 
     private boolean createNewLayer() {
@@ -148,6 +146,9 @@ public class CreateVectorLayerActivity extends NGActivity implements View.OnClic
         List<Field> fields = mFieldAdapter.getFields();
         if (fields.size() == 0)
             fields.add(new Field(GeoConstants.FTString, "description", getString(R.string.default_field_name)));
+        else
+            for (int i = 0; i < fields.size(); i++)
+                fields.get(i).setName("field_" + (i + 1));
 
         VectorLayer layer = app.createEmptyVectorLayer(mEtLayerName.getText().toString().trim(), null, geomType, fields);
 
