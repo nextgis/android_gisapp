@@ -158,4 +158,6 @@
     <string name="track_send">Send location to server</string>
     <string name="preferred_units">Measurement system</string>
     <string name="show_zoom_level">Show zoom level</string>
+    <string name="restore_layers">Restore broken layers</string>
+    <string name="select_layer_to_restore">Select layer to restore</string>
 </resources>

@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2015-2019 NextGIS, info@nextgis.com
+ * Copyright (c) 2015-2020 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,10 @@ import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentManager;
@@ -44,6 +47,7 @@ import android.widget.Toast;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapContentProviderHelper;
+import com.nextgis.maplib.util.FileUtil;
 import com.nextgis.maplib.util.HttpResponse;
 import com.nextgis.maplib.util.NetworkUtil;
 import com.nextgis.maplib.util.SettingsConstants;
@@ -52,16 +56,20 @@ import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
+import com.nextgis.mobile.activity.MainActivity;
 import com.nextgis.mobile.util.AppConstants;
 import com.nextgis.mobile.util.IntEditTextPreference;
 import com.nextgis.mobile.util.SelectMapPathPreference;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
+import static com.nextgis.maplib.util.Constants.MAP_EXT;
 import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_MAP;
 import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_UNITS;
 import static com.nextgis.maplibui.service.TrackerService.URL;
@@ -121,6 +129,10 @@ public class SettingsFragment
                 final ListPreference changeMapBG =
                         (ListPreference) findPreference(SettingsConstantsUI.KEY_PREF_MAP_BG);
                 initializeMapBG(changeMapBG);
+
+                final Preference restore =
+                        findPreference(SettingsConstantsUI.KEY_PREF_RESTORE_LAYERS);
+                initializeRestore(getActivity(), restore);
                 break;
             case SettingsConstantsUI.ACTION_PREFS_LOCATION:
                 addPreferencesFromResource(R.xml.preferences_location);
@@ -156,6 +168,65 @@ public class SettingsFragment
                 initializeUid(uid);
                 break;
         }
+    }
+
+
+    protected static void restoreLayer(Activity activity, CharSequence name) {
+        SharedPreferences preferences = android.preference.PreferenceManager.getDefaultSharedPreferences(activity);
+        File defaultPath = activity.getExternalFilesDir(SettingsConstants.KEY_PREF_MAP);
+        if (defaultPath == null) {
+            defaultPath = new File(activity.getFilesDir(), SettingsConstants.KEY_PREF_MAP);
+        }
+        String mapPath = preferences.getString(SettingsConstants.KEY_PREF_MAP_PATH, defaultPath.getPath());
+        String mapName = preferences.getString(SettingsConstantsUI.KEY_PREF_MAP_NAME, "default");
+        File mapFullPath = new File(mapPath, mapName + MAP_EXT);
+        try {
+            String json = FileUtil.readFromFile(mapFullPath);
+            JSONObject map = new JSONObject(json);
+            JSONArray layers = map.optJSONArray("layers");
+            if (layers != null) {
+                JSONObject layer = new JSONObject();
+                layer.put("path", name);
+                layers.put(layer);
+                map.put("layers", layers);
+                FileUtil.writeToFile(mapFullPath, map.toString());
+                Intent intent = new Intent(activity, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                activity.startActivity(intent);
+                Runtime.getRuntime().exit(0);
+            }
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    protected static CharSequence[] fetchLayers(Activity activity)
+    {
+        ArrayList<String> items = new ArrayList<>();
+        ArrayList<String> existing = new ArrayList<>();
+        MainApplication app = (MainApplication) activity.getApplication();
+        for (int i = app.getMap().getLayerCount() - 1; i >= 0; i--) {
+            ILayer layer = app.getMap().getLayer(i);
+            existing.add(layer.getPath().getName());
+        }
+        try {
+            SQLiteDatabase db = ((MapContentProviderHelper) MapBase.getInstance()).getDatabase(false);
+            Cursor c = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
+
+            if (c.moveToFirst()) {
+                do {
+                    String table = c.getString(0);
+                    if (table.startsWith("track") || table.startsWith("sqlite") || table.startsWith("android") || existing.contains(table))
+                        continue;
+                    items.add(table);
+                } while (c.moveToNext());
+            }
+            c.close();
+        } catch (SQLiteException e) {
+            e.printStackTrace();
+        }
+        return items.toArray(new CharSequence[items.size()]);
     }
 
 
@@ -214,6 +285,47 @@ public class SettingsFragment
                                             resetSettings(activity);
                                             deleteLayers(activity);
                                             ((MainApplication) activity.getApplication()).initBaseLayers();
+                                        }
+                                    })
+                            .show();
+                    return false;
+                }
+            });
+        }
+    }
+
+
+    public static void initializeRestore(
+            final Activity activity,
+            final Preference preference)
+    {
+        if (null != preference) {
+            preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+            {
+                @Override
+                public boolean onPreferenceClick(Preference preference)
+                {
+                    final int[] selectedItem = {-1};
+                    final CharSequence[] items = fetchLayers(activity);
+                    AlertDialog.Builder confirm = new AlertDialog.Builder(activity);
+                    confirm.setTitle(R.string.select_layer_to_restore)
+                            .setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    selectedItem[0] = which;
+                                }
+                            })
+                            .setNegativeButton(android.R.string.cancel, null)
+                            .setPositiveButton(android.R.string.ok,
+                                    new DialogInterface.OnClickListener()
+                                    {
+                                        @Override
+                                        public void onClick(
+                                                DialogInterface dialog,
+                                                int which)
+                                        {
+                                            if (selectedItem[0] > -1)
+                                                restoreLayer(activity, items[selectedItem[0]]);
                                         }
                                     })
                             .show();
