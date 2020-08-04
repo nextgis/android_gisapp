@@ -72,6 +72,7 @@ import java.util.ArrayList;
 import static com.nextgis.maplib.util.Constants.MAP_EXT;
 import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_MAP;
 import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_UNITS;
+import static com.nextgis.maplibui.service.TrackerService.HOST;
 import static com.nextgis.maplibui.service.TrackerService.URL;
 import static com.nextgis.maplibui.service.TrackerService.getUid;
 import static com.nextgis.maplibui.service.TrackerService.isTrackerServiceRunning;
@@ -547,7 +548,8 @@ public class SettingsFragment
         @Override
         protected Boolean doInBackground(Void... voids) {
             try {
-                String url = String.format("%s/%s/registered", URL, getUid(mPreference.getContext()));
+                String base = mPreference.getSharedPreferences().getString("tracker_hub_url", HOST);
+                String url = String.format("%s/%s/registered", base + URL, getUid(mPreference.getContext()));
                 HttpResponse response = NetworkUtil.get(url, null, null, false);
                 String body = response.getResponseBody();
                 JSONObject json = new JSONObject(body == null ? "" : body);

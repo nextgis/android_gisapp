@@ -169,41 +169,41 @@ public class ApkDownloader extends AsyncTask<String, Integer, String> {
             return;
         }
 
-        NGIDUtils.get(activity, AppSettingsConstants.APK_VERSION_UPDATE, new NGIDUtils.OnFinish() {
-            @Override
-            public void onFinish(HttpResponse response) {
-                if (response.isOk()) {
-                    try {
-                        JSONObject json = new JSONObject(response.getResponseBody());
-                        if (json.getInt("versionCode") <= BuildConfig.VERSION_CODE) {
-                            if (showToast) {
-                                Toast.makeText(activity, R.string.update_no, Toast.LENGTH_SHORT).show();
-                                activity.finish();
-                            }
-                            return;
-                        }
-
-                        // there is new version, create download dialog
-                        final String url = json.getString("path");
-                        DialogInterface.OnClickListener dcl = new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int button) {
-                                if (button == DialogInterface.BUTTON_POSITIVE)
-                                    new ApkDownloader(activity, showToast).execute(url, token);
-                                else if (showToast)
-                                    activity.finish();
-                            }
-                        };
-
-                        AlertDialog.Builder adb = new AlertDialog.Builder(activity);
-                        String update = String.format(activity.getString(R.string.update_new), json.getString("versionName"));
-                        adb.setMessage(update).setTitle(R.string.update_title)
-                           .setPositiveButton(R.string.yes, dcl).setNegativeButton(R.string.no, dcl).show();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
+//        NGIDUtils.get(activity, AppSettingsConstants.APK_VERSION_UPDATE, new NGIDUtils.OnFinish() {
+//            @Override
+//            public void onFinish(HttpResponse response) {
+//                if (response.isOk()) {
+//                    try {
+//                        JSONObject json = new JSONObject(response.getResponseBody());
+//                        if (json.getInt("versionCode") <= BuildConfig.VERSION_CODE) {
+//                            if (showToast) {
+//                                Toast.makeText(activity, R.string.update_no, Toast.LENGTH_SHORT).show();
+//                                activity.finish();
+//                            }
+//                            return;
+//                        }
+//
+//                        // there is new version, create download dialog
+//                        final String url = json.getString("path");
+//                        DialogInterface.OnClickListener dcl = new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int button) {
+//                                if (button == DialogInterface.BUTTON_POSITIVE)
+//                                    new ApkDownloader(activity, showToast).execute(url, token);
+//                                else if (showToast)
+//                                    activity.finish();
+//                            }
+//                        };
+//
+//                        AlertDialog.Builder adb = new AlertDialog.Builder(activity);
+//                        String update = String.format(activity.getString(R.string.update_new), json.getString("versionName"));
+//                        adb.setMessage(update).setTitle(R.string.update_title)
+//                           .setPositiveButton(R.string.yes, dcl).setNegativeButton(R.string.no, dcl).show();
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        });
     }
 }

@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2019 NextGIS, info@nextgis.com
+ * Copyright (c) 2012-2020 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,6 @@
 package com.nextgis.mobile.activity;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -138,13 +137,13 @@ public class MainActivity extends NGActivity
         setContentView(R.layout.activity_main);
         mMessageReceiver = new MessageReceiver();
 
-        mToolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        mToolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(mToolbar);
         if (null != getSupportActionBar()) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         drawerLayout.setStatusBarBackgroundColor(ControlHelper.getColor(this, R.attr.colorPrimaryDark));
 
         FragmentManager fm = getSupportFragmentManager();
@@ -174,8 +173,7 @@ public class MainActivity extends NGActivity
             requestPermissions(R.string.permissions, R.string.requested_permissions, PERMISSIONS_REQUEST, permissions);
         }
 
-        String support = NGIDUtils.USER_SUPPORT;
-        NGIDUtils.get(this, support, new NGIDUtils.OnFinish() {
+        NGIDUtils.get(this, new NGIDUtils.OnFinish() {
             @Override
             public void onFinish(HttpResponse response) {
                 if (response.isOk()) {
@@ -210,7 +208,7 @@ public class MainActivity extends NGActivity
                                     });
 
         View view = snackbar.getView();
-        TextView textView = (TextView) view.findViewById(R.id.snackbar_text);
+        TextView textView = view.findViewById(R.id.snackbar_text);
         textView.setTextColor(ContextCompat.getColor(view.getContext(), R.color.color_white));
         snackbar.show();
     }
@@ -391,7 +389,7 @@ public class MainActivity extends NGActivity
             if (isRefresh) {
                 if (refreshItem.getActionView() == null) {
                     refreshItem.setActionView(R.layout.layout_refresh);
-                    ProgressBar progress = (ProgressBar) refreshItem.getActionView().findViewById(R.id.refreshingProgress);
+                    ProgressBar progress = refreshItem.getActionView().findViewById(R.id.refreshingProgress);
                     if (progress != null)
                         progress.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(this, R.color.color_grey_200), PorterDuff.Mode.SRC_IN);
                 }
