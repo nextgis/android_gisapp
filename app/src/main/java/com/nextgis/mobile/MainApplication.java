@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2019 NextGIS, info@nextgis.com
+ * Copyright (c) 2014-2019, 2021 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,12 +51,14 @@ import com.nextgis.maplib.util.AccountUtil;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplib.util.NGException;
+import com.nextgis.maplib.util.NGWUtil;
 import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.maplibui.GISApplication;
 import com.nextgis.maplibui.mapui.LayerFactoryUI;
 import com.nextgis.maplibui.mapui.RemoteTMSLayerUI;
 import com.nextgis.maplibui.mapui.TrackLayerUI;
 import com.nextgis.maplibui.mapui.VectorLayerUI;
+import com.nextgis.maplibui.service.TrackerService;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.activity.SettingsActivity;
 
@@ -102,6 +104,8 @@ public class MainApplication extends GISApplication
 
         super.onCreate();
         updateFromOldVersion();
+        NGWUtil.NGUA = "ng_mobile";
+        NGWUtil.UUID = TrackerService.getUid(this);
     }
 
     private void setExceptionHandler() {
