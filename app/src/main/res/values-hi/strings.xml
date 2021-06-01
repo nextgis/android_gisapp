@@ -163,4 +163,7 @@
     <string name="show_zoom_level">Show zoom level</string>
     <string name="restore_layers">Restore broken layers</string>
     <string name="select_layer_to_restore">Select layer to restore</string>
+    <string name="other">Other</string>
+    <string name="extended_logs">Extended logs</string>
+    <string name="share_log">Share log</string>
 </resources>

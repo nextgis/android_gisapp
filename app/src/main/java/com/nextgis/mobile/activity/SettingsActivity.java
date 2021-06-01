@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2018 NextGIS, info@nextgis.com
+ * Copyright (c) 2015-2018, 2021 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,8 @@
 package com.nextgis.mobile.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.preference.PreferenceScreen;
 
 import com.nextgis.maplib.util.AccountUtil;
@@ -40,7 +42,7 @@ import com.nextgis.mobile.R;
 import com.nextgis.mobile.fragment.SettingsFragment;
 import com.nextgis.mobile.fragment.SettingsHeaderFragment;
 import com.nextgis.mobile.util.AppConstants;
-
+import com.nextgis.mobile.util.Logger;
 
 /**
  * Application preference
@@ -129,5 +131,14 @@ public class SettingsActivity
                 break;
         }
         startActivity(intent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if (preferences.getBoolean("save_log", false)) {
+            Logger.initialize(this);
+        }
     }
 }

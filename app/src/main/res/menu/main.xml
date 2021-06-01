@@ -53,6 +53,13 @@
         app:showAsAction="never"/>
 
     <item
+        android:id="@+id/menu_share_log"
+        android:icon="@drawable/ic_action_social_share_light"
+        android:title="@string/share_log"
+        android:orderInCategory="85"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/menu_about"
         android:orderInCategory="100"
         android:title="@string/action_help"

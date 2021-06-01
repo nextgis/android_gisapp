@@ -7,7 +7,7 @@
   ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
   ~ Author:   Maxim Dubinin, maxim.dubinin@nextgis.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2012-2018 NextGIS, info@nextgis.com
+  ~ Copyright (c) 2015-2021 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -163,4 +163,7 @@
     <string name="show_zoom_level">Показывать уровень зума</string>
     <string name="restore_layers">Восстановить потерянные слои</string>
     <string name="select_layer_to_restore">Выберите слой</string>
+    <string name="other">Другое</string>
+    <string name="extended_logs">Тщательное логгирование</string>
+    <string name="share_log">Отправить лог</string>
 </resources>

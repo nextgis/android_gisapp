@@ -6,7 +6,7 @@
   ~ Author:   NikitaFeodonit, nfeodonit@yandex.com
   ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2012-2016 NextGIS, info@nextgis.com
+  ~ Copyright (c) 2015-2016, 2021 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -35,6 +35,9 @@
             android:defaultValue="false"
             android:key="show_sync"
             android:title="@string/pref_sync_notification"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/other">
         <Preference
             android:key="reset_settings"
             android:title="@string/reset_settings"/>
@@ -43,6 +46,10 @@
             android:key="ga_enabled"
             android:summary="@string/pref_ga_sum"
             android:title="@string/pref_ga"/>
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="save_log"
+            android:title="@string/extended_logs"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/compass_title">

@@ -41,8 +41,8 @@ android {
         applicationId 'com.nextgis.mobile'
         minSdkVersion 14
         targetSdkVersion 29
-        versionCode 77
-        versionName '2.6.20'
+        versionCode 78
+        versionName '2.6.21'
         archivesBaseName = "ngmobile-$versionName"
         buildConfigField "String", "SENTRY_DSN", "\"${sentryDsn}\""
     }
@@ -78,4 +78,5 @@ dependencies {
     }
     implementation 'com.google.android.gms:play-services-analytics:16.0.7'
     implementation 'com.github.TechFreak:WizardPager:1.0.3'
+    implementation 'com.hypertrack:hyperlog:0.0.10'
 }

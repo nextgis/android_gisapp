@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2020 NextGIS, info@nextgis.com
+ * Copyright (c) 2012-2021 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,6 +57,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hypertrack.hyperlog.HyperLog;
 import com.nextgis.maplib.api.GpsEventListener;
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
@@ -69,6 +70,7 @@ import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.FileUtil;
 import com.nextgis.maplib.util.HttpResponse;
+import com.nextgis.maplib.util.MapUtil;
 import com.nextgis.maplib.util.NGWUtil;
 import com.nextgis.maplibui.activity.NGActivity;
 import com.nextgis.maplibui.api.IChooseLayerResult;
@@ -81,17 +83,24 @@ import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.maplibui.util.NGIDUtils;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
+import com.nextgis.maplibui.util.UiUtil;
 import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.fragment.LayersFragment;
 import com.nextgis.mobile.fragment.MapFragment;
 import com.nextgis.mobile.util.AppSettingsConstants;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import static com.nextgis.maplib.util.Constants.SUPPORT;
 import static com.nextgis.maplib.util.Constants.TAG;
@@ -334,6 +343,9 @@ public class MainActivity extends NGActivity
             case R.id.menu_edit_undo:
             case R.id.menu_edit_redo:
                 return mMapFragment.onOptionsItemSelected(item.getItemId());
+            case R.id.menu_share_log:
+                shareLog();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
             /*case R.id.menu_test:
@@ -350,6 +362,63 @@ public class MainActivity extends NGActivity
         }
     }
 
+
+    private void shareLog() {
+        HyperLog.getDeviceLogsInFile(this);
+        File dir = new File(getExternalFilesDir(null), "LogFiles");
+        long size = FileUtil.getDirectorySize(dir);
+        if (size == 0L) {
+            Toast.makeText(this, R.string.error_empty_dataset, Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        File files = zipLogs(dir);
+        String type = "text/plain";
+        UiUtil.share(files, type, this, true);
+    }
+
+    private File zipLogs(File dir) {
+        File temp = MapUtil.prepareTempDir(this, "shared_layers", false);
+        ArrayList<File> outdated = new ArrayList<>();
+        try {
+            String fileName = "ng-logs.zip";
+            if (temp == null) {
+                Toast.makeText(this, R.string.error_file_create, Toast.LENGTH_LONG).show();
+            }
+
+            temp = new File(temp, fileName);
+            temp.createNewFile();
+            FileOutputStream fos = new FileOutputStream(temp, false);
+            ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(fos));
+
+            byte[] buffer = new byte[1024];
+            int length;
+
+            for (File file: dir.listFiles()) {
+                if (System.currentTimeMillis() - file.lastModified() > 60 * 60 * 1000)
+                    outdated.add(file);
+                try {
+                    FileInputStream fis = new FileInputStream(file);
+                    zos.putNextEntry(new ZipEntry(file.getName()));
+
+                    while ((length = fis.read(buffer)) > 0)
+                        zos.write(buffer, 0, length);
+
+                    zos.closeEntry();
+                    fis.close();
+                } catch (Exception ignored) {}
+            }
+
+            zos.close();
+            fos.close();
+        } catch (IOException ignored) {
+            temp = null;
+        }
+        for (File file: outdated) {
+            file.delete();
+        }
+        return temp;
+    }
 
     private void setTrackItem(MenuItem item, int title, int icon) {
         if (null != item) {
@@ -816,6 +885,11 @@ public class MainActivity extends NGActivity
 
         if (mMapFragment.isEditMode())
             showEditToolbar();
+
+        MenuItem log = menu.findItem(R.id.menu_share_log);
+        if (log != null) {
+            log.setVisible(mPreferences.getBoolean("save_log", false));
+        }
 
         return super.onPrepareOptionsMenu(menu);
     }

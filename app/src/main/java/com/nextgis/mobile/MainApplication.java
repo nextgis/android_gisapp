@@ -39,7 +39,6 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.StandardExceptionParser;
 import com.google.android.gms.analytics.Tracker;
 import com.joshdholtz.sentry.Sentry;
-import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.datasource.Field;
 import com.nextgis.maplib.map.LayerGroup;
@@ -61,6 +60,7 @@ import com.nextgis.maplibui.mapui.VectorLayerUI;
 import com.nextgis.maplibui.service.TrackerService;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.activity.SettingsActivity;
+import com.nextgis.mobile.util.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -96,6 +96,9 @@ public class MainApplication extends GISApplication
 //        Sentry.captureMessage("NGM2 Sentry is init.", Sentry.SentryEventLevel.DEBUG);
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if (mSharedPreferences.getBoolean("save_log", false)) {
+            Logger.initialize(this);
+        }
 
         GoogleAnalytics.getInstance(this).setAppOptOut(!mSharedPreferences.getBoolean(KEY_PREF_GA, true));
         GoogleAnalytics.getInstance(this).setDryRun(DEBUG_MODE);
