@@ -61,8 +61,6 @@
     <string name="pref_location_accuracy_gps">GPS</string>
     <string name="pref_location_accuracy_cell">Другие сети</string>
     <string name="location">Местоположение</string>
-    <string name="track_start">Начать запись трека</string>
-    <string name="track_stop">Завершить запись трека</string>
     <string name="tracks_reload">Перезапустите запись для применения изменений</string>
     <string name="pref_min_time">Минимальное время обновления</string>
     <string name="pref_min_distance">Минимальное расстояние обновления</string>

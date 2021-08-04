@@ -28,6 +28,7 @@ import android.content.BroadcastReceiver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SyncResult;
@@ -42,7 +43,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -107,7 +110,6 @@ import static com.nextgis.maplib.util.Constants.TAG;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WEB_MERCATOR;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
 import static com.nextgis.maplibui.service.TrackerService.hasUnfinishedTracks;
-import static com.nextgis.maplibui.service.TrackerService.isTrackerServiceRunning;
 
 /**
  * Main activity. Map and drawer with layers list created here
@@ -116,6 +118,7 @@ public class MainActivity extends NGActivity
         implements GpsEventListener, IChooseLayerResult
 {
     protected final static int PERMISSIONS_REQUEST = 1;
+    protected final static int LOCATION_REQUEST = 2;
     protected final static String TAG_FRAGMENT_PROGRESS = "layer_fill_dialog_fragment";
 
     protected MapFragment     mMapFragment;
@@ -126,6 +129,7 @@ public class MainActivity extends NGActivity
     protected final static int FILE_SELECT_CODE = 555;
 
     protected long mBackPressed;
+    protected MenuItem mTrackItem;
 
 
     @Override
@@ -235,6 +239,12 @@ public class MainActivity extends NGActivity
             case PERMISSIONS_REQUEST:
                 mMapFragment.restartGpsListener();
                 break;
+            case LOCATION_REQUEST:
+                if (mTrackItem != null) {
+                    controlTrack(mTrackItem);
+                    mTrackItem = null;
+                }
+                break;
             default:
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
@@ -287,8 +297,13 @@ public class MainActivity extends NGActivity
     }
 
 
+    private void controlTrack(MenuItem item) {
+        Pair<Integer, Integer> iconAndTitle = TrackerService.controlAndGetIconWithTitle(this);
+        setTrackItem(item, iconAndTitle.second, iconAndTitle.first);
+    }
+
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
+    public boolean onOptionsItemSelected(final MenuItem item)
     {
         final IGISApplication app = (IGISApplication) getApplication();
 
@@ -313,25 +328,40 @@ public class MainActivity extends NGActivity
                 locateCurrentPosition();
                 return true;
             case R.id.menu_track:
-                Intent trackerService = new Intent(this, TrackerService.class);
-                trackerService.putExtra(ConstantsUI.TARGET_CLASS, this.getClass().getName());
+                TrackerService.showBackgroundDialog(this, new TrackerService.BackgroundPermissionCallback() {
+                    @Override
+                    public void beforeAndroid10(boolean hasBackgroundPermission) {
+                        if (!hasBackgroundPermission) {
+                            mTrackItem = item;
+                            String[] permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
+                            requestPermissions(R.string.permissions, R.string.requested_permissions, LOCATION_REQUEST, permissions);
+                        } else {
+                            controlTrack(item);
+                        }
+                    }
 
-                int title = R.string.track_start, icon = R.drawable.ic_action_maps_directions_walk;
-                if (isTrackerServiceRunning(this)) {
-                    trackerService.setAction(TrackerService.ACTION_STOP);
-                    startService(trackerService);
-                } else if (hasUnfinishedTracks(this)) {
-                    trackerService.setAction(TrackerService.ACTION_STOP);
-                    startService(trackerService);
-                    trackerService.setAction(null);
-                    startService(trackerService);
-                } else {
-                    startService(trackerService);
-                    title = R.string.track_stop;
-                    icon = R.drawable.ic_action_maps_directions_walk_rec;
-                }
+                    @RequiresApi(api = Build.VERSION_CODES.Q)
+                    @Override
+                    public void onAndroid10(boolean hasBackgroundPermission) {
+                        if (!hasBackgroundPermission) {
+                            mTrackItem = item;
+                            requestPermissions();
+                        } else {
+                            controlTrack(item);
+                        }
+                    }
 
-                setTrackItem(item, title, icon);
+                    @RequiresApi(api = Build.VERSION_CODES.Q)
+                    @Override
+                    public void afterAndroid10(boolean hasBackgroundPermission) {
+                        if (!hasBackgroundPermission) {
+                            mTrackItem = item;
+                            requestPermissions();
+                        } else {
+                            controlTrack(item);
+                        }
+                    }
+                });
                 return true;
             case R.id.menu_refresh:
                 if (null != mMapFragment) {
@@ -360,6 +390,13 @@ public class MainActivity extends NGActivity
                 }.start();
                 return true;*/
         }
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    private void requestPermissions() {
+        String[] permissions = new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION};
+        ActivityCompat.requestPermissions(this, permissions, LOCATION_REQUEST);
     }
 
 

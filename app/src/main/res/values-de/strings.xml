@@ -6,7 +6,7 @@
   ~ Author:   NikitaFeodonit, nfeodonit@yandex.com
   ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2012-2018 NextGIS, info@nextgis.com
+  ~ Copyright (c) 2016-2021 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -59,9 +59,7 @@
     <string name="pref_location_accuracy">Positionsgenauigkeit</string> 
     <string name="pref_location_accuracy_gps">GPS</string>
     <string name="pref_location_accuracy_cell">Andere Netzwerke</string>
-    <string name="location">Standort</string> 
-    <string name="track_start">Neue Route starten</string> 
-    <string name="track_stop"> Track stoppen</string>
+    <string name="location">Standort</string>
     <string name="track_restore">Aktuelle Route nach dem Neustart wiederherstellen</string> 
     <string name="tracks_reload">Aktuelle Route neu starten um Änderungen anzuwenden</string> 
     <string name="pref_min_time">Minimale Updatedauer</string> 

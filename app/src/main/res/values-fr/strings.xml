@@ -7,7 +7,7 @@
   ~ Author:   Stanislav Petriakov, becomeglory@gmail.com
   ~ Author:   Yoann Roncin, yoann.roncin@gmail.com
   ~ ******************************************************************************
-  ~ Copyright (c) 2012-2018 NextGIS, info@nextgis.com
+  ~ Copyright (c) 2017-2021 NextGIS, info@nextgis.com
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -59,8 +59,6 @@
     <string name="pref_location_accuracy_gps">GPS</string>
     <string name="pref_location_accuracy_cell">Autres réseaux</string>
     <string name="location">Position</string>
-    <string name="track_start">Commencer un nouveau parcours</string>
-    <string name="track_stop">Arrêter le parcours actuel</string>
     <string name="track_restore">Restaurer le parcours actuel après un redémarrage</string>
     <string name="tracks_reload">Restaurer le parcours actuel pour appliquer les changements</string>
     <string name="pref_min_time">Temps minimum de rafraichissement</string>
