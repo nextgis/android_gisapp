@@ -5,7 +5,7 @@
  * Author:   NikitaFeodonit, nfeodonit@yandex.com
  * Author:   Stanislav Petriakov, becomeglory@gmail.com
  * *****************************************************************************
- * Copyright (c) 2012-2020 NextGIS, info@nextgis.com
+ * Copyright (c) 2012-2021 NextGIS, info@nextgis.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1051,7 +1051,7 @@ public class MapFragment
     {
         super.onResume();
 
-        boolean showControls = mPreferences.getBoolean(KEY_PREF_SHOW_ZOOM_CONTROLS, false);
+        boolean showControls = mPreferences.getBoolean(KEY_PREF_SHOW_ZOOM_CONTROLS, true);
         showMapButtons(showControls, mMapRelativeLayout);
 
         if(Constants.DEBUG_MODE)
