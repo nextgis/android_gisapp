@@ -181,8 +181,11 @@ public class MainActivity extends NGActivity
         }
 
         if (!hasPermissions()) {
-            String[] permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.GET_ACCOUNTS,
-                                                Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            String[] permissions;
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R)
+                permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.GET_ACCOUNTS, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            else
+                permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.GET_ACCOUNTS};
             requestPermissions(R.string.permissions, R.string.requested_permissions, PERMISSIONS_REQUEST, permissions);
         }
 
@@ -227,10 +230,13 @@ public class MainActivity extends NGActivity
     }
 
     protected boolean hasPermissions() {
-        return isPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION) &&
+        boolean permissions = isPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION) &&
                 isPermissionGranted(Manifest.permission.ACCESS_COARSE_LOCATION) &&
-                isPermissionGranted(Manifest.permission.GET_ACCOUNTS) &&
-                isPermissionGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                isPermissionGranted(Manifest.permission.GET_ACCOUNTS);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R)
+            permissions = permissions  &&
+                    isPermissionGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        return permissions;
     }
 
     @Override
