@@ -12,5 +12,8 @@ captures/
 # Temp files
 *~
 
+# OSX files
+.DS_Store
+
 # Sentry settings
 sentry.properties

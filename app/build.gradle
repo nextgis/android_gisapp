@@ -77,7 +77,9 @@ dependencies {
         force = true
     }
     implementation 'com.google.android.gms:play-services-analytics:16.0.7'
-    implementation 'com.github.TechFreak:WizardPager:1.0.3'
+//    implementation 'com.github.TechFreak:WizardPager:1.0.3'
     implementation 'com.android.volley:volley:1.2.1'
     implementation 'com.github.barsrb:hyperlog-android:master-SNAPSHOT'
+    implementation project(path: ':wizardpager')
+    implementation project(path: ':wizardpager')
 }
