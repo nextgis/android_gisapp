@@ -29,7 +29,7 @@
         android:title="@string/pref_location_accuracy"/>
 
     <ListPreference
-        android:defaultValue="2"
+        android:defaultValue="10"
         android:entries="@array/tracker_min_time_between_updates"
         android:entryValues="@array/tracker_min_time_between_updates_val"
         android:key="tracks_min_time"

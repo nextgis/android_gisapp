@@ -161,6 +161,8 @@ public class SettingsFragment
 
                 final ListPreference minTime =
                         (ListPreference) findPreference(SettingsConstants.KEY_PREF_TRACKS_MIN_TIME);
+
+
                 final ListPreference minDistance = (ListPreference) findPreference(
                         SettingsConstants.KEY_PREF_TRACKS_MIN_DISTANCE);
                 initializeLocationMins(minTime, minDistance, true);
