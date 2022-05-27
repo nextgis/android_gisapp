@@ -25,6 +25,7 @@ package com.nextgis.mobile.fragment;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -424,11 +425,34 @@ public class LayersFragment
         super.onPause();
     }
 
+    private void checkAccountForSync(final Context context, final Account account){
+        boolean isYourAccountSyncEnabled = ContentResolver.getSyncAutomatically(account, "com.nextgis.mobile.provider");
+        if (!isYourAccountSyncEnabled){
+            DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    ContentResolver.setSyncAutomatically(account, "com.nextgis.mobile.provider", true);
+
+                }
+            };
+                new AlertDialog.Builder(context).setTitle(R.string.alert_sync_title)
+                        .setMessage(R.string.alert_sync_turned_off)
+                        .setPositiveButton(R.string.yes, onClickListener)
+                        .setNegativeButton(R.string.cancel, null)
+                        .create()
+                        .show();
+        }
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.sync:
                 for (Account account : mAccounts) {
+
+                    // тут надо предупредить что нет включенной синхронизации
+                    checkAccountForSync(v.getContext(), account);
+
                     Bundle settingsBundle = new Bundle();
                     settingsBundle.putBoolean(
                             ContentResolver.SYNC_EXTRAS_MANUAL, true);

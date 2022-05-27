@@ -115,6 +115,9 @@
     <string name="same_layer_name">Слой с таким именем уже существует</string>
     <string name="default_field_name">Описание</string>
     <string name="pref_sync_notification">Уведомление синхронизации</string>
+    <string name="alert_sync_turned_off">Синхронизация данных невозможна, так как она отключена на уровне операционной системы. Включить обратно?</string>
+    <string name="alert_sync_title">Синхронизация:</string>
+
     <string name="tap_to_measure">Нажмите на карту для выбора точек</string>
     <string name="permissions">Разрешения</string>
     <string name="requested_permissions">Приложению требуются некоторые разрешения для корректной работы: запись на устройство (для хранения данных), доступ
