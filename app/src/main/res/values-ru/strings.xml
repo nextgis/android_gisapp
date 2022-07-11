@@ -165,6 +165,6 @@
     <string name="restore_layers">Восстановить потерянные слои</string>
     <string name="select_layer_to_restore">Выберите слой</string>
     <string name="other">Другое</string>
-    <string name="extended_logs">Тщательное логгирование</string>
+    <string name="extended_logs">Логирование</string>
     <string name="share_log">Отправить лог</string>
 </resources>
