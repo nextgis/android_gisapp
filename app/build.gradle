@@ -82,5 +82,4 @@ dependencies {
     implementation 'com.android.volley:volley:1.2.1'
     implementation 'com.github.barsrb:hyperlog-android:master-SNAPSHOT'
     implementation project(path: ':wizardpager')
-    implementation project(path: ':wizardpager')
 }

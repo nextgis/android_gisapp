@@ -110,6 +110,7 @@ import static com.nextgis.maplib.util.Constants.TAG;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WEB_MERCATOR;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
 import static com.nextgis.maplibui.service.TrackerService.hasUnfinishedTracks;
+import static com.nextgis.maplibui.util.ConstantsUI.CODE_SAVE_FILE;
 
 /**
  * Main activity. Map and drawer with layers list created here
@@ -417,7 +418,7 @@ public class MainActivity extends NGActivity
 
         File files = zipLogs(dir);
         String type = "text/plain";
-        UiUtil.share(files, type, this, true);
+        UiUtil.share(files, type, this, true );
     }
 
     private File zipLogs(File dir) {
