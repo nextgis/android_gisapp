@@ -80,12 +80,14 @@
         android:name=".MainApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name"
+        android:label="@string/APP_NAME"
         android:usesCleartextTraffic="true"
-        tools:ignore="GoogleAppIndexingWarning">
+        tools:ignore="GoogleAppIndexingWarning"
+        tools:replace="android:label"
+        >
         <activity
             android:name=".activity.MainActivity"
-            android:label="@string/app_name">
+            android:label="@string/APP_NAME">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -143,7 +145,7 @@
 
         <provider
             android:name="com.nextgis.maplib.datasource.LayerContentProvider"
-            android:authorities="com.nextgis.mobile.provider"
+            android:authorities="@string/provider_auth"
             android:exported="false"
             android:syncable="true"/>
 

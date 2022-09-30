@@ -23,9 +23,11 @@
 
 package com.nextgis.mobile.util;
 
+import com.nextgis.mobile.BuildConfig;
+
 public interface AppSettingsConstants
 {
-    String AUTHORITY             = "com.nextgis.mobile.provider";
+    String AUTHORITY             = BuildConfig.providerAuth; //"com.nextgis.mobile.provider";
 
     /**
      * Preference key - not UI

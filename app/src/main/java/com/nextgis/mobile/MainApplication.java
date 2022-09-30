@@ -140,7 +140,7 @@ public class MainApplication extends GISApplication
 
     @Override
     public String getAccountsType() {
-        return Constants.NGW_ACCOUNT_TYPE;
+        return BuildConfig.nextgismobile_accounts_auth; // Constants.NGW_ACCOUNT_TYPE;
     }
 
     @Override

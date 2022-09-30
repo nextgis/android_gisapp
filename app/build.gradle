@@ -50,10 +50,48 @@ android {
     productFlavors {
     }
 
+    signingConfigs {
+        debug {
+            storeFile file('../../keystore_google')
+            storePassword ANDROID_STORE_PASSWORD
+            keyAlias ANDROID_KEY
+            keyPassword ANDROID_STORE_PASSWORD
+
+        }
+        release {
+            storeFile file('../../keystore_google')
+            storePassword ANDROID_STORE_PASSWORD
+            keyAlias ANDROID_KEY
+            keyPassword ANDROID_STORE_PASSWORD
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            resValue 'string', 'APP_NAME', 'NextGIS Mobile'
+            resValue 'string', 'provider_auth', 'com.nextgis.mobile.provider'
+            resValue 'string', 'nextgis_mobile_accounts_auth', 'com.nextgis.mobile.account'
+            resValue 'string', 'nextgis_accounts_auth_type', 'com.nextgis.account'
+            buildConfigField "String", "providerAuth", '"com.nextgis.mobile.provider"'
+            buildConfigField "String", "nextgismobile_accounts_auth", '"com.nextgis.account"'
+            signingConfig signingConfigs.release
+        }
+        debug {
+            minifyEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            applicationIdSuffix '.debug'
+            versionNameSuffix '-DEBUG'
+            resValue 'string', 'APP_NAME', 'DEV NextGIS Mobile'
+            resValue 'string', 'provider_auth', 'com.nextgis.mobile.provider.debug'
+            resValue 'string', 'nextgis_mobile_accounts_auth', 'com.nextgis.mobile.account.debug'
+            resValue 'string', 'nextgis_accounts_auth_type', 'com.nextgis.account.debug'
+            buildConfigField "String", "providerAuth", '"com.nextgis.mobile.provider.debug"'
+            buildConfigField "String", "nextgismobile_accounts_auth", '"com.nextgis.account.debug"'
+            signingConfig signingConfigs.debug
+            debuggable true
         }
     }
 

@@ -24,10 +24,14 @@
 
 <sync-adapter
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:contentAuthority="com.nextgis.mobile.provider"
-    android:accountType="com.nextgis.account"
+    android:contentAuthority="@string/provider_auth"
+    android:accountType="@string/nextgis_accounts_auth_type"
     android:userVisible="true"
     android:supportsUploading="true"
     android:allowParallelSyncs="false"
     android:isAlwaysSyncable="true"
     />
+
+
+
+
