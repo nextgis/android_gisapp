@@ -42,7 +42,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 30
         versionCode 95
-        versionName '2.6.37'
+        versionName '2.6.38'
         archivesBaseName = "ngmobile-$versionName"
         buildConfigField "String", "SENTRY_DSN", "\"${sentryDsn}\""
     }
