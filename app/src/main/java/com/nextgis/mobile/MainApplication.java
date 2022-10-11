@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -51,6 +52,7 @@ import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplib.util.NGException;
 import com.nextgis.maplib.util.NGWUtil;
+import com.nextgis.maplib.util.NetworkUtil;
 import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.maplibui.GISApplication;
 import com.nextgis.maplibui.mapui.LayerFactoryUI;
@@ -69,6 +71,7 @@ import java.util.List;
 
 import static com.nextgis.maplib.util.Constants.DEBUG_MODE;
 import static com.nextgis.maplib.util.Constants.MAP_EXT;
+import static com.nextgis.maplib.util.Constants.TAG;
 import static com.nextgis.maplib.util.GeoConstants.TMSTYPE_OSM;
 import static com.nextgis.maplibui.fragment.NGWSettingsFragment.setAccountSyncEnabled;
 import static com.nextgis.mobile.util.AppSettingsConstants.AUTHORITY;
@@ -94,6 +97,14 @@ public class MainApplication extends GISApplication
         if (!BuildConfig.DEBUG)
             Sentry.init(this, BuildConfig.SENTRY_DSN);
 //        Sentry.captureMessage("NGM2 Sentry is init.", Sentry.SentryEventLevel.DEBUG);
+
+        // set userAgent info
+        try {
+            NetworkUtil.setUserAgentPrefix("NextGIS-Mobile/" + BuildConfig.VERSION_NAME);
+            NetworkUtil.setUserAgentPostfix(System.getProperty("http.agent") + " " + Build.MANUFACTURER);
+        } catch (Exception ex){
+            Log.e(TAG, ex.getMessage());
+        }
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (mSharedPreferences.getBoolean("save_log", false)) {
