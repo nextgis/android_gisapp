@@ -87,11 +87,16 @@ import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.maplibui.util.NGIDUtils;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.maplibui.util.UiUtil;
+import com.nextgis.mobile.BuildConfig;
 import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.fragment.LayersFragment;
 import com.nextgis.mobile.fragment.MapFragment;
 import com.nextgis.mobile.util.AppSettingsConstants;
+import com.nextgis.maplib.*;
+import com.nextgis.maplib.activity.PickerActivity;
+import com.nextgis.maplib.fragment.FilePickerFragment;
+
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -212,6 +217,10 @@ public class MainActivity extends NGActivity
                     showSnack();
             }
         });
+
+
+        API.INSTANCE.init(this, BuildConfig.SENTRY_DSN);
+
     }
 
     private void showSnack() {

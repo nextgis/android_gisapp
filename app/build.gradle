@@ -39,9 +39,9 @@ android {
 
     defaultConfig {
         applicationId 'com.nextgis.mobile'
-        minSdkVersion 14
+        minSdkVersion 19
         targetSdkVersion 30
-        versionCode 96
+        versionCode 98
         versionName '2.6.39'
         archivesBaseName = "ngmobile-$versionName"
         buildConfigField "String", "SENTRY_DSN", "\"${sentryDsn}\""
@@ -119,5 +119,8 @@ dependencies {
 //    implementation 'com.github.TechFreak:WizardPager:1.0.3'
     implementation 'com.android.volley:volley:1.2.1'
     implementation 'com.github.barsrb:hyperlog-android:master-SNAPSHOT'
+
+    implementation 'com.nextgis.maplib:maplib:3.7.0'
+
     implementation project(path: ':wizardpager')
 }
