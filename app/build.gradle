@@ -41,8 +41,8 @@ android {
         applicationId 'com.nextgis.mobile'
         minSdkVersion 14
         targetSdkVersion 30
-        versionCode 98
-        versionName '2.6.39'
+        versionCode 99
+        versionName '2.6.40'
         archivesBaseName = "ngmobile-$versionName"
         buildConfigField "String", "SENTRY_DSN", "\"${sentryDsn}\""
     }
