@@ -24,6 +24,7 @@
 package com.nextgis.mobile.activity;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -70,6 +71,7 @@ import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.map.VectorLayer;
+import com.nextgis.maplib.service.NGWSyncService;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.FileUtil;
 import com.nextgis.maplib.util.HttpResponse;
@@ -105,6 +107,9 @@ import java.util.GregorianCalendar;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import static com.nextgis.maplib.util.Constants.MESSAGE_ALERT_INTENT;
+import static com.nextgis.maplib.util.Constants.MESSAGE_EXTRA;
+import static com.nextgis.maplib.util.Constants.MESSAGE_TITLE_EXTRA;
 import static com.nextgis.maplib.util.Constants.SUPPORT;
 import static com.nextgis.maplib.util.Constants.TAG;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WEB_MERCATOR;
@@ -131,6 +136,8 @@ public class MainActivity extends NGActivity
 
     protected long mBackPressed;
     protected MenuItem mTrackItem;
+
+
 
 
     @Override
@@ -901,6 +908,18 @@ public class MainActivity extends NGActivity
                 Toast.makeText(
                         MainActivity.this, intent.getExtras().getString(
                                 ConstantsUI.KEY_MESSAGE), Toast.LENGTH_SHORT).show();
+
+            }
+
+            if (intent.getAction().equals(MESSAGE_ALERT_INTENT)) {
+                String message = intent.getExtras().getString(MESSAGE_EXTRA);
+                String title = intent.getExtras().getString(MESSAGE_TITLE_EXTRA);
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setMessage(message)
+                        .setPositiveButton("ok", null)
+                        .setTitle(title);
+                builder.create().show();
+//                this.abortBroadcast();
             }
         }
     }
@@ -913,6 +932,7 @@ public class MainActivity extends NGActivity
         mToolbar.getBackground().setAlpha(128);
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConstantsUI.MESSAGE_INTENT);
+        intentFilter.addAction(MESSAGE_ALERT_INTENT);
         registerReceiver(mMessageReceiver, intentFilter);
     }
 
