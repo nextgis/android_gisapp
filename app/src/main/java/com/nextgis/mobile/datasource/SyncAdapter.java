@@ -33,6 +33,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 
+import com.nextgis.maplib.util.AccountUtil;
 import com.nextgis.maplibui.util.NotificationHelper;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
@@ -53,6 +54,9 @@ public class SyncAdapter extends com.nextgis.maplib.datasource.ngw.SyncAdapter {
 
     @Override
     public void onPerformSync(Account account, Bundle bundle, String authority, ContentProviderClient contentProviderClient, SyncResult syncResult) {
+        if(!AccountUtil.isUserExists(getContext()))
+            return;
+
         sendNotification(getContext(), SYNC_START, null);
 
         super.onPerformSync(account, bundle, authority, contentProviderClient, syncResult);

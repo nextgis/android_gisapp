@@ -100,8 +100,10 @@ public class MainApplication extends GISApplication
 
         // set userAgent info
         try {
-            NetworkUtil.setUserAgentPrefix("NextGIS-Mobile/" + BuildConfig.VERSION_NAME);
-            NetworkUtil.setUserAgentPostfix(System.getProperty("http.agent") + " " + Build.MANUFACTURER);
+            //(NGID 542d1f02-8c93-448f-8bb7-ccfb28e6b401; Supported; DID 3F60F6E9; Build 99; Vendor TCL)
+            NetworkUtil.setUserAgentPrefix(this, "NextGIS-Mobile/" + BuildConfig.VERSION_NAME,
+                    TrackerService.getUid(this), BuildConfig.VERSION_CODE);
+            NetworkUtil.setUserAgentPostfix(System.getProperty("http.agent"));
         } catch (Exception ex){
             Log.e(TAG, ex.getMessage());
         }

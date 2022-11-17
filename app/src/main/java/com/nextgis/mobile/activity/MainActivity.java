@@ -72,11 +72,13 @@ import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.service.NGWSyncService;
+import com.nextgis.maplib.util.AccountUtil;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.FileUtil;
 import com.nextgis.maplib.util.HttpResponse;
 import com.nextgis.maplib.util.MapUtil;
 import com.nextgis.maplib.util.NGWUtil;
+import com.nextgis.maplib.util.NetworkUtil;
 import com.nextgis.maplibui.activity.NGActivity;
 import com.nextgis.maplibui.api.IChooseLayerResult;
 import com.nextgis.maplibui.api.IVectorLayerUI;
@@ -107,6 +109,8 @@ import java.util.GregorianCalendar;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import static com.nextgis.maplib.util.Constants.JSON_SUPPORTED_KEY;
+import static com.nextgis.maplib.util.Constants.JSON_USER_ID_KEY;
 import static com.nextgis.maplib.util.Constants.MESSAGE_ALERT_INTENT;
 import static com.nextgis.maplib.util.Constants.MESSAGE_EXTRA;
 import static com.nextgis.maplib.util.Constants.MESSAGE_TITLE_EXTRA;
@@ -116,6 +120,8 @@ import static com.nextgis.maplib.util.GeoConstants.CRS_WEB_MERCATOR;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
 import static com.nextgis.maplibui.service.TrackerService.hasUnfinishedTracks;
 import static com.nextgis.maplibui.util.ConstantsUI.CODE_SAVE_FILE;
+
+import org.json.JSONObject;
 
 /**
  * Main activity. Map and drawer with layers list created here
@@ -208,8 +214,20 @@ public class MainActivity extends NGActivity
                         support = new File(support, SUPPORT);
 
                     try {
+                        String jsonString = FileUtil.readFromFile(support);
+                        JSONObject json = new JSONObject(jsonString);
+                        if (json.optBoolean(JSON_SUPPORTED_KEY)) {
+                            final String id = json.getString(JSON_USER_ID_KEY);
+                            NetworkUtil.setUserNGUID(id);
+                        }
+                    }catch (Exception exception){
+                    }
+
+                    try {
                         FileUtil.writeToFile(support, response.getResponseBody());
                     } catch (IOException ignored) {}
+
+                    NetworkUtil.setIsPro(AccountUtil.isProUser(getBaseContext()));
                 }
 
                 if (mMapFragment.getEditLayerOverlay().getMode() == EditLayerOverlay.MODE_NONE)
