@@ -25,8 +25,8 @@ package com.nextgis.mobile.util;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.preference.Preference;
+import androidx.fragment.app.FragmentManager;
+import androidx.preference.Preference;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import com.nextgis.maplib.util.Constants;

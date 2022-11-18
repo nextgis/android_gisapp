@@ -2,7 +2,7 @@ package com.tech.freak.wizardpager.model;
 
 import java.util.ArrayList;
 
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
 import com.tech.freak.wizardpager.ui.TextFragment;
 

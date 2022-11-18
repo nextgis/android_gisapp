@@ -25,8 +25,8 @@ package com.nextgis.mobile.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.preference.PreferenceManager;
-import android.support.v7.preference.PreferenceScreen;
+import androidx.preference.PreferenceManager;
+import androidx.preference.PreferenceScreen;
 
 import com.nextgis.maplib.util.AccountUtil;
 import com.nextgis.maplibui.activity.NGIDSettingsActivity;

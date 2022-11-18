@@ -23,7 +23,7 @@
 
 package com.nextgis.mobile.fragment;
 
-import android.support.v7.preference.PreferenceScreen;
+import androidx.preference.PreferenceScreen;
 
 import com.nextgis.maplib.util.AccountUtil;
 import com.nextgis.maplibui.fragment.NGPreferenceHeaderFragment;

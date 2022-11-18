@@ -87,7 +87,9 @@
         >
         <activity
             android:name=".activity.MainActivity"
-            android:label="@string/APP_NAME">
+            android:label="@string/APP_NAME"
+            android:exported="true"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -132,7 +134,9 @@
         </service>
 
         <service
-            android:name="com.nextgis.mobile.datasource.SyncService">
+            android:name="com.nextgis.mobile.datasource.SyncService"
+            android:exported="true"
+            >
             <intent-filter>
                 <action
                     android:name="android.content.SyncAdapter"
@@ -150,7 +154,7 @@
             android:syncable="true"/>
 
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.easypicker.provider"
             android:exported="false"
             android:grantUriPermissions="true">

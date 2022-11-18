@@ -21,13 +21,11 @@
 
 package com.nextgis.mobile.datasource;
 
-import static com.nextgis.maplib.util.Constants.MESSAGE_ALERT_INTENT;
 import static com.nextgis.maplib.util.Constants.MESSAGE_EXTRA;
 import static com.nextgis.maplib.util.Constants.MESSAGE_NOTIFY_INTENT;
 import static com.nextgis.maplib.util.Constants.MESSAGE_TITLE_EXTRA;
 import static com.nextgis.maplibui.util.NotificationHelper.createBuilder;
 
-import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -35,18 +33,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.preference.PreferenceManager;
-import android.support.v4.app.NotificationCompat;
-import android.util.Log;
-import android.widget.Toast;
+
+import androidx.core.app.NotificationCompat;
 
 import com.nextgis.maplib.service.NGWSyncService;
-import com.nextgis.maplib.util.Constants;
-import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.maplibui.util.NotificationHelper;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
-import com.nextgis.mobile.util.AppSettingsConstants;
 
 public class SyncService extends NGWSyncService {
 
