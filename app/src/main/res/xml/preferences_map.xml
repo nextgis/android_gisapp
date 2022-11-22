@@ -90,7 +90,6 @@
         android:defaultValue="6"
         android:inputType="number"
         android:key="coordinates_fraction_digits"
-        android:numeric="integer"
         android:title="@string/coordinates_fraction_digits"/>
 
     <ListPreference

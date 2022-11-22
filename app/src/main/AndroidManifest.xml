@@ -124,7 +124,8 @@
         <service
             android:name="com.nextgis.maplibui.account.NGWAuthenticatorService"
             android:enabled="true"
-            android:exported="true">
+            android:exported="true"
+            >
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator"/>
             </intent-filter>

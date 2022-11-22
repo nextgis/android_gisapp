@@ -61,7 +61,7 @@ import java.lang.annotation.RetentionPolicy;
 
 
 public class FloatingActionButton
-        extends ImageButton
+        extends androidx.appcompat.widget.AppCompatImageButton
 {
 
     public static final int SIZE_NORMAL = 0;
