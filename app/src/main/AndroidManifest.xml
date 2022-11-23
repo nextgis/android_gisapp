@@ -44,6 +44,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+
     <!--
         <uses-permission android:name="android.permission.CAMERA"/>
     -->
@@ -125,6 +126,7 @@
             android:name="com.nextgis.maplibui.account.NGWAuthenticatorService"
             android:enabled="true"
             android:exported="true"
+            android:permission="com.nextgis.mobile.service.ACCESS"
             >
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator"/>
@@ -137,6 +139,7 @@
         <service
             android:name="com.nextgis.mobile.datasource.SyncService"
             android:exported="true"
+            android:permission="com.nextgis.mobile.service.ACCESS"
             >
             <intent-filter>
                 <action
