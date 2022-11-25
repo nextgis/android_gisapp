@@ -39,6 +39,9 @@ import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
 import com.nextgis.mobile.util.AppSettingsConstants;
 
+import static com.nextgis.maplib.util.Constants.MESSAGE_ALERT_INTENT;
+import static com.nextgis.maplib.util.Constants.MESSAGE_EXTRA;
+import static com.nextgis.maplib.util.Constants.MESSAGE_TITLE_EXTRA;
 import static com.nextgis.maplibui.util.NotificationHelper.createBuilder;
 
 public class SyncAdapter extends com.nextgis.maplib.datasource.ngw.SyncAdapter {
@@ -54,8 +57,16 @@ public class SyncAdapter extends com.nextgis.maplib.datasource.ngw.SyncAdapter {
 
     @Override
     public void onPerformSync(Account account, Bundle bundle, String authority, ContentProviderClient contentProviderClient, SyncResult syncResult) {
-        if(!AccountUtil.isUserExists(getContext()))
+        if(!AccountUtil.isUserExists(getContext())) {
+            String alertMessage = getContext().getString(R.string.sync_need_login);
+            String alertTitle = getContext().getString(R.string.sync_off_title);
+            Intent msg = new Intent(MESSAGE_ALERT_INTENT);
+            msg.putExtra(MESSAGE_EXTRA, alertMessage);
+            msg.putExtra(MESSAGE_TITLE_EXTRA, alertTitle);
+            getContext().sendBroadcast(msg);
+
             return;
+        }
 
         sendNotification(getContext(), SYNC_START, null);
 

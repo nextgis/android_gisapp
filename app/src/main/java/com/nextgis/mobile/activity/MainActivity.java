@@ -50,7 +50,11 @@ import androidx.fragment.app.FragmentManager;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.widget.Toolbar;
+
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Menu;
@@ -929,11 +933,21 @@ public class MainActivity extends NGActivity
             if (intent.getAction().equals(MESSAGE_ALERT_INTENT)) {
                 String message = intent.getExtras().getString(MESSAGE_EXTRA);
                 String title = intent.getExtras().getString(MESSAGE_TITLE_EXTRA);
+
+                final SpannableString s = new SpannableString(message); // msg should have url to enable clicking
+                Linkify.addLinks(s, Linkify.ALL);
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setMessage(message)
+                builder.setMessage(s)
                         .setPositiveButton("ok", null)
                         .setTitle(title);
                 builder.create().show();
+
+                AlertDialog alertDialog=builder.create();
+                alertDialog.show();
+
+                ((TextView)alertDialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
+
 //                this.abortBroadcast();
             }
         }
