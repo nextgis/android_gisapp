@@ -47,6 +47,7 @@ import android.widget.Toast;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapContentProviderHelper;
+import com.nextgis.maplib.util.AccountUtil;
 import com.nextgis.maplib.util.FileUtil;
 import com.nextgis.maplib.util.HttpResponse;
 import com.nextgis.maplib.util.NetworkUtil;
@@ -537,25 +538,30 @@ public class SettingsFragment
         Context context = preference.getContext();
         String uid = getUid(context);
         preference.setSummary(context.getString(R.string.track_uid, uid));
-        new CheckRegistration(preference).execute();
+        new CheckRegistration(preference,AccountUtil.isProUser(preference.getContext())).execute();
     }
 
     private static class CheckRegistration extends AsyncTask<Void, Void, Boolean> {
         private CheckBoxPreference mPreference;
+        private final boolean isProFinal;
 
-        CheckRegistration(CheckBoxPreference preference) {
+        CheckRegistration(CheckBoxPreference preference, boolean isPro) {
             mPreference = preference;
+            isProFinal = isPro;
         }
 
         @Override
         protected Boolean doInBackground(Void... voids) {
             try {
-                String base = mPreference.getSharedPreferences().getString("tracker_hub_url", HOST);
-                String url = String.format("%s/%s/registered", base + URL, getUid(mPreference.getContext()));
-                HttpResponse response = NetworkUtil.get(url, null, null, false);
-                String body = response.getResponseBody();
-                JSONObject json = new JSONObject(body == null ? "" : body);
-                return json.optBoolean("registered");
+                if (isProFinal) {
+                    String base = mPreference.getSharedPreferences().getString("tracker_hub_url", HOST);
+                    String url = String.format("%s/%s/registered", base + URL, getUid(mPreference.getContext()));
+                    HttpResponse response = NetworkUtil.get(url, null, null, false);
+                    String body = response.getResponseBody();
+                    JSONObject json = new JSONObject(body == null ? "" : body);
+                    return json.optBoolean("registered");
+                } else
+                    return false;
             } catch (IOException | JSONException e) {
                 return null;
             }
