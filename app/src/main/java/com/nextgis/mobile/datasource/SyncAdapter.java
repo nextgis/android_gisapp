@@ -92,7 +92,7 @@ public class SyncAdapter extends com.nextgis.maplib.datasource.ngw.SyncAdapter {
         notificationIntent.setFlags(
                 Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent contentIntent = PendingIntent.getActivity(
-                context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         NotificationCompat.Builder builder = createBuilder(context, com.nextgis.maplibui.R.string.sync);
         builder.setSmallIcon(R.drawable.ic_action_sync)
