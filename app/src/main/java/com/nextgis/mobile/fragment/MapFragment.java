@@ -107,6 +107,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static android.content.Context.MODE_MULTI_PROCESS;
+import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
 import static com.nextgis.maplib.util.Constants.FIELD_GEOM;
 import static com.nextgis.maplib.util.Constants.FIELD_ID;
 import static com.nextgis.maplib.util.Constants.NOT_FOUND;
@@ -140,10 +141,11 @@ public class MapFragment
     protected FloatingActionButton mAddPointButton;
 
     protected TextView mStatusSource, mStatusAccuracy, mStatusSpeed, mStatusAltitude,
-            mStatusLatitude, mStatusLongitude;
+            mStatusLatitude, mStatusLongitude, mZoom;
     protected FrameLayout mStatusPanel;
     protected LinearLayout mScaleRulerLayout;
-    protected TextView mScaleRulerText, mZoomLevel;
+    protected TextView mScaleRulerText;
+    //, mZoomLevel;
     protected ImageView mScaleRuler;
 
     protected RelativeLayout         mMapRelativeLayout;
@@ -747,8 +749,12 @@ public class MapFragment
         mScaleRuler = view.findViewById(R.id.iv_ruler);
         mScaleRulerText = view.findViewById(R.id.tv_ruler);
         mScaleRulerText.setText(getRulerText());
-        mZoomLevel = view.findViewById(R.id.tv_zoom_level);
-        mZoomLevel.setText(getZoomText());
+
+//        mZoomLevel = view.findViewById(R.id.tv_zoom_level);
+//        mZoomLevel.setText(getZoomText());
+        if (mZoom !=null)
+            mZoom.setText(getZoomText());
+
         mScaleRulerLayout = view.findViewById(R.id.ll_ruler);
         drawScaleRuler();
 
@@ -843,7 +849,9 @@ public class MapFragment
         setZoomInEnabled(mMap.canZoomIn());
         setZoomOutEnabled(mMap.canZoomOut());
         mScaleRulerText.setText(getRulerText());
-        mZoomLevel.setText(getZoomText());
+//        mZoomLevel.setText(getZoomText());
+        if (mZoom !=null)
+            mZoom.setText(getZoomText());
     }
 
 
@@ -1062,10 +1070,16 @@ public class MapFragment
             mScaleRulerLayout.setVisibility(View.GONE);
 
         showControls = mPreferences.getBoolean(KEY_PREF_SHOW_ZOOM, false);
-        if (showControls)
-            mZoomLevel.setVisibility(View.VISIBLE);
-        else
-            mZoomLevel.setVisibility(View.GONE);
+        if (showControls) {
+//            mZoomLevel.setVisibility(View.VISIBLE);
+            if (mZoom != null)
+                mZoom.setVisibility(View.VISIBLE);
+        }
+        else {
+//            mZoomLevel.setVisibility(View.GONE);
+            if (mZoom != null)
+                mZoom.setVisibility(View.GONE);
+        }
 
         showControls = mPreferences.getBoolean(KEY_PREF_SHOW_MEASURING, false);
         if (showControls)
@@ -1654,35 +1668,44 @@ public class MapFragment
         if (mStatusPanelMode == 0)
             return;
 
-        boolean needViewUpdate = true;
-        boolean isCurrentOrientationOneLine = mStatusPanel.getChildCount() > 0 &&
-                mStatusPanel.getChildAt(0).getId() == R.id.status_container_land;
-
-        View panel;
-        if (!isCurrentOrientationOneLine) {
-            panel = mActivity.getLayoutInflater().inflate(R.layout.status_panel_land, mStatusPanel, false);
-            defineTextViews(panel);
-        } else {
-            panel = mStatusPanel.getChildAt(0);
-            needViewUpdate = false;
-        }
-
-        fillTextViews(location);
-
-        if (!isFitOneLine()) {
+        View panel = mStatusPanel.getChildAt(0);
+        if (panel == null) {
             panel = mActivity.getLayoutInflater().inflate(R.layout.status_panel, mStatusPanel, false);
             defineTextViews(panel);
             fillTextViews(location);
-            needViewUpdate = true;
-        }
-
-        if (needViewUpdate) {
             mStatusPanel.removeAllViews();
             panel.getBackground().setAlpha(128);
             mStatusPanel.addView(panel);
-        }
-    }
+        } else
+            fillTextViews(location);
 
+//        boolean needViewUpdate = true;
+//        boolean isCurrentOrientationOneLine = mStatusPanel.getChildCount() > 0 &&
+//                mStatusPanel.getChildAt(0).getId() == R.id.status_container_land;
+//
+//
+//        if (!isCurrentOrientationOneLine) {
+//            panel = mActivity.getLayoutInflater().inflate(R.layout.status_panel_land, mStatusPanel, false);
+//            defineTextViews(panel);
+//        } else {
+//            panel = mStatusPanel.getChildAt(0);
+//            needViewUpdate = false;
+//        }
+//
+//        fillTextViews(location);
+//
+//        if (!isFitOneLine()) {
+//            panel = mActivity.getLayoutInflater().inflate(R.layout.status_panel, mStatusPanel, false);
+//            defineTextViews(panel);
+//            fillTextViews(location);
+//            needViewUpdate = true;
+//        }
+//        if (needViewUpdate) {
+//            mStatusPanel.removeAllViews();
+//            panel.getBackground().setAlpha(128);
+//            mStatusPanel.addView(panel);
+//        }
+    }
 
     private void fillTextViews(Location location)
     {
@@ -1768,6 +1791,9 @@ public class MapFragment
         mStatusAltitude = panel.findViewById(R.id.tv_altitude);
         mStatusLatitude = panel.findViewById(R.id.tv_latitude);
         mStatusLongitude = panel.findViewById(R.id.tv_longitude);
+        mZoom = panel.findViewById(R.id.tv_zoom);
+        if (mZoom != null)
+            mZoom.setVisibility(mPreferences.getBoolean(KEY_PREF_SHOW_ZOOM, false) ? View.VISIBLE : View.GONE);
     }
 
 

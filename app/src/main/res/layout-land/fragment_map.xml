@@ -83,13 +83,13 @@
             android:layout_gravity="center_horizontal"/>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tv_zoom_level"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/fl_status_panel"
-        android:layout_margin="8dp"
-        android:gravity="center"/>
+<!--    <TextView-->
+<!--        android:id="@+id/tv_zoom_level"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_above="@id/fl_status_panel"-->
+<!--        android:layout_margin="8dp"-->
+<!--        android:gravity="center"/>-->
 
     <LinearLayout
         android:layout_width="wrap_content"
