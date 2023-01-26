@@ -453,7 +453,12 @@ public class MainActivity extends NGActivity
         try {
             String fileName = "ng-logs.zip";
             if (temp == null) {
-                Toast.makeText(this, R.string.error_file_create, Toast.LENGTH_LONG).show();
+                new androidx.appcompat.app.AlertDialog.Builder(this)
+                        .setMessage(com.nextgis.maplibui.R.string.error_file_create)
+                        .setPositiveButton(com.nextgis.maplibui.R.string.ok, null)
+                        .create()
+                        .show();
+                //Toast.makeText(this, R.string.error_file_create, Toast.LENGTH_LONG).show();
             }
 
             temp = new File(temp, fileName);

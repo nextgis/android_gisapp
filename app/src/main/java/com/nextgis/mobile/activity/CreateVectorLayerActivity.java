@@ -83,8 +83,10 @@ public class CreateVectorLayerActivity extends NGActivity implements View.OnClic
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch (item.getItemId()) {
             case R.id.menu_apply:
+                boolean showAlert = true;
                 int info = R.string.error_layer_create;
 
                 if (TextUtils.isEmpty(mEtLayerName.getText().toString().trim()))
@@ -92,11 +94,18 @@ public class CreateVectorLayerActivity extends NGActivity implements View.OnClic
                 else if (hasLayerWithSameName())
                     info = R.string.same_layer_name;
                 else if (createNewLayer()) {
+                    showAlert = false;
                     info = R.string.message_layer_created;
                     finish();
                 }
-
-                Toast.makeText(this, info, Toast.LENGTH_SHORT).show();
+                if (showAlert)
+                    new androidx.appcompat.app.AlertDialog.Builder(this)
+                        .setMessage(info)
+                        .setPositiveButton(com.nextgis.maplibui.R.string.ok, null)
+                        .create()
+                        .show();
+                else
+                    Toast.makeText(this, info, Toast.LENGTH_SHORT).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
