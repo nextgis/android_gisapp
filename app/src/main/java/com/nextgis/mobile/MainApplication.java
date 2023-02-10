@@ -24,6 +24,7 @@
 package com.nextgis.mobile;
 
 import android.accounts.Account;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -281,7 +282,7 @@ public class MainApplication extends GISApplication
     }
 
     @Override
-    public void showSettings(String settings)
+    public void showSettings(String settings, int code, final Activity activity)
     {
         if(TextUtils.isEmpty(settings)) {
             settings = SettingsConstantsUI.ACTION_PREFS_GENERAL;
@@ -298,8 +299,12 @@ public class MainApplication extends GISApplication
 
         Intent intent = new Intent(this, SettingsActivity.class);
         intent.setAction(settings);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        if (activity != null && code != -1)
+            activity.startActivityForResult(intent, code);
+        else
+            startActivity(intent);
     }
 
     @Override

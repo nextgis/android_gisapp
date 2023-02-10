@@ -42,6 +42,8 @@ import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceManager;
 import androidx.preference.PreferenceScreen;
+
+import android.util.Log;
 import android.widget.Toast;
 
 import com.nextgis.maplib.api.ILayer;
@@ -52,6 +54,7 @@ import com.nextgis.maplib.util.FileUtil;
 import com.nextgis.maplib.util.HttpResponse;
 import com.nextgis.maplib.util.NetworkUtil;
 import com.nextgis.maplib.util.SettingsConstants;
+import com.nextgis.maplibui.GISApplication;
 import com.nextgis.maplibui.fragment.NGPreferenceSettingsFragment;
 import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
@@ -60,6 +63,7 @@ import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
 import com.nextgis.mobile.util.AppConstants;
 import com.nextgis.mobile.util.IntEditTextPreference;
+import com.nextgis.mobile.util.SDCardUtils;
 import com.nextgis.mobile.util.SelectMapPathPreference;
 
 import org.json.JSONArray;
@@ -72,6 +76,7 @@ import java.util.ArrayList;
 
 import static com.nextgis.maplib.util.Constants.MAP_EXT;
 import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_MAP;
+import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_SD_CARD_NAME;
 import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_UNITS;
 import static com.nextgis.maplibui.service.TrackerService.HOST;
 import static com.nextgis.maplibui.service.TrackerService.URL;
@@ -272,7 +277,7 @@ public class SettingsFragment
             preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
             {
                 @Override
-                public boolean onPreferenceClick(Preference preference)
+                public boolean onPreferenceClick(final Preference preference)
                 {
                     AlertDialog.Builder confirm = new AlertDialog.Builder(activity);
                     confirm.setTitle(R.string.reset_settings_title)
@@ -286,9 +291,27 @@ public class SettingsFragment
                                                 DialogInterface dialog,
                                                 int which)
                                         {
-                                            resetSettings(activity);
-                                            deleteLayers(activity);
-                                            ((MainApplication) activity.getApplication()).initBaseLayers();
+
+                                            if (SDCardUtils.isSDCardUsedAndExtracted(preference.getContext())){
+                                                resetSettings(activity);
+
+                                                ((GISApplication)MapBase.getInstance().getContext().getApplicationContext())
+                                                        .resetMap();
+                                                ((MainApplication) activity.getApplication()).initBaseLayers();
+                                                try {
+                                                    deleteLayers(activity);
+                                                } catch ( Exception ex) {
+                                                    //Log.e("f", "g");
+                                                }
+                                                ((MainApplication) activity.getApplication()).initBaseLayers();
+                                                activity.setResult(Activity.RESULT_OK);
+                                            } else {
+                                                resetSettings(activity);
+                                                deleteLayers(activity);
+                                                ((MainApplication) activity.getApplication()).initBaseLayers();
+                                                activity.setResult(Activity.RESULT_CANCELED);
+
+                                            }
                                         }
                                     })
                             .show();
@@ -432,21 +455,16 @@ public class SettingsFragment
                         Preference preference,
                         Object o)
                 {
+
                     final Activity parent = (Activity) context;
                     if (null == parent) {
                         return false;
                     }
-
                     File newPath = new File((String) o);
-                    if (newPath.listFiles().length != 0) {
-                        Toast.makeText(context,
-                                context.getString(R.string.warning_folder_should_be_empty),
-                                Toast.LENGTH_LONG).show();
-                        return false;
-                    }
-
                     moveMap(parent, newPath);
-
+                    ((GISApplication)MapBase.getInstance().getContext().getApplicationContext())
+                            .resetMap();
+                    parent.setResult(Activity.RESULT_OK);
                     return true;
                 }
             });
@@ -734,6 +752,7 @@ public class SettingsFragment
         editor.remove(KEY_PREF_SHOW_SCALE_RULER);
         editor.remove(SettingsConstantsUI.KEY_PREF_SHOW_GEO_DIALOG);
         editor.remove(KEY_PREF_GA);
+        editor.remove(KEY_PREF_SD_CARD_NAME);
 
         File defaultPath = activity.getExternalFilesDir(KEY_PREF_MAP);
         if (defaultPath == null) {
@@ -757,16 +776,21 @@ public class SettingsFragment
         MainApplication app = (MainApplication) activity.getApplication();
         for (int i = app.getMap().getLayerCount() - 1; i >= 0; i--) {
             ILayer layer = app.getMap().getLayer(i);
-            if (!layer.getPath().getName().equals(MainApplication.LAYER_OSM) && !layer.getPath()
-                    .getName()
-                    .equals(MainApplication.LAYER_A) && !layer.getPath()
-                    .getName()
-                    .equals(MainApplication.LAYER_B) && !layer.getPath()
-                    .getName()
-                    .equals(MainApplication.LAYER_C) && !layer.getPath()
-                    .getName()
-                    .equals(MainApplication.LAYER_TRACKS)) {
-                layer.delete();
+            try {
+
+                if (!layer.getPath().getName().equals(MainApplication.LAYER_OSM) && !layer.getPath()
+                        .getName()
+                        .equals(MainApplication.LAYER_A) && !layer.getPath()
+                        .getName()
+                        .equals(MainApplication.LAYER_B) && !layer.getPath()
+                        .getName()
+                        .equals(MainApplication.LAYER_C) && !layer.getPath()
+                        .getName()
+                        .equals(MainApplication.LAYER_TRACKS)) {
+                    layer.delete();
+                }
+            } catch (Exception ex) {
+                //Log.e("d", "'");
             }
         }
 
@@ -780,8 +804,7 @@ public class SettingsFragment
 
     public static void moveMap(
             Activity activity,
-            File path)
-    {
+            File path) {
         MainApplication application = (MainApplication) activity.getApplication();
         if (null == application) {
             return;
@@ -806,8 +829,7 @@ public class SettingsFragment
         BackgroundMoveTask(
                 Activity activity,
                 MapBase map,
-                File path)
-        {
+                File path){
             mActivity = activity;
             mMap = map;
             mPath = path;
@@ -842,6 +864,9 @@ public class SettingsFragment
         {
             mProgressDialog.dismiss();
             ControlHelper.unlockScreenOrientation(mActivity);
+            mMap=null;
+            ((GISApplication)MapBase.getInstance().getContext().getApplicationContext())
+                    .resetMap();
         }
     }
 }

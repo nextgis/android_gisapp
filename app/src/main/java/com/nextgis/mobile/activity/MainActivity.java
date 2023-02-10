@@ -31,6 +31,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.SyncResult;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -98,6 +99,7 @@ import com.nextgis.mobile.R;
 import com.nextgis.mobile.fragment.LayersFragment;
 import com.nextgis.mobile.fragment.MapFragment;
 import com.nextgis.mobile.util.AppSettingsConstants;
+import com.nextgis.mobile.util.SDCardUtils;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -120,6 +122,7 @@ import static com.nextgis.maplib.util.Constants.SUPPORT;
 import static com.nextgis.maplib.util.Constants.TAG;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WEB_MERCATOR;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
+import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_SD_CARD_NAME;
 import static com.nextgis.maplibui.service.TrackerService.hasUnfinishedTracks;
 
 import org.json.JSONObject;
@@ -140,12 +143,10 @@ public class MainActivity extends NGActivity
     protected Toolbar         mToolbar;
 
     protected final static int FILE_SELECT_CODE = 555;
+    protected final static int RELOAD_ACTIVITY_DATA = 777;
 
     protected long mBackPressed;
     protected MenuItem mTrackItem;
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -351,7 +352,7 @@ public class MainActivity extends NGActivity
                     return true;
                 }
             case R.id.menu_settings:
-                app.showSettings(SettingsConstantsUI.ACTION_PREFS_GENERAL);
+                app.showSettings(SettingsConstantsUI.ACTION_PREFS_GENERAL, RELOAD_ACTIVITY_DATA, this);
                 return true;
             case R.id.menu_about:
                 Intent intentAbout = new Intent(this, AboutActivity.class);
@@ -625,6 +626,13 @@ public class MainActivity extends NGActivity
                 break;
             case IVectorLayerUI.MODIFY_REQUEST:
                 mMapFragment.onActivityResult(requestCode, resultCode, data);
+                break;
+            case RELOAD_ACTIVITY_DATA:
+                if (resultCode == RESULT_OK) {
+                    finish();
+                    Intent intent = new Intent(this, this.getClass());
+                    startActivity(intent);
+                }
                 break;
         }
     }
@@ -946,14 +954,10 @@ public class MainActivity extends NGActivity
                 builder.setMessage(s)
                         .setPositiveButton("ok", null)
                         .setTitle(title);
-                builder.create().show();
-
                 AlertDialog alertDialog=builder.create();
                 alertDialog.show();
 
                 ((TextView)alertDialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
-
-//                this.abortBroadcast();
             }
         }
     }
@@ -968,6 +972,16 @@ public class MainActivity extends NGActivity
         intentFilter.addAction(ConstantsUI.MESSAGE_INTENT);
         intentFilter.addAction(MESSAGE_ALERT_INTENT);
         registerReceiver(mMessageReceiver, intentFilter);
+
+
+        if (SDCardUtils.isSDCardUsedAndExtracted(this)){
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setMessage(R.string.no_sd_card_attention)
+                    .setPositiveButton(R.string.ok, null)
+                    .setTitle(R.string.sd_card);
+            AlertDialog alertDialog=builder.create();
+            alertDialog.show();
+        }
     }
 
 
