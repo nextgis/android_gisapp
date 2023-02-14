@@ -123,7 +123,8 @@
         <activity
             android:name=".activity.CreateVectorLayerActivity"
             android:label="@string/create_layer"
-            android:screenOrientation="portrait"/>
+
+            />
 
         <service
             android:name="com.nextgis.maplibui.account.NGWAuthenticatorService"

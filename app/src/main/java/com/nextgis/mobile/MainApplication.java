@@ -303,8 +303,10 @@ public class MainApplication extends GISApplication
 
         if (activity != null && code != -1)
             activity.startActivityForResult(intent, code);
-        else
+        else {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
+        }
     }
 
     @Override
