@@ -28,6 +28,7 @@ import android.app.Activity;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -73,6 +74,8 @@ import com.nextgis.maplib.datasource.GeoGeometry;
 import com.nextgis.maplib.datasource.GeoGeometryFactory;
 import com.nextgis.maplib.datasource.GeoLineString;
 import com.nextgis.maplib.datasource.GeoPoint;
+import com.nextgis.maplib.display.SimpleFeatureRenderer;
+import com.nextgis.maplib.display.SimplePolygonStyle;
 import com.nextgis.maplib.location.GpsEventSource;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.map.VectorLayer;
@@ -103,6 +106,7 @@ import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -1491,7 +1495,18 @@ public class MapFragment
         //show actions dialog
         List<ILayer> layers = mMap.getVectorLayersByType(GeoConstants.GTAnyCheck);
         List<Long> items;
-        VectorLayer vectorLayer;
+
+
+        VectorLayer vectorLayer = null;
+        final ArrayList<String>  mSelectedLayers = new ArrayList<>();
+        GeoGeometry geometry=null;
+        long featureId = -1;
+
+        final List<VectorLayer> selectedVectorLayer = new ArrayList<>();
+        final List<GeoGeometry> selectedGeometry = new ArrayList<>();
+        final List<Long> selectedFeatureId = new ArrayList<>();
+
+
         layersLoop:
         for (ILayer layer : layers) {
             if (!layer.isValid()) {
@@ -1504,27 +1519,65 @@ public class MapFragment
 
             vectorLayer = (VectorLayer) layer;
             items = vectorLayer.query(mapEnv);
+
             for (int i = 0; i < items.size(); i++) {    // FIXME hack for bad RTree cache
-                long featureId = items.get(i);
-                GeoGeometry geometry = vectorLayer.getGeometryForId(featureId);
+                featureId = items.get(i);
+                geometry = vectorLayer.getGeometryForId(featureId);
                 if (mEditLayerOverlay.notContains(geometry, point))
                     continue;
 
-                if (mSelectedLayer != null)
-                    mSelectedLayer.setLocked(false);
+                String valueForHint = (String)vectorLayer
+                        .getFeature(featureId)
+                        .getFieldValue(
+                                ( ((SimpleFeatureRenderer) vectorLayer.getRenderer())
+                                .getStyle())
+                                        .getField());
+                if (valueForHint == null)
+                    mSelectedLayers.add(layer.getName() +": " + featureId);
+                else
+                    mSelectedLayers.add(layer.getName() +": " + valueForHint);
 
-                mSelectedLayer = vectorLayer;
-                mEditLayerOverlay.setSelectedLayer(vectorLayer);
+                selectedVectorLayer.add(vectorLayer);
+                selectedGeometry.add(geometry);
+                selectedFeatureId.add(featureId);
 
-                if (geometry != null)
-                    mEditLayerOverlay.setSelectedFeature(featureId);
 
-                setMode(MODE_SELECT_ACTION);
-                break layersLoop;
+//              old code - remove after some time
+                //vectorLayer.getFeature(featureId).getFieldValue(((SimplePolygonStyle) ((SimpleFeatureRenderer) vectorLayer.mRenderer).mStyle).getField())
+                //------------------------------------
+//                if (mSelectedLayer != null)
+//                    mSelectedLayer.setLocked(false);
+//
+//                mSelectedLayer = vectorLayer;
+//                mEditLayerOverlay.setSelectedLayer(vectorLayer);
+//
+//                if (geometry != null)
+//                    mEditLayerOverlay.setSelectedFeature(featureId);
+//
+//                setMode(MODE_SELECT_ACTION);
+                //break layersLoop;
+                // --------------------------------------
             }
         }
 
-        showOverlayPoint(event);
+        if (mSelectedLayers.size() > 1)
+            showOverlayPointMultiChoise(event,mSelectedLayers,
+                                            selectedVectorLayer,
+                                            selectedGeometry,
+                                            selectedFeatureId);
+        else {
+            if (mSelectedLayer != null)
+                mSelectedLayer.setLocked(false);
+
+            mSelectedLayer = vectorLayer;
+            mEditLayerOverlay.setSelectedLayer(vectorLayer);
+
+            if (geometry != null)
+                mEditLayerOverlay.setSelectedFeature(featureId);
+
+            setMode(MODE_SELECT_ACTION);
+            showOverlayPoint(event);
+        }
         //set select action mode
         mMap.postInvalidate();
     }
@@ -1580,6 +1633,42 @@ public class MapFragment
         mEditLayerOverlay.setOverlayPoint(event);
     }
 
+    public void showOverlayPointMultiChoise(final MotionEvent event,
+                                            List<String> featureNames,
+                                            final List<VectorLayer> vectorLayer,
+                                            final List<GeoGeometry> geometry,
+                                            final List<Long> featureId) {
+        final String[] items = featureNames.toArray(new String[featureNames.size()]);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Выберите объект:");
+
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+
+                //String selectedItem = items[which];
+                // remove after some time
+                //Toast.makeText(getContext(), "Selected item: " + selectedItem, Toast.LENGTH_SHORT).show();
+
+                if (mSelectedLayer != null)
+                    mSelectedLayer.setLocked(false);
+
+                mSelectedLayer = vectorLayer.get(which);
+                mEditLayerOverlay.setSelectedLayer(vectorLayer.get(which));
+
+                if (geometry.get(which) != null)
+                    mEditLayerOverlay.setSelectedFeature(featureId.get(which));
+
+                setMode(MODE_SELECT_ACTION);
+                showOverlayPoint(event);
+
+                hideMainButton();
+                showAddByTapButton();
+                mEditLayerOverlay.setOverlayPoint(event);
+            }
+        });
+        builder.create().show();
+    }
 
     @Override
     public void onSingleTapUp(MotionEvent event)
