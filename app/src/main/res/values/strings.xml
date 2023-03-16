@@ -166,4 +166,7 @@
     <string name="other">Other</string>
     <string name="extended_logs">Extended logs</string>
     <string name="share_log">Share log</string>
+
+    <string name="choose_object">Choose object:</string>
+
 </resources>

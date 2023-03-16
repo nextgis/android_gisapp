@@ -1641,7 +1641,7 @@ public class MapFragment
         final String[] items = featureNames.toArray(new String[featureNames.size()]);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Выберите объект:");
+        builder.setTitle(R.string.choose_object);
 
         builder.setItems(items, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {

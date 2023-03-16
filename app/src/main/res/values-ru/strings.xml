@@ -167,4 +167,8 @@
     <string name="other">Другое</string>
     <string name="extended_logs">Логирование</string>
     <string name="share_log">Отправить лог</string>
+
+    <string name="choose_object">Выберите объект:</string>
+
+
 </resources>
