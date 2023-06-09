@@ -24,7 +24,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 33
 
     // Setup the Sentry DSN from the file 'sentry.properties', which should contain
     // sentry.dsn=https://publicKey:secretKey@host:port/1?options
@@ -40,9 +40,9 @@ android {
     defaultConfig {
         applicationId 'com.nextgis.mobile'
         minSdkVersion 14
-        targetSdkVersion 32
-        versionCode 111
-        versionName '2.6.45'
+        targetSdkVersion 33
+        versionCode 113
+        versionName '2.6.47'
         archivesBaseName = "ngmobile-$versionName"
         buildConfigField "String", "SENTRY_DSN", "\"${sentryDsn}\""
     }
@@ -99,7 +99,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
-    buildToolsVersion '32.1.0-rc1'
 }
 
 dependencies {
