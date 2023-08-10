@@ -40,7 +40,6 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.StandardExceptionParser;
 import com.google.android.gms.analytics.Tracker;
-import com.joshdholtz.sentry.Sentry;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.datasource.Field;
 import com.nextgis.maplib.map.LayerGroup;
@@ -79,6 +78,8 @@ import static com.nextgis.mobile.util.AppSettingsConstants.AUTHORITY;
 import static com.nextgis.mobile.util.AppSettingsConstants.KEY_PREF_APP_VERSION;
 import static com.nextgis.mobile.util.AppSettingsConstants.KEY_PREF_GA;
 
+import io.sentry.Sentry;
+
 /**
  * Main application class
  * The initial layers create here. Also upgrade db from previous version is here too.
@@ -96,7 +97,7 @@ public class MainApplication extends GISApplication
     @Override
     public void onCreate() {
         if (!BuildConfig.DEBUG)
-            Sentry.init(this, BuildConfig.SENTRY_DSN);
+            Sentry.init(BuildConfig.SENTRY_DSN);
 //        Sentry.captureMessage("NGM2 Sentry is init.", Sentry.SentryEventLevel.DEBUG);
 
         // set userAgent info
