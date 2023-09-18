@@ -1526,12 +1526,12 @@ public class MapFragment
                 if (mEditLayerOverlay.notContains(geometry, point))
                     continue;
 
-                String valueForHint = (String)vectorLayer
+                String valueForHint = String.valueOf(vectorLayer
                         .getFeature(featureId)
                         .getFieldValue(
                                 ( ((SimpleFeatureRenderer) vectorLayer.getRenderer())
                                 .getStyle())
-                                        .getField());
+                                        .getField()));
                 if (valueForHint == null)
                     mSelectedLayers.add(layer.getName() +": " + featureId);
                 else

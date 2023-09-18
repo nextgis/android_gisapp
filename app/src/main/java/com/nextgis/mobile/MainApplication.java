@@ -96,13 +96,12 @@ public class MainApplication extends GISApplication
 
     @Override
     public void onCreate() {
-        if (!BuildConfig.DEBUG)
-            Sentry.init(BuildConfig.SENTRY_DSN);
-//        Sentry.captureMessage("NGM2 Sentry is init.", Sentry.SentryEventLevel.DEBUG);
+//        if (!BuildConfig.DEBUG)
+//            Sentry.init(BuildConfig.SENTRY_DSN); // work if disable start
+        //Sentry.captureMessage("NGM2 Sentry is init.", Sentry.SentryEventLevel.DEBUG);
 
         // set userAgent info
         try {
-            //(NGID 542d1f02-8c93-448f-8bb7-ccfb28e6b401; Supported; DID 3F60F6E9; Build 99; Vendor TCL)
             NetworkUtil.setUserAgentPrefix(this, "NextGIS-Mobile/" + BuildConfig.VERSION_NAME,
                     TrackerService.getUid(this), BuildConfig.VERSION_CODE);
             NetworkUtil.setUserAgentPostfix(System.getProperty("http.agent"));

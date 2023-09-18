@@ -41,6 +41,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.PopupMenu;
+
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -66,10 +68,12 @@ import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.maplibui.fragment.LayersListAdapter;
 import com.nextgis.maplibui.fragment.ReorderedLayerView;
 import com.nextgis.maplibui.util.ControlHelper;
+import com.nextgis.maplibui.util.NGIDUtils;
 import com.nextgis.maplibui.util.UiUtil;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.CreateVectorLayerActivity;
 import com.nextgis.mobile.activity.MainActivity;
+import com.nextgis.mobile.util.OfflineSyncIntentService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -447,18 +451,23 @@ public class LayersFragment
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.sync:
-                for (Account account : mAccounts) {
+                SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                String base = mPreferences.getString("ngid_url", NGIDUtils.NGID_MY);
 
-                    // тут надо предупредить что нет включенной синхронизации
-                    checkAccountForSync(v.getContext(), account);
+                if (! NGIDUtils.NGID_MY.equals(base)){
+                    OfflineSyncIntentService.startActionFoo(v.getContext());
+                } else {
+                    for (Account account : mAccounts) {
+                        // тут надо предупредить что нет включенной синхронизации
+                        checkAccountForSync(v.getContext(), account);
 
-                    Bundle settingsBundle = new Bundle();
-                    settingsBundle.putBoolean(
-                            ContentResolver.SYNC_EXTRAS_MANUAL, true);
-                    settingsBundle.putBoolean(
-                            ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-
-                    ContentResolver.requestSync(account, AUTHORITY, settingsBundle);
+                        Bundle settingsBundle = new Bundle();
+                        settingsBundle.putBoolean(
+                                ContentResolver.SYNC_EXTRAS_MANUAL, true);
+                        settingsBundle.putBoolean(
+                                ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+                        ContentResolver.requestSync(account, AUTHORITY, settingsBundle);
+                    }
                 }
 
                 updateInfo();
