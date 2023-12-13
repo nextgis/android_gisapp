@@ -33,6 +33,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SyncResult;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
@@ -108,8 +109,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -197,12 +201,23 @@ public class MainActivity extends NGActivity
         }
 
         if (!hasPermissions()) {
-            String[] permissions;
+            List<String> permslist = new ArrayList<>();
+            permslist.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+            permslist.add(Manifest.permission.ACCESS_FINE_LOCATION);
+            permslist.add(Manifest.permission.GET_ACCOUNTS);
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R)
-                permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.GET_ACCOUNTS, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-            else
-                permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.GET_ACCOUNTS};
-            requestPermissions(R.string.permissions, R.string.requested_permissions, PERMISSIONS_REQUEST, permissions);
+                permslist.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+//            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R)
+//                permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.GET_ACCOUNTS, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+//            else
+//                permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.GET_ACCOUNTS};
+
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.S_V2)
+                permslist.add(Manifest.permission.POST_NOTIFICATIONS);
+
+
+            requestPermissions(R.string.permissions, R.string.requested_permissions, PERMISSIONS_REQUEST, permslist.toArray(new String[permslist.size()])); // list.toArray(new Foo[list.size()])
         }
 
         NGIDUtils.get(this, new NGIDUtils.OnFinish() {
@@ -264,6 +279,10 @@ public class MainActivity extends NGActivity
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R)
             permissions = permissions  &&
                     isPermissionGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S_V2)
+            permissions = permissions  &&
+                    isPermissionGranted(Manifest.permission.POST_NOTIFICATIONS);
+
         return permissions;
     }
 
@@ -274,6 +293,17 @@ public class MainActivity extends NGActivity
         switch (requestCode) {
             case PERMISSIONS_REQUEST:
                 mMapFragment.restartGpsListener();
+                if (permissions.length >0)
+                    for (int i = 0; i<permissions.length; i++){
+                        if (permissions[i].equals(Manifest.permission.POST_NOTIFICATIONS)
+                        && grantResults[i] == PackageManager.PERMISSION_GRANTED){
+                            android.preference.PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).
+                                    edit()
+                                    .putBoolean(AppSettingsConstants.KEY_PREF_SHOW_SYNC, true)
+                                    .commit();
+                        }
+                    }
+
                 break;
             case LOCATION_REQUEST:
                 if (mTrackItem != null) {

@@ -23,17 +23,27 @@
 
 package com.nextgis.mobile.fragment;
 
+import static android.app.Activity.RESULT_OK;
+import static android.content.Context.NOTIFICATION_SERVICE;
+import static androidx.core.content.ContextCompat.getSystemService;
+
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.os.AsyncTask;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.AlertDialog;
 import androidx.preference.CheckBoxPreference;
@@ -43,6 +53,7 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceManager;
 import androidx.preference.PreferenceScreen;
 
+import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -62,6 +73,7 @@ import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
 import com.nextgis.mobile.util.AppConstants;
+import com.nextgis.mobile.util.AppSettingsConstants;
 import com.nextgis.mobile.util.IntEditTextPreference;
 import com.nextgis.mobile.util.SDCardUtils;
 import com.nextgis.mobile.util.SelectMapPathPreference;
@@ -93,6 +105,9 @@ public class SettingsFragment
         extends NGPreferenceSettingsFragment
         implements SelectMapPathPreference.OnAttachedListener
 {
+
+    public static final int REQUEST_NOTIFICATION_PERMISSION = 741;
+
     @Override
     protected void createPreferences(PreferenceScreen screen)
     {
@@ -106,6 +121,10 @@ public class SettingsFragment
                 final Preference reset =
                         findPreference(SettingsConstantsUI.KEY_PREF_RESET_SETTINGS);
                 initializeReset(getActivity(), reset);
+                final Preference notify =
+                        findPreference(SettingsConstantsUI.KEY_PREF_SHOW_SYNC);
+                initializeNotification(getActivity(), notify);
+
                 break;
             case SettingsConstantsUI.ACTION_PREFS_MAP:
                 addPreferencesFromResource(R.xml.preferences_map);
@@ -304,7 +323,7 @@ public class SettingsFragment
                                                     //Log.e("f", "g");
                                                 }
                                                 ((MainApplication) activity.getApplication()).initBaseLayers();
-                                                activity.setResult(Activity.RESULT_OK);
+                                                activity.setResult(RESULT_OK);
                                             } else {
                                                 resetSettings(activity);
                                                 deleteLayers(activity);
@@ -315,6 +334,27 @@ public class SettingsFragment
                                         }
                                     })
                             .show();
+                    return false;
+                }
+            });
+        }
+    }
+
+
+    public static void initializeNotification(
+            final Activity activity,
+            final Preference preference)    {
+        if (null != preference) {
+            preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+            {
+                @Override
+                public boolean onPreferenceClick(final Preference preference)
+                {
+                    if (((CheckBoxPreference) preference).isChecked()){
+                        // check notify perm
+                        processNotifyPerm(activity, preference);
+                    }
+
                     return false;
                 }
             });
@@ -464,7 +504,7 @@ public class SettingsFragment
                     moveMap(parent, newPath);
                     ((GISApplication)MapBase.getInstance().getContext().getApplicationContext())
                             .resetMap();
-                    parent.setResult(Activity.RESULT_OK);
+                    parent.setResult(RESULT_OK);
                     return true;
                 }
             });
@@ -869,4 +909,74 @@ public class SettingsFragment
                     .resetMap();
         }
     }
+
+    public static boolean processNotifyPerm(Activity activity, final Preference preference){
+        if (ContextCompat.checkSelfPermission(
+                activity,"android.permission.POST_NOTIFICATIONS") ==
+                PackageManager.PERMISSION_GRANTED) {
+            return true;
+        } else if (ActivityCompat.shouldShowRequestPermissionRationale(
+                activity, "android.permission.POST_NOTIFICATIONS")) {
+
+            AlertDialog.Builder confirm = new AlertDialog.Builder(activity);
+            confirm.setTitle(R.string.push_perm_title)
+                    .setMessage(R.string.push_perm_why_text)
+                    .setNegativeButton(android.R.string.cancel, (dialog, which) -> {
+                        android.preference.PreferenceManager.getDefaultSharedPreferences(activity).
+                                edit()
+                                .putBoolean(AppSettingsConstants.KEY_PREF_SHOW_SYNC, false)
+                                .commit();
+                        ((CheckBoxPreference)preference).setChecked(false);
+
+                    })
+                    .setPositiveButton(android.R.string.ok,
+                            (dialog, which) -> {
+                                if (which == -1){
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                        activity.requestPermissions(new String[]{"android.permission.POST_NOTIFICATIONS"}, REQUEST_NOTIFICATION_PERMISSION);
+                                    }  else {
+
+                                    }
+                                }
+                            })
+                    .show();
+
+
+        } else {
+            // You can directly ask for the permission.
+            // The registered ActivityResultCallback gets the result of this request.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                activity.requestPermissions(new String[] {"android.permission.POST_NOTIFICATIONS"}, REQUEST_NOTIFICATION_PERMISSION);
+        }
+        return true;
+    }
+
+    public void processPermission(int requestCode,
+                                  int resultCode,
+                                  Intent data){
+        if (mAction.equals(SettingsConstantsUI.ACTION_PREFS_GENERAL)){
+            if (resultCode ==  RESULT_OK){
+                // nothing
+            } else {
+                final Preference notify =
+                        findPreference(SettingsConstantsUI.KEY_PREF_SHOW_SYNC);
+                ((CheckBoxPreference)notify).setChecked(false);
+                android.preference.PreferenceManager.getDefaultSharedPreferences(this.getContext()).
+                        edit()
+                        .putBoolean(AppSettingsConstants.KEY_PREF_SHOW_SYNC, false)
+                        .commit();
+
+
+                // alert perm off
+
+                AlertDialog.Builder confirm = new AlertDialog.Builder(this.getActivity());
+                confirm.setTitle(R.string.push_perm_title)
+                        .setMessage(R.string.push_perm_text)
+                        .setPositiveButton(android.R.string.ok, null)
+                        .show();
+
+            }
+        }
+    }
+
 }

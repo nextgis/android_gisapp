@@ -387,6 +387,9 @@ public class MapFragment
 //            return;
 
         // restore
+        mEditLayerOverlay.panStop();
+        panStop();
+
         mEditLayerOverlay.setHasEdits(false);
         if (mMode == MODE_EDIT_BY_WALK) {
             mEditLayerOverlay.stopGeometryByWalk(); // TODO toast?

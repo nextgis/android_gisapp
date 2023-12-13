@@ -23,8 +23,14 @@
 
 package com.nextgis.mobile.activity;
 
+import static com.nextgis.mobile.fragment.SettingsFragment.REQUEST_NOTIFICATION_PERMISSION;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 import androidx.preference.PreferenceScreen;
 
@@ -140,5 +146,50 @@ public class SettingsActivity
         if (preferences.getBoolean("save_log", false)) {
             Logger.initialize(this);
         }
+    }
+
+
+
+    @Override
+    protected void onActivityResult(
+            int requestCode,
+            int resultCode,
+            Intent data)    {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case REQUEST_NOTIFICATION_PERMISSION:
+                for (Fragment fragment : getSupportFragmentManager ().getFragments()){
+                    if (fragment instanceof SettingsFragment)
+                        ((SettingsFragment)fragment).processPermission(requestCode,resultCode, data);
+                }
+                break;
+            default:
+                super.onActivityResult(requestCode,  resultCode, data);
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_NOTIFICATION_PERMISSION){
+            if (grantResults.length > 0  ) {
+                if (grantResults[0] == PackageManager.PERMISSION_DENIED)
+                    for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+                        if (fragment instanceof SettingsFragment)
+                            ((SettingsFragment) fragment).processPermission(requestCode, RESULT_CANCELED, null);
+                    }
+                else if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                    for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+                        if (fragment instanceof SettingsFragment)
+                            ((SettingsFragment) fragment).processPermission(requestCode, RESULT_OK, null);
+                    }
+            }
+
+        }
+
+
+
     }
 }
