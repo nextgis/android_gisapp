@@ -169,4 +169,10 @@
 
     <string name="choose_object">Choose object:</string>
 
+
+    <string name="push_perm_title">Notifications</string>
+    <string name="push_perm_text">Notifications are disabled by the system, to enable them go to settings, find the application and enable notifications</string>
+    <string name="push_perm_why_text">To receive notifications you need to give permissions</string>
+
+
 </resources>
