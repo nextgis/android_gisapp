@@ -33,7 +33,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import androidx.core.app.NotificationCompat;
 
+import com.hypertrack.hyperlog.HyperLog;
 import com.nextgis.maplib.util.AccountUtil;
+import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplibui.util.NotificationHelper;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
@@ -58,6 +60,7 @@ public class SyncAdapter extends com.nextgis.maplib.datasource.ngw.SyncAdapter {
     @Override
     public void onPerformSync(Account account, Bundle bundle, String authority, ContentProviderClient contentProviderClient, SyncResult syncResult) {
         if(!AccountUtil.isUserExists(getContext())) {
+            HyperLog.v(Constants.TAG, "onPerformSync for" + account.name + " exit cos !AccountUtil.isUserExists");
             String alertMessage = getContext().getString(R.string.sync_need_login);
             String alertTitle = getContext().getString(R.string.sync_off_title);
             Intent msg = new Intent(MESSAGE_ALERT_INTENT);

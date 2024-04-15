@@ -56,6 +56,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hypertrack.hyperlog.HyperLog;
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.api.INGWLayer;
@@ -65,6 +66,7 @@ import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.util.AccountUtil;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.SettingsConstants;
+import com.nextgis.maplibui.GISApplication;
 import com.nextgis.maplibui.fragment.LayersListAdapter;
 import com.nextgis.maplibui.fragment.ReorderedLayerView;
 import com.nextgis.maplibui.util.ControlHelper;
@@ -88,6 +90,7 @@ import static com.nextgis.maplibui.util.ConstantsUI.GA_LAYER;
 import static com.nextgis.maplibui.util.ConstantsUI.GA_LOCAL;
 import static com.nextgis.maplibui.util.ConstantsUI.GA_MENU;
 import static com.nextgis.maplibui.util.ConstantsUI.GA_NGW;
+import static com.nextgis.maplibui.util.SettingsConstantsUI.KEY_PREF_OFFLINE_SYNC_ON;
 import static com.nextgis.mobile.util.AppSettingsConstants.AUTHORITY;
 
 /**
@@ -451,13 +454,34 @@ public class LayersFragment
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.sync:
-                SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-                String base = mPreferences.getString("ngid_url", NGIDUtils.NGID_MY);
+                HyperLog.v(Constants.TAG, "onClick sync cliked!");
 
-                if (! NGIDUtils.NGID_MY.equals(base)){
+                final SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                String base = mPreferences.getString("ngid_url", NGIDUtils.NGID_MY);
+                boolean offlineSync = mPreferences.getBoolean(KEY_PREF_OFFLINE_SYNC_ON, false);
+
+                if (offlineSync || !NGIDUtils.NGID_MY.equals(base)){
+                    HyperLog.v(Constants.TAG, "onClick start on-premise sync");
                     OfflineSyncIntentService.startActionFoo(v.getContext());
                 } else {
+
+                    final Runnable switchRunnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            final SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                            boolean offlineSync = mPreferences.getBoolean(KEY_PREF_OFFLINE_SYNC_ON, false);
+                            if (!offlineSync)
+                                mPreferences.edit().
+                                        putBoolean(KEY_PREF_OFFLINE_SYNC_ON, true).
+                                        apply();
+                            OfflineSyncIntentService.startActionFoo(v.getContext());
+                        }
+                    };
+
+                    GISApplication.getInstance().startRunnable(switchRunnable);
+
                     for (Account account : mAccounts) {
+                        HyperLog.v(Constants.TAG, "onClick add sync to queue for " + account.name +" account");
                         // тут надо предупредить что нет включенной синхронизации
                         checkAccountForSync(v.getContext(), account);
 
