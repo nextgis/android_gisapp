@@ -102,7 +102,8 @@ public class SyncAdapter extends com.nextgis.maplib.datasource.ngw.SyncAdapter {
                 .setWhen(System.currentTimeMillis())
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true)
-                .setOngoing(false);
+                .setOngoing(false)
+        ;
 
         Bitmap largeIcon = NotificationHelper.getLargeIcon(R.drawable.ic_action_sync, context.getResources());
         switch (notificationType) {
@@ -135,6 +136,8 @@ public class SyncAdapter extends com.nextgis.maplib.datasource.ngw.SyncAdapter {
                 builder.setProgress(0, 0, false)
                         .setTicker(context.getString(com.nextgis.maplib.R.string.sync_error))
                         .setContentTitle(context.getString(com.nextgis.maplib.R.string.synchronization))
+                        .setStyle(new NotificationCompat.BigTextStyle()
+                                .bigText(message))
                         .setContentText(message);
                 break;
         }
