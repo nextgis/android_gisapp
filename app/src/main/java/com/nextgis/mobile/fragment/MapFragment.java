@@ -112,6 +112,7 @@ import java.util.Locale;
 
 import static android.content.Context.MODE_MULTI_PROCESS;
 import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
+import static com.nextgis.maplib.util.Constants.DRAW_FINISH_ID;
 import static com.nextgis.maplib.util.Constants.FIELD_GEOM;
 import static com.nextgis.maplib.util.Constants.FIELD_ID;
 import static com.nextgis.maplib.util.Constants.NOT_FOUND;
@@ -641,43 +642,49 @@ public class MapFragment
         }
     }
 
-
     public void deleteFeature() {
         final long selectedFeatureId = mEditLayerOverlay.getSelectedFeatureId();
-        mSelectedLayer.hideFeature(selectedFeatureId);
-        mEditLayerOverlay.setSelectedFeature(null);
-        defineMenuItems();
         final VectorLayer layer = mSelectedLayer;
 
-        Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.mainview), getActivity().getString(R.string.delete_item_done), Snackbar.LENGTH_LONG)
-                .setAction(R.string.undo, new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        layer.showFeature(selectedFeatureId);
-                        mEditLayerOverlay.setSelectedFeature(selectedFeatureId);
-                        defineMenuItems();
-                    }
+        AlertDialog builder = new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.delete_confirm)
+                .setMessage(R.string.delete_object)
+                .setPositiveButton(R.string.menu_delete, (dialog, which) -> {
+                    Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.mainview), getActivity().getString(R.string.delete_item_done), Snackbar.LENGTH_LONG)
+                            .setAction(R.string.undo, v -> {
+                                layer.showFeature(selectedFeatureId);
+                                mEditLayerOverlay.setSelectedFeature(selectedFeatureId);
+                                defineMenuItems();
+                            })
+                            .addCallback(new Snackbar.Callback() {
+                                @Override
+                                public void onDismissed(Snackbar snackbar, int event) {
+                                    super.onDismissed(snackbar, event);
+                                    if (event == DISMISS_EVENT_MANUAL)
+                                        return;
+                                    if (event != DISMISS_EVENT_ACTION)
+                                        layer.deleteAddChanges(selectedFeatureId);
+                                }
+
+                                @Override
+                                public void onShown(Snackbar snackbar) {
+                                    super.onShown(snackbar);
+                                }
+                            });
+
+                    mSelectedLayer.hideFeature(selectedFeatureId);
+                    mEditLayerOverlay.setSelectedFeature(null);
+                    defineMenuItems();
+
+                    View view = snackbar.getView();
+                    TextView textView = view.findViewById(R.id.snackbar_text);
+                    textView.setTextColor(ContextCompat.getColor(mActivity, com.nextgis.maplibui.R.color.color_white));
+                    snackbar.show();
                 })
-                .addCallback(new Snackbar.Callback() {
-                    @Override
-                    public void onDismissed(Snackbar snackbar, int event) {
-                        super.onDismissed(snackbar, event);
-                        if (event == DISMISS_EVENT_MANUAL)
-                            return;
-                        if (event != DISMISS_EVENT_ACTION)
-                            layer.deleteAddChanges(selectedFeatureId);
-                    }
+                .setNegativeButton(R.string.cancel, (dialog, which) -> {
+                }).create();
+        builder.show();
 
-                    @Override
-                    public void onShown(Snackbar snackbar) {
-                        super.onShown(snackbar);
-                    }
-                });
-
-        View view = snackbar.getView();
-        TextView textView = view.findViewById(R.id.snackbar_text);
-        textView.setTextColor(ContextCompat.getColor(mActivity, com.nextgis.maplibui.R.color.color_white));
-        snackbar.show();
     }
 
 
@@ -907,7 +914,7 @@ public class MapFragment
                 }
             }
         }*/
-        if (percent >= 1.0 && id == mMap.getMap().getId()) {
+        if (percent >= 1.0 && id == DRAW_FINISH_ID ){ /// mMap.getMap().getId()) {finish id come at end
             if (null != mActivity) {
                 mActivity.onRefresh(false);
             }

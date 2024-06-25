@@ -44,10 +44,10 @@ android {
 
     defaultConfig {
         applicationId 'com.nextgis.mobile'
-        minSdkVersion 21
+        minSdkVersion 26
         targetSdkVersion 33
-        versionCode 121
-        versionName '2.6.54'
+        versionCode 127
+        versionName '2.7.0'
         archivesBaseName = "ngmobile-$versionName"
         buildConfigField "String", "SENTRY_DSN", "\"${sentryDsn}\""
     }
@@ -111,6 +111,8 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':maplibui')
+    implementation project(':easypicker')
+
     //implementation 'com.github.joshdholtz:Sentry-Android:1.6.0'
     //implementation 'io.sentry:sentry-android:1.7.30'
     implementation ('io.sentry:sentry-android:6.28.0'){

@@ -349,6 +349,9 @@ public class AttributesFragment
                     case GeoConstants.FTInteger:
                         text = attributes.getInt(i) + "";
                         break;
+                    case GeoConstants.FTLong:
+                        text = attributes.getLong(i) + "";
+                        break;
                     case GeoConstants.FTReal:
                         NumberFormat nf = NumberFormat.getInstance();
                         nf.setMaximumFractionDigits(4);
