@@ -647,8 +647,8 @@ public class MapFragment
         final VectorLayer layer = mSelectedLayer;
 
         AlertDialog builder = new AlertDialog.Builder(getActivity())
-                .setTitle(R.string.delete_confirm)
-                .setMessage(R.string.delete_object)
+                .setTitle(R.string.delete_confirm_feature)
+                .setMessage(R.string.delete_feature)
                 .setPositiveButton(R.string.menu_delete, (dialog, which) -> {
                     Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.mainview), getActivity().getString(R.string.delete_item_done), Snackbar.LENGTH_LONG)
                             .setAction(R.string.undo, v -> {
