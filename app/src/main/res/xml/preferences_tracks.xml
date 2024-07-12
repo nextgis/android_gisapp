@@ -51,7 +51,17 @@
         android:defaultValue="false"
         android:enabled="false"
         android:key="track_send"
-        android:title="@string/track_send"/>
+        android:title="@string/track_send"
+        />
+
+
+    <com.nextgis.mobile.util.CustomPreference
+        android:layout="@layout/copy_uid_preference"
+        android:key="track_uid_custom"
+        android:title=""
+        android:summary="Click the icon to copy text"
+        />
+
 
     <!-- TODO: add
     1) account (or accounts?) to send current location done

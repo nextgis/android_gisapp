@@ -33,6 +33,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import androidx.annotation.Nullable;
+import androidx.appcompat.view.menu.ActionMenuItemView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import android.text.Html;
@@ -104,6 +105,8 @@ public class AttributesFragment
 {
     protected static final String KEY_ITEM_ID       = "item_id";
     protected static final String KEY_ITEM_POSITION = "item_pos";
+    protected static final String KEY_READ_ONLY     = "read_only";
+
 
     private LinearLayout    mAttributes;
     private VectorLayer     mLayer;
@@ -115,6 +118,8 @@ public class AttributesFragment
 
     protected EditLayerOverlay mEditLayerOverlay;
     protected Menu mBottomMenu;
+
+    private boolean readOnly = true;
 
 
     @Override
@@ -128,6 +133,7 @@ public class AttributesFragment
             Toast.makeText(getContext(), R.string.error_layer_not_inited, Toast.LENGTH_SHORT).show();
             return null;
         }
+        readOnly = getArguments().getBoolean(KEY_READ_ONLY,  true);
 
         getActivity().setTitle(mLayer.getName());
         setHasOptionsMenu(!isTablet());
@@ -180,7 +186,7 @@ public class AttributesFragment
     @Override
     public void onDestroyView()
     {
-        ((MainActivity) getActivity()).restoreBottomBar(MapFragment.MODE_SELECT_ACTION);
+        ((MainActivity) getActivity()).restoreBottomBar(readOnly ? MapFragment.MODE_SELECT_FOR_VIEW : MapFragment.MODE_SELECT_ACTION);
         super.onDestroyView();
     }
 
@@ -525,7 +531,8 @@ public class AttributesFragment
 
     public void setToolbar(
             final BottomToolbar toolbar,
-            EditLayerOverlay overlay)
+            EditLayerOverlay overlay,
+            boolean readOnly)
     {
         if (null == mLayer)
             return;
@@ -540,6 +547,14 @@ public class AttributesFragment
             mBottomMenu.clear();
 
         toolbar.inflateMenu(R.menu.attributes);
+        if (readOnly) {
+
+//            toolbar.findViewById(R.id.menu_edit_attributes).setVisibility(View.GONE);
+//            toolbar.getMenu().findItem(R.id.menu_edit_attributes).setEnabled(false);
+            toolbar.getMenu().findItem(R.id.menu_edit_attributes).setVisible(false);
+
+        }
+
         toolbar.setOnMenuItemClickListener(
                 new BottomToolbar.OnMenuItemClickListener()
                 {
@@ -555,7 +570,7 @@ public class AttributesFragment
                         } else if (menuItem.getItemId() == R.id.menu_prev) {
                             selectItem(false);
                             return true;
-                        } else if (menuItem.getItemId() == R.id.menu_edit_attributes) {
+                        } else if (menuItem.getItemId() == R.id.menu_edit_attributes && !readOnly) {
                             IVectorLayerUI vectorLayerUI = (IVectorLayerUI) mLayer;
                             if (null != vectorLayerUI)
                                 vectorLayerUI.showEditForm(getActivity(), mItemId, null);

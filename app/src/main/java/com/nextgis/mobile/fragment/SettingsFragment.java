@@ -74,6 +74,7 @@ import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
 import com.nextgis.mobile.util.AppConstants;
 import com.nextgis.mobile.util.AppSettingsConstants;
+import com.nextgis.mobile.util.CustomPreference;
 import com.nextgis.mobile.util.IntEditTextPreference;
 import com.nextgis.mobile.util.SDCardUtils;
 import com.nextgis.mobile.util.SelectMapPathPreference;
@@ -193,7 +194,14 @@ public class SettingsFragment
                 initializeLocationMins(minTime, minDistance, true);
 
                 final CheckBoxPreference uid = (CheckBoxPreference) findPreference(SettingsConstants.KEY_PREF_TRACK_SEND);
+
                 initializeUid(uid);
+                final CustomPreference uidTextPref = (CustomPreference) findPreference(SettingsConstants.KEY_PREF_TRACK_UID_CUSTOM);
+
+                String uidText = getUid(getContext());
+                //uidTextPref.setUID(getContext().getString(R.string.track_uid, uid));
+                uidTextPref.setUID(uidText);
+
                 break;
         }
     }
@@ -588,14 +596,16 @@ public class SettingsFragment
         }
     }
 
+
+
     public static void initializeUid(CheckBoxPreference preference) {
         // async check
         // registered = true - enabled = true; keep state
         // registered = false - enabled = false; checked = false
         // no network - enabled = false; keep state; no network info
-        Context context = preference.getContext();
-        String uid = getUid(context);
-        preference.setSummary(context.getString(R.string.track_uid, uid));
+//        Context context = preference.getContext();
+//        String uid = getUid(context);
+        //preferenceч.setSummary(context.getString(R.string.track_uid, uid));
         new CheckRegistration(preference,AccountUtil.isProUser(preference.getContext())).execute();
     }
 
@@ -633,9 +643,9 @@ public class SettingsFragment
                 return;
             }
 
-            Context context = mPreference.getContext();
-            String uid = getUid(context);
-            mPreference.setSummary(context.getString(R.string.track_uid, uid));
+            //Context context = mPreference.getContext();
+            //String uid = getUid(context);
+            //mPreference.setSummary(context.getString(R.string.track_uid, uid));
 
             if (result) {
                 mPreference.setEnabled(true);

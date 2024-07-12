@@ -158,7 +158,7 @@
     <string name="intro_more">Получите больше:</string>
     <string name="intro_free">У вас бесплатная версия приложения</string>
     <string name="intro_get_pro">Получить NextGIS Mobile Pro</string>
-    <string name="track_uid">Ваш UID: %1$s</string>
+    <string name="track_uid">Ваш UID</string>
     <string name="track_send">Отправлять местоположение на сервер</string>
     <string name="preferred_units">Система измерений</string>
     <string name="show_zoom_level">Показывать уровень зума</string>
@@ -172,6 +172,8 @@
     <string name="push_perm_title">Уведомления</string>
     <string name="push_perm_text">Уведомления отключены системой, для их включения зайдите в настройки, найдите приложение и включите уведомления</string>
     <string name="push_perm_why_text">Для получения уведомлений нужно дать разрешения</string>
+
+    <string name="copied">Текст скопирован в буфер обмена</string>
 
 
 </resources>

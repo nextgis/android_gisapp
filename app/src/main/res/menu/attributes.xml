@@ -29,7 +29,8 @@
         android:id="@+id/menu_edit_attributes"
         app:showAsAction="always"
         android:icon="@drawable/ic_action_attributes"
-        android:title="@string/edit_attributes"/>
+        android:title="@string/edit_attributes"
+        />
     <item
         android:id="@+id/menu_prev"
         app:showAsAction="ifRoom|withText"

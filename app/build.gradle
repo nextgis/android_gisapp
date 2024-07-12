@@ -29,8 +29,6 @@ apply plugin: 'kotlin-android'
 
 
 android {
-    compileSdkVersion 33
-
     // Setup the Sentry DSN from the file 'sentry.properties', which should contain
     // sentry.dsn=https://publicKey:secretKey@host:port/1?options
     // DO NOT PUBLIC the file 'sentry.properties' !!!
@@ -45,9 +43,10 @@ android {
     defaultConfig {
         applicationId 'com.nextgis.mobile'
         minSdkVersion 26
+        compileSdk 33
         targetSdkVersion 33
-        versionCode 127
-        versionName '2.7.0'
+        versionCode 128
+        versionName '2.7.1'
         archivesBaseName = "ngmobile-$versionName"
         buildConfigField "String", "SENTRY_DSN", "\"${sentryDsn}\""
     }

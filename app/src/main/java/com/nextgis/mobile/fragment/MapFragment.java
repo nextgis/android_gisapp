@@ -120,6 +120,7 @@ import static com.nextgis.maplib.util.MapUtil.isGeometryIntersects;
 import static com.nextgis.maplibui.util.ConstantsUI.GA_EDIT;
 import static com.nextgis.maplibui.util.ConstantsUI.GA_FAB;
 import static com.nextgis.maplibui.util.ConstantsUI.GA_LAYER;
+import static com.nextgis.mobile.fragment.AttributesFragment.KEY_READ_ONLY;
 import static com.nextgis.mobile.util.AppConstants.DEFAULT_COORDINATES_FRACTION_DIGITS;
 import static com.nextgis.mobile.util.AppSettingsConstants.KEY_PREF_SHOW_COMPASS;
 import static com.nextgis.mobile.util.AppSettingsConstants.KEY_PREF_SHOW_MEASURING;
@@ -176,6 +177,8 @@ public class MapFragment
     public static final int MODE_INFO          = 3;
     public static final int MODE_EDIT_BY_WALK  = 4;
     public static final int MODE_EDIT_BY_TOUCH = 5;
+    public static final int MODE_SELECT_FOR_VIEW = 6;
+
 
     protected static final String KEY_MODE = "mode";
     protected static final String BUNDLE_KEY_LAYER = "layer";
@@ -405,7 +408,22 @@ public class MapFragment
     }
 
 
-    protected void setMode(int mode) {
+    protected void setMode(int mode, boolean... readOnly) {
+
+
+//        String promt = "";
+//        switch (mode){
+//            case 0: promt=  "MODE_NORMAL"; break;
+//            case 1: promt=  "MODE_SELECT_ACTION"; break;
+//            case 2: promt=  "MODE_EDIT"; break;
+//            case 3: promt=  "MODE_INFO"; break;
+//            case 4: promt=  "MODE_EDIT_BY_WALK"; break;
+//            case 5: promt=  "MODE_EDIT_BY_TOUCH"; break;
+//        }
+//        Log.e("MMOODDEE", "mode set to " + promt);
+
+
+
         mMode = mode;
 
         hideMainButton();
@@ -481,6 +499,7 @@ public class MapFragment
                 toolbar.setTitle(null);
                 toolbar.getMenu().clear();
                 toolbar.inflateMenu(R.menu.select_action);
+                toolbar.getMenu().findItem(R.id.menu_feature_edit).setEnabled(false);
                 toolbar.setNavigationIcon(R.drawable.ic_action_cancel_dark);
 
                 mFinishListener = new View.OnClickListener() {
@@ -527,18 +546,69 @@ public class MapFragment
                 mEditLayerOverlay.setMode(EditLayerOverlay.MODE_HIGHLIGHT);
                 mUndoRedoOverlay.clearHistory();
                 break;
-            case MODE_INFO:
+            case MODE_SELECT_FOR_VIEW:
+
                 if (mSelectedLayer == null) {
                     setMode(MODE_NORMAL);
                     return;
                 }
 
-                mSelectedLayer.setLocked(true);
+                //mSelectedLayer.setLocked(true);
+                toolbar.setTitle(null);
+                toolbar.getMenu().clear();
+                toolbar.inflateMenu(R.menu.select_action);
+                toolbar.getMenu().findItem(R.id.menu_feature_edit).setEnabled(false);
+                toolbar.setNavigationIcon(R.drawable.ic_action_cancel_dark);
+
+                mFinishListener = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        setMode(MODE_NORMAL);
+                    }
+                };
+                toolbar.setNavigationOnClickListener(mFinishListener);
+
+                toolbar.setOnMenuItemClickListener(
+                        new BottomToolbar.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item) {
+                                if (mSelectedLayer == null)
+                                    return false;
+
+                                switch (item.getItemId()) {
+
+                                    case R.id.menu_feature_attributes:
+                                        setMode(MODE_INFO, true);
+                                        break;
+                                }
+
+                                return true;
+                            }
+                        });
+
+                mEditLayerOverlay.setMode(EditLayerOverlay.MODE_HIGHLIGHT);
+                mUndoRedoOverlay.clearHistory();
+
+                break;
+            case MODE_INFO:
+                if (mSelectedLayer == null) {
+                    setMode(MODE_NORMAL);
+                    return;
+                }
+                boolean readOnlyModeValue = false;
+                if (readOnly.length > 0 )
+                    readOnlyModeValue = readOnly[0];
+
+                mSelectedLayer.setLocked(readOnlyModeValue ? false:true);
                 boolean tabletSize = getResources().getBoolean(R.bool.isTablet);
                 FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 //get or create fragment
                 final AttributesFragment attributesFragment = getAttributesFragment(fragmentManager);
+
+                Bundle attrBundle = new Bundle();
+                attrBundle.putBoolean(KEY_READ_ONLY, readOnlyModeValue);
+                attributesFragment.setArguments(attrBundle);
                 attributesFragment.setTablet(tabletSize);
                 int container = R.id.mainview;
 
@@ -564,7 +634,7 @@ public class MapFragment
                 fragmentTransaction.commit();
 
                 attributesFragment.setSelectedFeature(mSelectedLayer, mEditLayerOverlay.getSelectedFeatureId());
-                attributesFragment.setToolbar(toolbar, mEditLayerOverlay);
+                attributesFragment.setToolbar(toolbar, mEditLayerOverlay, readOnlyModeValue);
 
                 mFinishListener = new View.OnClickListener() {
                     @Override
@@ -609,6 +679,7 @@ public class MapFragment
             return;
         }
 
+
         boolean noFeature = mEditLayerOverlay.getSelectedFeatureGeometry() == null;
         long featureId = mEditLayerOverlay.getSelectedFeatureId();
 
@@ -630,15 +701,19 @@ public class MapFragment
         for (int i = 0; i < toolbar.getMenu().size(); i++) {
             MenuItem item = toolbar.getMenu().findItem(R.id.menu_feature_delete);
             if (item != null)
-                ControlHelper.setEnabled(item, hasSelectedFeature);
+                ControlHelper.setEnabled(item, hasSelectedFeature && mMode != MODE_SELECT_FOR_VIEW);
 
             item = toolbar.getMenu().findItem(R.id.menu_feature_edit);
             if (item != null)
-                ControlHelper.setEnabled(item, hasSelectedFeature);
+                ControlHelper.setEnabled(item, hasSelectedFeature && mMode != MODE_SELECT_FOR_VIEW);
 
             item = toolbar.getMenu().findItem(R.id.menu_feature_attributes);
             if (item != null)
                 ControlHelper.setEnabled(item, hasSelectedFeature);
+
+            item = toolbar.getMenu().findItem(R.id.menu_feature_add);
+            if (mMode == MODE_SELECT_FOR_VIEW)
+                ControlHelper.setEnabled(item, false);
         }
     }
 
@@ -1478,7 +1553,6 @@ public class MapFragment
         }
     }
 
-
     @Override
     public void onLongPress(MotionEvent event)
     {
@@ -1508,6 +1582,9 @@ public class MapFragment
 
 
         VectorLayer vectorLayer = null;
+        VectorLayer selectedSingleVectorLayer = null;
+        long selectedSingleFeatureId = -1;
+
         final ArrayList<String>  mSelectedLayers = new ArrayList<>();
         GeoGeometry geometry=null;
         long featureId = -1;
@@ -1519,13 +1596,12 @@ public class MapFragment
 
         layersLoop:
         for (ILayer layer : layers) {
-            if (!layer.isValid()) {
+//            Log.e("LLAAYY", "layer for global process: " + layer.getName());
+            if (!layer.isValid())
                 continue;
-            }
-            ILayerView layerView = (ILayerView) layer;
-            if (!layerView.isVisible()) {
+
+            if (!((ILayerView)layer).isVisible())
                 continue;
-            }
 
             vectorLayer = (VectorLayer) layer;
             items = vectorLayer.query(mapEnv);
@@ -1533,8 +1609,9 @@ public class MapFragment
             for (int i = 0; i < items.size(); i++) {    // FIXME hack for bad RTree cache
                 featureId = items.get(i);
                 geometry = vectorLayer.getGeometryForId(featureId);
-                if (mEditLayerOverlay.notContains(geometry, point))
+                if (mEditLayerOverlay.notContains(geometry, point)) {
                     continue;
+                }
 
                 String valueForHint = String.valueOf(vectorLayer
                         .getFeature(featureId)
@@ -1542,31 +1619,22 @@ public class MapFragment
                                 ( ((SimpleFeatureRenderer) vectorLayer.getRenderer())
                                 .getStyle())
                                         .getField()));
-                if (valueForHint == null)
-                    mSelectedLayers.add(layer.getName() +": " + featureId);
-                else
-                    mSelectedLayers.add(layer.getName() +": " + valueForHint);
+                if (valueForHint == null) {
+                    mSelectedLayers.add(layer.getName() + ": " + featureId);
+                    valueForHint = layer.getName() + ": " + featureId;
+                }
+                else {
+                    mSelectedLayers.add(layer.getName() + ": " + valueForHint);
+                    valueForHint = layer.getName() + ": " + valueForHint;
+                }
+//                Log.e("LLAAYY", "valueForHint " +  valueForHint);
+
+                selectedSingleVectorLayer = (VectorLayer) layer;
+                selectedSingleFeatureId = featureId;
 
                 selectedVectorLayer.add(vectorLayer);
                 selectedGeometry.add(geometry);
                 selectedFeatureId.add(featureId);
-
-
-//              old code - remove after some time
-                //vectorLayer.getFeature(featureId).getFieldValue(((SimplePolygonStyle) ((SimpleFeatureRenderer) vectorLayer.mRenderer).mStyle).getField())
-                //------------------------------------
-//                if (mSelectedLayer != null)
-//                    mSelectedLayer.setLocked(false);
-//
-//                mSelectedLayer = vectorLayer;
-//                mEditLayerOverlay.setSelectedLayer(vectorLayer);
-//
-//                if (geometry != null)
-//                    mEditLayerOverlay.setSelectedFeature(featureId);
-//
-//                setMode(MODE_SELECT_ACTION);
-                //break layersLoop;
-                // --------------------------------------
             }
         }
 
@@ -1579,11 +1647,11 @@ public class MapFragment
             if (mSelectedLayer != null)
                 mSelectedLayer.setLocked(false);
 
-            mSelectedLayer = vectorLayer;
-            mEditLayerOverlay.setSelectedLayer(vectorLayer);
+            mSelectedLayer = selectedSingleVectorLayer;
+            mEditLayerOverlay.setSelectedLayer(selectedSingleVectorLayer);
 
             if (geometry != null)
-                mEditLayerOverlay.setSelectedFeature(featureId);
+                mEditLayerOverlay.setSelectedFeature(selectedSingleFeatureId);
 
             setMode(MODE_SELECT_ACTION);
             showOverlayPoint(event);
@@ -1706,7 +1774,112 @@ public class MapFragment
 
                 break;
             default:
-                if (!mRulerOverlay.isMeasuring())
+                if (mMode == MODE_NORMAL || mMode == MODE_SELECT_FOR_VIEW){
+                    // check objects on map to select
+                    double dMinX = event.getX() - mTolerancePX;
+                    double dMaxX = event.getX() + mTolerancePX;
+                    double dMinY = event.getY() - mTolerancePX;
+                    double dMaxY = event.getY() + mTolerancePX;
+
+                    GeoEnvelope mapEnv = mMap.screenToMap(new GeoEnvelope(dMinX, dMaxX, dMinY, dMaxY));
+                    if (null == mapEnv)
+                        return;
+
+                    GeoEnvelope exactEnv = new GeoEnvelope(event.getX(), event.getX(), event.getY(), event.getY());
+                    exactEnv = mMap.screenToMap(exactEnv);
+                    if (null == exactEnv)
+                        return;
+                    GeoPoint point = new GeoPoint(exactEnv.getMaxX(), exactEnv.getMinY());
+                    point.setCRS(GeoConstants.CRS_WEB_MERCATOR);
+
+                    //show actions dialog
+                    List<ILayer> layers = mMap.getVectorLayersByType(GeoConstants.GTAnyCheck);
+                    List<Long> items;
+
+
+                    VectorLayer vectorLayer = null;
+                    VectorLayer selectedSingleVectorLayer = null;
+                    long selectedSingleFeatureId = -1;
+
+                    final ArrayList<String>  mSelectedLayers = new ArrayList<>();
+                    GeoGeometry geometry=null;
+                    long featureId = -1;
+
+                    final List<VectorLayer> selectedVectorLayer = new ArrayList<>();
+                    final List<GeoGeometry> selectedGeometry = new ArrayList<>();
+                    final List<Long> selectedFeatureId = new ArrayList<>();
+
+
+                    layersLoop:
+                    for (ILayer layer : layers) {
+//                  Log.e("LLAAYY", "layer for global process: " + layer.getName());
+                        if (!layer.isValid())
+                            continue;
+
+                        if (!((ILayerView)layer).isVisible())
+                            continue;
+
+                        vectorLayer = (VectorLayer) layer;
+                        items = vectorLayer.query(mapEnv);
+
+                        for (int i = 0; i < items.size(); i++) {    // FIXME hack for bad RTree cache
+                            featureId = items.get(i);
+                            geometry = vectorLayer.getGeometryForId(featureId);
+                            if (mEditLayerOverlay.notContains(geometry, point)) {
+                                continue;
+                            }
+
+                            String valueForHint = String.valueOf(vectorLayer
+                                    .getFeature(featureId)
+                                    .getFieldValue(
+                                            ( ((SimpleFeatureRenderer) vectorLayer.getRenderer())
+                                                    .getStyle())
+                                                    .getField()));
+                            if (valueForHint == null) {
+                                mSelectedLayers.add(layer.getName() + ": " + featureId);
+                                valueForHint = layer.getName() + ": " + featureId;
+                            }
+                            else {
+                                mSelectedLayers.add(layer.getName() + ": " + valueForHint);
+                                valueForHint = layer.getName() + ": " + valueForHint;
+                            }
+//                Log.e("LLAAYY", "valueForHint " +  valueForHint);
+
+                            selectedSingleVectorLayer = (VectorLayer) layer;
+                            selectedSingleFeatureId = featureId;
+
+                            selectedVectorLayer.add(vectorLayer);
+                            selectedGeometry.add(geometry);
+                            selectedFeatureId.add(featureId);
+                        }
+                    }
+
+                    if (mSelectedLayers.size() == 0 && mMode == MODE_SELECT_FOR_VIEW){
+                        // need select none
+                        setMode(MODE_NORMAL);
+                    } else {
+                        if (mSelectedLayers.size() > 1)
+                            showOverlayPointMultiChoise(event,mSelectedLayers,
+                                    selectedVectorLayer,
+                                    selectedGeometry,
+                                    selectedFeatureId);
+                        else {
+                            if (mSelectedLayer != null)
+                                mSelectedLayer.setLocked(false);
+
+                            mSelectedLayer = selectedSingleVectorLayer;
+                            mEditLayerOverlay.setSelectedLayer(selectedSingleVectorLayer);
+
+                            if (geometry != null)
+                                mEditLayerOverlay.setSelectedFeature(selectedSingleFeatureId);
+
+                            setMode(MODE_SELECT_FOR_VIEW);
+                            //showOverlayPoint(event);
+                        }
+                    }
+                    //set select action mode
+                    mMap.postInvalidate();
+                } else if (!mRulerOverlay.isMeasuring())
                     hideOverlayPoint();
                 break;
         }
