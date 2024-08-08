@@ -24,6 +24,7 @@
 package com.nextgis.mobile.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ContentUris;
@@ -31,7 +32,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.SyncResult;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -47,6 +47,7 @@ import android.preference.PreferenceManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import com.google.android.material.snackbar.Snackbar;
+
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.core.content.ContextCompat;
@@ -109,11 +110,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.function.Function;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -126,7 +126,8 @@ import static com.nextgis.maplib.util.Constants.SUPPORT;
 import static com.nextgis.maplib.util.Constants.TAG;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WEB_MERCATOR;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
-import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_SD_CARD_NAME;
+import static com.nextgis.maplib.util.PermissionUtil.hasLocationPermissions;
+import static com.nextgis.maplibui.service.TrackerService.PERMISSIONS_REQUEST_ZERO_LOCATION_POSPONDED;
 import static com.nextgis.maplibui.service.TrackerService.hasUnfinishedTracks;
 
 import org.json.JSONObject;
@@ -137,8 +138,14 @@ import org.json.JSONObject;
 public class MainActivity extends NGActivity
         implements GpsEventListener, IChooseLayerResult
 {
-    protected final static int PERMISSIONS_REQUEST = 1;
-    protected final static int LOCATION_REQUEST = 2;
+    protected final static int PERMISSIONS_REQUEST_ZERO = 0;
+    protected final static int PERMISSIONS_REQUEST_LOC = 1;
+    protected final static int PERMISSIONS_REQUEST_ACCOUNT = 2;
+    protected final static int PERMISSIONS_REQUEST_MEMORY = 3;
+    protected final static int PERMISSIONS_REQUEST_PUSH = 4;
+
+    protected final static int PERMISSIONS_REQUEST_LOC_SILENT = 6;
+    public final static int LOCATION_BACKGROUND_REQUEST = 5;
     protected final static String TAG_FRAGMENT_PROGRESS = "layer_fill_dialog_fragment";
 
     protected MapFragment     mMapFragment;
@@ -200,25 +207,35 @@ public class MainActivity extends NGActivity
             fm.beginTransaction().add(progressFragment, TAG_FRAGMENT_PROGRESS).commit();
         }
 
-        if (!hasPermissions()) {
-            List<String> permslist = new ArrayList<>();
-            permslist.add(Manifest.permission.ACCESS_COARSE_LOCATION);
-            permslist.add(Manifest.permission.ACCESS_FINE_LOCATION);
-            permslist.add(Manifest.permission.GET_ACCOUNTS);
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R)
-                permslist.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
-//            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R)
-//                permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.GET_ACCOUNTS, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-//            else
-//                permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.GET_ACCOUNTS};
+        if (!hasLocationPermissions()) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    processAllPermisions(PERMISSIONS_REQUEST_ZERO);
+                }
+            }, 1500);
 
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.S_V2)
-                permslist.add(Manifest.permission.POST_NOTIFICATIONS);
-
-
-            requestPermissions(R.string.permissions, R.string.requested_permissions, PERMISSIONS_REQUEST, permslist.toArray(new String[permslist.size()])); // list.toArray(new Foo[list.size()])
         }
+//        if (!hasLocationPermissions()) {
+//            List<String> permslist = new ArrayList<>();
+//            permslist.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+//            permslist.add(Manifest.permission.ACCESS_FINE_LOCATION);
+////            permslist.add(Manifest.permission.GET_ACCOUNTS);
+////            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R)
+////                permslist.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+////
+////            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.S_V2)
+////                permslist.add(Manifest.permission.POST_NOTIFICATIONS);
+//
+//            new Handler().postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    requestPermissions(R.string.permissions, R.string.location_permissions, PERMISSIONS_REQUEST_LOC, permslist.toArray(new String[permslist.size()])); // list.toArray(new Foo[list.size()])
+//                }
+//            }, 5000);
+//
+//        }
 
         NGIDUtils.get(this, new NGIDUtils.OnFinish() {
             @Override
@@ -272,18 +289,72 @@ public class MainActivity extends NGActivity
         snackbar.show();
     }
 
-    protected boolean hasPermissions() {
-        boolean permissions = isPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION) &&
-                isPermissionGranted(Manifest.permission.ACCESS_COARSE_LOCATION) &&
-                isPermissionGranted(Manifest.permission.GET_ACCOUNTS);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R)
-            permissions = permissions  &&
-                    isPermissionGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S_V2)
-            permissions = permissions  &&
-                    isPermissionGranted(Manifest.permission.POST_NOTIFICATIONS);
+    public void processAllPermisions(int startlevel){
+        if (startlevel == PERMISSIONS_REQUEST_ZERO){
+            if (!hasLocationPermissions()) {
+                List<String> permslist = new ArrayList<>();
+                permslist.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+                permslist.add(Manifest.permission.ACCESS_FINE_LOCATION);
+                requestPermissions(this, R.string.permissions, R.string.location_permissions, PERMISSIONS_REQUEST_LOC,
+                        PERMISSIONS_REQUEST_LOC,
+                        permslist.toArray(new String[permslist.size()])); // list.toArray(new Foo[list.size()])
+                return;
+            } else processAllPermisions(PERMISSIONS_REQUEST_LOC);
+            return;
+        }
+        if (startlevel == PERMISSIONS_REQUEST_LOC){
+            if (!hasAccountCreatePermissions()) {
+                List<String> permslist = new ArrayList<>();
+                permslist.add(Manifest.permission.GET_ACCOUNTS);
+                requestPermissions(this, R.string.permissions, R.string.account_permissions, PERMISSIONS_REQUEST_ACCOUNT,
+                        -1, permslist.toArray(new String[permslist.size()])); // list.toArray(new Foo[list.size()])
+            } else
+                processAllPermisions(PERMISSIONS_REQUEST_ACCOUNT);
+            return;
+        }
+        if (startlevel == PERMISSIONS_REQUEST_ACCOUNT){
+            if (!hasSDCARDWritePermissions()) {
+                List<String> permslist = new ArrayList<>();
+                permslist.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                requestPermissions(this, R.string.permissions, R.string.memory_permissions, PERMISSIONS_REQUEST_MEMORY,
+                        PERMISSIONS_REQUEST_MEMORY, permslist.toArray(new String[permslist.size()])); // list.toArray(new Foo[list.size()])
+            } else
+                processAllPermisions(PERMISSIONS_REQUEST_MEMORY);
+            return;
+        }
+        if (startlevel == PERMISSIONS_REQUEST_MEMORY){
+            if (!hasNotifyPermissions()) {
+                List<String> permslist = new ArrayList<>();
+                permslist.add(Manifest.permission.POST_NOTIFICATIONS);
+                requestPermissions(this, R.string.permissions, R.string.push_permissions, PERMISSIONS_REQUEST_PUSH,
+                        -1,
+                        permslist.toArray(new String[permslist.size()])); // list.toArray(new Foo[list.size()])
+            }
+        }
+    }
 
+    protected boolean hasLocationPermissions() {
+        boolean permissions =
+                isPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION) &&
+                isPermissionGranted(Manifest.permission.ACCESS_COARSE_LOCATION);
         return permissions;
+    }
+
+    protected boolean hasAccountCreatePermissions() {
+        return isPermissionGranted(Manifest.permission.GET_ACCOUNTS);
+    }
+
+    protected boolean hasSDCARDWritePermissions() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R)
+            return isPermissionGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        else
+            return true;
+    }
+
+    protected boolean hasNotifyPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S_V2)
+            return isPermissionGranted(Manifest.permission.POST_NOTIFICATIONS);
+        else return true;
     }
 
     @Override
@@ -291,21 +362,43 @@ public class MainActivity extends NGActivity
                                            @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         switch (requestCode) {
-            case PERMISSIONS_REQUEST:
+            case PERMISSIONS_REQUEST_ZERO_LOCATION_POSPONDED:
+                if (hasLocationPermissions()) {
+                    MenuItem item = null;
+                    try{
+                        item = mToolbar.getMenu().findItem(R.id.menu_track);
+                    } catch (Exception ex){
+                    }
+                    askBackgroundPerm(item);
+                }
+                break;
+            case PERMISSIONS_REQUEST_LOC:
                 mMapFragment.restartGpsListener();
+                processAllPermisions(PERMISSIONS_REQUEST_LOC);
+                break;
+            case PERMISSIONS_REQUEST_ACCOUNT:
+                processAllPermisions(PERMISSIONS_REQUEST_ACCOUNT);
+                break;
+
+            case PERMISSIONS_REQUEST_MEMORY:
+                processAllPermisions(PERMISSIONS_REQUEST_MEMORY);
+                break;
+
+            case PERMISSIONS_REQUEST_PUSH:
+                // turn on sync notify
                 if (permissions.length >0)
                     for (int i = 0; i<permissions.length; i++){
                         if (permissions[i].equals(Manifest.permission.POST_NOTIFICATIONS)
-                        && grantResults[i] == PackageManager.PERMISSION_GRANTED){
+                                && grantResults[i] == PackageManager.PERMISSION_GRANTED){
                             android.preference.PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).
                                     edit()
                                     .putBoolean(AppSettingsConstants.KEY_PREF_SHOW_SYNC, true)
                                     .commit();
                         }
                     }
-
                 break;
-            case LOCATION_REQUEST:
+
+            case LOCATION_BACKGROUND_REQUEST:
                 if (mTrackItem != null) {
                     controlTrack(mTrackItem);
                     mTrackItem = null;
@@ -364,8 +457,10 @@ public class MainActivity extends NGActivity
 
 
     private void controlTrack(MenuItem item) {
-        Pair<Integer, Integer> iconAndTitle = TrackerService.controlAndGetIconWithTitle(this);
-        setTrackItem(item, iconAndTitle.second, iconAndTitle.first);
+        if (item != null) {
+            Pair<Integer, Integer> iconAndTitle = TrackerService.controlAndGetIconWithTitle(this);
+            setTrackItem(item, iconAndTitle.second, iconAndTitle.first);
+        }
     }
 
     @Override
@@ -394,40 +489,7 @@ public class MainActivity extends NGActivity
                 locateCurrentPosition();
                 return true;
             case R.id.menu_track:
-                TrackerService.showBackgroundDialog(this, new TrackerService.BackgroundPermissionCallback() {
-                    @Override
-                    public void beforeAndroid10(boolean hasBackgroundPermission) {
-                        if (!hasBackgroundPermission) {
-                            mTrackItem = item;
-                            String[] permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
-                            requestPermissions(R.string.permissions, R.string.requested_permissions, LOCATION_REQUEST, permissions);
-                        } else {
-                            controlTrack(item);
-                        }
-                    }
-
-                    @RequiresApi(api = Build.VERSION_CODES.Q)
-                    @Override
-                    public void onAndroid10(boolean hasBackgroundPermission) {
-                        if (!hasBackgroundPermission) {
-                            mTrackItem = item;
-                            requestPermissions();
-                        } else {
-                            controlTrack(item);
-                        }
-                    }
-
-                    @RequiresApi(api = Build.VERSION_CODES.Q)
-                    @Override
-                    public void afterAndroid10(boolean hasBackgroundPermission) {
-                        if (!hasBackgroundPermission) {
-                            mTrackItem = item;
-                            requestPermissions();
-                        } else {
-                            controlTrack(item);
-                        }
-                    }
-                });
+               askBackgroundPerm(item);
                 return true;
             case R.id.menu_refresh:
                 if (null != mMapFragment) {
@@ -458,11 +520,50 @@ public class MainActivity extends NGActivity
         }
     }
 
+    private void askBackgroundPerm(final MenuItem item){
+        TrackerService.showBackgroundDialog(this, new TrackerService.BackgroundPermissionCallback() {
+            @Override
+            public void beforeAndroid10(boolean hasBackgroundPermission) {
+                if (!hasBackgroundPermission) {
+                    mTrackItem = item;
+                    String[] permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
+                    requestPermissions(MainActivity.this, R.string.permissions, R.string.location_permissions, LOCATION_BACKGROUND_REQUEST,
+                            -1, permissions);
+                } else {
+                    controlTrack(item);
+                }
+            }
+
+            @RequiresApi(api = Build.VERSION_CODES.Q)
+            @Override
+            public void onAndroid10(boolean hasBackgroundPermission) {
+                if (!hasBackgroundPermission) {
+                    mTrackItem = item;
+                    requestbackgroundLocationPermissions();
+                } else {
+                    controlTrack(item);
+                }
+            }
+
+            @RequiresApi(api = Build.VERSION_CODES.Q)
+            @Override
+            public void afterAndroid10(boolean hasBackgroundPermission) {
+                if (!hasBackgroundPermission) {
+                    mTrackItem = item;
+                    requestbackgroundLocationPermissions();
+                } else {
+                    controlTrack(item);
+                }
+            }
+        });
+
+    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
-    private void requestPermissions() {
+    private void requestbackgroundLocationPermissions() {
         String[] permissions = new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION};
-        ActivityCompat.requestPermissions(this, permissions, LOCATION_REQUEST);
+        ActivityCompat.requestPermissions(this, permissions, LOCATION_BACKGROUND_REQUEST);
     }
 
 
@@ -676,6 +777,15 @@ public class MainActivity extends NGActivity
 
     protected void locateCurrentPosition()
     {
+        if (!hasLocationPermissions()){
+            List<String> permslist = new ArrayList<>();
+            permslist.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+            permslist.add(Manifest.permission.ACCESS_FINE_LOCATION);
+            requestPermissions(this, R.string.permissions, R.string.location_permissions, PERMISSIONS_REQUEST_LOC_SILENT,
+                    PERMISSIONS_REQUEST_LOC_SILENT,
+                    permslist.toArray(new String[permslist.size()])); //
+        }
+
         if (null != mMapFragment) {
             mMapFragment.locateCurrentPosition();
         }
@@ -1109,5 +1219,24 @@ public class MainActivity extends NGActivity
 
     public void setSubtitle(String subtitle) {
         mToolbar.setSubtitle(subtitle);
+    }
+
+    public void requestPermissions(final Activity activity1, int title, int message, final int requestCode,
+                                          int nextLevelOndeny,
+                                          final String... permissions) {
+        final Activity activity = activity1;
+        if (true) {
+            androidx.appcompat.app.AlertDialog builder = new androidx.appcompat.app.AlertDialog.Builder(activity).setTitle(title)
+                    .setMessage(message)
+                    .setPositiveButton(com.nextgis.maplibui.R.string.allow, (dialog, which) -> {
+                        ActivityCompat.requestPermissions(activity, permissions, requestCode);})
+                    .setNegativeButton(com.nextgis.maplibui.R.string.deny, (dialog, which) -> {
+                        if (nextLevelOndeny >0)
+                            processAllPermisions(nextLevelOndeny);
+                    })
+                    .create();
+            builder.setCanceledOnTouchOutside(false);
+            builder.show();
+        }
     }
 }

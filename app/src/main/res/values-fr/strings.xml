@@ -116,8 +116,8 @@
     <string name="pref_sync_notification">Afficher les notification de synchronisation</string>
     <string name="tap_to_measure">Toucher l\'écran pour placer les marqueurs</string>
     <string name="permissions">Permissions</string>
-    <string name="requested_permissions">L\'application nécessite certaines permissions pour fonctionner correctement. Notamment un accès en écriture sur les stockages externes (pour sauvegarder sur la carte sd),
-        , un accès au service de positionnement et l\'accès aux contacts (afin de créer et modifier les comptes web).</string>
+<!--    <string name="requested_permissions">L\'application nécessite certaines permissions pour fonctionner correctement. Notamment un accès en écriture sur les stockages externes (pour sauvegarder sur la carte sd),-->
+<!--        , un accès au service de positionnement et l\'accès aux contacts (afin de créer et modifier les comptes web).</string>-->
     <string name="action_support">Support</string>
     <string name="app_support">Merci de nous écrire pour des questions, des rapports de bug et des suggestions de nouvelles fonctionnalités. Nous avons un support commercial.</string>
     <string name="email">Email</string>

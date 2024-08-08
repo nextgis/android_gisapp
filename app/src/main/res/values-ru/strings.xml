@@ -120,8 +120,13 @@
 
     <string name="tap_to_measure">Нажмите на карту для выбора точек</string>
     <string name="permissions">Разрешения</string>
-    <string name="requested_permissions">Приложению требуются некоторые разрешения для корректной работы: запись на устройство (для хранения данных), доступ
-        к местоположению и получение контактов (для создания и управления веб аккаунтами).</string>
+
+    <string name="location_permissions">NextGIS Mobile нужен доступ к локации, чтобы показать ваше местоположение на карте.</string>
+    <string name="account_permissions">NextGIS Mobile нужен доступ к контактам для создания и управления учетными записями на устройстве для синхронизации с вашей Веб-ГИС</string>
+    <string name="memory_permissions">NextGIS Mobile использует доступ к медиафайлам для прикрепления вложений (например фото) к объектам карты.</string>
+    <string name="push_permissions">NextGIS Mobile использует уведомления для информирования о действиях по синхронизации данных.</string>
+
+
     <string name="track_restore">Продолжать трек после перезагрузки</string>
     <string name="action_support">Поддержка</string>
     <string name="app_support">Задавайте вопросы, сообщайте об ошибках или предлагайте новые функции используя любой удобный для вас способ. Доступна коммерческая поддержка.</string>

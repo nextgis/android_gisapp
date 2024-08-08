@@ -117,7 +117,7 @@
     <string name="pref_sync_notification">Zeige Sync-Benachrichtigung</string> 
     <string name="tap_to_measure">Klicke auf die Karte um Punkte zu setzen</string> 
     <string name="permissions">Berechtigungen</string> 
-    <string name="requested_permissions">Diese Anwendung benötigt einige Berechtigungen um gut funktionieren zu können. Die Berechtigungen beinhalten Schreibrechte für externe Speichermedien (z.B. um Daten auf die SD-Karte zu schreiben), Zugang zu Standortdaten und Zugriff auf Kontakte (um Internet-Accounts zu erstellen und zu verwalten)</string>
+<!--    <string name="requested_permissions">Diese Anwendung benötigt einige Berechtigungen um gut funktionieren zu können. Die Berechtigungen beinhalten Schreibrechte für externe Speichermedien (z.B. um Daten auf die SD-Karte zu schreiben), Zugang zu Standortdaten und Zugriff auf Kontakte (um Internet-Accounts zu erstellen und zu verwalten)</string>-->
     <string name="action_support">Support</string>
     <string name="app_support">Please send us questions, bug-reports and new features suggestions. Commercial support is available.</string>
     <string name="email">Email</string>

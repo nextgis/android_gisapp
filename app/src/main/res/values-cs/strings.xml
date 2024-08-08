@@ -116,7 +116,7 @@
     <string name="pref_sync_notification">Zobrazit upozornění na synchronizaci</string>
     <string name="tap_to_measure">Klepněte na mapu pro kontrolu bodů</string>
     <string name="permissions">Oprávnění</string>
-    <string name="requested_permissions">Aplikace pro správnou činnost potřebuje určitá oprávnění. Ta zahrnují: zápis na externí úložiště (pro uložení dat na SD kartu), přístup k zjištění polohy a přístup ke kontaktům (pro vytvoření a správu webového účtu).</string>
+<!--    <string name="requested_permissions">Aplikace pro správnou činnost potřebuje určitá oprávnění. Ta zahrnují: zápis na externí úložiště (pro uložení dat na SD kartu), přístup k zjištění polohy a přístup ke kontaktům (pro vytvoření a správu webového účtu).</string>-->
     <string name="action_support">Support</string>
     <string name="app_support">Please send us questions, bug-reports and new features suggestions. Commercial support is available.</string>
     <string name="email">Email</string>

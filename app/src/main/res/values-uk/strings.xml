@@ -114,8 +114,6 @@
     <string name="pref_sync_notification">Повідомлення про синхронізацію</string>
     <string name="tap_to_measure">Натисніть на карту аби обрати точки</string>
     <string name="permissions">Дозволи</string>
-    <string name="requested_permissions">Застосунок потребує певних дозволів для корекної роботи: запис на пристрій (для зберігання даних), доступ
-        до місцезнаходження та отримання контактів (для створення та керування веб акаунтами).</string>
     <string name="track_restore">Продовжувати трек після перезапуску</string>
     <string name="action_support">Підтримка</string>
     <string name="app_support">Будь ласка напишіть нам, якщо у вас виникли питання, повідомлення про помилки або пропозиції до функціоналу. Доступна комерційна підтримка.</string>

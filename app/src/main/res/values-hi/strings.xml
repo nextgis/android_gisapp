@@ -117,8 +117,8 @@
     <string name="pref_sync_notification">सिंक अधिसूचना दिखाएँ</string>
     <string name="tap_to_measure">नक्शा अंक की जांच करने पर ठोकर</string>
     <string name="permissions">अनुमतियां</string>
-    <string name="requested_permissions">आवेदन कुछ अनुमतियों को ठीक से काम करने की जरूरत है। यह बाह्य भंडारण के लिए लेखन भी शामिल है (कार्ड पर डेटा को बचाने के लिए),स्थान सेवाओं और हो रही संपर्कों को एक्सेस (बना सकते हैं और वेब खातों का प्रबंधन करने के लिए)
-        .</string>
+<!--    <string name="requested_permissions">आवेदन कुछ अनुमतियों को ठीक से काम करने की जरूरत है। यह बाह्य भंडारण के लिए लेखन भी शामिल है (कार्ड पर डेटा को बचाने के लिए),स्थान सेवाओं और हो रही संपर्कों को एक्सेस (बना सकते हैं और वेब खातों का प्रबंधन करने के लिए)-->
+<!--        .</string>-->
     <string name="track_restore">Restore current track after reboot</string>
     <string name="action_support">Support</string>
     <string name="app_support">Please send us questions, bug-reports and new features suggestions. Commercial support is available.</string>
