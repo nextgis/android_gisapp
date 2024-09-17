@@ -29,11 +29,11 @@ public class SDCardReceiver extends BroadcastReceiver {
         }
     }
 
-    public void registerReceiver(Context context) {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_MEDIA_EJECT);
-        filter.addAction(Intent.ACTION_MEDIA_MOUNTED);
-        filter.addDataScheme("file");
-        context.registerReceiver(this, filter );
-    }
+//    public void registerReceiver(Context context) {
+//        IntentFilter filter = new IntentFilter();
+//        filter.addAction(Intent.ACTION_MEDIA_EJECT);
+//        filter.addAction(Intent.ACTION_MEDIA_MOUNTED);
+//        filter.addDataScheme("file");
+//        context.registerReceiver(this, filter );
+//    }
 }

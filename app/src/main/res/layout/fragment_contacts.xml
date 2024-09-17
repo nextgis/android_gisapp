@@ -45,7 +45,7 @@
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
             android:layout_marginTop="10dp"
-            android:text="@string/email"
+            android:text="@string/support"
             android:textAppearance="?android:attr/textAppearanceSmall"/>
 
         <TextView
@@ -73,25 +73,6 @@
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
             android:text="@string/telegram_src"
-            android:textAppearance="?android:attr/textAppearanceMedium"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
-            android:layout_marginTop="10dp"
-            android:text="@string/github"
-            android:textAppearance="?android:attr/textAppearanceSmall"/>
-
-        <TextView
-            android:id="@+id/githun"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="2dp"
-            android:autoLink="web"
-            android:text="@string/github_src"
             android:textAppearance="?android:attr/textAppearanceMedium"/>
 
         <TextView

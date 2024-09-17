@@ -52,6 +52,9 @@ import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.util.AppSettingsConstants;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 public class AboutActivity extends NGActivity implements ViewPager.OnPageChangeListener {
     private ViewPager mViewPager;
     @Override
@@ -68,8 +71,12 @@ public class AboutActivity extends NGActivity implements ViewPager.OnPageChangeL
         TabLayout tabLayout = (TabLayout) findViewById(com.nextgis.maplibui.R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+        Calendar calendar = new GregorianCalendar();
+        int year = calendar.get(Calendar.YEAR);
+        String copyrText = String.format(getString(R.string.copyright), String.valueOf(year));
+
         TextView txtCopyrightText = (TextView) findViewById(R.id.copyright);
-        txtCopyrightText.setText(Html.fromHtml(getString(R.string.copyright)));
+        txtCopyrightText.setText(Html.fromHtml(copyrText));
         txtCopyrightText.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
@@ -193,7 +200,8 @@ public class AboutActivity extends NGActivity implements ViewPager.OnPageChangeL
                 @Override
                 public void onClick(View view) {
                     try {
-                        Intent telegram = new Intent(Intent.ACTION_VIEW, Uri.parse("tg://resolve?domain=nextgis_support"));
+                        String telegramPart = getString(R.string.telegram_prompt);
+                        Intent telegram = new Intent(Intent.ACTION_VIEW, Uri.parse("tg://resolve?domain=" + telegramPart));
                         startActivity(telegram);
                     } catch (ActivityNotFoundException e) {
                         Toast.makeText(context, R.string.not_installed, Toast.LENGTH_SHORT).show();

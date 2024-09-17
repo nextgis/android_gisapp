@@ -43,7 +43,7 @@
     <string name="app_description">Application mobile de SIG pour la collecte de données et leurs envoi vers un serveur. L\'application permet aussi d\'enregistrer des parcours et se synchronise avec un serveur.</string>
     <string name="credits_intro">Crédits</string>
     <string name="credits">Certains icônes proviennent de <a href="http://icons8.com/android-icons">Icons8.com</a> sous licence <a href="http://creativecommons.org/licenses/by-nd/3.0/">CC BY-ND 3.0 license</a>, <a href="http://materialdesignicons.com/">materialdesignicons.com</a> et <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a> sous licence <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0 license</a></string>
-    <string name="contacts"><a href="http://nextgis.ru/en/contact/">Nous contacter</a></string>
+    <string name="contacts"><a href="https://nextgis.com/contact/">Nous contacter</a></string>
     <string name="action_about">A propos</string>
     <string name="add_current_place">Ajouter le lieu actuel</string>
     <string name="add_new_geometry">Ajouter une nouvelle géométrie</string>
@@ -123,11 +123,9 @@
     <string name="email">Email</string>
     <string name="email_src">info@nextgis.com</string>
     <string name="telegram">Telegram</string>
-    <string name="telegram_src">\@nextgis_support</string>
     <string name="github">Github</string>
     <string name="github_src">http://github.com/nextgis/android_gisapp/issues</string>
     <string name="web">Website</string>
-    <string name="web_src">http://nextgis.com/nextgis-mobile</string>
     <string name="not_installed">Application non-installée</string>
     <string name="action_help">Aide</string>
     <string name="location_distance_to">Distance vers (m)</string>

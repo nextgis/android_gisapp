@@ -25,6 +25,8 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+
     <!--         <uses-permission android:name="android.permission.CAMERA"/> -->
     <uses-feature
         android:name="android.hardware.location"
@@ -65,6 +67,7 @@
 
         <service
             android:name=".util.OfflineSyncIntentService"
+            android:foregroundServiceType="dataSync"
             android:exported="false"/>
 
         <meta-data
@@ -118,7 +121,9 @@
             android:name="com.nextgis.maplibui.account.NGWAuthenticatorService"
             android:enabled="true"
             android:exported="true"
-            android:permission="com.nextgis.mobile.service.ACCESS">
+            android:permission="com.nextgis.mobile.service.ACCESS"
+            android:foregroundServiceType="dataSync"
+            >
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
@@ -130,7 +135,9 @@
         <service
             android:name=".datasource.SyncService"
             android:exported="true"
-            android:permission="com.nextgis.mobile.service.ACCESS">
+            android:permission="com.nextgis.mobile.service.ACCESS"
+            android:foregroundServiceType="dataSync"
+            >
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
             </intent-filter>
@@ -155,5 +162,4 @@
                 android:resource="@xml/provider_paths" />
         </provider>
     </application>
-
 </manifest>

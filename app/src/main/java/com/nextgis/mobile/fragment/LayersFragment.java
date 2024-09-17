@@ -34,6 +34,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Point;
+import android.os.Build;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.core.view.GravityCompat;
@@ -420,7 +421,11 @@ public class LayersFragment
         intentFilter.addAction(SyncAdapter.SYNC_START);
         intentFilter.addAction(SyncAdapter.SYNC_FINISH);
         intentFilter.addAction(SyncAdapter.SYNC_CANCELED);
-        getActivity().registerReceiver(mSyncReceiver, intentFilter);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            getActivity().registerReceiver(mSyncReceiver, intentFilter, Context.RECEIVER_EXPORTED);
+        } else {
+            getActivity().registerReceiver(mSyncReceiver, intentFilter);
+        }
     }
 
 

@@ -42,7 +42,6 @@
     <string name="app_description">地理情報の収集とサーバーへの送信のためのモバイルGISアプリケーション。 NextGIS Mobileもまたトラック記録と位置情報をwebサーバに送信します。</string>
     <string name="credits_intro">クレジット</string>
     <string name="credits">本アプリケーションのいくつかのアイコンは <a href="http://icons8.com/android-icons">Icons8.com</a> から <a href="http://creativecommons.org/licenses/by-nd/3.0/">CC BY-ND 3.0 license</a> のライセンスで, <a href="http://materialdesignicons.com/">materialdesignicons.com</a> and <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a> から <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0 license</a> で使用しています。</string>
-    <string name="contacts"><a href="http://nextgis.ru/en/contact/">Contact us</a></string>
     <string name="action_about">このアプリケーションについて</string>
     <string name="add_current_place">現在位置を追加</string>
     <string name="add_new_geometry">新しいジオメトリを追加</string>
@@ -121,11 +120,9 @@
     <string name="email">Email</string>
     <string name="email_src">info@nextgis.com</string>
     <string name="telegram">Telegram</string>
-    <string name="telegram_src">\@nextgis_support</string>
     <string name="github">Github</string>
     <string name="github_src">http://github.com/nextgis/android_gisapp/issues</string>
     <string name="web">Website</string>
-    <string name="web_src">http://nextgis.com/nextgis-mobile</string>
     <string name="not_installed">Application not installed</string>
     <string name="action_help">Help</string>
     <string name="location_distance_to">Distance to (m)</string>

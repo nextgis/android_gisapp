@@ -606,7 +606,7 @@ public class SettingsFragment
 //        Context context = preference.getContext();
 //        String uid = getUid(context);
         //preferenceч.setSummary(context.getString(R.string.track_uid, uid));
-        new CheckRegistration(preference,AccountUtil.isProUser(preference.getContext())).execute();
+        new CheckRegistration(preference,AccountUtil.isProUser(preference.getContext())).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private static class CheckRegistration extends AsyncTask<Void, Void, Boolean> {
@@ -863,7 +863,7 @@ public class SettingsFragment
         ContentResolver.cancelSync(null, application.getAuthority());
 
         BackgroundMoveTask moveTask = new BackgroundMoveTask(activity, application.getMap(), path);
-        moveTask.execute();
+        moveTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
 

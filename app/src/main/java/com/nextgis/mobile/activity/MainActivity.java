@@ -1113,7 +1113,11 @@ public class MainActivity extends NGActivity
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConstantsUI.MESSAGE_INTENT);
         intentFilter.addAction(MESSAGE_ALERT_INTENT);
-        registerReceiver(mMessageReceiver, intentFilter);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(mMessageReceiver, intentFilter, Context.RECEIVER_EXPORTED);
+        } else {
+            registerReceiver(mMessageReceiver, intentFilter);
+        }
 
 
         if (SDCardUtils.isSDCardUsedAndExtracted(this)){
@@ -1153,8 +1157,10 @@ public class MainActivity extends NGActivity
     protected void onPause()
     {
         try {
-            if (mMessageReceiver != null)
+            if (mMessageReceiver != null) {
                 unregisterReceiver(mMessageReceiver);
+                mMessageReceiver = null;
+            }
         } catch (Exception ignored) { }
 
         super.onPause();

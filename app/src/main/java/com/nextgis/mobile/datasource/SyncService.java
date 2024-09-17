@@ -33,6 +33,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 
@@ -52,7 +53,11 @@ public class SyncService extends NGWSyncService {
         mMessageReceiver = new MessageReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(MESSAGE_NOTIFY_INTENT);
-        registerReceiver(mMessageReceiver, intentFilter);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(mMessageReceiver, intentFilter, Context.RECEIVER_EXPORTED);
+        } else {
+            registerReceiver(mMessageReceiver, intentFilter);
+        }
     }
 
     @Override

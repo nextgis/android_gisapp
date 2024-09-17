@@ -43,7 +43,7 @@
     <string name="app_description">स्थानिक क्षेत्र डेटा संग्रह के लिए मोबाइल जीआईएस आवेदन और सर्वर के लिए इसे वापस भेजने. अगला जीआईएस  Mobile भी पटरियों रिकॉर्ड और वेब सर्वर से स्थिति की जानकारी भेजता है.</string>
     <string name="credits_intro">क्रेडिट्स</string>
     <string name="credits">कुछ आइकन्स used in the आवेदन are from <a href="http://icons8.com/android-icons">Icons8.com</a> licensed under a <a href="http://creativecommons.org/licenses/by-nd/3.0/">CC BY-ND 3.0 लाइसेंस</a>, <a href="http://materialdesignicons.com/">सामग्री डिजाइन माउसm.com</a> and <a href="http://romannurik.github.io/AndroidAssetStudio/icons-launcher.html">romannurik.github.io</a> के अंतर्गत लाइसेंस a <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0 लाइसेंस    </a></string>
-    <string name="contacts"><a href="http://nextgis.ru/en/contact/">हमसे संपर्क करें</a></string>
+    <string name="contacts"><a href="https://nextgis.com/contact/">हमसे संपर्क करें</a></string>
     <string name="action_about">के बारे में</string>
     <string name="add_current_place">वर्तमान जगह जोड़े</string>
     <string name="add_new_geometry">नई ज्यामिति जोड़े</string>
@@ -125,11 +125,9 @@
     <string name="email">Email</string>
     <string name="email_src">info@nextgis.com</string>
     <string name="telegram">Telegram</string>
-    <string name="telegram_src">\@nextgis_support</string>
     <string name="github">Github</string>
     <string name="github_src">http://github.com/nextgis/android_gisapp/issues</string>
     <string name="web">Website</string>
-    <string name="web_src">http://nextgis.com/nextgis-mobile</string>
     <string name="not_installed">Application not installed</string>
     <string name="action_help">Help</string>
     <string name="location_distance_to">Distance to (m)</string>
