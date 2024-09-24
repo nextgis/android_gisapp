@@ -265,12 +265,12 @@ public class MapFragment
                 mMap.setLockMap(false);
                 setMode(MODE_EDIT);
                 return true;
-            case R.id.menu_edit_by_touch:
+            case com.nextgis.maplibui.R.id.menu_edit_by_touch:
                 setMode(MODE_EDIT_BY_TOUCH);
                 result = mEditLayerOverlay.onOptionsItemSelected(id);
                 return result;
-            case R.id.menu_edit_undo:
-            case R.id.menu_edit_redo:
+            case com.nextgis.maplibui.R.id.menu_edit_undo:
+            case com.nextgis.maplibui.R.id.menu_edit_redo:
                 result = mUndoRedoOverlay.onOptionsItemSelected(id);
                 if (result) {
                     Feature undoRedoFeature = mUndoRedoOverlay.getFeature();
@@ -288,7 +288,7 @@ public class MapFragment
                 }
 
                 return result;
-            case R.id.menu_edit_by_walk:
+            case com.nextgis.maplibui.R.id.menu_edit_by_walk:
                 setMode(MODE_EDIT_BY_WALK);
             default:
                 result = mEditLayerOverlay.onOptionsItemSelected(id);
@@ -318,7 +318,7 @@ public class MapFragment
         }
 
         if (geometry == null || !geometry.isValid()) {
-            Toast.makeText(getContext(), R.string.not_enough_points, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), com.nextgis.maplibui.R.string.not_enough_points, Toast.LENGTH_SHORT).show();
             return false;
         }
         if (isGeometryIntersects(getContext(), geometry))
@@ -500,7 +500,7 @@ public class MapFragment
                 toolbar.getMenu().clear();
                 toolbar.inflateMenu(R.menu.select_action);
                 toolbar.getMenu().findItem(R.id.menu_feature_edit).setEnabled(false);
-                toolbar.setNavigationIcon(R.drawable.ic_action_cancel_dark);
+                toolbar.setNavigationIcon(com.nextgis.maplibui.R.drawable.ic_action_cancel_dark);
 
                 mFinishListener = new View.OnClickListener() {
                     @Override
@@ -558,7 +558,7 @@ public class MapFragment
                 toolbar.getMenu().clear();
                 toolbar.inflateMenu(R.menu.select_action);
                 toolbar.getMenu().findItem(R.id.menu_feature_edit).setEnabled(false);
-                toolbar.setNavigationIcon(R.drawable.ic_action_cancel_dark);
+                toolbar.setNavigationIcon(com.nextgis.maplibui.R.drawable.ic_action_cancel_dark);
 
                 mFinishListener = new View.OnClickListener() {
                     @Override
@@ -649,7 +649,7 @@ public class MapFragment
                     }
                 };
 
-                toolbar.setNavigationIcon(R.drawable.ic_action_cancel_dark);
+                toolbar.setNavigationIcon(com.nextgis.maplibui.R.drawable.ic_action_cancel_dark);
                 toolbar.setNavigationOnClickListener(mFinishListener);
 
                 break;
@@ -683,7 +683,7 @@ public class MapFragment
         boolean noFeature = mEditLayerOverlay.getSelectedFeatureGeometry() == null;
         long featureId = mEditLayerOverlay.getSelectedFeatureId();
 
-        String featureName = String.format(getString(R.string.feature_n), featureId);
+        String featureName = String.format(getString(com.nextgis.maplibui.R.string.feature_n), featureId);
         String labelField = mSelectedLayer.getPreferences().getString(SettingsConstantsUI.KEY_PREF_LAYER_LABEL, FIELD_ID);
         if (!labelField.equals(FIELD_ID) && !noFeature && featureId != NOT_FOUND) {
             Feature feature = mSelectedLayer.getFeature(featureId);
@@ -691,8 +691,8 @@ public class MapFragment
                 featureName = feature.getFieldValueAsString(labelField);
         }
 
-        featureName = noFeature ? getString(R.string.nothing_selected) :
-                featureId == Constants.NOT_FOUND ? getString(R.string.new_feature) : featureName;
+        featureName = noFeature ? getString(com.nextgis.maplibui.R.string.nothing_selected) :
+                featureId == Constants.NOT_FOUND ? getString(com.nextgis.maplibui.R.string.new_feature) : featureName;
         mActivity.setTitle(featureName);
         mActivity.setSubtitle(mSelectedLayer.getName());
 
@@ -722,11 +722,12 @@ public class MapFragment
         final VectorLayer layer = mSelectedLayer;
 
         AlertDialog builder = new AlertDialog.Builder(getActivity())
-                .setTitle(R.string.delete_confirm_feature)
-                .setMessage(R.string.delete_feature)
-                .setPositiveButton(R.string.menu_delete, (dialog, which) -> {
-                    Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.mainview), getActivity().getString(R.string.delete_item_done), Snackbar.LENGTH_LONG)
-                            .setAction(R.string.undo, v -> {
+                .setTitle(com.nextgis.maplibui.R.string.delete_confirm_feature)
+                .setMessage(com.nextgis.maplibui.R.string.delete_feature)
+                .setPositiveButton(com.nextgis.maplibui.R.string.menu_delete, (dialog, which) -> {
+                    Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.mainview),
+                                    getActivity().getString(com.nextgis.maplibui.R.string.delete_item_done), Snackbar.LENGTH_LONG)
+                            .setAction(com.nextgis.maplibui.R.string.undo, v -> {
                                 layer.showFeature(selectedFeatureId);
                                 mEditLayerOverlay.setSelectedFeature(selectedFeatureId);
                                 defineMenuItems();
@@ -752,11 +753,11 @@ public class MapFragment
                     defineMenuItems();
 
                     View view = snackbar.getView();
-                    TextView textView = view.findViewById(R.id.snackbar_text);
+                    TextView textView = view.findViewById(com.google.android.material.R.id.snackbar_text);
                     textView.setTextColor(ContextCompat.getColor(mActivity, com.nextgis.maplibui.R.color.color_white));
                     snackbar.show();
                 })
-                .setNegativeButton(R.string.cancel, (dialog, which) -> {
+                .setNegativeButton(com.nextgis.maplibui.R.string.cancel, (dialog, which) -> {
                 }).create();
         builder.show();
 
@@ -871,7 +872,7 @@ public class MapFragment
         Bitmap ruler = Bitmap.createBitmap(px, px, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(ruler);
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setColor(ContextCompat.getColor(getActivity(), R.color.primary_dark));
+        paint.setColor(ContextCompat.getColor(getActivity(), com.nextgis.maplibui.R.color.primary_dark));
         paint.setStrokeWidth(4);
         paint.setStyle(Paint.Style.STROKE);
         canvas.drawLine(0, px, px, px, paint);
@@ -1380,9 +1381,10 @@ public class MapFragment
             mChooseLayerDialog = new ChooseLayerDialog();
             mChooseLayerDialog.setLayerList(layers)
                     .setCode(EDIT_LAYER)
-                    .setTitle(getString(R.string.choose_layers))
+                    .setTitle(getString(com.nextgis.maplibui.R.string.choose_layers))
                     .setTheme(mActivity.getThemeId())
-                    .show(mActivity.getSupportFragmentManager(), "choose_layer");
+                    //.show(mActivity.getSupportFragmentManager(), "choose_layer");
+                    .show(getChildFragmentManager(), ChooseLayerDialog.TAG);
         }
     }
 
@@ -1418,9 +1420,9 @@ public class MapFragment
             mChooseLayerDialog = new ChooseLayerDialog();
             mChooseLayerDialog.setLayerList(layers)
                     .setCode(ADD_POINT_BY_TAP)
-                    .setTitle(getString(R.string.choose_layers))
+                    .setTitle(getString(com.nextgis.maplibui.R.string.choose_layers))
                     .setTheme(mActivity.getThemeId())
-                    .show(mActivity.getSupportFragmentManager(), "choose_layer");
+                    .show(mActivity.getSupportFragmentManager(), ChooseLayerDialog.TAG);
         }
     }
 
@@ -1434,8 +1436,7 @@ public class MapFragment
         mUndoRedoOverlay.saveToHistory(mEditLayerOverlay.getSelectedFeature());
     }
 
-    protected void addCurrentLocation()
-    {
+    protected void addCurrentLocation()    {
         //show select layer dialog if several layers, else start default or custom form
         List<ILayer> layers = mMap.getVectorLayersByType(
                 GeoConstants.GTMultiPointCheck | GeoConstants.GTPointCheck);
@@ -1469,12 +1470,11 @@ public class MapFragment
             mChooseLayerDialog = new ChooseLayerDialog();
             mChooseLayerDialog.setLayerList(layers)
                     .setCode(ADD_CURRENT_LOC)
-                    .setTitle(getString(R.string.choose_layers))
+                    .setTitle(getString(com.nextgis.maplibui.R.string.choose_layers))
                     .setTheme(mActivity.getThemeId())
-                    .show(mActivity.getSupportFragmentManager(), "choose_layer");
+                    .show(mActivity.getSupportFragmentManager(), ChooseLayerDialog.TAG);
         }
     }
-
 
     protected List<ILayer> removeHideLayers(List<ILayer> layerList)
     {
@@ -1517,9 +1517,9 @@ public class MapFragment
             mChooseLayerDialog = new ChooseLayerDialog();
             mChooseLayerDialog.setLayerList(layers)
                     .setCode(ADD_GEOMETRY_BY_WALK)
-                    .setTitle(getString(R.string.choose_layers))
+                    .setTitle(getString(com.nextgis.maplibui.R.string.choose_layers))
                     .setTheme(mActivity.getThemeId())
-                    .show(mActivity.getSupportFragmentManager(), "choose_layer");
+                    .show(mActivity.getSupportFragmentManager(), ChooseLayerDialog.TAG);
         }
     }
 
@@ -1992,27 +1992,27 @@ public class MapFragment
 
                 mStatusSource.setText(text);
                 mStatusSource.setCompoundDrawablesWithIntrinsicBounds(
-                        ContextCompat.getDrawable(getActivity(), R.drawable.ic_location), null, null, null);
+                        ContextCompat.getDrawable(getActivity(), com.nextgis.maplibui.R.drawable.ic_location), null, null, null);
             } else {
                 mStatusSource.setText("");
                 mStatusSource.setCompoundDrawablesWithIntrinsicBounds(
-                        ContextCompat.getDrawable(getActivity(), R.drawable.ic_signal_wifi), null, null, null);
+                        ContextCompat.getDrawable(getActivity(), com.nextgis.maplibui.R.drawable.ic_signal_wifi), null, null, null);
             }
 
             mStatusAccuracy.setText(
                     String.format(Locale.getDefault(),
-                            "%.1f %s", location.getAccuracy(), getString(R.string.unit_meter)));
+                            "%.1f %s", location.getAccuracy(), getString(com.nextgis.maplib.R.string.unit_meter)));
             mStatusAltitude.setText(
                     String.format(Locale.getDefault(),
-                            "%.1f %s", location.getAltitude(), getString(R.string.unit_meter)));
+                            "%.1f %s", location.getAltitude(), getString(com.nextgis.maplib.R.string.unit_meter)));
             mStatusSpeed.setText(
                     String.format(Locale.getDefault(),
                             "%.1f %s/%s", location.getSpeed() * 3600 / 1000,
-                            getString(R.string.unit_kilometer), getString(R.string.unit_hour)));
+                            getString(com.nextgis.maplib.R.string.unit_kilometer), getString(com.nextgis.maplib.R.string.unit_hour)));
             mStatusLatitude.setText(
-                    formatCoordinate(location.getLatitude(), R.string.latitude_caption_short));
+                    formatCoordinate(location.getLatitude(), com.nextgis.maplibui.R.string.latitude_caption_short));
             mStatusLongitude.setText(
-                    formatCoordinate(location.getLongitude(), R.string.longitude_caption_short));
+                    formatCoordinate(location.getLongitude(),com.nextgis.maplibui.R.string.longitude_caption_short));
         }
     }
 
@@ -2026,11 +2026,11 @@ public class MapFragment
     {
         mStatusSource.setCompoundDrawables(null, null, null, null);
         mStatusSource.setText("");
-        mStatusAccuracy.setText(getString(R.string.n_a));
-        mStatusAltitude.setText(getString(R.string.n_a));
-        mStatusSpeed.setText(getString(R.string.n_a));
-        mStatusLatitude.setText(getString(R.string.n_a));
-        mStatusLongitude.setText(getString(R.string.n_a));
+        mStatusAccuracy.setText(getString(com.nextgis.maplibui.R.string.n_a));
+        mStatusAltitude.setText(getString(com.nextgis.maplibui.R.string.n_a));
+        mStatusSpeed.setText(getString(com.nextgis.maplibui.R.string.n_a));
+        mStatusLatitude.setText(getString(com.nextgis.maplibui.R.string.n_a));
+        mStatusLongitude.setText(getString(com.nextgis.maplibui.R.string.n_a));
     }
 
 
@@ -2133,7 +2133,7 @@ public class MapFragment
         if (mCurrentCenter != null) {
             mMap.panTo(mCurrentCenter);
         } else {
-            Toast.makeText(mActivity, R.string.error_no_location, Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity, com.nextgis.maplibui.R.string.error_no_location, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -2210,7 +2210,7 @@ public class MapFragment
                     showMainButton();
                     showRulerButton();
                     hideAddByTapButton();
-                    mAddPointButton.setIcon(R.drawable.ic_action_add_point);
+                    mAddPointButton.setIcon(com.nextgis.maplibui.R.drawable.ic_action_add_point);
                     mActivity.setTitle(mActivity.getAppName());
                     mActivity.setSubtitle(null);
                 } else
@@ -2229,7 +2229,7 @@ public class MapFragment
         hideMainButton();
         hideRulerButton();
         showAddByTapButton();
-        mAddPointButton.setIcon(R.drawable.ic_action_apply_dark);
+        mAddPointButton.setIcon(com.nextgis.maplibui.R.drawable.ic_action_apply_dark);
     }
 
     @Override

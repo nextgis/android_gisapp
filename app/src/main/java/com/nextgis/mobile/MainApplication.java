@@ -264,7 +264,7 @@ public class MainApplication extends GISApplication
         List<ILayer> tracks = new ArrayList<>();
         LayerGroup.getLayersByType(mMap, Constants.LAYERTYPE_TRACKS, tracks);
         if (tracks.isEmpty()) {
-            String trackLayerName = getString(R.string.tracks);
+            String trackLayerName = getString(com.nextgis.maplib.R.string.tracks);
             TrackLayerUI trackLayer =
                     new TrackLayerUI(getApplicationContext(), mMap.createLayerStorage(LAYER_TRACKS));
             trackLayer.setName(trackLayerName);
@@ -319,7 +319,7 @@ public class MainApplication extends GISApplication
     public void initBaseLayers() {
         if (mMap.getLayerByPathName(LAYER_OSM) == null) {
             //add OpenStreetMap layer
-            String layerName = getString(R.string.osm);
+            String layerName = getString(com.nextgis.maplibui.R.string.osm);
             String layerURL = SettingsConstantsUI.OSM_URL;
             final RemoteTMSLayerUI layer = new RemoteTMSLayerUI(getApplicationContext(), mMap.createLayerStorage(LAYER_OSM));
             layer.setName(layerName);

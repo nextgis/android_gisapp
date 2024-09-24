@@ -24,11 +24,13 @@
 
 <PreferenceScreen
         xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
 
     <PreferenceScreen
+        app:iconSpaceReserved="false"
             android:title="@string/general"
             android:key="com.nextgis.mobile.PREFS_GENERAL"
             >
@@ -37,6 +39,7 @@
     </PreferenceScreen>
 
     <PreferenceScreen
+        app:iconSpaceReserved="false"
             android:title="@string/map"
             android:key="com.nextgis.mobile.PREFS_MAP"
             >
@@ -45,6 +48,7 @@
     </PreferenceScreen>
 
     <PreferenceScreen
+        app:iconSpaceReserved="false"
             android:title="@string/location"
             android:key="com.nextgis.mobile.PREFS_LOCATION"
             >
@@ -53,6 +57,7 @@
     </PreferenceScreen>
 
     <PreferenceScreen
+        app:iconSpaceReserved="false"
             android:title="@string/tracks"
             android:key="com.nextgis.mobile.PREFS_TRACKING"
             >
@@ -61,6 +66,7 @@
     </PreferenceScreen>
 
     <PreferenceScreen
+        app:iconSpaceReserved="false"
             android:title="@string/ngw_accounts"
             android:key="com.nextgis.mobile.PREFS_NGW"
             >
@@ -69,6 +75,7 @@
     </PreferenceScreen>
 
     <PreferenceScreen
+        app:iconSpaceReserved="false"
             android:title="@string/ngid_settings"
             android:key="com.nextgis.mobile.PREFS_NGID"
             >

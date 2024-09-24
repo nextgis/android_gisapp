@@ -76,7 +76,7 @@ public class CreateVectorLayerActivity extends NGActivity implements View.OnClic
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
-        getMenuInflater().inflate(R.menu.edit_attributes, menu);
+        getMenuInflater().inflate(com.nextgis.maplibui.R.menu.edit_attributes, menu);
         menu.findItem(R.id.menu_settings).setVisible(false);
         return true;
     }
@@ -84,32 +84,31 @@ public class CreateVectorLayerActivity extends NGActivity implements View.OnClic
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()) {
-            case R.id.menu_apply:
-                boolean showAlert = true;
-                int info = R.string.error_layer_create;
+        if (item.getItemId() == com.nextgis.maplibui.R.id.menu_apply) {
+            boolean showAlert = true;
+            int info = com.nextgis.maplib.R.string.error_layer_create;
 
-                if (TextUtils.isEmpty(mEtLayerName.getText().toString().trim()))
-                    info = R.string.empty_name;
-                else if (hasLayerWithSameName())
-                    info = R.string.same_layer_name;
-                else if (createNewLayer()) {
-                    showAlert = false;
-                    info = R.string.message_layer_created;
-                    finish();
-                }
-                if (showAlert)
-                    new androidx.appcompat.app.AlertDialog.Builder(this)
+            if (TextUtils.isEmpty(mEtLayerName.getText().toString().trim()))
+                info = R.string.empty_name;
+            else if (hasLayerWithSameName())
+                info = R.string.same_layer_name;
+            else if (createNewLayer()) {
+                showAlert = false;
+                info = com.nextgis.maplibui.R.string.message_layer_created;
+                finish();
+            }
+            if (showAlert)
+                new androidx.appcompat.app.AlertDialog.Builder(this)
                         .setMessage(info)
                         .setPositiveButton(com.nextgis.maplibui.R.string.ok, null)
                         .create()
                         .show();
-                else
-                    Toast.makeText(this, info, Toast.LENGTH_SHORT).show();
-                return true;
-            default:
+            else
+                Toast.makeText(this, info, Toast.LENGTH_SHORT).show();
+            return true;
+        } else
                 return super.onOptionsItemSelected(item);
-        }
+
     }
 
     @Override
@@ -151,7 +150,7 @@ public class CreateVectorLayerActivity extends NGActivity implements View.OnClic
 
     private boolean createNewLayer() {
         MainApplication app = (MainApplication) getApplication();
-        int geomType = getResources().getIntArray(R.array.geom_types)[mSpLayerType.getSelectedItemPosition()];
+        int geomType = getResources().getIntArray(com.nextgis.maplibui.R.array.geom_types)[mSpLayerType.getSelectedItemPosition()];
         List<Field> fields = mFieldAdapter.getFields();
         if (fields.size() == 0)
             fields.add(new Field(GeoConstants.FTString, "description", getString(R.string.default_field_name)));

@@ -184,7 +184,7 @@ public class MainActivity extends NGActivity
         }
 
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
-        drawerLayout.setStatusBarBackgroundColor(ControlHelper.getColor(this, R.attr.colorPrimaryDark));
+        drawerLayout.setStatusBarBackgroundColor(ControlHelper.getColor(this, android.R.attr.colorPrimaryDark));
 
         FragmentManager fm = getSupportFragmentManager();
         mMapFragment = (MapFragment) fm.findFragmentById(R.id.map);
@@ -196,7 +196,7 @@ public class MainActivity extends NGActivity
         mLayersFragment = (LayersFragment) fm.findFragmentById(R.id.layers);
 
         if (mLayersFragment != null && null != mLayersFragment.getView()) {
-            mLayersFragment.getView().setBackgroundColor(ContextCompat.getColor(this, R.color.color_grey_050));
+            mLayersFragment.getView().setBackgroundColor(ContextCompat.getColor(this, com.nextgis.maplibui.R.color.color_grey_050));
             // Set up the drawer.
             mLayersFragment.setUp(R.id.layers, drawerLayout, (MapDrawable) app.getMap());
         }
@@ -284,8 +284,8 @@ public class MainActivity extends NGActivity
                                     });
 
         View view = snackbar.getView();
-        TextView textView = view.findViewById(R.id.snackbar_text);
-        textView.setTextColor(ContextCompat.getColor(view.getContext(), R.color.color_white));
+        TextView textView = view.findViewById(com.google.android.material.R.id.snackbar_text);
+        textView.setTextColor(ContextCompat.getColor(view.getContext(), com.nextgis.maplibui.R.color.color_white));
         snackbar.show();
     }
 
@@ -412,7 +412,7 @@ public class MainActivity extends NGActivity
     public void showEditToolbar() {
         stopRefresh(mToolbar.getMenu().findItem(R.id.menu_refresh));
         mToolbar.getMenu().clear();
-        mToolbar.inflateMenu(R.menu.edit_geometry);
+        mToolbar.inflateMenu(com.nextgis.maplibui.R.menu.edit_geometry);
 
         MenuItem item = mToolbar.getMenu().findItem(com.nextgis.maplibui.R.id.menu_edit_redo);
         boolean visible = mMapFragment.getMode() != MapFragment.MODE_EDIT_BY_WALK;
@@ -421,7 +421,7 @@ public class MainActivity extends NGActivity
         item.setVisible(visible);
 
         mLayersFragment.setDrawerToggleEnabled(false);
-        mToolbar.setNavigationIcon(R.drawable.ic_action_cancel_dark);
+        mToolbar.setNavigationIcon(com.nextgis.maplibui.R.drawable.ic_action_cancel_dark);
     }
 
 
@@ -452,7 +452,7 @@ public class MainActivity extends NGActivity
 
 
     public BottomToolbar getBottomToolbar() {
-        return (BottomToolbar) findViewById(R.id.bottom_toolbar);
+        return (BottomToolbar) findViewById(com.nextgis.maplibui.R.id.bottom_toolbar);
     }
 
 
@@ -496,10 +496,10 @@ public class MainActivity extends NGActivity
                     mMapFragment.refresh();
                 }
                 return true;
-            case R.id.menu_edit_save:
+            case com.nextgis.maplibui.R.id.menu_edit_save:
                 return mMapFragment.saveEdits();
-            case R.id.menu_edit_undo:
-            case R.id.menu_edit_redo:
+            case com.nextgis.maplibui.R.id.menu_edit_undo:
+            case com.nextgis.maplibui.R.id.menu_edit_redo:
                 return mMapFragment.onOptionsItemSelected(item.getItemId());
             case R.id.menu_share_log:
                 shareLog();
@@ -572,7 +572,7 @@ public class MainActivity extends NGActivity
         File dir = new File(getExternalFilesDir(null), "LogFiles");
         long size = FileUtil.getDirectorySize(dir);
         if (size == 0L) {
-            Toast.makeText(this, R.string.error_empty_dataset, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, com.nextgis.maplib.R.string.error_empty_dataset, Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -669,7 +669,8 @@ public class MainActivity extends NGActivity
                     refreshItem.setActionView(R.layout.layout_refresh);
                     ProgressBar progress = refreshItem.getActionView().findViewById(R.id.refreshingProgress);
                     if (progress != null)
-                        progress.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(this, R.color.color_grey_200), PorterDuff.Mode.SRC_IN);
+                        progress.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(this,
+                                com.nextgis.maplibui.R.color.color_grey_200), PorterDuff.Mode.SRC_IN);
                 }
             } else
                 stopRefresh(refreshItem);
@@ -1122,9 +1123,9 @@ public class MainActivity extends NGActivity
 
         if (SDCardUtils.isSDCardUsedAndExtracted(this)){
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-            builder.setMessage(R.string.no_sd_card_attention)
-                    .setPositiveButton(R.string.ok, null)
-                    .setTitle(R.string.sd_card);
+            builder.setMessage(com.nextgis.maplibui.R.string.no_sd_card_attention)
+                    .setPositiveButton(com.nextgis.maplibui.R.string.ok, null)
+                    .setTitle(com.nextgis.maplibui.R.string.sd_card);
             AlertDialog alertDialog=builder.create();
             alertDialog.show();
         }
@@ -1136,8 +1137,8 @@ public class MainActivity extends NGActivity
     {
         if (null != mLayersFragment && !mLayersFragment.isDrawerOpen()) {
             boolean hasUnfinishedTracks = hasUnfinishedTracks(this);
-            int title = hasUnfinishedTracks ? R.string.track_stop : R.string.track_start;
-            int icon = hasUnfinishedTracks ? R.drawable.ic_action_maps_directions_walk_rec : R.drawable.ic_action_maps_directions_walk;
+            int title = hasUnfinishedTracks ? com.nextgis.maplibui.R.string.track_stop : com.nextgis.maplibui.R.string.track_start;
+            int icon = hasUnfinishedTracks ? com.nextgis.maplibui.R.drawable.ic_action_maps_directions_walk_rec : com.nextgis.maplibui.R.drawable.ic_action_maps_directions_walk;
             setTrackItem(menu.findItem(R.id.menu_track), title, icon);
         }
 

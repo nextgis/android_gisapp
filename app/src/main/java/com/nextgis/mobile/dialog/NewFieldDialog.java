@@ -60,7 +60,7 @@ public class NewFieldDialog extends NGDialog {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     if (mListener != null) {
-                        int fieldType = getResources().getIntArray(R.array.field_types)[type.getSelectedItemPosition()];
+                        int fieldType = getResources().getIntArray(com.nextgis.maplibui.R.array.field_types)[type.getSelectedItemPosition()];
                         String alias = name.getText().toString().trim();
                         mListener.OnFieldChosen(alias, fieldType);
                     }

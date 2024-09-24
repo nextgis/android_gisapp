@@ -22,50 +22,72 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
 
-    <PreferenceCategory android:title="@string/interface_title">
+    <PreferenceCategory
+        android:title="@string/interface_title"
+        android:iconSpaceReserved="false"
+
+        >
         <ListPreference
+            app:iconSpaceReserved="false"
             android:defaultValue="light"
             android:entries="@array/theme"
             android:entryValues="@array/theme_val"
             android:key="theme"
-            android:title="@string/theme"/>
+            android:title="@string/theme"
+           />
         <CheckBoxPreference
+            app:iconSpaceReserved="false"
             android:defaultValue="false"
             android:key="show_sync"
             android:title="@string/pref_sync_notification"/>
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/other">
+    <PreferenceCategory android:title="@string/other"
+        android:iconSpaceReserved="false"
+        >
         <Preference
+            app:iconSpaceReserved="false"
             android:key="reset_settings"
-            android:title="@string/reset_settings"/>
+            android:title="@string/reset_settings"
+            android:iconSpaceReserved="false"
+            />
         <CheckBoxPreference
+            app:iconSpaceReserved="false"
             android:defaultValue="true"
             android:key="ga_enabled"
             android:summary="@string/pref_ga_sum"
             android:title="@string/pref_ga"/>
         <CheckBoxPreference
+            app:iconSpaceReserved="false"
             android:defaultValue="false"
             android:key="save_log"
-            android:title="@string/extended_logs"/>
+            android:title="@string/extended_logs"
+            />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/compass_title">
+    <PreferenceCategory android:title="@string/compass_title"
+        >
         <CheckBoxPreference
+            app:iconSpaceReserved="false"
             android:defaultValue="true"
             android:key="compass_true_north"
             android:title="@string/compass_true_north"/>
         <CheckBoxPreference
+            app:iconSpaceReserved="false"
             android:defaultValue="false"
             android:key="compass_show_magnetic"
             android:title="@string/compass_magnetic"/>
         <CheckBoxPreference
+            app:iconSpaceReserved="false"
             android:defaultValue="true"
             android:key="compass_vibration"
             android:title="@string/compass_vibrate"/>
         <CheckBoxPreference
+            app:iconSpaceReserved="false"
             android:defaultValue="true"
             android:key="compass_wake_lock"
             android:title="@string/compass_keep_screen"/>

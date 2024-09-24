@@ -1,14 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdk 33
+    namespace "com.tech.freak.wizardpager"
 
     defaultConfig {
         minSdkVersion 26
         compileSdk 34
         targetSdkVersion 34
-        versionName "1.0.3"
-        versionCode 1
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
@@ -17,8 +15,8 @@ android {
 }
 
 dependencies {
-    implementation('androidx.legacy:legacy-support-v4:1.0.0') {
-        force = true
-    }
+//    implementation( "androidx.legacy:legacy-support-v4:1.0.0")
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+
 
 }

@@ -96,13 +96,13 @@ public class SyncService extends NGWSyncService {
                 context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         NotificationCompat.Builder builder = createBuilder(context, com.nextgis.maplibui.R.string.sync);
-        builder.setSmallIcon(R.drawable.ic_action_information_light)
+        builder.setSmallIcon(com.nextgis.maplibui.R.drawable.ic_action_information_light)
                 .setWhen(System.currentTimeMillis())
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true)
                 .setOngoing(false);
 
-        Bitmap largeIcon = NotificationHelper.getLargeIcon(R.drawable.ic_action_information_light, context.getResources());
+        Bitmap largeIcon = NotificationHelper.getLargeIcon(com.nextgis.maplibui.R.drawable.ic_action_information_light, context.getResources());
                 builder.setProgress(0, 0, false)
                         .setTicker(context.getString(com.nextgis.maplib.R.string.sync_finished))
                         .setContentTitle(title)

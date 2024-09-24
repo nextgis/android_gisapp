@@ -121,8 +121,8 @@ public class FloatingActionButton
             AttributeSet attributeSet)
     {
         TypedArray attr = context.obtainStyledAttributes(attributeSet, R.styleable.FloatingActionButton, 0, 0);
-        mColorNormal = attr.getColor(R.styleable.FloatingActionButton_fab_colorNormal, ControlHelper.getColor(context, R.attr.colorPrimary));
-        mColorPressed = attr.getColor(R.styleable.FloatingActionButton_fab_colorPressed, ControlHelper.getColor(context, R.attr.colorAccent));
+        mColorNormal = attr.getColor(R.styleable.FloatingActionButton_fab_colorNormal, ControlHelper.getColor(context, android.R.attr.colorPrimary));
+        mColorPressed = attr.getColor(R.styleable.FloatingActionButton_fab_colorPressed, ControlHelper.getColor(context, android.R.attr.colorAccent));
         mColorDisabled = attr.getColor(R.styleable.FloatingActionButton_fab_colorDisabled, getColor(android.R.color.darker_gray));
         mSize = attr.getInt(R.styleable.FloatingActionButton_fab_size, SIZE_NORMAL);
         mIcon = attr.getResourceId(R.styleable.FloatingActionButton_fab_icon, 0);

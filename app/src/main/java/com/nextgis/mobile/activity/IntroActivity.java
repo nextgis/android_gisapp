@@ -99,7 +99,8 @@ public class IntroActivity extends NGActivity implements PageFragmentCallbacks, 
 
     private void updateBottomBar() {
         int position = mPager.getCurrentItem();
-        mNextButton.setText(position == mCurrentPageSequence.size() - 1 ? R.string.skip : R.string.attributes_next);
+        mNextButton.setText(position == mCurrentPageSequence.size() - 1 ?
+                com.nextgis.maplibui.R.string.skip : com.nextgis.maplibui.R.string.attributes_next);
         mPrevButton.setVisibility(position == 0 ? View.INVISIBLE : View.VISIBLE);
     }
 

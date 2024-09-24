@@ -130,7 +130,7 @@ public class AttributesFragment
     {
         if (mLayer == null) {
             getActivity().getSupportFragmentManager().popBackStack();
-            Toast.makeText(getContext(), R.string.error_layer_not_inited, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), com.nextgis.maplibui.R.string.error_layer_not_inited, Toast.LENGTH_SHORT).show();
             return null;
         }
         readOnly = getArguments().getBoolean(KEY_READ_ONLY,  true);
@@ -148,7 +148,7 @@ public class AttributesFragment
             display.getMetrics(metrics);
             lp.width = metrics.widthPixels / 2;
 
-            int[] attrs = {R.attr.actionBarSize};
+            int[] attrs = {android.R.attr.actionBarSize};
             TypedArray ta = getActivity().obtainStyledAttributes(attrs);
             lp.bottomMargin = ta.getDimensionPixelSize(0, 0);
             ta.recycle();

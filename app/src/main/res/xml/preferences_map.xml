@@ -22,8 +22,13 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
     <ListPreference
+        app:iconSpaceReserved="false"
         android:defaultValue="1"
         android:entries="@array/status_panel_mode"
         android:entryValues="@array/status_panel_mode_val"
@@ -31,6 +36,7 @@
         android:title="@string/show_status_panel"/>
 
     <ListPreference
+        app:iconSpaceReserved="false"
         android:defaultValue="3"
         android:entries="@array/current_location_mode"
         android:entryValues="@array/current_location_mode_val"
@@ -38,23 +44,27 @@
         android:title="@string/show_current_location"/>
 
     <CheckBoxPreference
+        app:iconSpaceReserved="false"
         android:defaultValue="true"
         android:key="map_show_compass"
         android:title="@string/show_compass"/>
 
     <CheckBoxPreference
+        app:iconSpaceReserved="false"
         android:defaultValue="false"
         android:key="keep_screen_on"
         android:summary="@string/keep_screen_on_summary"
         android:title="@string/keep_screen_on"/>
 
     <CheckBoxPreference
+        app:iconSpaceReserved="false"
         android:defaultValue="true"
         android:key="show_zoom_controls"
         android:summary="@string/show_zoom_controls_summary"
         android:title="@string/show_zoom_controls"/>
 
     <ListPreference
+        app:iconSpaceReserved="false"
         android:defaultValue="metric"
         android:dialogTitle="@string/preferred_units"
         android:entries="@array/units"
@@ -63,21 +73,25 @@
         android:title="@string/preferred_units"/>
 
     <CheckBoxPreference
+        app:iconSpaceReserved="false"
         android:defaultValue="true"
         android:key="show_scale_ruler"
         android:title="@string/show_scale_ruler"/>
 
     <CheckBoxPreference
+        app:iconSpaceReserved="false"
         android:defaultValue="false"
         android:key="show_zoom_level"
         android:title="@string/show_zoom_level"/>
 
     <CheckBoxPreference
+        app:iconSpaceReserved="false"
         android:defaultValue="false"
         android:key="show_ruler_measuring"
         android:title="@string/show_ruler_measuring"/>
 
     <ListPreference
+        app:iconSpaceReserved="false"
         android:defaultValue="0"
         android:dialogTitle="@string/select_coordinates_format"
         android:entries="@array/coordinates_format"
@@ -87,12 +101,14 @@
         android:title="@string/coordinates_format"/>
 
     <com.nextgis.mobile.util.IntEditTextPreference
+        app:iconSpaceReserved="false"
         android:defaultValue="6"
         android:inputType="number"
         android:key="coordinates_fraction_digits"
         android:title="@string/coordinates_fraction_digits"/>
 
     <ListPreference
+        app:iconSpaceReserved="false"
         android:defaultValue="neutral"
         android:entries="@array/map_bg_entry"
         android:entryValues="@array/map_bg_val"
@@ -101,11 +117,13 @@
     <!--bui/blob/master/src/main/res/values/arrays.xml#L107-->
 
     <com.nextgis.mobile.util.SelectMapPathPreference
+        app:iconSpaceReserved="false"
         android:key="map_path"
         android:title="@string/map_path"
         android:summary="@string/map_path_summary"/>
 
     <Preference
+        app:iconSpaceReserved="false"
         android:key="restore_layers"
         android:title="@string/restore_layers"/>
     <!-- TODO:

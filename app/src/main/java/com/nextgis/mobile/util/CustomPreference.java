@@ -35,7 +35,7 @@ public class CustomPreference extends Preference {
             uidView.get().setText(uid);
 
         ImageView imageView = (ImageView) holder.findViewById(R.id.preference_icon);
-        imageView.setImageResource(R.drawable.ic_action_content_copy);
+        imageView.setImageResource(com.nextgis.maplibui.R.drawable.ic_action_content_copy);
 
         imageView.setOnClickListener(v -> {
             final ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);

@@ -21,14 +21,19 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
     <ListPreference
+        app:iconSpaceReserved="false"
         android:defaultValue="1"
         android:entryValues="@array/location_accuracy_val"
         android:key="location_source"
         android:title="@string/pref_location_accuracy" />
 
     <ListPreference
+        app:iconSpaceReserved="false"
         android:defaultValue="2"
         android:entries="@array/tracker_min_time_between_updates"
         android:entryValues="@array/tracker_min_time_between_updates_val"
@@ -36,6 +41,7 @@
         android:title="@string/pref_min_time" />
 
     <ListPreference
+        app:iconSpaceReserved="false"
         android:defaultValue="10"
         android:entries="@array/tracker_min_dist_update"
         android:entryValues="@array/tracker_min_dist_update_val"
@@ -43,6 +49,7 @@
         android:title="@string/pref_min_distance" />
 
     <EditTextPreference
+        app:iconSpaceReserved="false"
         android:defaultValue="20"
         android:inputType="numberDecimal"
         android:key="accurate_max_count"

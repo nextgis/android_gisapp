@@ -131,7 +131,7 @@ public class LayersFragment
 
         LinearLayout linearLayout = view.findViewById(R.id.action_space);
         if (null != linearLayout) {
-            linearLayout.setBackgroundColor(ControlHelper.getColor(view.getContext(), R.attr.colorPrimary));
+            linearLayout.setBackgroundColor(ControlHelper.getColor(view.getContext(), android.R.attr.colorPrimary));
         }
 
         mSyncButton = view.findViewById(R.id.sync);
@@ -254,16 +254,16 @@ public class LayersFragment
                 }
 
                 AlertDialog builder = new AlertDialog.Builder(activity)
-                        .setTitle(R.string.save)
-                        .setMessage(R.string.has_edits)
-                        .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+                        .setTitle(com.nextgis.maplibui.R.string.save)
+                        .setMessage(com.nextgis.maplibui.R.string.has_edits)
+                        .setPositiveButton(com.nextgis.maplibui.R.string.save, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 mapFragment.saveEdits();
                                 mapFragment.setMode(MapFragment.MODE_NORMAL);
                             }
                         })
-                        .setNegativeButton(R.string.discard, new DialogInterface.OnClickListener() {
+                        .setNegativeButton(com.nextgis.maplibui.R.string.discard, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 mapFragment.cancelEdits();
@@ -306,9 +306,9 @@ public class LayersFragment
                 getActivity(),                    // host Activity
                 mDrawerLayout,// DrawerLayout object
 //                R.drawable.ic_drawer,             // nav drawer image to replace 'Up' caret
-                R.string.layers_drawer_open,
+                com.nextgis.maplibui.R.string.layers_drawer_open,
                 // "open drawer" description for accessibility
-                R.string.layers_drawer_close
+                com.nextgis.maplibui.R.string.layers_drawer_close
                 // "close drawer" description for accessibility
         )
         {
@@ -448,8 +448,8 @@ public class LayersFragment
             };
                 new AlertDialog.Builder(context).setTitle(R.string.alert_sync_title)
                         .setMessage(R.string.alert_sync_turned_off)
-                        .setPositiveButton(R.string.yes, onClickListener)
-                        .setNegativeButton(R.string.cancel, null)
+                        .setPositiveButton(com.nextgis.maplibui.R.string.yes, onClickListener)
+                        .setNegativeButton(com.nextgis.maplibui.R.string.cancel, null)
                         .create()
                         .show();
         }
@@ -510,7 +510,7 @@ public class LayersFragment
                     popup.getMenuInflater().inflate(R.menu.add_layer, popup.getMenu());
                     popup.setOnMenuItemClickListener(this);
                     if (!AccountUtil.isProUser(getActivity())) {
-                        popup.getMenu().findItem(R.id.menu_add_ngw).setIcon(R.drawable.ic_lock_black_24dp);
+                        popup.getMenu().findItem(R.id.menu_add_ngw).setIcon(com.nextgis.maplibui.R.drawable.ic_lock_black_24dp);
                     }
                     popup.show();
                 }

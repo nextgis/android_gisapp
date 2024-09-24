@@ -29,6 +29,12 @@ apply plugin: 'kotlin-android'
 
 
 android {
+    namespace "com.nextgis.mobile"
+
+    buildFeatures {
+        buildConfig = true
+    }
+
     // Setup the Sentry DSN from the file 'sentry.properties', which should contain
     // sentry.dsn=https://publicKey:secretKey@host:port/1?options
     // DO NOT PUBLIC the file 'sentry.properties' !!!
@@ -45,7 +51,7 @@ android {
         minSdkVersion 26
         compileSdk 34
         targetSdkVersion 34
-        versionCode 132
+        versionCode 134
         versionName '2.8.0'
         archivesBaseName = "ngmobile-$versionName"
         buildConfigField "String", "SENTRY_DSN", "\"${sentryDsn}\""
@@ -105,6 +111,8 @@ android {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
+
+
 }
 
 dependencies {
@@ -120,20 +128,18 @@ dependencies {
 
 
     implementation 'com.github.JakeWharton:NineOldAndroids:2.4.0'
-    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
 //    implementation 'com.android.support:support-compat:28.0.0'
-    implementation('androidx.recyclerview:recyclerview:1.2.0') {
-        force = true
+    implementation('androidx.recyclerview:recyclerview:1.3.2') {
     }
     implementation('androidx.legacy:legacy-support-v4:1.0.0') {
-        force = true
     }
     implementation 'com.google.android.gms:play-services-analytics:18.1.0'
 //    implementation 'com.github.TechFreak:WizardPager:1.0.3'
     implementation 'com.android.volley:volley:1.2.1'
     implementation 'com.github.barsrb:hyperlog-android:master-SNAPSHOT'
 
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.6'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
 

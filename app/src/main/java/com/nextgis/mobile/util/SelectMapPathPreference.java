@@ -131,21 +131,21 @@ public class SelectMapPathPreference
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         externalFilesPaths.add(file);
                         if (Environment.isExternalStorageRemovable(file))
-                            externalFilesStrings.add(context.getString(R.string.sd_card) + ": " + cardNamePart);
+                            externalFilesStrings.add(context.getString(com.nextgis.maplibui.R.string.sd_card) + ": " + cardNamePart);
                         else
-                            externalFilesStrings.add(context.getString(R.string.internal_storage) +": " + cardNamePart);
+                            externalFilesStrings.add(context.getString(com.nextgis.maplibui.R.string.internal_storage) +": " + cardNamePart);
                     } else {
                         externalFilesPaths.add(file);
                         if (!path.contains("emulated"))
-                            externalFilesStrings.add(context.getString(R.string.sd_card) + ": " + cardNamePart);
+                            externalFilesStrings.add(context.getString(com.nextgis.maplibui.R.string.sd_card) + ": " + cardNamePart);
                         else
-                            externalFilesStrings.add(context.getString(R.string.internal_storage) + ": " + cardNamePart);
+                            externalFilesStrings.add(context.getString(com.nextgis.maplibui.R.string.internal_storage) + ": " + cardNamePart);
                     }
                 }
             }
 
             AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
-            alertDialog.setTitle(R.string.choose_storage);
+            alertDialog.setTitle(com.nextgis.maplibui.R.string.choose_storage);
             final int selectedItemFinal = selectedItem;
             String[] array = externalFilesStrings.toArray(new String[externalFilesPaths.size()]);
             alertDialog.setSingleChoiceItems(array, selectedItemFinal, new DialogInterface.OnClickListener() {
@@ -165,8 +165,8 @@ public class SelectMapPathPreference
                     File newPath = new File(value);
                     if (newPath.listFiles() !=null && newPath.listFiles().length != 0) {
                         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
-                        builder.setMessage(R.string.warning_folder_should_be_empty_clear)
-                                .setPositiveButton(R.string.clean, new DialogInterface.OnClickListener() {
+                        builder.setMessage(com.nextgis.maplibui.R.string.warning_folder_should_be_empty_clear)
+                                .setPositiveButton(com.nextgis.maplibui.R.string.clean, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         if (callChangeListener(finalValue)) {
@@ -177,7 +177,7 @@ public class SelectMapPathPreference
                                         }
                                     }
                                 })
-                                .setNegativeButton(R.string.cancel,null)
+                                .setNegativeButton(com.nextgis.maplibui.R.string.cancel,null)
                                 .setTitle("");
                         builder.create().show();
                         dialogInterface.dismiss();
@@ -198,8 +198,8 @@ public class SelectMapPathPreference
 
         } else {
             new AlertDialog.Builder(getContext())
-                    .setMessage(R.string.no_storages_error)
-                    .setPositiveButton(R.string.ok, null)
+                    .setMessage(com.nextgis.maplibui.R.string.no_storages_error)
+                    .setPositiveButton(com.nextgis.maplibui.R.string.ok, null)
                     .create()
                     .show();
         }

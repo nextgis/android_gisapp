@@ -639,7 +639,7 @@ public class SettingsFragment
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
             if (result == null) {
-                mPreference.setSummary(R.string.error_connect_failed);
+                mPreference.setSummary(com.nextgis.maplib.R.string.error_connect_failed);
                 return;
             }
 
@@ -904,7 +904,7 @@ public class SettingsFragment
             mProgressDialog.setMessage(mActivity.getString(R.string.warning_map_moving));
             mProgressDialog.setIndeterminate(true);
             mProgressDialog.setCancelable(false);
-            mProgressDialog.setIcon(R.drawable.ic_action_warning_light);
+            mProgressDialog.setIcon(com.nextgis.maplibui.R.drawable.ic_action_warning_light);
             mProgressDialog.show();
         }
 

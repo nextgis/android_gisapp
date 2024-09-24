@@ -61,8 +61,8 @@ public class SyncAdapter extends com.nextgis.maplib.datasource.ngw.SyncAdapter {
     public void onPerformSync(Account account, Bundle bundle, String authority, ContentProviderClient contentProviderClient, SyncResult syncResult) {
         if(!AccountUtil.isUserExists(getContext())) {
             HyperLog.v(Constants.TAG, "onPerformSync for" + account.name + " exit cos !AccountUtil.isUserExists");
-            String alertMessage = getContext().getString(R.string.sync_need_login);
-            String alertTitle = getContext().getString(R.string.sync_off_title);
+            String alertMessage = getContext().getString(com.nextgis.maplibui.R.string.sync_need_login);
+            String alertTitle = getContext().getString(com.nextgis.maplibui.R.string.sync_off_title);
             Intent msg = new Intent(MESSAGE_ALERT_INTENT);
             msg.putExtra(MESSAGE_EXTRA, alertMessage);
             msg.putExtra(MESSAGE_TITLE_EXTRA, alertTitle);
@@ -108,7 +108,7 @@ public class SyncAdapter extends com.nextgis.maplib.datasource.ngw.SyncAdapter {
         Bitmap largeIcon = NotificationHelper.getLargeIcon(R.drawable.ic_action_sync, context.getResources());
         switch (notificationType) {
             case SYNC_START:
-                largeIcon = NotificationHelper.getLargeIcon(R.drawable.ic_next_dark, context.getResources());
+                largeIcon = NotificationHelper.getLargeIcon(com.nextgis.maplibui.R.drawable.ic_next_dark, context.getResources());
                 builder.setProgress(0, 0, true)
                         .setTicker(context.getString(com.nextgis.maplib.R.string.sync_started))
                         .setContentTitle(context.getString(com.nextgis.maplib.R.string.synchronization))
@@ -116,7 +116,7 @@ public class SyncAdapter extends com.nextgis.maplib.datasource.ngw.SyncAdapter {
                 break;
 
             case SYNC_FINISH:
-                largeIcon = NotificationHelper.getLargeIcon(R.drawable.ic_action_apply_dark, context.getResources());
+                largeIcon = NotificationHelper.getLargeIcon(com.nextgis.maplibui.R.drawable.ic_action_apply_dark, context.getResources());
                 builder.setProgress(0, 0, false)
                         .setTicker(context.getString(com.nextgis.maplib.R.string.sync_finished))
                         .setContentTitle(context.getString(com.nextgis.maplib.R.string.synchronization))
@@ -124,7 +124,7 @@ public class SyncAdapter extends com.nextgis.maplib.datasource.ngw.SyncAdapter {
                 break;
 
             case SYNC_CANCELED:
-                largeIcon = NotificationHelper.getLargeIcon(R.drawable.ic_action_cancel_dark, context.getResources());
+                largeIcon = NotificationHelper.getLargeIcon(com.nextgis.maplibui.R.drawable.ic_action_cancel_dark, context.getResources());
                 builder.setProgress(0, 0, false)
                         .setTicker(context.getString(com.nextgis.maplib.R.string.sync_canceled))
                         .setContentTitle(context.getString(com.nextgis.maplib.R.string.synchronization))
@@ -132,7 +132,7 @@ public class SyncAdapter extends com.nextgis.maplib.datasource.ngw.SyncAdapter {
                 break;
 
             case SYNC_CHANGES:
-                largeIcon = NotificationHelper.getLargeIcon(R.drawable.ic_action_warning_dark, context.getResources());
+                largeIcon = NotificationHelper.getLargeIcon(com.nextgis.maplibui.R.drawable.ic_action_warning_dark, context.getResources());
                 builder.setProgress(0, 0, false)
                         .setTicker(context.getString(com.nextgis.maplib.R.string.sync_error))
                         .setContentTitle(context.getString(com.nextgis.maplib.R.string.synchronization))

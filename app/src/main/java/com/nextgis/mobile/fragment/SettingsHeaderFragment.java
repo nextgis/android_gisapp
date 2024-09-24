@@ -39,6 +39,6 @@ public class SettingsHeaderFragment
     {
         addPreferencesFromResource(R.xml.preference_headers);
         if (getActivity() != null && !AccountUtil.isProUser(getActivity()))
-            screen.findPreference(SettingsConstantsUI.ACTION_PREFS_NGW).setIcon(R.drawable.ic_lock_black_24dp);
+            screen.findPreference(SettingsConstantsUI.ACTION_PREFS_NGW).setIcon(com.nextgis.maplibui.R.drawable.ic_lock_black_24dp);
     }
 }
