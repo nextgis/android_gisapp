@@ -112,9 +112,14 @@ public class SettingsFragment
     @Override
     protected void createPreferences(PreferenceScreen screen)
     {
+        if ( !isAdded()) {
+            return;
+        }
+
         switch (mAction) {
             case SettingsConstantsUI.ACTION_PREFS_GENERAL:
-                addPreferencesFromResource(R.xml.preferences_general);
+                //addPreferencesFromResource(R.xml.preferences_general);
+                setPreferencesFromResource(R.xml.preferences_general, null);
 
                 final ListPreference theme =
                         (ListPreference) findPreference(SettingsConstantsUI.KEY_PREF_THEME);
@@ -128,7 +133,8 @@ public class SettingsFragment
 
                 break;
             case SettingsConstantsUI.ACTION_PREFS_MAP:
-                addPreferencesFromResource(R.xml.preferences_map);
+                setPreferencesFromResource(R.xml.preferences_map, null);
+                //addPreferencesFromResource(R.xml.preferences_map);
 
                 final ListPreference showInfoPanel = (ListPreference) findPreference(
                         SettingsConstantsUI.KEY_PREF_SHOW_STATUS_PANEL);
@@ -162,7 +168,8 @@ public class SettingsFragment
                 initializeRestore(getActivity(), restore);
                 break;
             case SettingsConstantsUI.ACTION_PREFS_LOCATION:
-                addPreferencesFromResource(R.xml.preferences_location);
+                //addPreferencesFromResource(R.xml.preferences_location);
+                setPreferencesFromResource(R.xml.preferences_location, null);
 
                 final ListPreference lpLocationAccuracy =
                         (ListPreference) findPreference(SettingsConstants.KEY_PREF_LOCATION_SOURCE);
@@ -179,7 +186,9 @@ public class SettingsFragment
                 initializeAccurateTaking(accurateMaxCount);
                 break;
             case SettingsConstantsUI.ACTION_PREFS_TRACKING:
-                addPreferencesFromResource(R.xml.preferences_tracks);
+                //addPreferencesFromResource(R.xml.preferences_tracks);
+                setPreferencesFromResource(R.xml.preferences_tracks, null);
+
 
                 final ListPreference lpTracksAccuracy =
                         (ListPreference) findPreference(SettingsConstants.KEY_PREF_TRACKS_SOURCE);
@@ -987,6 +996,12 @@ public class SettingsFragment
 
             }
         }
+    }
+
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
     }
 
 }

@@ -23,21 +23,30 @@
 
 package com.nextgis.mobile.fragment;
 
+import android.accounts.AccountManager;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.preference.PreferenceManager;
 import androidx.annotation.Nullable;
-import androidx.appcompat.view.menu.ActionMenuItemView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import android.text.Html;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -50,6 +59,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.keenfin.easypicker.AttachInfo;
+import com.keenfin.easypicker.DownloadPhotoIntentService;
 import com.keenfin.easypicker.PhotoPicker;
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.datasource.Field;
@@ -60,21 +71,28 @@ import com.nextgis.maplib.datasource.GeoMultiPoint;
 import com.nextgis.maplib.datasource.GeoMultiPolygon;
 import com.nextgis.maplib.datasource.GeoPoint;
 import com.nextgis.maplib.datasource.GeoPolygon;
+import com.nextgis.maplib.datasource.ngw.Connection;
+import com.nextgis.maplib.datasource.ngw.Connections;
+import com.nextgis.maplib.map.NGWVectorLayer;
 import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.GeoConstants;
 import com.nextgis.maplib.util.LocationUtil;
 import com.nextgis.maplibui.GISApplication;
+import com.nextgis.maplibui.activity.ModifyAttributesActivity;
 import com.nextgis.maplibui.api.IVectorLayerUI;
 import com.nextgis.maplibui.control.PhotoGallery;
+import com.nextgis.maplibui.dialog.SelectNGWResourceDialog;
 import com.nextgis.maplibui.fragment.BottomToolbar;
 import com.nextgis.maplibui.overlay.EditLayerOverlay;
+import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.maplibui.util.ControlHelper;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -86,6 +104,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.keenfin.easypicker.DownloadPhotoIntentService.DOWNLOAD_ACTION;
+import static com.keenfin.easypicker.DownloadPhotoIntentService.getReceiverIntent;
+import static com.nextgis.maplib.util.Constants.MESSAGE_ALERT_INTENT;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WEB_MERCATOR;
 import static com.nextgis.maplib.util.GeoConstants.CRS_WGS84;
 import static com.nextgis.maplib.util.GeoConstants.FTDate;
@@ -98,7 +119,9 @@ import static com.nextgis.maplib.util.GeoConstants.GTMultiPolygon;
 import static com.nextgis.maplib.util.GeoConstants.GTPoint;
 import static com.nextgis.maplib.util.GeoConstants.GTPolygon;
 import static com.nextgis.maplib.util.NetworkUtil.URL_PATTERN;
+import static com.nextgis.maplib.util.NetworkUtil.getHttpConnection;
 import static com.nextgis.mobile.util.AppConstants.DEFAULT_COORDINATES_FRACTION_DIGITS;
+
 
 public class AttributesFragment
         extends Fragment
@@ -106,7 +129,6 @@ public class AttributesFragment
     protected static final String KEY_ITEM_ID       = "item_id";
     protected static final String KEY_ITEM_POSITION = "item_pos";
     protected static final String KEY_READ_ONLY     = "read_only";
-
 
     private LinearLayout    mAttributes;
     private VectorLayer     mLayer;
@@ -121,18 +143,38 @@ public class AttributesFragment
 
     private boolean readOnly = true;
 
+    MessageReceiver messageReceiver;
+    WeakReference<PhotoPicker> photoPickerWeakReference = new WeakReference<>(null);
 
     @Override
     public View onCreateView(
             LayoutInflater inflater,
             ViewGroup container,
-            Bundle savedInstanceState)
-    {
+            Bundle savedInstanceState) {
         if (mLayer == null) {
             getActivity().getSupportFragmentManager().popBackStack();
             Toast.makeText(getContext(), com.nextgis.maplibui.R.string.error_layer_not_inited, Toast.LENGTH_SHORT).show();
             return null;
         }
+
+        if (messageReceiver == null)
+            messageReceiver = new MessageReceiver(){
+                @Override
+            public void onReceive(Context context, Intent intent) {
+                    if (intent.getAction().equals(DOWNLOAD_ACTION)) {
+                        if (photoPickerWeakReference != null &&  photoPickerWeakReference.get() != null){
+                            photoPickerWeakReference.get().updateStatus(intent);
+                        }
+                    }
+                }
+        };
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            getContext().registerReceiver(messageReceiver, getReceiverIntent(), Context.RECEIVER_EXPORTED);
+        } else {
+            getContext().registerReceiver(messageReceiver, getReceiverIntent());
+        }
+
         readOnly = getArguments().getBoolean(KEY_READ_ONLY,  true);
 
         getActivity().setTitle(mLayer.getName());
@@ -160,7 +202,6 @@ public class AttributesFragment
         return view;
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
@@ -168,6 +209,14 @@ public class AttributesFragment
         ((MainActivity) getActivity()).setActionBarState(isTablet());
     }
 
+    @Override
+    public void onPause() {
+        if (messageReceiver != null) {
+            getContext().unregisterReceiver(messageReceiver);
+            messageReceiver = null;
+        }
+        super.onPause();
+    }
 
     @Override
     public void onPrepareOptionsMenu(Menu menu)
@@ -258,20 +307,39 @@ public class AttributesFragment
         });
 
         IGISApplication app = (GISApplication) getActivity().getApplication();
-        final Map<String, Integer> mAttaches = new HashMap<>();
-        PhotoGallery.getAttaches(app, mLayer, mItemId, mAttaches, false, null);
 
-        if (mAttaches.size() > 0) {
-            final PhotoPicker gallery = new PhotoPicker(getActivity(), true);
+        final List<AttachInfo> mAttaches = new ArrayList<>();
+        PhotoGallery.getOfflineAttaches(app, mLayer, mItemId, mAttaches, false, null);
+
+        Map<String, AttachInfo> onlineAttaches =  PhotoGallery.getOnlineAttaches(app, mLayer, mItemId);
+
+        if (mAttaches.size() > 0 || onlineAttaches.size()>0 ) {
+
+            AccountManager accountManager = AccountManager.get(getActivity());
+            Connections connections = SelectNGWResourceDialog.fillConnections(getActivity(), accountManager);
+            Connection found = null;
+            if (mLayer instanceof  NGWVectorLayer) {
+                for (int i = 0; i < connections.getChildrenCount(); i++) {
+                    if (connections.getChild(i).getName().equals((((NGWVectorLayer) mLayer).getAccountName()))) {
+                        found = (Connection) connections.getChild(i);
+                    }
+                }
+            }
+
+            final PhotoPicker gallery = new PhotoPicker(getActivity(), true, found== null? "" :found.getLogin(), found== null? "" :found.getPassword());
             int px = ControlHelper.dpToPx(16, getResources());
             gallery.setDefaultPreview(true);
             gallery.setPadding(px, 0, px, 0);
             gallery.post(new Runnable() {
                 @Override
                 public void run() {
-                    gallery.restoreImages(new ArrayList<>(mAttaches.keySet()));
+                    ArrayList<String> item = DownloadPhotoIntentService.getProgressList();
+                    gallery.updateInProgressList(item);
+                    gallery.restoreImages(mAttaches, onlineAttaches);
                 }
             });
+
+            photoPickerWeakReference = new WeakReference<>(gallery);
 
             mAttributes.addView(gallery);
         }
@@ -583,4 +651,10 @@ public class AttributesFragment
 
         checkNearbyItems();
     }
+
+    public class MessageReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {}
+    }
+
 }

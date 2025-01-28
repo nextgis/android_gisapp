@@ -138,6 +138,9 @@
     <string name="github_src">http://github.com/nextgis/android_gisapp/issues</string>
     <string name="web">Website</string>
     <string name="web_src">https://nextgis.com/nextgis-mobile</string>
+    <string name="manual">Documentation</string>
+    <string name="manual_url">https://docs.nextgis.com/docs_ngmobile/source/</string>
+
     <string name="not_installed">Application not installed</string>
     <string name="action_help">Help</string>
     <string name="location_distance_to">Distance to (m)</string>

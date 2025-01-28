@@ -180,5 +180,11 @@
 
     <string name="copied">Текст скопирован в буфер обмена</string>
 
+    <string name="web_src">https://nextgis.ru/nextgis-mobile</string>
+    <string name="copyright" translatable="false"><![CDATA[© <a href=\"https://nextgis.ru\">NextGIS</a>, 2012–%s]]></string>
+    <string name="support">Поддержка</string>
+    <string name="manual">Документация</string>
+    <string name="manual_url">https://docs.nextgis.ru/docs_ngmobile/source/</string>
+
 
 </resources>

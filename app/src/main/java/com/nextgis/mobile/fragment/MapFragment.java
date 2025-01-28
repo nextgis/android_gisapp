@@ -1596,7 +1596,6 @@ public class MapFragment
 
         layersLoop:
         for (ILayer layer : layers) {
-//            Log.e("LLAAYY", "layer for global process: " + layer.getName());
             if (!layer.isValid())
                 continue;
 
@@ -1627,7 +1626,6 @@ public class MapFragment
                     mSelectedLayers.add(layer.getName() + ": " + valueForHint);
                     valueForHint = layer.getName() + ": " + valueForHint;
                 }
-//                Log.e("LLAAYY", "valueForHint " +  valueForHint);
 
                 selectedSingleVectorLayer = (VectorLayer) layer;
                 selectedSingleFeatureId = featureId;
@@ -1812,7 +1810,6 @@ public class MapFragment
 
                     layersLoop:
                     for (ILayer layer : layers) {
-//                  Log.e("LLAAYY", "layer for global process: " + layer.getName());
                         if (!layer.isValid())
                             continue;
 
@@ -1843,7 +1840,6 @@ public class MapFragment
                                 mSelectedLayers.add(layer.getName() + ": " + valueForHint);
                                 valueForHint = layer.getName() + ": " + valueForHint;
                             }
-//                Log.e("LLAAYY", "valueForHint " +  valueForHint);
 
                             selectedSingleVectorLayer = (VectorLayer) layer;
                             selectedSingleFeatureId = featureId;

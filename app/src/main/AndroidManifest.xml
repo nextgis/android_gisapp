@@ -69,7 +69,7 @@
             android:foregroundServiceType="dataSync"
             android:exported="false"/>
 
-        <meta-data
+                <meta-data
             android:name="io.sentry.dsn"
             android:value="@string/SENTRY_DSN" /> <!-- enable automatic breadcrumbs for user interactions (clicks, swipes, scrolls) -->
         <meta-data

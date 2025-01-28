@@ -93,5 +93,28 @@
             android:autoLink="web"
             android:text="@string/web_src"
             android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/manual"
+            android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+        <TextView
+            android:id="@+id/manual_url_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:autoLink="web"
+            android:text="@string/manual_url"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+
+
     </LinearLayout>
 </ScrollView>
