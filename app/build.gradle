@@ -118,7 +118,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':maplibui')
-    implementation project(':easypicker')
+    implementation project(':easypicker-module')
 
     //implementation 'com.github.joshdholtz:Sentry-Android:1.6.0'
     //implementation 'io.sentry:sentry-android:1.7.30'

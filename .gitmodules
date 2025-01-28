@@ -4,3 +4,6 @@
 [submodule "maplibui"]
 	path = maplibui
 	url = https://github.com/nextgis/android_maplibui.git
+[submodule "easypicker"]
+	path = easypicker
+	url = git@github.com:nextgis/easypicker.git
