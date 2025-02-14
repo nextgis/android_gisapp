@@ -47,6 +47,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
+
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -1749,6 +1751,8 @@ public class MapFragment
     @Override
     public void onSingleTapUp(MotionEvent event)
     {
+        if (mRulerOverlay.isMeasuring())
+            return;
         switch (mMode) {
             case MODE_EDIT:
                 if (mEditLayerOverlay.selectGeometryInScreenCoordinates(event.getX(), event.getY()))
@@ -1825,13 +1829,19 @@ public class MapFragment
                             if (mEditLayerOverlay.notContains(geometry, point)) {
                                 continue;
                             }
-
-                            String valueForHint = String.valueOf(vectorLayer
+                            String fieldToDisplay = ( ((SimpleFeatureRenderer) vectorLayer.getRenderer())
+                                    .getStyle())
+                                    .getField();
+                            if (TextUtils.isEmpty(fieldToDisplay)){
+                                fieldToDisplay = vectorLayer.getFields().get(0).getName();
+                            }
+                            Object objectValueForHint = vectorLayer
                                     .getFeature(featureId)
-                                    .getFieldValue(
-                                            ( ((SimpleFeatureRenderer) vectorLayer.getRenderer())
-                                                    .getStyle())
-                                                    .getField()));
+                                    .getFieldValue( ( fieldToDisplay));
+                            String valueForHint = String.valueOf(objectValueForHint);
+                            if (objectValueForHint == null && fieldToDisplay.equals("_id")){
+                                valueForHint  = String.valueOf(vectorLayer.getFeature(featureId).getId());
+                            }
                             if (valueForHint == null) {
                                 mSelectedLayers.add(layer.getName() + ": " + featureId);
                                 valueForHint = layer.getName() + ": " + featureId;
