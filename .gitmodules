@@ -1,0 +1,12 @@
+[submodule "maplib"]
+	path = maplib
+	url = git@github.com:nextgis/android_maplib.git
+	branch = master
+[submodule "maplibui"]
+	path = maplibui
+	url = git@github.com:nextgis/android_maplibui.git
+	branch = master
+[submodule "easypicker"]
+	path = easypicker
+	url = git@github.com:nextgis/easypicker.git
+	branch = master
