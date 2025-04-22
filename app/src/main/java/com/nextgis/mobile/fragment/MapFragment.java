@@ -1835,20 +1835,24 @@ public class MapFragment
                             if (TextUtils.isEmpty(fieldToDisplay)){
                                 fieldToDisplay = vectorLayer.getFields().get(0).getName();
                             }
-                            Object objectValueForHint = vectorLayer
-                                    .getFeature(featureId)
-                                    .getFieldValue( ( fieldToDisplay));
-                            String valueForHint = String.valueOf(objectValueForHint);
-                            if (objectValueForHint == null && fieldToDisplay.equals("_id")){
-                                valueForHint  = String.valueOf(vectorLayer.getFeature(featureId).getId());
-                            }
-                            if (valueForHint == null) {
-                                mSelectedLayers.add(layer.getName() + ": " + featureId);
-                                valueForHint = layer.getName() + ": " + featureId;
-                            }
-                            else {
-                                mSelectedLayers.add(layer.getName() + ": " + valueForHint);
-                                valueForHint = layer.getName() + ": " + valueForHint;
+                            Feature feature = vectorLayer.getFeature(featureId);
+                            if (feature!=null) {
+                                Object objectValueForHint = vectorLayer
+                                        .getFeature(featureId)
+                                        .getFieldValue((fieldToDisplay));
+                                String valueForHint = String.valueOf(objectValueForHint);
+                                if (objectValueForHint == null && fieldToDisplay.equals("_id")) {
+                                    valueForHint = String.valueOf(vectorLayer.getFeature(featureId).getId());
+                                }
+
+
+                                if (valueForHint == null) {
+                                    mSelectedLayers.add(layer.getName() + ": " + featureId);
+                                    valueForHint = layer.getName() + ": " + featureId;
+                                } else {
+                                    mSelectedLayers.add(layer.getName() + ": " + valueForHint);
+                                    valueForHint = layer.getName() + ": " + valueForHint;
+                                }
                             }
 
                             selectedSingleVectorLayer = (VectorLayer) layer;

@@ -126,8 +126,8 @@ public class SettingsActivity
                 super.onStartSubScreen(preferenceScreen);
                 return;
             case SettingsConstantsUI.ACTION_PREFS_NGW:
-                if (!AccountUtil.isProUser(this)) {
-                    ControlHelper.showProDialog(this);
+                if (!AccountUtil.isUserExists(this)) {
+                    ControlHelper.showNoLoginDialog(this);
                     return;
                 }
                 intent = new Intent(this, NGWSettingsActivity.class);

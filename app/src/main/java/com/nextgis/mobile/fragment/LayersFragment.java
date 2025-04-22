@@ -537,8 +537,8 @@ public class LayersFragment
                 ((MainActivity) getActivity()).addRemoteLayer();
                 return true;
             case R.id.menu_add_ngw:
-                if (!AccountUtil.isProUser(getActivity())) {
-                    ControlHelper.showProDialog(getActivity());
+                if (!AccountUtil.isUserExists(getActivity())) {
+                    ControlHelper.showNoLoginDialog(getActivity());
                 } else {
                     application.sendEvent(GA_LAYER, GA_CREATE, GA_NGW);
                     ((MainActivity) getActivity()).addNGWLayer();

@@ -159,7 +159,7 @@ public class IntroActivity extends NGActivity implements PageFragmentCallbacks, 
 
         @Override
         public int getCount() {
-            return 3;
+            return 2;
         }
     }
 
@@ -171,7 +171,10 @@ public class IntroActivity extends NGActivity implements PageFragmentCallbacks, 
 
         @Override
         protected PageList onNewRootPageList() {
-            return new PageList(new IntroPage(this, "1"), new IntroPage(this, "2"), new IntroPage(this, "3"));
+            return new PageList(new IntroPage(this, "1"),
+                    new IntroPage(this, "2")
+                    //new IntroPage(this, "3")
+            );
         }
     }
 
@@ -220,15 +223,15 @@ public class IntroActivity extends NGActivity implements PageFragmentCallbacks, 
             switch (mKey) {
                 case "1":
                     return inflater.inflate(R.layout.fragment_intro1, container, false);
+//                case "2":
+//                    View v = inflater.inflate(R.layout.fragment_intro2, container, false);
+//                    TextView signIn = (TextView) v.findViewById(R.id.sign_in);
+//                    signIn.setText(signIn.getText().toString().toUpperCase());
+//                    signIn.setOnClickListener((View.OnClickListener) getActivity());
+//                    v.findViewById(R.id.sign_in).setOnClickListener((View.OnClickListener) getActivity());
+//                    v.findViewById(R.id.get_pro).setOnClickListener((View.OnClickListener) getActivity());
+//                    return v;
                 case "2":
-                    View v = inflater.inflate(R.layout.fragment_intro2, container, false);
-                    TextView signIn = (TextView) v.findViewById(R.id.sign_in);
-                    signIn.setText(signIn.getText().toString().toUpperCase());
-                    signIn.setOnClickListener((View.OnClickListener) getActivity());
-                    v.findViewById(R.id.sign_in).setOnClickListener((View.OnClickListener) getActivity());
-                    v.findViewById(R.id.get_pro).setOnClickListener((View.OnClickListener) getActivity());
-                    return v;
-                case "3":
                     return inflater.inflate(R.layout.fragment_intro_login, container, false);
                 default:
                     return null;
