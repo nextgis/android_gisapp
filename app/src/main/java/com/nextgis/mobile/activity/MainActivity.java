@@ -43,6 +43,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Messenger;
 import android.preference.PreferenceManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -90,6 +91,7 @@ import com.nextgis.maplibui.api.IVectorLayerUI;
 import com.nextgis.maplibui.fragment.BottomToolbar;
 import com.nextgis.maplibui.fragment.LayerFillProgressDialogFragment;
 import com.nextgis.maplibui.overlay.EditLayerOverlay;
+import com.nextgis.maplibui.service.TrackerReceiver;
 import com.nextgis.maplibui.service.TrackerService;
 import com.nextgis.maplibui.util.ConstantsUI;
 import com.nextgis.maplibui.util.ControlHelper;
@@ -151,6 +153,8 @@ public class MainActivity extends NGActivity
     protected MapFragment     mMapFragment;
     protected LayersFragment  mLayersFragment;
     protected MessageReceiver mMessageReceiver;
+    protected TrackerReceiver mMessageReceiverTracker;
+
     protected Toolbar         mToolbar;
 
     protected final static int FILE_SELECT_CODE = 555;
@@ -176,6 +180,7 @@ public class MainActivity extends NGActivity
 
         setContentView(R.layout.activity_main);
         mMessageReceiver = new MessageReceiver();
+        mMessageReceiverTracker = new TrackerReceiver();
 
         mToolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(mToolbar);
@@ -1071,6 +1076,28 @@ public class MainActivity extends NGActivity
     }
 
 
+    protected class MessageReceiverTracker extends BroadcastReceiver
+    {
+        @Override
+        public void onReceive(
+                Context context,
+                Intent intent){
+
+            if (intent.getAction().equals(ConstantsUI.MESSAGE_INTENT_TRACKER)) {
+                Log.e("ZZXX", "intent.getAction().equals(MESSAGE_INTENT_TRACKER");
+                String message = intent.getExtras().getString(MESSAGE_EXTRA);
+                String title = intent.getExtras().getString(MESSAGE_TITLE_EXTRA);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setMessage(message)
+                        .setPositiveButton("ok", null)
+                        .setTitle(title);
+                AlertDialog alertDialog=builder.create();
+                alertDialog.show();
+            }
+        }
+    }
+
     protected class MessageReceiver
             extends BroadcastReceiver
     {
@@ -1116,10 +1143,17 @@ public class MainActivity extends NGActivity
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConstantsUI.MESSAGE_INTENT);
         intentFilter.addAction(MESSAGE_ALERT_INTENT);
+
+        IntentFilter intentFilterTracker = new IntentFilter();
+        intentFilter.addAction("com.example.ACTION_TRACKER_MESSAGE");
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(mMessageReceiver, intentFilter, Context.RECEIVER_EXPORTED);
+            registerReceiver(mMessageReceiverTracker, intentFilterTracker, Context.RECEIVER_EXPORTED);
         } else {
             registerReceiver(mMessageReceiver, intentFilter);
+            registerReceiver(mMessageReceiverTracker, intentFilterTracker);
         }
 
 
@@ -1163,6 +1197,10 @@ public class MainActivity extends NGActivity
             if (mMessageReceiver != null) {
                 unregisterReceiver(mMessageReceiver);
                 mMessageReceiver = null;
+            }
+            if (mMessageReceiverTracker != null) {
+                unregisterReceiver(mMessageReceiverTracker);
+                mMessageReceiverTracker = null;
             }
         } catch (Exception ignored) { }
 

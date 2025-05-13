@@ -96,7 +96,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:text="@string/contacts"
-            android:textAppearance="?android:attr/textAppearanceMedium"/>
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            />
 
         <Button
             android:id="@+id/creditsInto"

@@ -91,7 +91,7 @@
     <string name="show_status_panel">Показать панель статуса</string>
     <string name="show_current_location">Показать текущее местоположение</string>
     <string name="edit_layer">Отредактировать слой \'%s\'</string>
-    <string name="features_count_attributes">%1$d of %2$d</string>
+    <string name="features_count_attributes">%1$d из %2$d</string>
     <string name="coordinates">Координаты</string>
     <string name="length">Длина</string>
     <string name="center">Центр</string>
