@@ -38,12 +38,15 @@
             android:entryValues="@array/theme_val"
             android:key="theme"
             android:title="@string/theme"
+            android:singleLineTitle="false"
            />
         <CheckBoxPreference
             app:iconSpaceReserved="false"
             android:defaultValue="false"
             android:key="show_sync"
-            android:title="@string/pref_sync_notification"/>
+            android:title="@string/pref_sync_notification"
+            android:singleLineTitle="false"
+            />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/other"
@@ -54,17 +57,20 @@
             android:key="reset_settings"
             android:title="@string/reset_settings"
             android:iconSpaceReserved="false"
+            android:singleLineTitle="false"
             />
         <CheckBoxPreference
             app:iconSpaceReserved="false"
             android:defaultValue="true"
             android:key="ga_enabled"
+            android:singleLineTitle="false"
             android:summary="@string/pref_ga_sum"
             android:title="@string/pref_ga"/>
         <CheckBoxPreference
             app:iconSpaceReserved="false"
             android:defaultValue="false"
             android:key="save_log"
+            android:singleLineTitle="false"
             android:title="@string/extended_logs"
             />
     </PreferenceCategory>
@@ -75,21 +81,25 @@
             app:iconSpaceReserved="false"
             android:defaultValue="true"
             android:key="compass_true_north"
+            android:singleLineTitle="false"
             android:title="@string/compass_true_north"/>
         <CheckBoxPreference
             app:iconSpaceReserved="false"
             android:defaultValue="false"
             android:key="compass_show_magnetic"
+            android:singleLineTitle="false"
             android:title="@string/compass_magnetic"/>
         <CheckBoxPreference
             app:iconSpaceReserved="false"
             android:defaultValue="true"
             android:key="compass_vibration"
+            android:singleLineTitle="false"
             android:title="@string/compass_vibrate"/>
         <CheckBoxPreference
             app:iconSpaceReserved="false"
             android:defaultValue="true"
             android:key="compass_wake_lock"
+            android:singleLineTitle="false"
             android:title="@string/compass_keep_screen"/>
     </PreferenceCategory>
 

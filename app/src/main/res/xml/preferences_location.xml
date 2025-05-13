@@ -30,7 +30,9 @@
         android:defaultValue="1"
         android:entryValues="@array/location_accuracy_val"
         android:key="location_source"
-        android:title="@string/pref_location_accuracy" />
+        android:title="@string/pref_location_accuracy"
+        android:singleLineTitle="false"
+        />
 
     <ListPreference
         app:iconSpaceReserved="false"
@@ -38,7 +40,9 @@
         android:entries="@array/tracker_min_time_between_updates"
         android:entryValues="@array/tracker_min_time_between_updates_val"
         android:key="location_min_time"
-        android:title="@string/pref_min_time" />
+        android:title="@string/pref_min_time"
+        android:singleLineTitle="false"
+        />
 
     <ListPreference
         app:iconSpaceReserved="false"
@@ -46,13 +50,17 @@
         android:entries="@array/tracker_min_dist_update"
         android:entryValues="@array/tracker_min_dist_update_val"
         android:key="location_min_distance"
-        android:title="@string/pref_min_distance" />
+        android:title="@string/pref_min_distance"
+        android:singleLineTitle="false"
+        />
 
     <EditTextPreference
         app:iconSpaceReserved="false"
         android:defaultValue="20"
         android:inputType="numberDecimal"
         android:key="accurate_max_count"
-        android:title="@string/accurate_measures_count" />
+        android:title="@string/accurate_measures_count"
+        android:singleLineTitle="false"
+        />
 
 </PreferenceScreen>

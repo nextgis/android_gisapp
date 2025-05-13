@@ -33,6 +33,7 @@
         android:entries="@array/status_panel_mode"
         android:entryValues="@array/status_panel_mode_val"
         android:key="show_status_panel"
+        android:singleLineTitle="false"
         android:title="@string/show_status_panel"/>
 
     <ListPreference
@@ -41,18 +42,21 @@
         android:entries="@array/current_location_mode"
         android:entryValues="@array/current_location_mode_val"
         android:key="show_current_location"
+        android:singleLineTitle="false"
         android:title="@string/show_current_location"/>
 
     <CheckBoxPreference
         app:iconSpaceReserved="false"
         android:defaultValue="true"
         android:key="map_show_compass"
+        android:singleLineTitle="false"
         android:title="@string/show_compass"/>
 
     <CheckBoxPreference
         app:iconSpaceReserved="false"
         android:defaultValue="false"
         android:key="keep_screen_on"
+        android:singleLineTitle="false"
         android:summary="@string/keep_screen_on_summary"
         android:title="@string/keep_screen_on"/>
 
@@ -60,6 +64,7 @@
         app:iconSpaceReserved="false"
         android:defaultValue="true"
         android:key="show_zoom_controls"
+        android:singleLineTitle="false"
         android:summary="@string/show_zoom_controls_summary"
         android:title="@string/show_zoom_controls"/>
 
@@ -70,24 +75,28 @@
         android:entries="@array/units"
         android:entryValues="@array/units_val"
         android:key="preferred_units"
+        android:singleLineTitle="false"
         android:title="@string/preferred_units"/>
 
     <CheckBoxPreference
         app:iconSpaceReserved="false"
         android:defaultValue="true"
         android:key="show_scale_ruler"
+        android:singleLineTitle="false"
         android:title="@string/show_scale_ruler"/>
 
     <CheckBoxPreference
         app:iconSpaceReserved="false"
         android:defaultValue="false"
         android:key="show_zoom_level"
+        android:singleLineTitle="false"
         android:title="@string/show_zoom_level"/>
 
     <CheckBoxPreference
         app:iconSpaceReserved="false"
         android:defaultValue="false"
         android:key="show_ruler_measuring"
+        android:singleLineTitle="false"
         android:title="@string/show_ruler_measuring"/>
 
     <ListPreference
@@ -98,14 +107,17 @@
         android:entryValues="@array/coordinates_format_val"
         android:key="coordinates_format"
         android:summary="@string/coordinates_format_summary"
-        android:title="@string/coordinates_format"/>
+        android:title="@string/coordinates_format"
+        android:singleLineTitle="false"
+        />
 
     <com.nextgis.mobile.util.IntEditTextPreference
         app:iconSpaceReserved="false"
         android:defaultValue="6"
         android:inputType="number"
         android:key="coordinates_fraction_digits"
-        android:title="@string/coordinates_fraction_digits"/>
+        android:title="@string/coordinates_fraction_digits"
+        android:singleLineTitle="false"/>
 
     <ListPreference
         app:iconSpaceReserved="false"
@@ -113,19 +125,25 @@
         android:entries="@array/map_bg_entry"
         android:entryValues="@array/map_bg_val"
         android:key="map_bg"
-        android:title="@string/map_bg"/>
+        android:title="@string/map_bg"
+        android:singleLineTitle="false"
+        />
     <!--bui/blob/master/src/main/res/values/arrays.xml#L107-->
 
     <com.nextgis.mobile.util.SelectMapPathPreference
         app:iconSpaceReserved="false"
         android:key="map_path"
         android:title="@string/map_path"
-        android:summary="@string/map_path_summary"/>
+        android:summary="@string/map_path_summary"
+        android:singleLineTitle="false"
+        />
 
     <Preference
         app:iconSpaceReserved="false"
         android:key="restore_layers"
-        android:title="@string/restore_layers"/>
+        android:title="@string/restore_layers"
+        android:singleLineTitle="false"
+        />
     <!-- TODO:
     1) tile size
     2) drawing canvas size in percent   -->
