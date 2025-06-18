@@ -158,6 +158,11 @@ public class MainApplication extends GISApplication
     }
 
     @Override
+    public boolean isCollectorApplication() {
+        return false;
+    }
+
+    @Override
     public void sendEvent(String category, String action, String label) {
         HitBuilders.EventBuilder event = new HitBuilders.EventBuilder()
                 .setCategory(category)

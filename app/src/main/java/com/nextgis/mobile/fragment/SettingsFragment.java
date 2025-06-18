@@ -846,7 +846,7 @@ public class SettingsFragment
                         .equals(MainApplication.LAYER_C) && !layer.getPath()
                         .getName()
                         .equals(MainApplication.LAYER_TRACKS)) {
-                    layer.delete();
+                    layer.delete(false);
                 }
             } catch (Exception ex) {
                 //Log.e("d", "'");
