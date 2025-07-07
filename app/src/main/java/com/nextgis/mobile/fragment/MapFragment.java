@@ -777,7 +777,7 @@ public class MapFragment
         mCurrentLocationOverlay = new CurrentLocationOverlay(mActivity, mMap);
         mCurrentLocationOverlay.setStandingMarker(R.mipmap.ic_location_standing);
         mCurrentLocationOverlay.setMovingMarker(R.mipmap.ic_location_moving);
-        mCurrentLocationOverlay.setAutopanningEnabled(true);
+        mCurrentLocationOverlay.setAutopanningEnabled(false);
 
         mCurrentTrackOverlay = new CurrentTrackOverlay(mActivity, mMap);
         mRulerOverlay = new RulerOverlay(mActivity, mMap);

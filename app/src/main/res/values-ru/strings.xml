@@ -167,6 +167,7 @@
     <string name="track_send">Отправлять местоположение на сервер</string>
     <string name="preferred_units">Система измерений</string>
     <string name="show_zoom_level">Показывать уровень зума</string>
+
     <string name="restore_layers">Восстановить потерянные слои</string>
     <string name="select_layer_to_restore">Выберите слой</string>
     <string name="other">Другое</string>

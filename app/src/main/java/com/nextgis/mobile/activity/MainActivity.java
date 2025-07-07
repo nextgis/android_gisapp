@@ -1084,7 +1084,7 @@ public class MainActivity extends NGActivity
                 Intent intent){
 
             if (intent.getAction().equals(ConstantsUI.MESSAGE_INTENT_TRACKER)) {
-                Log.e("ZZXX", "intent.getAction().equals(MESSAGE_INTENT_TRACKER");
+                //Log.e("ZZXX", "intent.getAction().equals(MESSAGE_INTENT_TRACKER");
                 String message = intent.getExtras().getString(MESSAGE_EXTRA);
                 String title = intent.getExtras().getString(MESSAGE_TITLE_EXTRA);
 
@@ -1107,7 +1107,7 @@ public class MainActivity extends NGActivity
                 Intent intent)
         {
             if (intent.getAction().equals(ConstantsUI.MESSAGE_INTENT)) {
-                Log.e("ZZXX", "intent.getAction().equals(ConstantsUI.MESSAGE_INTENT)");
+                //Log.e("ZZXX", "intent.getAction().equals(ConstantsUI.MESSAGE_INTENT)");
                 Toast.makeText(
                         MainActivity.this, intent.getExtras().getString(
                                 ConstantsUI.KEY_MESSAGE), Toast.LENGTH_SHORT).show();
@@ -1115,7 +1115,7 @@ public class MainActivity extends NGActivity
             }
 
             if (intent.getAction().equals(MESSAGE_ALERT_INTENT)) {
-                Log.e("ZZXX", "intent.getAction().equals(MESSAGE_ALERT_INTENT");
+                //Log.e("ZZXX", "intent.getAction().equals(MESSAGE_ALERT_INTENT");
                 String message = intent.getExtras().getString(MESSAGE_EXTRA);
                 String title = intent.getExtras().getString(MESSAGE_TITLE_EXTRA);
 

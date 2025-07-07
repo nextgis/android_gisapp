@@ -54,6 +54,7 @@ import androidx.preference.PreferenceManager;
 import androidx.preference.PreferenceScreen;
 
 import android.os.Build;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -597,9 +598,17 @@ public class SettingsFragment
                     CharSequence summary = ((ListPreference) preference).getEntries()[value - 1];
                     preference.setSummary(summary);
 
-                    sectionWork(preference.getContext(), isTracks);
+
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            sectionWork(preference.getContext(), isTracks);
+                        }
+                    }, 500);
+
 
                     return true;
+
                 }
             });
         }
