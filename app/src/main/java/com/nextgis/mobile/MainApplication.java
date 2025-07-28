@@ -78,6 +78,11 @@ import static com.nextgis.mobile.util.AppSettingsConstants.AUTHORITY;
 import static com.nextgis.mobile.util.AppSettingsConstants.KEY_PREF_APP_VERSION;
 import static com.nextgis.mobile.util.AppSettingsConstants.KEY_PREF_GA;
 
+
+import org.maplibre.android.MapLibre;
+import org.maplibre.android.MapStrictMode;
+import org.maplibre.android.WellKnownTileServer;
+
 import io.sentry.Sentry;
 
 /**
@@ -123,6 +128,13 @@ public class MainApplication extends GISApplication
         updateFromOldVersion();
         NGWUtil.NGUA = "ng_mobile";
         NGWUtil.UUID = TrackerService.getUid(this);
+        initializeMapbox();
+    }
+
+    private void initializeMapbox() {
+        MapLibre.getInstance(this, BuildConfig.MAPBOX_KEY, WellKnownTileServer.MapTiler);
+        //TileLoadingMeasurementUtils.setUpTileLoadingMeasurement();
+        MapStrictMode.setStrictModeEnabled(true);
     }
 
     private void setExceptionHandler() {

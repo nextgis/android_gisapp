@@ -242,14 +242,14 @@ public class LayersFragment
         mFragmentContainerView.setLayoutParams(params);
 
         final MapFragment mapFragment = activity.getMapFragment();
-        mListAdapter = new LayersListAdapter(activity, mapFragment.mMap);
+        mListAdapter = new LayersListAdapter(activity, mapFragment.getMMap());
         mListAdapter.setDrawer(drawerLayout);
         mListAdapter.setOnPencilClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!mapFragment.hasEdits()) {
-                    if (mapFragment.mFinishListener != null)
-                        mapFragment.mFinishListener.onClick(null);
+                    if (mapFragment.getMFinishListener() != null)
+                        mapFragment.getMFinishListener().onClick(null);
                     return;
                 }
 

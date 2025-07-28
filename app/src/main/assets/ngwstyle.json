@@ -1,0 +1,37 @@
+{
+  "glyphs": "https://geoservices.staging.nextgis.com/vector/glyph/350/{fontstack}/{range}.pbf?apikey=858ec2909415ba95df47bbe7375ca1fb",
+  "id": "basic",
+  "layers": [
+
+    {
+      "id": "osm-layer",
+      "type": "raster",
+      "source": "geoservices",
+      "minzoom": 0,
+      "maxzoom": 20
+    }
+  ],
+  "metadata": {
+    "mapbox:autocomposite": false,
+    "mapbox:type": "template",
+    "maputnik:renderer": "mbgljs",
+    "openmaptiles:mapbox:owner": "openmaptiles",
+    "openmaptiles:mapbox:source:url": "mapbox://openmaptiles.4qljc88t",
+    "openmaptiles:version": "3.x"
+  },
+  "name": "Basic",
+  "sources": {
+    "geoservices": {
+      "attribution": "© OpenStreetMap contributors",
+      "maxzoom": 20,
+      "minzoom": 0,
+      "tileSize": 256,
+      "tiles": [
+        "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+      ],
+      "type": "raster"
+    }
+  },
+  "sprite": "https://geoservices.staging.nextgis.com/vector/sprite/350/s?apikey=858ec2909415ba95df47bbe7375ca1fb",
+  "version": 8
+}
