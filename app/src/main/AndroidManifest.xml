@@ -61,7 +61,7 @@
         android:label="@string/APP_NAME"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
-        tools:replace="android:label"
+        tools:replace="android:allowBackup, label"
         android:networkSecurityConfig="@xml/network_security_config"
         >
 

@@ -52,9 +52,15 @@ android {
         compileSdk 36
         targetSdkVersion 36
         versionCode 151
-        versionName '2.13.1'
+        versionName '3.0.0'
         archivesBaseName = "ngmobile-$versionName"
         buildConfigField "String", "SENTRY_DSN", "\"${sentryDsn}\""
+
+        def props = new Properties()
+        file("../local.properties").withInputStream { props.load(it) }
+
+
+        buildConfigField "String", "MAPBOX_KEY", "\"${props.getProperty("mapboxkey")}\""
     }
 
     productFlavors {
@@ -108,8 +114,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_16
-        targetCompatibility JavaVersion.VERSION_16
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
     }
 
 
@@ -141,6 +147,7 @@ dependencies {
 
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.6'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'org.maplibre.gl:android-sdk:11.8.5'
 
 
     implementation project(path: ':wizardpager')
