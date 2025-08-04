@@ -147,7 +147,7 @@ dependencies {
 
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.6'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'org.maplibre.gl:android-sdk:11.8.5'
+    implementation 'org.maplibre.gl:android-sdk:11.13.0'
 
 
     implementation project(path: ':wizardpager')

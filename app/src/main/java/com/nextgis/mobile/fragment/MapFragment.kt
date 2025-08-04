@@ -377,6 +377,7 @@ class MapFragment
 
                     editLayerOverlay!!.setHasEdits(!hasEdits)
                     mMap!!.map!!.replaceGeometryFromHistoryChanges(feature.geometry)
+                    mMap!!.map!!.updateMarkerByEditObject();
                     mMap!!.buffer()
                     mMap!!.postInvalidate()
                 }
@@ -625,7 +626,8 @@ class MapFragment
                                 undoRedoOverlay!!.saveToHistory(editLayerOverlay!!.selectedFeature)
                                 editLayerOverlay!!.setHasEdits(false)
                                 if(mSelectedLayer!= null)
-                                    mMap!!.map!!.startFeatureSelectionForEdit(mSelectedLayer!!.id, editLayerOverlay!!.selectedFeature)
+                                    mMap!!.map!!.startFeatureSelectionForEdit(mSelectedLayer!!.id, mSelectedLayer!!.geometryType,
+                                        editLayerOverlay!!.selectedFeature)
                             }
 
                             R.id.menu_feature_delete -> deleteFeature()
@@ -1834,7 +1836,7 @@ class MapFragment
                 editLayerOverlay!!.setSelectedFeature(features[which].id)
                 //mMap!!.map!!.startFeatureSelectionForEdit(mSelectedLayer!!.id, featureId[which])
                 if (editMode)
-                    mMap!!.map!!.startFeatureSelectionForEdit(mSelectedLayer!!.id, features[which])
+                    mMap!!.map!!.startFeatureSelectionForEdit(mSelectedLayer!!.id, mSelectedLayer!!.geometryType, features[which])
                 else
                     mMap!!.map!!.startFeatureSelectionForView(mSelectedLayer!!.id, features[which])
             }
