@@ -32,6 +32,7 @@ import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.PointF
 import android.location.Location
 import android.location.LocationManager
 import android.net.Uri
@@ -71,6 +72,8 @@ import com.nextgis.maplib.datasource.GeoGeometry
 import com.nextgis.maplib.datasource.GeoGeometryFactory
 import com.nextgis.maplib.datasource.GeoLineString
 import com.nextgis.maplib.datasource.GeoLinearRing
+import com.nextgis.maplib.datasource.GeoMultiLineString
+import com.nextgis.maplib.datasource.GeoMultiPoint
 import com.nextgis.maplib.datasource.GeoPoint
 import com.nextgis.maplib.datasource.GeoPolygon
 import com.nextgis.maplib.display.SimpleFeatureRenderer
@@ -107,8 +110,13 @@ import com.nextgis.mobile.activity.MainActivity
 import com.nextgis.mobile.util.AppConstants
 import com.nextgis.mobile.util.AppSettingsConstants
 import org.maplibre.android.camera.CameraUpdateFactory
+import org.maplibre.android.geometry.LatLng
 import org.maplibre.android.maps.MapLibreMap
 import org.maplibre.android.maps.OnMapReadyCallback
+import org.maplibre.geojson.LineString
+import org.maplibre.geojson.MultiLineString
+import org.maplibre.geojson.MultiPoint
+import org.maplibre.geojson.Point
 import org.maplibre.geojson.Polygon
 import java.io.IOException
 import java.util.Locale
@@ -514,8 +522,8 @@ class MapFragment
     }
 
     fun setMode(mode: Int, vararg readOnly: Boolean) {
-                var promt = ""
-         when(mode){
+        var promt = ""
+        when(mode){
             0 ->  promt=  "MODE_NORMAL"
             1 ->  promt=  "MODE_SELECT_ACTION"
             2 ->  promt=  "MODE_EDIT"
@@ -1527,45 +1535,30 @@ class MapFragment
     }
 
 
-    override fun processMapLongClick(x: Double, y:Double): Boolean {
-        onLongPressFromMaplibre(x, y)
+    override fun processMapLongClick(clickeEnelope: GeoEnvelope, clickPoint: PointF): Boolean {
+        onLongPressFromMaplibre(clickeEnelope, clickPoint)
         return true
     }
 
-
-    override fun processMapClick(x: Double, y:Double): Boolean {    // x y - screen coordinates
-        onSingleTapUpFromMaplibre(x, y)
+    override fun processMapClick(screenx: Float, screeny: Float): Boolean {    // x y - screen coordinates
+        Log.e("CCCLLIICK", "screenX: " + screenx + " - " + " screeny: " + screeny)
+        onSingleTapUpFromMaplibre(screenx, screeny)
         return true
     }
 
-
-    fun onLongPressFromMaplibre(x: Double, y:Double) {
+    fun onLongPressFromMaplibre(clickeEnelope: GeoEnvelope, clickPoint : PointF) {
         if (!(mode == MODE_NORMAL || mode == MODE_SELECT_ACTION) || mRulerOverlay!!.isMeasuring) {
             return
         }
 
-        val dMinX = (x - mTolerancePX).toDouble()
-        val dMaxX = (x + mTolerancePX).toDouble()
-        val dMinY = (y - mTolerancePX).toDouble()
-        val dMaxY = (y + mTolerancePX).toDouble()
-
-        //val mapEnv = mMap!!.screenToMap(GeoEnvelope(dMinX, dMaxX, dMinY, dMaxY)) ?: return
-
-        var exactEnv: GeoEnvelope? = GeoEnvelope(
-            x.toDouble(),
-            x.toDouble(),
-            y.toDouble(),
-            y.toDouble()
-        )
-//        exactEnv = mMap!!.screenToMap(exactEnv)
-        if (null == exactEnv) return
-        val point = GeoPoint(exactEnv.maxX, exactEnv.minY)
+        //  exactEnv = mMap!!.screenToMap(exactEnv)
+        if (null == clickeEnelope) return
+        val point = GeoPoint(clickeEnelope.maxX, clickeEnelope.minY)
         point.crs = GeoConstants.CRS_WEB_MERCATOR
 
         //show actions dialog
         val layers = mMap!!.getVectorLayersByType(GeoConstants.GTAnyCheck)
         var items: List<Long>
-
 
         var vectorLayer: VectorLayer? = null
         var selectedSingleVectorLayer: VectorLayer? = null
@@ -1587,9 +1580,7 @@ class MapFragment
             if (!(layer as ILayerView).isVisible) continue
 
             vectorLayer = layer as VectorLayer
-            items = vectorLayer.query(exactEnv)
-
-
+            items = vectorLayer.query(clickeEnelope)
 
             for (i in items.indices) {    // FIXME hack for bad RTree cache
                 featureId = items[i]
@@ -1626,25 +1617,26 @@ class MapFragment
 
         if (mSelectedLayers.size > 1)
             showOverlayPointMultiChoise(
-                x,y, mSelectedLayers,
+                clickPoint.x.toDouble(), clickPoint.y.toDouble(), mSelectedLayers,
                 selectedVectorLayer,
                 selectedGeometry,
                 selectedFeature,
                 true)
         else {
-            if (mSelectedLayer != null) mSelectedLayer!!.isLocked = false
+            if (mSelectedLayer != null)
+                mSelectedLayer!!.isLocked = false
 
             mSelectedLayer = selectedSingleVectorLayer
             editLayerOverlay!!.setSelectedLayer(selectedSingleVectorLayer)
 
 
-            if (geometry != null) {
+            if (geometry != null && mSelectedLayer != null) {
                 editLayerOverlay!!.setSelectedFeature(selectedSingleFeatureId)
                 mMap!!.map!!.startFeatureSelectionForView(mSelectedLayer!!.id, originalFeatureForSelect)
             }
 
             setMode(MODE_SELECT_ACTION)
-            showOverlayPoint(x,y)
+            showOverlayPoint(clickPoint.x.toDouble(), clickPoint.y.toDouble())
         }
         //set select action mode
         mMap!!.postInvalidate()
@@ -1741,7 +1733,8 @@ class MapFragment
                 selectedFeaturesList,
                 true)
         else {
-            if (mSelectedLayer != null) mSelectedLayer!!.isLocked = false
+            if (mSelectedLayer != null)
+                mSelectedLayer!!.isLocked = false
 
             mSelectedLayer = selectedSingleVectorLayer
             editLayerOverlay!!.setSelectedLayer(selectedSingleVectorLayer)
@@ -2014,7 +2007,7 @@ class MapFragment
         }
     }
 
-    fun onSingleTapUpFromMaplibre(x: Double, y:Double) {
+    fun onSingleTapUpFromMaplibre(screenx: Float, screeny :Float) {
         if (mRulerOverlay!!.isMeasuring) return
         when (mode) {
             MODE_EDIT -> {
@@ -2052,18 +2045,54 @@ class MapFragment
 
             else -> if (mode == MODE_NORMAL || mode == MODE_SELECT_FOR_VIEW || mode == MODE_SELECT_ACTION) {
                 // check objects on map to select
-//                val dMinX = (event.x - mTolerancePX).toDouble()
-//                val dMaxX = (event.x + mTolerancePX).toDouble()
-//                val dMinY = (event.y - mTolerancePX).toDouble()
-//                val dMaxY = (event.y + mTolerancePX).toDouble()
+                val dMinX = (screenx - mTolerancePX)
+                val dMaxX = (screenx + mTolerancePX)
+                val dMinY = (screeny - mTolerancePX)
+                val dMaxY = (screeny + mTolerancePX)
 
+                val screenPointMin = PointF(dMinX, dMinY)
+                val screenPointMax = PointF(dMaxX, dMaxY)
+
+                val minPoint = mMap!!.map!!.maplibreMap.getProjection().fromScreenLocation(screenPointMin)
+                val maxPoint = mMap!!.map!!.maplibreMap.getProjection().fromScreenLocation(screenPointMax)
+
+//                mMap!!.map!!.showTouchArea(minPoint, maxPoint)
+//                  LatLng latLng = maplibreMap.get().getProjection().fromScreenLocation(screenPoint); // todo add tolerance and rect
+//                  double[] points = convert4326To3857(latLng.getLongitude(), latLng.getLatitude());
+
+                Log.e("CCCLLIICK", " click at: " + screenx + " - " + " screeny: " + screeny)
+                Log.e("CCCLLIICK", "points lnglong " + minPoint.longitude + " : " +  minPoint.latitude + " : "
+                        + maxPoint.longitude + " : " + maxPoint.latitude )
+
+                val pointsMin = convert4326To3857(minPoint.longitude, minPoint.latitude)
+                val pointsMax = convert4326To3857(maxPoint.longitude, maxPoint.latitude);
                 //val mapEnv = mMap!!.screenToMap(GeoEnvelope(dMinX, dMaxX, dMinY, dMaxY)) ?: return
 
-                val exactEnv: GeoEnvelope = GeoEnvelope(x,x,y,y)
+                var minx =   pointsMin[0];
+                var maxx =   pointsMax[0];
+                var miny =   pointsMin[1];
+                var maxy =   pointsMax[1];
+
+                if (minx > maxx){
+                    minx =   pointsMax[0]
+                    maxx =   pointsMin[0]
+                }
+                if (miny > maxy){
+                    miny =   pointsMax[1]
+                    maxy =   pointsMin[1]
+                }
+
+                //val exactEnv: GeoEnvelope = GeoEnvelope(pointsMin[0],  pointsMax[0], pointsMin[1], pointsMax[1])
+                val exactEnv: GeoEnvelope = GeoEnvelope(minx,maxx , miny, maxy)
+
+                Log.e("CCCLLIICK", "exactEnv " + pointsMin[0] + " : " +  pointsMax[0] + " : " + pointsMin[1] + " : " + pointsMax[1] )
+
                 //exactEnv = mMap!!.screenToMap(exactEnv)
                 //if (null == exactEnv) return
                 val point = GeoPoint(exactEnv.maxX, exactEnv.minY)
                 point.crs = GeoConstants.CRS_WEB_MERCATOR
+
+                Log.e("CCCLLIICK", "point : " + point.toString())
 
                 //show actions dialog
                 val layers = mMap!!.getVectorLayersByType(GeoConstants.GTAnyCheck)
@@ -2139,7 +2168,6 @@ class MapFragment
                             mMap!!.map!!.startFeatureSelectionForView(mSelectedLayer!!.id,feature)
                             break
                         }
-
                         i++
                     }
                 }
@@ -2148,13 +2176,14 @@ class MapFragment
                     // need select none
                     setMode(MODE_NORMAL)
                 } else {
-                    if (mSelectedLayers.size > 1) showOverlayPointMultiChoise(x.toDouble(), y.toDouble(), mSelectedLayers,
+                    if (mSelectedLayers.size > 1) showOverlayPointMultiChoise(screenx.toDouble(), screeny.toDouble(), mSelectedLayers,
                         selectedVectorLayer,
                         selectedGeometry,
                         selectedFeatures,
                         false )
                     else {
-                        if (mSelectedLayer != null) mSelectedLayer!!.isLocked = false
+                        if (mSelectedLayer != null)
+                            mSelectedLayer!!.isLocked = false
 
                         mSelectedLayer = selectedSingleVectorLayer
                         editLayerOverlay!!.setSelectedLayer(selectedSingleVectorLayer)
@@ -2663,6 +2692,80 @@ class MapFragment
                 iter++
             }
             return geoPolygon
+        }
+        if (feature.geometry()!= null && feature.geometry() is Point){
+            val point = feature.geometry() as Point
+
+            val geoPoint = GeoPoint()
+            geoPoint.crs = GeoConstants.CRS_WEB_MERCATOR
+            val points: DoubleArray = convert4326To3857(point.longitude(), point.latitude())
+            geoPoint.setCoordinates(points[0], points[1])
+            return geoPoint
+        }
+        if (feature.geometry()!= null && feature.geometry() is MultiPoint){
+            val geoPoint = GeoMultiPoint()
+
+            val multiPoint = feature.geometry() as MultiPoint
+            for ( point in multiPoint.coordinates()){
+                val newPoint = GeoPoint()
+
+                val points: DoubleArray = convert4326To3857(point.longitude(), point.latitude())
+                newPoint.setCoordinates(points[0], points[1])
+                newPoint.crs = GeoConstants.CRS_WEB_MERCATOR
+                geoPoint.add(newPoint)
+            }
+            geoPoint.crs = GeoConstants.CRS_WEB_MERCATOR
+            return geoPoint
+        }
+
+
+        if (feature.geometry()!= null && feature.geometry() is LineString){
+
+            val geoLineObj = GeoLineString()
+            geoLineObj.crs = GeoConstants.CRS_WEB_MERCATOR
+
+            val poly = feature.geometry() as LineString
+
+            val geoLine = GeoLineString()
+            geoLine.crs = GeoConstants.CRS_WEB_MERCATOR
+
+            for (outer in poly.coordinates()){
+                val points: DoubleArray = convert4326To3857(outer.longitude(), outer.latitude())
+                val geopoint = GeoPoint(points[0], points[1])
+                geopoint.crs = GeoConstants.CRS_WEB_MERCATOR
+                geoLineObj.add(geopoint)
+            }
+
+
+            return geoLineObj
+        }
+
+
+        if (feature.geometry()!= null && feature.geometry() is MultiLineString){
+
+            val geoMultiLineObj = GeoMultiLineString()
+            geoMultiLineObj.crs = GeoConstants.CRS_WEB_MERCATOR
+
+            val geoMultiLine = feature.geometry() as MultiLineString
+            for (line in geoMultiLine.lineStrings()){
+
+                val geoLineObj = GeoLineString()
+                geoLineObj.crs = GeoConstants.CRS_WEB_MERCATOR
+
+                val poly = line as LineString
+
+                val geoLine = GeoLineString()
+                geoLine.crs = GeoConstants.CRS_WEB_MERCATOR
+
+                for (outer in poly.coordinates()){
+                    val points: DoubleArray = convert4326To3857(outer.longitude(), outer.latitude())
+                    val geopoint = GeoPoint(points[0], points[1])
+                    geopoint.crs = GeoConstants.CRS_WEB_MERCATOR
+                    geoLineObj.add(geopoint)
+                }
+                geoMultiLineObj.add(geoLineObj)
+            }
+            return geoMultiLineObj
         }
 
         return null;
