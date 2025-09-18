@@ -339,7 +339,7 @@ public class MapFragment
             if (featureId == NOT_FOUND) {
                 //show attributes edit activity
                 IVectorLayerUI vectorLayerUI = (IVectorLayerUI) mSelectedLayer;
-                vectorLayerUI.showEditForm(mActivity, featureId, geometry);
+                vectorLayerUI.showEditForm(mActivity, featureId, geometry, -1);
             } else {
                 Uri uri = Uri.parse("content://" + mApp.getAuthority() + "/" + mSelectedLayer.getPath().getName());
                 uri = ContentUris.withAppendedId(uri, featureId);
@@ -1454,7 +1454,7 @@ public class MapFragment
                 mSelectedLayer = (VectorLayer) vectorLayer;
                 mEditLayerOverlay.setSelectedLayer(mSelectedLayer);
                 IVectorLayerUI vectorLayerUI = (IVectorLayerUI) vectorLayer;
-                vectorLayerUI.showEditForm(mActivity, Constants.NOT_FOUND, null);
+                vectorLayerUI.showEditForm(mActivity, Constants.NOT_FOUND, null, -1);
 
                 Toast.makeText(
                         mActivity,
@@ -1543,7 +1543,7 @@ public class MapFragment
         if (code == ADD_CURRENT_LOC) {
             if (layer instanceof ILayerUI) {
                 IVectorLayerUI layerUI = (IVectorLayerUI) layer;
-                layerUI.showEditForm(mActivity, Constants.NOT_FOUND, null);
+                layerUI.showEditForm(mActivity, Constants.NOT_FOUND, null, -1);
             }
         } else if (code == EDIT_LAYER) {
             setMode(MODE_SELECT_ACTION);
@@ -1612,6 +1612,17 @@ public class MapFragment
                 geometry = vectorLayer.getGeometryForId(featureId);
                 if (mEditLayerOverlay.notContains(geometry, point)) {
                     continue;
+                }
+
+                if (vectorLayer.getFeature(featureId) == null){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder
+                            .setTitle(com.nextgis.maplib.R.string.error)
+                            .setMessage(com.nextgis.maplib.R.string.error_select_obj)
+                            .setPositiveButton(com.nextgis.maplibui.R.string.ok, null)
+                            .create().show();
+
+                    return;
                 }
 
                 String valueForHint = String.valueOf(vectorLayer

@@ -641,7 +641,7 @@ public class AttributesFragment
                         } else if (menuItem.getItemId() == R.id.menu_edit_attributes && !readOnly) {
                             IVectorLayerUI vectorLayerUI = (IVectorLayerUI) mLayer;
                             if (null != vectorLayerUI)
-                                vectorLayerUI.showEditForm(getActivity(), mItemId, null);
+                                vectorLayerUI.showEditForm(getActivity(), mItemId, null,  -1);
                             return true;
                         }
 
