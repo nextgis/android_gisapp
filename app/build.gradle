@@ -65,14 +65,14 @@ android {
             storeFile file('../../keystore_google')
             storePassword ANDROID_STORE_PASSWORD
             keyAlias ANDROID_KEY
-            keyPassword ANDROID_STORE_PASSWORD
+            keyPassword ANDROID_KEY_PASSWORD
 
         }
         release {
             storeFile file('../../keystore_google')
             storePassword ANDROID_STORE_PASSWORD
             keyAlias ANDROID_KEY
-            keyPassword ANDROID_STORE_PASSWORD
+            keyPassword ANDROID_KEY_PASSWORD
         }
     }
 
