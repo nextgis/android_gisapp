@@ -1621,23 +1621,25 @@ public class MapFragment
                             .setMessage(com.nextgis.maplib.R.string.error_select_obj)
                             .setPositiveButton(com.nextgis.maplibui.R.string.ok, null)
                             .create().show();
-
                     return;
                 }
 
-                String valueForHint = String.valueOf(vectorLayer
+                String fieldToDisplay = ( ((SimpleFeatureRenderer) vectorLayer.getRenderer())
+                        .getStyle())
+                        .getField();
+                if (fieldToDisplay == null)
+                    fieldToDisplay = vectorLayer.getFields().get(0).getName();
+                String valueForHint = String.valueOf(
+                        vectorLayer
                         .getFeature(featureId)
-                        .getFieldValue(
-                                ( ((SimpleFeatureRenderer) vectorLayer.getRenderer())
-                                .getStyle())
-                                        .getField()));
-                if (valueForHint == null) {
+                        .getFieldValue(fieldToDisplay));
+                if (valueForHint == null || "null".equals(valueForHint) || TextUtils.isEmpty(valueForHint)) {
                     mSelectedLayers.add(layer.getName() + ": " + featureId);
-                    valueForHint = layer.getName() + ": " + featureId;
+                    //valueForHint = layer.getName() + ": " + featureId;
                 }
                 else {
                     mSelectedLayers.add(layer.getName() + ": " + valueForHint);
-                    valueForHint = layer.getName() + ": " + valueForHint;
+                    ///valueForHint = layer.getName() + ": " + valueForHint;
                 }
 
                 selectedSingleVectorLayer = (VectorLayer) layer;
@@ -1857,12 +1859,12 @@ public class MapFragment
                                 }
 
 
-                                if (valueForHint == null) {
+                                if (valueForHint == null || TextUtils.isEmpty(valueForHint)) {
                                     mSelectedLayers.add(layer.getName() + ": " + featureId);
-                                    valueForHint = layer.getName() + ": " + featureId;
+//                                    valueForHint = layer.getName() + ": " + featureId;
                                 } else {
                                     mSelectedLayers.add(layer.getName() + ": " + valueForHint);
-                                    valueForHint = layer.getName() + ": " + valueForHint;
+//                                    valueForHint = layer.getName() + ": " + valueForHint;
                                 }
                             }
 
