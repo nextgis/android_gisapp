@@ -51,8 +51,8 @@ android {
         minSdkVersion 26
         compileSdk 36
         targetSdkVersion 36
-        versionCode 151
-        versionName '3.0.0'
+        versionCode 143
+        versionName '3.0.0-beta'
         archivesBaseName = "ngmobile-$versionName"
         buildConfigField "String", "SENTRY_DSN", "\"${sentryDsn}\""
 
@@ -128,7 +128,7 @@ dependencies {
 
     //implementation 'com.github.joshdholtz:Sentry-Android:1.6.0'
     //implementation 'io.sentry:sentry-android:1.7.30'
-    implementation ('io.sentry:sentry-android:8.20.0'){
+    implementation ('io.sentry:sentry-android:8.21.0'){
         exclude group: 'androidx.lifecycle', module: 'lifecycle-viewmodel-ktx'
     }
 
