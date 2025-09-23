@@ -120,7 +120,9 @@ import org.maplibre.geojson.Point
 import org.maplibre.geojson.Polygon
 import java.io.IOException
 import java.util.Locale
+import kotlin.math.atan
 import kotlin.math.ln
+import kotlin.math.sinh
 import kotlin.math.tan
 
 /**
@@ -399,12 +401,37 @@ class MapFragment
                 return result
             }
 
+            com.nextgis.maplibui.R.id.menu_edit_delete_point  ->{
+                val result = mMap!!.map!!.deleteCurrentPoint();
+                return result
+            }
+
+            com.nextgis.maplibui.R.id.menu_edit_move_point_to_center  ->{
+                val center = mMap!!.map!!.maplibreMap.cameraPosition.target
+                return mMap!!.map!!.moveToPoint(center);
+            }
+
+            com.nextgis.maplibui.R.id.menu_edit_move_point_to_current_location  ->{
+
+                if (mCurrentCenter != null) {
+                    val latlng = convert3857To4326(mCurrentCenter!!.x, mCurrentCenter!!.y)
+                    return mMap!!.map!!.moveToPoint(LatLng(latlng[1], latlng[0]));
+                }
+//                if (mCurrentLocationOverlay != null && mCurrentLocationOverlay!!.currentLocation  != null) {
+//                    val latLng =  LatLng(mCurrentLocationOverlay!!.currentLocation.latitude,mCurrentLocationOverlay!!.currentLocation.longitude);
+//                    return mMap!!.map!!.moveToPoint(latLng);
+//                }
+                return false;
+            }
+
+
             else -> {
                 result = editLayerOverlay!!.onOptionsItemSelected(id)
                 if (result) undoRedoOverlay!!.saveToHistory(editLayerOverlay!!.selectedFeature)
                 return result
             }
         }
+        return false
     }
 
 
@@ -1621,7 +1648,7 @@ class MapFragment
                 selectedVectorLayer,
                 selectedGeometry,
                 selectedFeature,
-                true)
+                false)
         else {
             if (mSelectedLayer != null)
                 mSelectedLayer!!.isLocked = false
@@ -2654,6 +2681,12 @@ class MapFragment
         undoRedoOverlay!!.saveToHistory(originalSelectedFeature)
     }
 
+    override fun getSelectedLayerId(): Int {
+        mSelectedLayer?.let { return it.id }
+        return -1
+
+    }
+
     private fun getGeometryFromMaplibreGeometry(feature: org.maplibre.geojson.Feature?) : GeoGeometry? {
 
         if (feature == null)
@@ -2777,4 +2810,11 @@ class MapFragment
         val y = ln(tan(Math.PI / 4 + Math.toRadians(lat) / 2)) * 20037508.34 / Math.PI
         return doubleArrayOf(x, y)
     }
+
+    fun convert3857To4326(x: Double, y: Double): DoubleArray {
+        val lon = x * 180 / 20037508.34
+        val lat = Math.toDegrees(atan(sinh(y * Math.PI / 20037508.34)))
+        return doubleArrayOf(lon, lat)
+    }
+
 }
