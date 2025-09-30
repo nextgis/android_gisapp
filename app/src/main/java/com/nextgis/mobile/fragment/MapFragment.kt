@@ -74,10 +74,12 @@ import com.nextgis.maplib.datasource.GeoLineString
 import com.nextgis.maplib.datasource.GeoLinearRing
 import com.nextgis.maplib.datasource.GeoMultiLineString
 import com.nextgis.maplib.datasource.GeoMultiPoint
+import com.nextgis.maplib.datasource.GeoMultiPolygon
 import com.nextgis.maplib.datasource.GeoPoint
 import com.nextgis.maplib.datasource.GeoPolygon
 import com.nextgis.maplib.display.SimpleFeatureRenderer
 import com.nextgis.maplib.location.GpsEventSource
+import com.nextgis.maplib.map.MLP.MLGeometryEditClass
 import com.nextgis.maplib.map.MapDrawable
 import com.nextgis.maplib.map.MaplibreMapInteraction
 import com.nextgis.maplib.map.VectorLayer
@@ -116,6 +118,7 @@ import org.maplibre.android.maps.OnMapReadyCallback
 import org.maplibre.geojson.LineString
 import org.maplibre.geojson.MultiLineString
 import org.maplibre.geojson.MultiPoint
+import org.maplibre.geojson.MultiPolygon
 import org.maplibre.geojson.Point
 import org.maplibre.geojson.Polygon
 import java.io.IOException
@@ -406,6 +409,50 @@ class MapFragment
                 return result
             }
 
+            com.nextgis.maplibui.R.id.menu_edit_delete_line  ->{
+                val result = mMap!!.map!!.deleteCurrentLine();
+                return result
+            }
+
+            com.nextgis.maplibui.R.id.menu_edit_add_new_line  ->{
+                val center = mMap!!.map!!.maplibreMap.cameraPosition.target
+                val result = mMap!!.map!!.addNewLine(center, mMap!!.map!!.maplibreMap.getProjection());
+                return result
+            }
+
+            com.nextgis.maplibui.R.id.menu_edit_add_new_point  ->{
+                val center = mMap!!.map!!.maplibreMap.cameraPosition.target
+                val result = mMap!!.map!!.addNewPoint(center);
+                return result
+            }
+
+            com.nextgis.maplibui.R.id.menu_edit_add_new_inner_ring  ->{
+                val center = mMap!!.map!!.maplibreMap.cameraPosition.target
+                val result = mMap!!.map!!.addHole( center, mMap!!.map!!.maplibreMap.getProjection());
+                return result
+            }
+
+            com.nextgis.maplibui.R.id.menu_edit_delete_inner_ring  ->{
+                val result = mMap!!.map!!.deleteCurrentHole();
+                return result
+            }
+
+            com.nextgis.maplibui.R.id.menu_edit_delete_polygon  ->{
+                val result = mMap!!.map!!.deleteCurrentPolygon();
+                return result
+            }
+
+            com.nextgis.maplibui.R.id.menu_edit_add_new_polygon  ->{
+                val center = mMap!!.map!!.maplibreMap.cameraPosition.target
+                val result = mMap!!.map!!.addNewPolygon(center, mMap!!.map!!.maplibreMap.getProjection());
+                return result
+            }
+
+//            com.nextgis.maplibui.R.id.menu_edit_  ->{
+//                val result = mMap!!.map!!.deleteCurrentPoin();
+//                return result
+//            }
+
             com.nextgis.maplibui.R.id.menu_edit_move_point_to_center  ->{
                 val center = mMap!!.map!!.maplibreMap.cameraPosition.target
                 return mMap!!.map!!.moveToPoint(center);
@@ -647,13 +694,14 @@ class MapFragment
                         if (mSelectedLayer == null) return@OnMenuItemClickListener false
                         when (item.itemId) {
                             R.id.menu_feature_add -> {
-                                editLayerOverlay!!.selectedFeature =
-                                    Feature()
+
+                                editLayerOverlay!!.selectedFeature = Feature()
                                 editLayerOverlay!!.createNewGeometry()
                                 undoRedoOverlay!!.clearHistory()
                                 setMode(MODE_EDIT)
                                 undoRedoOverlay!!.saveToHistory(editLayerOverlay!!.selectedFeature)
                                 editLayerOverlay!!.setHasEdits(true)
+
                             }
 
                             R.id.menu_feature_edit -> {
@@ -2669,15 +2717,25 @@ class MapFragment
         }
     }
 
-    override public fun setHasEdit() {
+    override
+    fun setHasEdit() {
         editLayerOverlay!!.setHasEdits(true)
     }
 
-    override fun updateGeometryFromMaplibre(feature: org.maplibre.geojson.Feature?, originalSelectedFeature: Feature?) {
+    override
+    fun updateActions(editObject: MLGeometryEditClass?){
+        editLayerOverlay!!.updateActions(editObject)
+    }
+
+    override
+    fun updateGeometryFromMaplibre(feature: org.maplibre.geojson.Feature?,
+                                   originalSelectedFeature: Feature?,
+                                   editObject: MLGeometryEditClass?) {
         if (feature == null || originalSelectedFeature == null)
             return
         originalSelectedFeature.geometry = getGeometryFromMaplibreGeometry(feature)
         editLayerOverlay!!.updateGeometryFromMaplibre(originalSelectedFeature.geometry)
+        editLayerOverlay!!.updateActions(editObject)
         undoRedoOverlay!!.saveToHistory(originalSelectedFeature)
     }
 
@@ -2691,6 +2749,49 @@ class MapFragment
 
         if (feature == null)
             return null;
+
+
+        if (feature.geometry()!= null && feature.geometry() is MultiPolygon){
+            val multipoly = feature.geometry() as MultiPolygon
+
+            val geomultiPolygon = GeoMultiPolygon()
+
+            for (poly in multipoly.coordinates()){
+
+                val geoPolygon = GeoPolygon()
+                geoPolygon.crs = GeoConstants.CRS_WEB_MERCATOR
+
+                var iter = 0
+                for (outer in poly){
+
+                    if (iter == 0){ // outer ring
+                        for (outer2 in outer){
+                            val points: DoubleArray = convert4326To3857(outer2.longitude(), outer2.latitude())
+                            val geopoint = GeoPoint(points[0], points[1])
+                            geopoint.crs = GeoConstants.CRS_WEB_MERCATOR
+                            geoPolygon.add(geopoint)
+                        }
+                    } else {
+                        // inner
+                        val ring = GeoLinearRing()
+
+                        for (outer2 in outer){
+                            val points: DoubleArray = convert4326To3857(outer2.longitude(), outer2.latitude())
+                            val geopoint = GeoPoint(points[0], points[1])
+                            geopoint.crs = GeoConstants.CRS_WEB_MERCATOR
+                            ring.add(geopoint)
+                        }
+                        geoPolygon.addInnerRing(ring)
+                    }
+                    iter++
+                }
+
+                geomultiPolygon.add(geoPolygon)
+            }
+            return geomultiPolygon
+        }
+
+
 
         if (feature.geometry()!= null && feature.geometry() is Polygon){
             val poly = feature.geometry() as Polygon
@@ -2708,10 +2809,9 @@ class MapFragment
                         geopoint.crs = GeoConstants.CRS_WEB_MERCATOR
                         geoPolygon.add(geopoint)
                     }
-
-                } else { // inner
-                    val ring : GeoLinearRing = if (iter == 1) geoPolygon.getInnerRing(0) else GeoLinearRing()
-
+                } else {
+                    // inner
+                    val ring = GeoLinearRing()
 
                     for (outer2 in outer){
                         val points: DoubleArray = convert4326To3857(outer2.longitude(), outer2.latitude())
@@ -2719,7 +2819,6 @@ class MapFragment
                         geopoint.crs = GeoConstants.CRS_WEB_MERCATOR
                         ring.add(geopoint)
                     }
-                    if (iter != 1 )
                         geoPolygon.addInnerRing(ring)
                 }
                 iter++
@@ -2768,14 +2867,10 @@ class MapFragment
                 geopoint.crs = GeoConstants.CRS_WEB_MERCATOR
                 geoLineObj.add(geopoint)
             }
-
-
             return geoLineObj
         }
 
-
         if (feature.geometry()!= null && feature.geometry() is MultiLineString){
-
             val geoMultiLineObj = GeoMultiLineString()
             geoMultiLineObj.crs = GeoConstants.CRS_WEB_MERCATOR
 
