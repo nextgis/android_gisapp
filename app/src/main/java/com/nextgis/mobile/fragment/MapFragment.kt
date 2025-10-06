@@ -562,6 +562,12 @@ class MapFragment
                 editLayerOverlay!!.setSelectedFeature(id)
                 if (mSelectedLayer != null) mSelectedLayer!!.showFeature(id)
                 setMode(MODE_SELECT_ACTION)
+
+                mMap!!.map!!.finishCreateNewFeature(id)
+
+
+
+
             }
         } else if (editLayerOverlay!!.selectedFeatureGeometry != null) editLayerOverlay!!.setHasEdits(
             true
@@ -591,7 +597,7 @@ class MapFragment
         }
         val featureId = editLayerOverlay!!.selectedFeatureId
         editLayerOverlay!!.setSelectedFeature(featureId)
-        mMap!!.map!!.cancelFeatureEdit(true)
+        mMap!!.map!!.cancelFeatureEdit(featureId != -1L)
         setMode(MODE_SELECT_ACTION)
     }
 
@@ -702,6 +708,11 @@ class MapFragment
                                 undoRedoOverlay!!.saveToHistory(editLayerOverlay!!.selectedFeature)
                                 editLayerOverlay!!.setHasEdits(true)
 
+                                mMap!!.map!!.startFeatureSelectionForEdit(mSelectedLayer!!.id, mSelectedLayer!!.geometryType,
+                                    editLayerOverlay!!.selectedFeature, true)
+
+
+
                             }
 
                             R.id.menu_feature_edit -> {
@@ -710,7 +721,7 @@ class MapFragment
                                 editLayerOverlay!!.setHasEdits(false)
                                 if(mSelectedLayer!= null)
                                     mMap!!.map!!.startFeatureSelectionForEdit(mSelectedLayer!!.id, mSelectedLayer!!.geometryType,
-                                        editLayerOverlay!!.selectedFeature)
+                                        editLayerOverlay!!.selectedFeature, false)
                             }
 
                             R.id.menu_feature_delete -> deleteFeature()
@@ -958,6 +969,10 @@ class MapFragment
 
 
     override fun onLayerChanged(id: Int) {
+
+        Log.e("","");
+        mMap!!.map!!.checkLayerVisibility(id);
+
     }
 
 
@@ -1645,7 +1660,7 @@ class MapFragment
 
         val selectedVectorLayer: MutableList<VectorLayer> = ArrayList()
         val selectedGeometry: MutableList<GeoGeometry?> = ArrayList()
-        val selectedFeature: MutableList<Feature> = ArrayList()
+        val selectedFeatures: MutableList<Feature> = ArrayList()
 
         var originalFeatureForSelect : Feature? = null
 
@@ -1666,19 +1681,29 @@ class MapFragment
                 val feature = vectorLayer.getFeature(featureId)
 
                 originalFeatureForSelect = vectorLayer.getFeature(featureId)
-                var valueForHint = vectorLayer
-                    .getFeature(featureId)
-                    .getFieldValue(
-                        ((vectorLayer.renderer as SimpleFeatureRenderer)
-                            .style)
-                            .field
-                    )?.toString()
-                if (valueForHint == null) {
-                    mSelectedLayers.add(layer.getName() + ": " + featureId)
-                    valueForHint = layer.getName() + ": " + featureId
+
+
+                if (originalFeatureForSelect != null) {
+
+
+                    var fieldToDisplay = ((vectorLayer.getRenderer() as SimpleFeatureRenderer)
+                        .getStyle())
+                        .getField()
+                    if (fieldToDisplay == null)
+                        fieldToDisplay = vectorLayer.getFields().get(0).getName()
+
+                    val valueForHint: String? = vectorLayer
+                        .getFeature(featureId)
+                        .getFieldValue(fieldToDisplay).toString()
+
+                    if (valueForHint == null || "null" == valueForHint || TextUtils.isEmpty(valueForHint)
+                    ) {
+                        mSelectedLayers.add(layer.getName() + ": " + featureId)
+                    } else {
+                        mSelectedLayers.add(layer.getName() + ": " + valueForHint)
+                    }
                 } else {
-                    mSelectedLayers.add(layer.getName() + ": " + valueForHint)
-                    valueForHint = layer.getName() + ": " + valueForHint
+                    mSelectedLayers.add(layer.getName() + ": " + featureId + " is null")
                 }
 
                 selectedSingleVectorLayer = layer
@@ -1686,7 +1711,7 @@ class MapFragment
 
                 selectedVectorLayer.add(vectorLayer)
                 selectedGeometry.add(geometry)
-                selectedFeature.add(feature)
+                selectedFeatures.add(feature)
             }
         }
 
@@ -1695,7 +1720,7 @@ class MapFragment
                 clickPoint.x.toDouble(), clickPoint.y.toDouble(), mSelectedLayers,
                 selectedVectorLayer,
                 selectedGeometry,
-                selectedFeature,
+                selectedFeatures,
                 false)
         else {
             if (mSelectedLayer != null)
@@ -1904,7 +1929,7 @@ class MapFragment
                 editLayerOverlay!!.setSelectedFeature(features[which].id)
                 //mMap!!.map!!.startFeatureSelectionForEdit(mSelectedLayer!!.id, featureId[which])
                 if (editMode)
-                    mMap!!.map!!.startFeatureSelectionForEdit(mSelectedLayer!!.id, mSelectedLayer!!.geometryType, features[which])
+                    mMap!!.map!!.startFeatureSelectionForEdit(mSelectedLayer!!.id, mSelectedLayer!!.geometryType, features[which], false)
                 else
                     mMap!!.map!!.startFeatureSelectionForView(mSelectedLayer!!.id, features[which])
             }

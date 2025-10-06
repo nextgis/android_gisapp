@@ -4,7 +4,7 @@ android {
     namespace "com.tech.freak.wizardpager"
 
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 26
         compileSdk 36
         targetSdkVersion 36
     }
