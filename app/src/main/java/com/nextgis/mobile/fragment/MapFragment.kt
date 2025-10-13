@@ -523,7 +523,7 @@ class MapFragment
             if (featureId == Constants.NOT_FOUND.toLong()) {
                 //show attributes edit activity
                 val vectorLayerUI = mSelectedLayer as IVectorLayerUI
-                vectorLayerUI.showEditForm(mActivity, featureId, geometry)
+                vectorLayerUI.showEditForm(mActivity, featureId, geometry, -1)
             } else {
                 var uri =  Uri.parse("content://" + mApp!!.authority + "/" + mSelectedLayer!!.path.name)
                 uri = ContentUris.withAppendedId(uri!!, featureId)
@@ -710,9 +710,6 @@ class MapFragment
 
                                 mMap!!.map!!.startFeatureSelectionForEdit(mSelectedLayer!!.id, mSelectedLayer!!.geometryType,
                                     editLayerOverlay!!.selectedFeature, true)
-
-
-
                             }
 
                             R.id.menu_feature_edit -> {
@@ -971,8 +968,19 @@ class MapFragment
     override fun onLayerChanged(id: Int) {
 
         Log.e("","");
+
+        //mMap!!.map!!.reloadLayerByID(id); // todo change to update ony item - feature id
+        mMap!!.map!!.reloadFillLayerStyleToMaplibre(id); // todo change to update ony item - feature id
+
         mMap!!.map!!.checkLayerVisibility(id);
 
+    }
+
+    override fun onLayerChangedFeatureId(
+        oldFeatureId: Long,
+        newFeatureId: Long,
+        layerId: Int) {
+        mMap!!.map!!.changeFeatureId(oldFeatureId,newFeatureId, layerId);
     }
 
 
@@ -1517,7 +1525,7 @@ class MapFragment
                 mSelectedLayer = vectorLayer as VectorLayer
                 editLayerOverlay!!.setSelectedLayer(mSelectedLayer)
                 val vectorLayerUI = vectorLayer as IVectorLayerUI
-                vectorLayerUI.showEditForm(mActivity, Constants.NOT_FOUND.toLong(), null)
+                vectorLayerUI.showEditForm(mActivity, Constants.NOT_FOUND.toLong(), null, -1)
 
                 Toast.makeText(
                     mActivity,
@@ -1612,7 +1620,7 @@ class MapFragment
         if (code == ADD_CURRENT_LOC) {
             if (layer is ILayerUI) {
                 val layerUI = layer as IVectorLayerUI
-                layerUI.showEditForm(mActivity, Constants.NOT_FOUND.toLong(), null)
+                layerUI.showEditForm(mActivity, Constants.NOT_FOUND.toLong(), null, -1)
             }
         } else if (code == EDIT_LAYER) {
             setMode(MODE_SELECT_ACTION)
@@ -1631,19 +1639,24 @@ class MapFragment
     }
 
     override fun processMapClick(screenx: Float, screeny: Float): Boolean {    // x y - screen coordinates
-        Log.e("CCCLLIICK", "screenX: " + screenx + " - " + " screeny: " + screeny)
+//        Log.e("CCCLLIICK", "screenX: " + screenx + " - " + " screeny: " + screeny)
         onSingleTapUpFromMaplibre(screenx, screeny)
         return true
     }
 
     fun onLongPressFromMaplibre(clickeEnelope: GeoEnvelope, clickPoint : PointF) {
+
+//        Log.e("CCACHHEE", "onLongPressFromMaplibre at enelope " + clickeEnelope.toString() )
+//        Log.e("CCACHHEE", "onLongPressFromMaplibre at point " + clickPoint.x + " " + clickPoint.y )
+
         if (!(mode == MODE_NORMAL || mode == MODE_SELECT_ACTION) || mRulerOverlay!!.isMeasuring) {
             return
         }
 
         //  exactEnv = mMap!!.screenToMap(exactEnv)
-        if (null == clickeEnelope) return
-        val point = GeoPoint(clickeEnelope.maxX, clickeEnelope.minY)
+        if (null == clickeEnelope)
+            return
+        val point = GeoPoint(clickeEnelope.center.x, clickeEnelope.center.y)
         point.crs = GeoConstants.CRS_WEB_MERCATOR
 
         //show actions dialog
@@ -1669,16 +1682,31 @@ class MapFragment
 
             if (!(layer as ILayerView).isVisible) continue
 
+//            Log.e("CCACHHEE", "onLongPressFromMaplibre layersLoop id layer: " + layer.id )
+
+
             vectorLayer = layer as VectorLayer
             items = vectorLayer.query(clickeEnelope)
 
+//            Log.e("CCACHHEE", "onLongPressFromMaplibre items from vectorLayer.query size  " + items.size )
+
             for (i in items.indices) {    // FIXME hack for bad RTree cache
+//                Log.e("CCACHHEE", "onLongPressFromMaplibre i in items.indices i: " + i )
+
                 featureId = items[i]
+//                Log.e("CCACHHEE", "onLongPressFromMaplibre featureId: " + featureId )
                 geometry = vectorLayer.getGeometryForId(featureId)
+
                 if (editLayerOverlay!!.notContains(geometry, point)) {
+//                    Log.e("CCACHHEE", "onLongPressFromMaplibre editLayerOverlay!!.notContains(geometry, point) continue"  )
                     continue
                 }
+//                Log.e("CCACHHEE", "onLongPressFromMaplibre vectorLayer.getFeature(featureId) for " + featureId  )
+
                 val feature = vectorLayer.getFeature(featureId)
+
+//                Log.e("CCACHHEE", "onLongPressFromMaplibre feature is : " + (if (feature == null) " null" else " not null"  ))
+
 
                 originalFeatureForSelect = vectorLayer.getFeature(featureId)
 
@@ -2601,7 +2629,9 @@ class MapFragment
             R.id.add_geometry_by_walk -> if (v.isEnabled) addGeometryByWalk()
 
             R.id.action_zoom_in -> {
-                //if (v.isEnabled) mMap!!.zoomIn()
+                //if (v.isEnabled) mMap!!.zoomIn() // old
+                // test
+                //mMap!!.map!!.changePointColor()
 
                 val currentZoom =  mMap!!.map.maplibreMap.cameraPosition.zoom
                 var newZoom = currentZoom + 1.0
