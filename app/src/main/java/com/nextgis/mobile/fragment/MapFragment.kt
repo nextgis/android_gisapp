@@ -967,12 +967,13 @@ class MapFragment
 
     override fun onLayerChanged(id: Int) {
 
-        Log.e("","");
-
-        //mMap!!.map!!.reloadLayerByID(id); // todo change to update ony item - feature id
-        mMap!!.map!!.reloadFillLayerStyleToMaplibre(id); // todo change to update ony item - feature id
-
-        mMap!!.map!!.checkLayerVisibility(id);
+        // remove - moved update to MapViewOverlays
+//        Log.e("","");
+//
+//        //mMap!!.map!!.reloadLayerByID(id); // todo change to update ony item - feature id
+//        mMap!!.map!!.reloadFillLayerStyleToMaplibre(id); // todo change to update ony item - feature id
+//
+//        mMap!!.map!!.checkLayerVisibility(id);
 
     }
 
@@ -980,7 +981,8 @@ class MapFragment
         oldFeatureId: Long,
         newFeatureId: Long,
         layerId: Int) {
-        mMap!!.map!!.changeFeatureId(oldFeatureId,newFeatureId, layerId);
+        //// remove - moved update to MapViewOverlays
+        //mMap!!.map!!.changeFeatureId(oldFeatureId,newFeatureId, layerId);
     }
 
 
