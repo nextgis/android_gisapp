@@ -11,14 +11,7 @@
       "maxzoom": 20
     }
   ],
-  "metadata": {
-    "mapbox:autocomposite": false,
-    "mapbox:type": "template",
-    "maputnik:renderer": "mbgljs",
-    "openmaptiles:mapbox:owner": "openmaptiles",
-    "openmaptiles:mapbox:source:url": "mapbox://openmaptiles.4qljc88t",
-    "openmaptiles:version": "3.x"
-  },
+
   "name": "Basic",
   "sources": {
     "geoservices": {

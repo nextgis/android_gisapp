@@ -1709,28 +1709,15 @@ class MapFragment
 
 //                Log.e("CCACHHEE", "onLongPressFromMaplibre feature is : " + (if (feature == null) " null" else " not null"  ))
 
-
                 originalFeatureForSelect = vectorLayer.getFeature(featureId)
-
-
                 if (originalFeatureForSelect != null) {
+                    val valueForHint = getHintText(vectorLayer, feature)
 
-
-                    var fieldToDisplay = ((vectorLayer.getRenderer() as SimpleFeatureRenderer)
-                        .getStyle())
-                        .getField()
-                    if (fieldToDisplay == null)
-                        fieldToDisplay = vectorLayer.getFields().get(0).getName()
-
-                    val valueForHint: String? = vectorLayer
-                        .getFeature(featureId)
-                        .getFieldValue(fieldToDisplay).toString()
-
-                    if (valueForHint == null || "null" == valueForHint || TextUtils.isEmpty(valueForHint)
-                    ) {
-                        mSelectedLayers.add(layer.getName() + ": " + featureId)
-                    } else {
-                        mSelectedLayers.add(layer.getName() + ": " + valueForHint)
+                    if (feature != null){
+                        if (valueForHint == null)
+                            mSelectedLayers.add(layer.getName() + ": " + featureId)
+                        else
+                            mSelectedLayers.add(layer.getName() + ": " + valueForHint)
                     }
                 } else {
                     mSelectedLayers.add(layer.getName() + ": " + featureId + " is null")
@@ -1831,20 +1818,15 @@ class MapFragment
                 }
 
                 val feature = vectorLayer.getFeature(featureId)
-                var valueForHint = vectorLayer
-                    .getFeature(featureId)
-                    .getFieldValue(
-                        ((vectorLayer.renderer as SimpleFeatureRenderer)
-                            .style)
-                            .field
-                    )?.toString()
-                if (valueForHint == null) {
-                    mSelectedLayers.add(layer.getName() + ": " + featureId)
-                    valueForHint = layer.getName() + ": " + featureId
-                } else {
-                    mSelectedLayers.add(layer.getName() + ": " + valueForHint)
-                    valueForHint = layer.getName() + ": " + valueForHint
+                val valueForHint = getHintText(vectorLayer, feature)
+
+                if (feature != null){
+                    if (valueForHint == null)
+                        mSelectedLayers.add(layer.getName() + ": " + featureId)
+                    else
+                        mSelectedLayers.add(layer.getName() + ": " + valueForHint)
                 }
+
 
                 selectedSingleVectorLayer = layer
                 selectedSingleFeatureId = featureId
@@ -2068,30 +2050,17 @@ class MapFragment
                             i++
                             continue
                         }
-                        var fieldToDisplay = ((vectorLayer.renderer as SimpleFeatureRenderer)
-                            .style)
-                            .field
-                        if (TextUtils.isEmpty(fieldToDisplay)) {
-                            fieldToDisplay = vectorLayer.fields[0].name
-                        }
+
+
+
                         val feature = vectorLayer.getFeature(featureId)
-                        if (feature != null) {
-                            val objectValueForHint = vectorLayer
-                                .getFeature(featureId)
-                                .getFieldValue((fieldToDisplay))
-                            var valueForHint = objectValueForHint.toString()
-                            if (objectValueForHint == null && fieldToDisplay == "_id") {
-                                valueForHint = vectorLayer.getFeature(featureId).id.toString()
-                            }
+                        val valueForHint = getHintText(vectorLayer, feature)
 
-
-                            if (valueForHint == null) {
+                        if (feature != null){
+                            if (valueForHint == null)
                                 mSelectedLayers.add(layer.getName() + ": " + featureId)
-                                valueForHint = layer.getName() + ": " + featureId
-                            } else {
+                            else
                                 mSelectedLayers.add(layer.getName() + ": " + valueForHint)
-                                valueForHint = layer.getName() + ": " + valueForHint
-                            }
                         }
 
                         selectedSingleVectorLayer = layer
@@ -2259,29 +2228,16 @@ class MapFragment
                             i++
                             continue
                         }
-                        var fieldToDisplay = ((vectorLayer.renderer as SimpleFeatureRenderer)                            .style)                            .field
-                        if (TextUtils.isEmpty(fieldToDisplay)) {
-                            fieldToDisplay = vectorLayer.fields[0].name
-                        }
+
                         val feature = vectorLayer.getFeature(featureId)
+                        val valueForHint = getHintText(vectorLayer, feature)
 
-                        if (feature != null) {
-                            val objectValueForHint = vectorLayer
-                                .getFeature(featureId)
-                                .getFieldValue((fieldToDisplay))
-                            var valueForHint = objectValueForHint.toString()
-                            if (objectValueForHint == null && fieldToDisplay == "_id") {
-                                valueForHint = vectorLayer.getFeature(featureId).id.toString()
-                            }
-
-
-                            if (valueForHint == null) {
+                        if (feature != null){
+                            if (valueForHint == null)
                                 mSelectedLayers.add(layer.getName() + ": " + featureId)
-                                valueForHint = layer.getName() + ": " + featureId
-                            } else {
+                            else
                                 mSelectedLayers.add(layer.getName() + ": " + valueForHint)
-                                valueForHint = layer.getName() + ": " + valueForHint
-                            }
+
                             selectedFeatures.add(feature)
                         }
 
@@ -2338,10 +2294,8 @@ class MapFragment
         if (editLayerOverlay!!.mode == EditLayerOverlay.MODE_CHANGE) mNeedSave = true
     }
 
-
     override fun panMoveTo(e: MotionEvent) {
     }
-
 
     override fun panStop() {
         if (mode == MODE_EDIT_BY_TOUCH || mNeedSave) {
@@ -2967,6 +2921,31 @@ class MapFragment
         val lon = x * 180 / 20037508.34
         val lat = Math.toDegrees(atan(sinh(y * Math.PI / 20037508.34)))
         return doubleArrayOf(lon, lat)
+    }
+
+    fun getHintText(vectorLayer: VectorLayer, feature: Feature):String? {
+
+        if (feature == null)
+            return null
+
+        var fieldToDisplay = ((vectorLayer.renderer as SimpleFeatureRenderer).style).field
+
+        if (!TextUtils.isEmpty(fieldToDisplay) && fieldToDisplay.equals("_id")){ // id of feature
+            return feature.id.toString()
+        }
+
+        if (TextUtils.isEmpty(fieldToDisplay)) {
+            fieldToDisplay = vectorLayer.fields[0].name
+        }
+
+        val objectValueForHint = feature.getFieldValue((fieldToDisplay))
+        var valueForHint = "";
+        if (objectValueForHint == null ) {
+            valueForHint = feature.id.toString()
+        } else
+            valueForHint = objectValueForHint.toString()
+
+        return valueForHint
     }
 
 }
