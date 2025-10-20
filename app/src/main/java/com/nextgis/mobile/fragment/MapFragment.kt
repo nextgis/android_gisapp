@@ -80,6 +80,7 @@ import com.nextgis.maplib.datasource.GeoPolygon
 import com.nextgis.maplib.display.SimpleFeatureRenderer
 import com.nextgis.maplib.location.GpsEventSource
 import com.nextgis.maplib.map.MLP.MLGeometryEditClass
+import com.nextgis.maplib.map.MPLFeaturesUtils.id_name
 import com.nextgis.maplib.map.MapDrawable
 import com.nextgis.maplib.map.MaplibreMapInteraction
 import com.nextgis.maplib.map.VectorLayer
@@ -708,8 +709,9 @@ class MapFragment
                                 undoRedoOverlay!!.saveToHistory(editLayerOverlay!!.selectedFeature)
                                 editLayerOverlay!!.setHasEdits(true)
 
+
                                 mMap!!.map!!.startFeatureSelectionForEdit(mSelectedLayer!!.id, mSelectedLayer!!.geometryType,
-                                    editLayerOverlay!!.selectedFeature, true)
+                                    editLayerOverlay!!.selectedFeature, true,mSelectedLayer!!.defaultStyleNoExcept)
                             }
 
                             R.id.menu_feature_edit -> {
@@ -718,7 +720,7 @@ class MapFragment
                                 editLayerOverlay!!.setHasEdits(false)
                                 if(mSelectedLayer!= null)
                                     mMap!!.map!!.startFeatureSelectionForEdit(mSelectedLayer!!.id, mSelectedLayer!!.geometryType,
-                                        editLayerOverlay!!.selectedFeature, false)
+                                        editLayerOverlay!!.selectedFeature, false, mSelectedLayer!!.defaultStyleNoExcept)
                             }
 
                             R.id.menu_feature_delete -> deleteFeature()
@@ -1680,7 +1682,7 @@ class MapFragment
         var originalFeatureForSelect : Feature? = null
 
         layersLoop@ for (layer in layers) {
-            if (!layer.isValid) continue
+            //if (!layer.isValid) continue
 
             if (!(layer as ILayerView).isVisible) continue
 
@@ -1803,7 +1805,7 @@ class MapFragment
 
 
         layersLoop@ for (layer in layers) {
-            if (!layer.isValid) continue
+            //if (!layer.isValid) continue
 
             if (!(layer as ILayerView).isVisible) continue
 
@@ -1941,7 +1943,8 @@ class MapFragment
                 editLayerOverlay!!.setSelectedFeature(features[which].id)
                 //mMap!!.map!!.startFeatureSelectionForEdit(mSelectedLayer!!.id, featureId[which])
                 if (editMode)
-                    mMap!!.map!!.startFeatureSelectionForEdit(mSelectedLayer!!.id, mSelectedLayer!!.geometryType, features[which], false)
+                    mMap!!.map!!.startFeatureSelectionForEdit(mSelectedLayer!!.id, mSelectedLayer!!.geometryType, features[which],
+                        false, mSelectedLayer!!.defaultStyleNoExcept)
                 else
                     mMap!!.map!!.startFeatureSelectionForView(mSelectedLayer!!.id, features[which])
             }
@@ -2034,7 +2037,7 @@ class MapFragment
 
 
                 layersLoop@ for (layer in layers) {
-                    if (!layer.isValid) continue
+                    //if (!layer.isValid) continue
 
                     if (!(layer as ILayerView).isVisible) continue
 
@@ -2212,7 +2215,7 @@ class MapFragment
 
 
                 layersLoop@ for (layer in layers) {
-                    if (!layer.isValid) continue
+                    //if (!layer.isValid) continue
 
                     if (!(layer as ILayerView).isVisible) continue
 
@@ -2239,7 +2242,8 @@ class MapFragment
                                 mSelectedLayers.add(layer.getName() + ": " + valueForHint)
 
                             selectedFeatures.add(feature)
-                        }
+                        } else
+                            continue
 
                         selectedSingleVectorLayer = layer
                         selectedSingleFeatureId = featureId
@@ -2640,7 +2644,7 @@ class MapFragment
         mActivity!!.setSubtitle(LocationUtil.formatArea(context, area))
     }
 
-    companion object {
+    public companion object {
         const val MODE_NORMAL: Int = 0
         const val MODE_SELECT_ACTION: Int = 1
         const val MODE_EDIT: Int = 2
@@ -2736,6 +2740,10 @@ class MapFragment
     override
     fun updateActions(editObject: MLGeometryEditClass?){
         editLayerOverlay!!.updateActions(editObject)
+    }
+
+    override fun getMode(): Int {
+        return mode;
     }
 
     override
@@ -2923,14 +2931,14 @@ class MapFragment
         return doubleArrayOf(lon, lat)
     }
 
-    fun getHintText(vectorLayer: VectorLayer, feature: Feature):String? {
+    fun getHintText(vectorLayer: VectorLayer, feature: Feature?):String? {
 
         if (feature == null)
             return null
 
         var fieldToDisplay = ((vectorLayer.renderer as SimpleFeatureRenderer).style).field
 
-        if (!TextUtils.isEmpty(fieldToDisplay) && fieldToDisplay.equals("_id")){ // id of feature
+        if (!TextUtils.isEmpty(fieldToDisplay) && fieldToDisplay.equals(id_name)){ // id of feature
             return feature.id.toString()
         }
 
