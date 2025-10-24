@@ -7,6 +7,9 @@
       "id": "osm-layer",
       "type": "raster",
       "source": "geoservices",
+      "paint": {
+        "raster-opacity": 0.5
+      },
       "minzoom": 0,
       "maxzoom": 20
     }
@@ -19,6 +22,7 @@
       "maxzoom": 20,
       "minzoom": 0,
       "tileSize": 256,
+      "alpha": 0.5,
       "tiles": [
         "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
       ],

@@ -36,6 +36,7 @@ import android.graphics.PointF
 import android.location.Location
 import android.location.LocationManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Vibrator
 import android.preference.PreferenceManager
@@ -64,6 +65,7 @@ import androidx.fragment.app.FragmentTransaction
 import com.getbase.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.nextgis.maplib.api.GpsEventListener
+import com.nextgis.maplib.api.IGISApplication
 import com.nextgis.maplib.api.ILayer
 import com.nextgis.maplib.api.ILayerView
 import com.nextgis.maplib.datasource.Feature
@@ -79,6 +81,7 @@ import com.nextgis.maplib.datasource.GeoPoint
 import com.nextgis.maplib.datasource.GeoPolygon
 import com.nextgis.maplib.display.SimpleFeatureRenderer
 import com.nextgis.maplib.location.GpsEventSource
+import com.nextgis.maplib.map.MLP.AuthInterceptorNG
 import com.nextgis.maplib.map.MLP.MLGeometryEditClass
 import com.nextgis.maplib.map.MPLFeaturesUtils.id_name
 import com.nextgis.maplib.map.MapDrawable
@@ -112,10 +115,14 @@ import com.nextgis.mobile.R
 import com.nextgis.mobile.activity.MainActivity
 import com.nextgis.mobile.util.AppConstants
 import com.nextgis.mobile.util.AppSettingsConstants
+import okhttp3.Dispatcher
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
 import org.maplibre.android.camera.CameraUpdateFactory
 import org.maplibre.android.geometry.LatLng
 import org.maplibre.android.maps.MapLibreMap
 import org.maplibre.android.maps.OnMapReadyCallback
+import org.maplibre.android.module.http.HttpRequestImpl
 import org.maplibre.geojson.LineString
 import org.maplibre.geojson.MultiLineString
 import org.maplibre.geojson.MultiPoint
@@ -124,6 +131,7 @@ import org.maplibre.geojson.Point
 import org.maplibre.geojson.Polygon
 import java.io.IOException
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 import kotlin.math.atan
 import kotlin.math.ln
 import kotlin.math.sinh
@@ -330,16 +338,46 @@ class MapFragment
     }
 
     override fun onMapReady(mapboxMap: MapLibreMap) {
-
         mMap!!.map!!.setMapFragment(this)
+
+        val  interceptor = (mApp as IGISApplication).getAuthInterceptor();
+
+        val client = OkHttpClient.Builder()
+            .addInterceptor(interceptor)
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .dispatcher(getDispatcher())
+            .build()
+
+        // set global http client
+        HttpRequestImpl.setOkHttpClient(client)
+
+//        Log.e("OkHttpClient_NG", "OkHttpClient_NG set")
+
+
 
         val mapboxMaplibre = mapboxMap
         mMap!!.map!!.maplibreMap = mapboxMaplibre
 
         val styleJson = loadJsonFromAssets(requireContext(), "ngwstyle.json")
         val layers = mMap!!.getVectorLayersByType(GeoConstants.GTAnyCheck)
+        val layersTMS = mMap!!.getTMSLayersByType(GeoConstants.GTAnyCheck)
 
-        mMap!!.map!!.loadLayersToMaplibreMap(styleJson, layers)
+        mMap!!.map!!.loadLayersToMaplibreMap(styleJson, layers, layersTMS)
+    }
+
+    private fun getDispatcher(): Dispatcher {
+        val dispatcher = Dispatcher()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // Matches core limit set on
+            // https://github.com/mapbox/mapbox-gl-native/blob/master/platform/android/src/http_file_source.cpp#L192
+            dispatcher.maxRequestsPerHost = 20
+        } else {
+            // Limiting concurrent request on Android 4.4, to limit impact of SSL handshake platform library crash
+            // https://github.com/mapbox/mapbox-gl-native/issues/14910
+            dispatcher.maxRequestsPerHost = 10
+        }
+        return dispatcher
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
@@ -892,11 +930,6 @@ class MapFragment
     }
 
 
-
-
-
-
-
     override fun onDestroyView() {
         if (mMap != null) {
             mMap!!.removeListener(this)
@@ -995,8 +1028,8 @@ class MapFragment
         setZoomInEnabled(mMap!!.canZoomIn())
         setZoomOutEnabled(mMap!!.canZoomOut())
         mScaleRulerText!!.text = rulerText
-        //        mZoomLevel.setText(getZoomText());
-        if (mZoom != null) mZoom!!.text = zoomText
+        if (mZoom != null)
+            mZoom!!.text = zoomText
     }
 
 
