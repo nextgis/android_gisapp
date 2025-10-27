@@ -81,7 +81,6 @@ import com.nextgis.maplib.datasource.GeoPoint
 import com.nextgis.maplib.datasource.GeoPolygon
 import com.nextgis.maplib.display.SimpleFeatureRenderer
 import com.nextgis.maplib.location.GpsEventSource
-import com.nextgis.maplib.map.MLP.AuthInterceptorNG
 import com.nextgis.maplib.map.MLP.MLGeometryEditClass
 import com.nextgis.maplib.map.MPLFeaturesUtils.id_name
 import com.nextgis.maplib.map.MapDrawable
@@ -116,7 +115,6 @@ import com.nextgis.mobile.activity.MainActivity
 import com.nextgis.mobile.util.AppConstants
 import com.nextgis.mobile.util.AppSettingsConstants
 import okhttp3.Dispatcher
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import org.maplibre.android.camera.CameraUpdateFactory
 import org.maplibre.android.geometry.LatLng
@@ -2354,6 +2352,14 @@ class MapFragment
             if (!mCurrentCenter!!.project(GeoConstants.CRS_WEB_MERCATOR)) {
                 mCurrentCenter = null
             }
+
+            val isStanding =
+                location == null || !location.hasBearing() || !location.hasSpeed() || location.getSpeed() == 0f
+
+            mMap!!.map!!.updateLocation(
+                Point.fromLngLat(location.longitude, location.latitude),
+                isStanding,
+                location.bearing)
         }
 
         fillStatusPanel(location)
