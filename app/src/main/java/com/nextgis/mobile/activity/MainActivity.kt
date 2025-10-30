@@ -82,6 +82,7 @@ import com.nextgis.maplibui.api.IChooseLayerResult
 import com.nextgis.maplibui.api.IVectorLayerUI
 import com.nextgis.maplibui.fragment.BottomToolbar
 import com.nextgis.maplibui.fragment.LayerFillProgressDialogFragment
+import com.nextgis.maplibui.mapui.TrackLayerUI.CODE_TRACK_LIST
 import com.nextgis.maplibui.overlay.EditLayerOverlay
 import com.nextgis.maplibui.service.TrackerService
 import com.nextgis.maplibui.service.TrackerService.BackgroundPermissionCallback
@@ -710,6 +711,10 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
         super.onActivityResult(requestCode, resultCode, data)
 
         when (requestCode) {
+
+            CODE_TRACK_LIST -> mapFragment!!.mMap!!.map.reloadTrackListToMap()
+
+
             FILE_SELECT_CODE -> if (resultCode == RESULT_OK) {
                 // Get the Uri of the selected file
                 val uri = data?.data

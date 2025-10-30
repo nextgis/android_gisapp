@@ -358,10 +358,12 @@ class MapFragment
         mMap!!.map!!.maplibreMap = mapboxMaplibre
 
         val styleJson = loadJsonFromAssets(requireContext(), "ngwstyle.json")
-        val layers = mMap!!.getVectorLayersByType(GeoConstants.GTAnyCheck)
+        val vectorLayers = mMap!!.getVectorLayersByType(GeoConstants.GTAnyCheck)
         val layersTMS = mMap!!.getTMSLayersByType(GeoConstants.GTAnyCheck)
+        val layersTrack =  mMap!!.getLayersByType(Constants.LAYERTYPE_TRACKS)
+        vectorLayers.addAll(layersTrack);
 
-        mMap!!.map!!.loadLayersToMaplibreMap(styleJson, layers, layersTMS)
+        mMap!!.map!!.loadLayersToMaplibreMap(styleJson, vectorLayers, layersTMS)
     }
 
     private fun getDispatcher(): Dispatcher {
