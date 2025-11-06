@@ -87,6 +87,9 @@ import com.nextgis.maplibui.overlay.EditLayerOverlay
 import com.nextgis.maplibui.service.TrackerService
 import com.nextgis.maplibui.service.TrackerService.BackgroundPermissionCallback
 import com.nextgis.maplibui.util.ConstantsUI
+import com.nextgis.maplibui.util.ConstantsUI.KEY_TRACK_ACTION
+import com.nextgis.maplibui.util.ConstantsUI.VALUE_TRACK_START
+import com.nextgis.maplibui.util.ConstantsUI.VALUE_TRACK_STOP
 import com.nextgis.maplibui.util.ControlHelper
 import com.nextgis.maplibui.util.NGIDUtils
 import com.nextgis.maplibui.util.SettingsConstantsUI
@@ -119,6 +122,9 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
     protected var mMessageReceiver: MessageReceiver? = null
     protected var mToolbar: Toolbar? = null
 
+
+    protected var mTrackReceiver: TrackStartStopReceiver? = null
+
     protected var mBackPressed: Long = 0
     protected var mTrackItem: MenuItem? = null
 
@@ -138,6 +144,8 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
 
         setContentView(R.layout.activity_main)
         mMessageReceiver = MessageReceiver()
+
+        mTrackReceiver = TrackStartStopReceiver()
 
         mToolbar = findViewById(R.id.main_toolbar)
         setSupportActionBar(mToolbar)
@@ -1065,8 +1073,7 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
         : BroadcastReceiver() {
         override fun onReceive(
             context: Context,
-            intent: Intent
-        ) {
+            intent: Intent ){
             if (intent.action == ConstantsUI.MESSAGE_INTENT) {
                 Log.e("ZZXX", "intent.getAction().equals(ConstantsUI.MESSAGE_INTENT)")
                 Toast.makeText(
@@ -1097,6 +1104,22 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
         }
     }
 
+    protected inner class TrackStartStopReceiver : BroadcastReceiver() {
+        override fun onReceive(
+            context: Context,
+            intent: Intent ){
+            if (intent.action == ConstantsUI.MESSAGE_INTENT_TRACK) {
+                val tAction =  intent.getStringExtra(KEY_TRACK_ACTION)
+                if (tAction.equals(VALUE_TRACK_START)){
+
+                }
+                if (tAction.equals(VALUE_TRACK_STOP)){
+                    mapFragment!!.reloadTracks()
+                }
+
+            }
+        }
+    }
 
     override fun onResume() {
         super.onResume()
@@ -1109,6 +1132,20 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
         } else {
             registerReceiver(mMessageReceiver, intentFilter)
         }
+
+
+        val intentFilterTrack = IntentFilter()
+        intentFilterTrack.addAction(ConstantsUI.MESSAGE_INTENT_TRACK)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(mTrackReceiver, intentFilterTrack, RECEIVER_EXPORTED)
+        } else {
+            registerReceiver(mTrackReceiver, intentFilterTrack)
+        }
+
+        mapFragment!!.reloadTracks()
+
+
 
 
         if (SDCardUtils.isSDCardUsedAndExtracted(this)) {
@@ -1147,6 +1184,12 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
                 unregisterReceiver(mMessageReceiver)
                 mMessageReceiver = null
             }
+
+            if (mTrackReceiver != null) {
+                unregisterReceiver(mTrackReceiver)
+                mTrackReceiver = null
+            }
+
         } catch (ignored: Exception) {
         }
 

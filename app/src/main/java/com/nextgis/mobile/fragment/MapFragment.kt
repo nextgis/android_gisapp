@@ -104,6 +104,7 @@ import com.nextgis.maplibui.overlay.EditLayerOverlay
 import com.nextgis.maplibui.overlay.RulerOverlay
 import com.nextgis.maplibui.overlay.RulerOverlay.OnRulerChanged
 import com.nextgis.maplibui.overlay.UndoRedoOverlay
+import com.nextgis.maplibui.service.TrackerService
 import com.nextgis.maplibui.service.WalkEditService
 import com.nextgis.maplibui.util.ConstantsUI
 import com.nextgis.maplibui.util.ControlHelper
@@ -116,6 +117,7 @@ import com.nextgis.mobile.util.AppConstants
 import com.nextgis.mobile.util.AppSettingsConstants
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
+import org.maplibre.android.camera.CameraPosition
 import org.maplibre.android.camera.CameraUpdateFactory
 import org.maplibre.android.geometry.LatLng
 import org.maplibre.android.maps.MapLibreMap
@@ -1347,6 +1349,8 @@ class MapFragment
         checkCompass(showCompass)
 
         mCurrentCenter = null
+
+        //updateLastLocation()
     }
 
 
@@ -2362,10 +2366,46 @@ class MapFragment
                 Point.fromLngLat(location.longitude, location.latitude),
                 isStanding,
                 location.bearing)
+
+            Log.e("TTRR", "location at" + ": " + location.longitude + " : " + location.latitude)
+
+
+            if (TrackerService.hasUnfinishedTracks(context))
+                mMap!!.map!!.reloadCurrentTrackToMap()
+
+            Log.e("TTRR", "end olLocChange update---------------" )
+
         }
 
         fillStatusPanel(location)
     }
+
+
+    public fun reloadTracks(){
+
+        if (mMap!!.map!!.maplibreMap==null)
+            return
+        mMap!!.map!!.reloadCurrentTrackToMap()
+        mMap!!.map!!.reloadTrackListToMap()
+
+
+    }
+
+    public fun updateLastLocation(){
+
+        if (mGpsEventSource == null)
+            return
+        val loc = mGpsEventSource!!.lastKnownLocation
+        if (loc ==  null)
+            return
+        val isStanding = loc == null || !loc.hasBearing() || !loc.hasSpeed() || loc.getSpeed() == 0f
+
+        mMap!!.map!!.updateLocation(Point.fromLngLat(loc.longitude, loc.latitude),
+            isStanding,
+            loc.bearing
+        )
+    }
+
 
     override fun onBestLocationChanged(location: Location) {
     }
@@ -2572,10 +2612,22 @@ class MapFragment
         }
     }
 
-
     fun locateCurrentPosition() {
-        if (mCurrentCenter != null) {
+        if (mCurrentCenter != null && mMap!!.map.maplibreMap!=null) {
             mMap!!.panTo(mCurrentCenter)
+
+            val lonLat = convert3857To4326(mCurrentCenter!!.x, mCurrentCenter!!.y);
+
+            val targetPosition = CameraPosition.Builder()
+                .target(LatLng(lonLat[1], lonLat[0]))
+                .zoom(mMap!!.map.maplibreMap.cameraPosition.zoom)
+                .bearing(0.0)
+                .tilt(0.0)
+                .build()
+
+                mMap!!.map.maplibreMap.animateCamera(
+                CameraUpdateFactory.newCameraPosition(targetPosition),
+                2000)
         } else {
             Toast.makeText(
                 mActivity,
