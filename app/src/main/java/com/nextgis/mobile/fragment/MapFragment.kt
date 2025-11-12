@@ -82,6 +82,7 @@ import com.nextgis.maplib.datasource.GeoPolygon
 import com.nextgis.maplib.display.SimpleFeatureRenderer
 import com.nextgis.maplib.location.GpsEventSource
 import com.nextgis.maplib.map.MLP.MLGeometryEditClass
+import com.nextgis.maplib.map.MPLFeaturesUtils
 import com.nextgis.maplib.map.MPLFeaturesUtils.id_name
 import com.nextgis.maplib.map.MapDrawable
 import com.nextgis.maplib.map.MaplibreMapInteraction
@@ -358,6 +359,21 @@ class MapFragment
 
         val mapboxMaplibre = mapboxMap
         mMap!!.map!!.maplibreMap = mapboxMaplibre
+
+        mapboxMaplibre.uiSettings.isRotateGesturesEnabled = false
+        mapboxMaplibre.uiSettings.isCompassEnabled = false
+
+        mapboxMaplibre.addOnCameraIdleListener({
+            val zoom = getCurrentZoom()
+            setMapLibreZoomInEnabled()
+            setMapLibreZoomOutEnabled()
+            mScaleRulerText!!.text = rulerText
+            if (mZoom != null)
+                mZoom!!.text = zoomText
+        })
+
+
+
 
         val styleJson = loadJsonFromAssets(requireContext(), "ngwstyle.json")
         val vectorLayers = mMap!!.getVectorLayersByType(GeoConstants.GTAnyCheck)
@@ -1035,9 +1051,28 @@ class MapFragment
     }
 
 
-    protected val zoomText: String
-        get() = String.format("%.0fz", mMap!!.zoomLevel)
+//    protected val zoomText: String
+//        get() = String.format("%.0fz", mMap!!.zoomLevel)
 
+    protected val zoomText: String
+        get() = getZText()  //
+
+    fun getZText(): String {
+        val mapLibreMap = mMap!!.map.maplibreMap
+        if (mapLibreMap != null)
+            return "${mapLibreMap.zoom.toInt()}z"
+        else
+            return ".z"
+    }
+
+    fun getCurrentZoom(): Int {
+        val mapLibreMap = mMap!!.map.maplibreMap
+        if (mapLibreMap != null)
+            return mapLibreMap.zoom.toInt()
+        else
+            return -1
+
+    }
 
     protected val rulerText: String
         get() {
@@ -1108,6 +1143,29 @@ class MapFragment
             return
         }
         mivZoomOut!!.isEnabled = bEnabled
+    }
+
+    protected fun setMapLibreZoomOutEnabled() {
+        val mapLibreMap = mMap!!.map.maplibreMap
+        if (mapLibreMap != null){
+            if (mapLibreMap.zoom <= mapLibreMap.minZoomLevel) {
+                mivZoomOut!!.isEnabled = false
+                return
+            }
+        }
+        mivZoomOut!!.isEnabled = true
+    }
+
+
+    protected fun setMapLibreZoomInEnabled() {
+        val mapLibreMap = mMap!!.map.maplibreMap
+        if (mapLibreMap != null){
+            if (mapLibreMap.zoom  >= mapLibreMap.maxZoomLevel) {
+                mivZoomIn!!.isEnabled = false
+                return
+            }
+        }
+        mivZoomIn!!.isEnabled = true
     }
 
 
@@ -1687,9 +1745,6 @@ class MapFragment
 
     fun onLongPressFromMaplibre(clickeEnelope: GeoEnvelope, clickPoint : PointF) {
 
-//        Log.e("CCACHHEE", "onLongPressFromMaplibre at enelope " + clickeEnelope.toString() )
-//        Log.e("CCACHHEE", "onLongPressFromMaplibre at point " + clickPoint.x + " " + clickPoint.y )
-
         if (!(mode == MODE_NORMAL || mode == MODE_SELECT_ACTION) || mRulerOverlay!!.isMeasuring) {
             return
         }
@@ -1722,32 +1777,21 @@ class MapFragment
             //if (!layer.isValid) continue
 
             if (!(layer as ILayerView).isVisible) continue
-
-//            Log.e("CCACHHEE", "onLongPressFromMaplibre layersLoop id layer: " + layer.id )
-
-
             vectorLayer = layer as VectorLayer
+
+            Log.e("CCLICK", "on long:")
+            Log.e("CCLICK", clickeEnelope.toString())
             items = vectorLayer.query(clickeEnelope)
-
-//            Log.e("CCACHHEE", "onLongPressFromMaplibre items from vectorLayer.query size  " + items.size )
-
             for (i in items.indices) {    // FIXME hack for bad RTree cache
-//                Log.e("CCACHHEE", "onLongPressFromMaplibre i in items.indices i: " + i )
-
                 featureId = items[i]
-//                Log.e("CCACHHEE", "onLongPressFromMaplibre featureId: " + featureId )
                 geometry = vectorLayer.getGeometryForId(featureId)
 
-                if (editLayerOverlay!!.notContains(geometry, point)) {
-//                    Log.e("CCACHHEE", "onLongPressFromMaplibre editLayerOverlay!!.notContains(geometry, point) continue"  )
+                Log.e("CCLICK", "on long check contains point:" + point.toString())
+                Log.e("CCLICK", "on long check contains poly:" + geometry.toString())
+                if (EditLayerOverlay.notContains(geometry, point)) {
                     continue
                 }
-//                Log.e("CCACHHEE", "onLongPressFromMaplibre vectorLayer.getFeature(featureId) for " + featureId  )
-
                 val feature = vectorLayer.getFeature(featureId)
-
-//                Log.e("CCACHHEE", "onLongPressFromMaplibre feature is : " + (if (feature == null) " null" else " not null"  ))
-
                 originalFeatureForSelect = vectorLayer.getFeature(featureId)
                 if (originalFeatureForSelect != null) {
                     val valueForHint = getHintText(vectorLayer, feature)
@@ -1785,7 +1829,6 @@ class MapFragment
             mSelectedLayer = selectedSingleVectorLayer
             editLayerOverlay!!.setSelectedLayer(selectedSingleVectorLayer)
 
-
             if (geometry != null && mSelectedLayer != null) {
                 editLayerOverlay!!.setSelectedFeature(selectedSingleFeatureId)
                 mMap!!.map!!.startFeatureSelectionForView(mSelectedLayer!!.id, originalFeatureForSelect)
@@ -1797,8 +1840,6 @@ class MapFragment
         //set select action mode
         mMap!!.postInvalidate()
     }
-
-
 
     override fun onLongPress(event: MotionEvent) {
         if (!(mode == MODE_NORMAL || mode == MODE_SELECT_ACTION) || mRulerOverlay!!.isMeasuring) {
@@ -1840,7 +1881,6 @@ class MapFragment
         val selectedGeometry: MutableList<GeoGeometry?> = ArrayList()
         val selectedFeaturesList: MutableList<Feature> = ArrayList()
 
-
         layersLoop@ for (layer in layers) {
             //if (!layer.isValid) continue
 
@@ -1852,7 +1892,7 @@ class MapFragment
             for (i in items.indices) {    // FIXME hack for bad RTree cache
                 featureId = items[i]
                 geometry = vectorLayer.getGeometryForId(featureId)
-                if (editLayerOverlay!!.notContains(geometry, point)) {
+                if (EditLayerOverlay.notContains(geometry, point)) {
                     continue
                 }
 
@@ -1865,7 +1905,6 @@ class MapFragment
                     else
                         mSelectedLayers.add(layer.getName() + ": " + valueForHint)
                 }
-
 
                 selectedSingleVectorLayer = layer
                 selectedSingleFeatureId = featureId
@@ -1899,11 +1938,9 @@ class MapFragment
         mMap!!.postInvalidate()
     }
 
-
     fun showAddByTapButton() {
         mAddPointButton!!.visibility = View.VISIBLE
     }
-
 
     fun hideAddByTapButton() {
         mAddPointButton!!.visibility = View.GONE
@@ -1969,8 +2006,6 @@ class MapFragment
 
         builder.setItems(items) { dialog, which -> //String selectedItem = items[which];
             // remove after some time
-            //Toast.makeText(getContext(), "Selected item: " + selectedItem, Toast.LENGTH_SHORT).show();
-
             if (mSelectedLayer != null) mSelectedLayer!!.isLocked = false
 
             mSelectedLayer = vectorLayer[which]
@@ -1995,10 +2030,6 @@ class MapFragment
         }
         builder.create().show()
     }
-
-
-
-
 
     override fun onSingleTapUp(event: MotionEvent) {
         if (mRulerOverlay!!.isMeasuring) return
@@ -2086,7 +2117,7 @@ class MapFragment
                         // FIXME hack for bad RTree cache
                         featureId = items[i]
                         geometry = vectorLayer.getGeometryForId(featureId)
-                        if (editLayerOverlay!!.notContains(geometry, point)) {
+                        if (EditLayerOverlay.notContains(geometry, point)) {
                             i++
                             continue
                         }
@@ -2146,29 +2177,44 @@ class MapFragment
         }
     }
 
+    fun getClickEnelope(clickPoint: PointF, maplibreMap:MapLibreMap): GeoEnvelope {
+        val TOLERANCE_DP = 20
+        val mTolerancePX = getContext()!!.getResources().getDisplayMetrics().density * TOLERANCE_DP
+
+        val minP = PointF(clickPoint.x - mTolerancePX, clickPoint.y - mTolerancePX)
+        val maxP = PointF(clickPoint.x + mTolerancePX, clickPoint.y + mTolerancePX)
+
+        val minL: LatLng = maplibreMap.getProjection().fromScreenLocation(minP)
+        val maxL: LatLng = maplibreMap.getProjection().fromScreenLocation(maxP)
+
+        val minPoints = MPLFeaturesUtils.convert4326To3857(minL.longitude, minL.latitude)
+        val maxPoints = MPLFeaturesUtils.convert4326To3857(maxL.longitude, maxL.latitude)
+
+        var minx = minPoints[0]
+        var maxx = maxPoints[0]
+        var miny = minPoints[1]
+        var maxy = maxPoints[1]
+
+        if (minx > maxx) {
+            minx = maxPoints[0]
+            maxx = minPoints[0]
+        }
+        if (miny > maxy) {
+            miny = maxPoints[1]
+            maxy = minPoints[1]
+        }
+
+        //val exactEnv: GeoEnvelope = GeoEnvelope(pointsMin[0],  pointsMax[0], pointsMin[1], pointsMax[1])
+        val exactEnv = GeoEnvelope(minx, maxx, miny, maxy)
+        return exactEnv
+    }
+
+
     fun onSingleTapUpFromMaplibre(screenx: Float, screeny :Float) {
         if (mRulerOverlay!!.isMeasuring) return
         when (mode) {
-            MODE_EDIT -> {
-//                if (editLayerOverlay!!.selectGeometryInScreenCoordinates(
-//                        event.x,
-//                        event.y
-//                    )
-//                ) undoRedoOverlay!!.saveToHistory(
-//                    editLayerOverlay!!.selectedFeature
-//                )
-                //defineMenuItems()
-            }
-
-//            MODE_SELECT_ACTION -> {
-//
-////                editLayerOverlay!!.selectGeometryInScreenCoordinates(event.x, event.y)
-////                defineMenuItems()
-//            }
-
+            MODE_EDIT -> { }
             MODE_INFO -> {
-//                editLayerOverlay!!.selectGeometryInScreenCoordinates(event.x, event.y)
-
                 if (null != editLayerOverlay) {
                     val attributesFragment =
                         mActivity!!.supportFragmentManager.findFragmentByTag("ATTRIBUTES") as AttributesFragment?
@@ -2195,17 +2241,12 @@ class MapFragment
                 val minPoint = mMap!!.map!!.maplibreMap.getProjection().fromScreenLocation(screenPointMin)
                 val maxPoint = mMap!!.map!!.maplibreMap.getProjection().fromScreenLocation(screenPointMax)
 
-//                mMap!!.map!!.showTouchArea(minPoint, maxPoint)
-//                  LatLng latLng = maplibreMap.get().getProjection().fromScreenLocation(screenPoint); // todo add tolerance and rect
-//                  double[] points = convert4326To3857(latLng.getLongitude(), latLng.getLatitude());
-
                 Log.e("CCCLLIICK", " click at: " + screenx + " - " + " screeny: " + screeny)
                 Log.e("CCCLLIICK", "points lnglong " + minPoint.longitude + " : " +  minPoint.latitude + " : "
                         + maxPoint.longitude + " : " + maxPoint.latitude )
 
                 val pointsMin = convert4326To3857(minPoint.longitude, minPoint.latitude)
                 val pointsMax = convert4326To3857(maxPoint.longitude, maxPoint.latitude);
-                //val mapEnv = mMap!!.screenToMap(GeoEnvelope(dMinX, dMaxX, dMinY, dMaxY)) ?: return
 
                 var minx =   pointsMin[0];
                 var maxx =   pointsMax[0];
@@ -2220,18 +2261,13 @@ class MapFragment
                     miny =   pointsMax[1]
                     maxy =   pointsMin[1]
                 }
+                //val exactEnv: GeoEnvelope = GeoEnvelope(minx,maxx , miny, maxy)
+                val pointClick = PointF(screenx, screeny)
+                val exactEnv: GeoEnvelope = getClickEnelope(pointClick, mMap!!.map!!.maplibreMap)
 
-                //val exactEnv: GeoEnvelope = GeoEnvelope(pointsMin[0],  pointsMax[0], pointsMin[1], pointsMax[1])
-                val exactEnv: GeoEnvelope = GeoEnvelope(minx,maxx , miny, maxy)
-
-                Log.e("CCCLLIICK", "exactEnv " + pointsMin[0] + " : " +  pointsMax[0] + " : " + pointsMin[1] + " : " + pointsMax[1] )
-
-                //exactEnv = mMap!!.screenToMap(exactEnv)
-                //if (null == exactEnv) return
-                val point = GeoPoint(exactEnv.maxX, exactEnv.minY)
+                val point = GeoPoint(exactEnv.center.x, exactEnv.center.y)
                 point.crs = GeoConstants.CRS_WEB_MERCATOR
 
-                Log.e("CCCLLIICK", "point : " + point.toString())
 
                 //show actions dialog
                 val layers = mMap!!.getVectorLayersByType(GeoConstants.GTAnyCheck)
@@ -2257,6 +2293,8 @@ class MapFragment
                     if (!(layer as ILayerView).isVisible) continue
 
                     vectorLayer = layer as VectorLayer
+                    Log.e("CCLICK", "on tapUp:")
+                    Log.e("CCLICK", exactEnv.toString())
                     items = vectorLayer.query(exactEnv)
 
                     var i = 0
@@ -2264,7 +2302,11 @@ class MapFragment
                         // FIXME hack for bad RTree cache
                         featureId = items[i]
                         geometry = vectorLayer.getGeometryForId(featureId)
-                        if (editLayerOverlay!!.notContains(geometry, point)) {
+
+                        Log.e("CCLICK", "on Up check contains point:" + point.toString())
+                        Log.e("CCLICK", "on Up check contains poly:" + geometry.toString())
+
+                        if (EditLayerOverlay.notContains(geometry, point)) {
                             i++
                             continue
                         }
@@ -2406,10 +2448,8 @@ class MapFragment
         )
     }
 
-
     override fun onBestLocationChanged(location: Location) {
     }
-
 
     private fun fillStatusPanel(location: Location?) {
         if (mStatusPanelMode == 0) return
@@ -2422,34 +2462,8 @@ class MapFragment
             mStatusPanel!!.removeAllViews()
             panel.background.alpha = 128
             mStatusPanel!!.addView(panel)
-        } else fillTextViews(location)
-
-        //        boolean needViewUpdate = true;
-//        boolean isCurrentOrientationOneLine = mStatusPanel.getChildCount() > 0 &&
-//                mStatusPanel.getChildAt(0).getId() == R.id.status_container_land;
-//
-//
-//        if (!isCurrentOrientationOneLine) {
-//            panel = mActivity.getLayoutInflater().inflate(R.layout.status_panel_land, mStatusPanel, false);
-//            defineTextViews(panel);
-//        } else {
-//            panel = mStatusPanel.getChildAt(0);
-//            needViewUpdate = false;
-//        }
-//
-//        fillTextViews(location);
-//
-//        if (!isFitOneLine()) {
-//            panel = mActivity.getLayoutInflater().inflate(R.layout.status_panel, mStatusPanel, false);
-//            defineTextViews(panel);
-//            fillTextViews(location);
-//            needViewUpdate = true;
-//        }
-//        if (needViewUpdate) {
-//            mStatusPanel.removeAllViews();
-//            panel.getBackground().setAlpha(128);
-//            mStatusPanel.addView(panel);
-//        }
+        } else
+            fillTextViews(location)
     }
 
     private fun fillTextViews(location: Location?) {
@@ -2759,12 +2773,11 @@ class MapFragment
         val selectedFeatureId = editLayerOverlay!!.selectedFeatureId
         val layer = mSelectedLayer
 
-        val builder = AlertDialog.Builder(
-            activity!!
-        )
+        val builder = AlertDialog.Builder(activity!!)
             .setTitle(com.nextgis.maplibui.R.string.delete_confirm_feature)
             .setMessage(com.nextgis.maplibui.R.string.delete_feature)
-            .setPositiveButton(com.nextgis.maplibui.R.string.menu_delete) { dialog: DialogInterface?, which: Int ->
+            .setPositiveButton(com.nextgis.maplibui.R.string.menu_delete) {
+                dialog: DialogInterface?, which: Int ->
                 val snackbar = Snackbar.make(
                     activity!!.findViewById<View>(R.id.mainview),
                     activity!!.getString(com.nextgis.maplibui.R.string.delete_item_done),
@@ -2774,6 +2787,8 @@ class MapFragment
                         layer!!.showFeature(selectedFeatureId)
                         editLayerOverlay!!.setSelectedFeature(selectedFeatureId)
                         defineMenuItems()
+                        mMap!!.map.showFeatureFromHide(selectedFeatureId, layer!!.id,
+                            mMap!!.map!!.hiddedFeature)
                     }
                     .addCallback(object : Snackbar.Callback() {
                         override fun onDismissed(snackbar: Snackbar, event: Int) {
@@ -2791,6 +2806,7 @@ class MapFragment
                         }
                     })
                 mSelectedLayer!!.hideFeature(selectedFeatureId)
+                mMap!!.map.hideFeature(selectedFeatureId, layer!!.id)
                 editLayerOverlay?.setSelectedFeature(null)
                 defineMenuItems()
 
@@ -2865,11 +2881,8 @@ class MapFragment
 
         if (feature.geometry()!= null && feature.geometry() is MultiPolygon){
             val multipoly = feature.geometry() as MultiPolygon
-
             val geomultiPolygon = GeoMultiPolygon()
-
             for (poly in multipoly.coordinates()){
-
                 val geoPolygon = GeoPolygon()
                 geoPolygon.crs = GeoConstants.CRS_WEB_MERCATOR
 
