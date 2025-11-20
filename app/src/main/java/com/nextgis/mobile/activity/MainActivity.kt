@@ -375,11 +375,9 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
                     var i = 0
                     while (i < permissions.size) {
                         if (permissions[i] == Manifest.permission.POST_NOTIFICATIONS
-                            && grantResults[i] == PackageManager.PERMISSION_GRANTED
-                        ) {
+                            && grantResults[i] == PackageManager.PERMISSION_GRANTED) {
                             PreferenceManager.getDefaultSharedPreferences(
-                                applicationContext
-                            ).edit()
+                                applicationContext).edit()
                                 .putBoolean(AppSettingsConstants.KEY_PREF_SHOW_SYNC, true)
                                 .commit()
                         }

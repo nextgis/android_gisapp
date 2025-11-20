@@ -1,9 +1,9 @@
 {
-  "glyphs": "https://geoservices.staging.nextgis.com/vector/glyph/350/{fontstack}/{range}.pbf?apikey=858ec2909415ba95df47bbe7375ca1fb",
+  "glyphs": "asset://fonts/{fontstack}/{range}.pbf",
   "id": "basic",
   "layers": [],
   "name": "Basic",
   "sources": {},
-  "sprite": "https://geoservices.staging.nextgis.com/vector/sprite/350/s?apikey=858ec2909415ba95df47bbe7375ca1fb",
+
   "version": 8
 }

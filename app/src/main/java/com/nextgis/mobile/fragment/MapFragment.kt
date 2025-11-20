@@ -1058,9 +1058,12 @@ class MapFragment
         get() = getZText()  //
 
     fun getZText(): String {
+
         val mapLibreMap = mMap!!.map.maplibreMap
-        if (mapLibreMap != null)
+        if (mapLibreMap != null) {
+            Log.e("ZZOM", "zoom " + mapLibreMap.zoom)
             return "${mapLibreMap.zoom.toInt()}z"
+        }
         else
             return ".z"
     }
@@ -1093,6 +1096,10 @@ class MapFragment
 
 
     override fun onLayersReordered() {
+
+
+
+
     }
 
 
@@ -2409,13 +2416,13 @@ class MapFragment
                 isStanding,
                 location.bearing)
 
-            Log.e("TTRR", "location at" + ": " + location.longitude + " : " + location.latitude)
+//            Log.e("TTRR", "location at" + ": " + location.longitude + " : " + location.latitude)
 
 
             if (TrackerService.hasUnfinishedTracks(context))
                 mMap!!.map!!.reloadCurrentTrackToMap()
 
-            Log.e("TTRR", "end olLocChange update---------------" )
+//            Log.e("TTRR", "end olLocChange update---------------" )
 
         }
 

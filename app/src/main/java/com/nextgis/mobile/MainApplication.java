@@ -175,6 +175,11 @@ public class MainApplication extends GISApplication
     }
 
     @Override
+    public MapBase getMapBase() {
+        return getMap();
+    }
+
+    @Override
     public void sendEvent(String category, String action, String label) {
         HitBuilders.EventBuilder event = new HitBuilders.EventBuilder()
                 .setCategory(category)
