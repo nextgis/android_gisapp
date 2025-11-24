@@ -59,6 +59,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -92,6 +93,7 @@ import com.nextgis.maplib.util.FileUtil
 import com.nextgis.maplib.util.GeoConstants
 import com.nextgis.maplib.util.LocationUtil
 import com.nextgis.maplib.util.MapUtil
+import com.nextgis.maplibui.GISApplication
 import com.nextgis.maplibui.api.EditEventListener
 import com.nextgis.maplibui.api.ILayerUI
 import com.nextgis.maplibui.api.IVectorLayerUI
@@ -122,6 +124,7 @@ import org.maplibre.android.camera.CameraPosition
 import org.maplibre.android.camera.CameraUpdateFactory
 import org.maplibre.android.geometry.LatLng
 import org.maplibre.android.maps.MapLibreMap
+import org.maplibre.android.maps.MapView
 import org.maplibre.android.maps.OnMapReadyCallback
 import org.maplibre.android.module.http.HttpRequestImpl
 import org.maplibre.geojson.LineString
@@ -144,7 +147,8 @@ import kotlin.math.tan
 class MapFragment
 
     : Fragment(), MapViewEventListener, GpsEventListener, EditEventListener,
-    View.OnClickListener, OnRulerChanged, OnMapReadyCallback , MaplibreMapInteraction {
+    View.OnClickListener, OnRulerChanged, OnMapReadyCallback , MaplibreMapInteraction,
+    MapLibreMap.OnCameraIdleListener {
     protected var mTolerancePX: Float = 0f
 
     protected var mPreferences: SharedPreferences? = null
@@ -363,17 +367,7 @@ class MapFragment
         mapboxMaplibre.uiSettings.isRotateGesturesEnabled = false
         mapboxMaplibre.uiSettings.isCompassEnabled = false
 
-        mapboxMaplibre.addOnCameraIdleListener({
-            val zoom = getCurrentZoom()
-            setMapLibreZoomInEnabled()
-            setMapLibreZoomOutEnabled()
-            mScaleRulerText!!.text = rulerText
-            if (mZoom != null)
-                mZoom!!.text = zoomText
-        })
-
-
-
+        mapboxMaplibre.addOnCameraIdleListener(this)
 
         val styleJson = loadJsonFromAssets(requireContext(), "ngwstyle.json")
         val vectorLayers = mMap!!.getVectorLayersByType(GeoConstants.GTAnyCheck)
@@ -381,7 +375,55 @@ class MapFragment
         val layersTrack =  mMap!!.getLayersByType(Constants.LAYERTYPE_TRACKS)
         vectorLayers.addAll(layersTrack);
 
-        mMap!!.map!!.loadLayersToMaplibreMap(styleJson, vectorLayers, layersTMS)
+        val allLayers = mMap!!.getAllLayers()
+
+        mMap!!.map!!.loadLayersToMaplibreMap(styleJson, allLayers, vectorLayers, layersTMS, true)
+    }
+
+    override fun loadLayersLite(){
+        // 2. Удаляем из layout
+        //val container = view!!.findViewById<FrameLayout>(R.id.maprl)
+
+        mMap!!.map.maplibreMap.removeOnCameraIdleListener(this)
+        mMap!!.map.maplibreMapView.setOnTouchListener (null)
+        //mMap!!.map.maplibreMapView.removeOnDidFinishLoadingMapListener()
+
+
+        mMap!!.map.clearMapListeners()
+
+        mMap!!.map.clearMaplLibreMap()
+
+        (activity!!.application as GISApplication).resetMap()
+
+
+        val mapView = view!!.findViewById<FrameLayout>(R.id.mapViewMaplibre)
+        (view!! as RelativeLayout ).removeView(mapView)
+
+
+        // 3. Создаём новый MapView
+        mMap!!.map.maplibreMapView  = MapView(mActivity!!.baseContext)
+        (view!! as RelativeLayout ).addView(mMap!!.map.maplibreMapView)
+
+        // 4. Заново инициализируем (как при старте)
+        mMap!!.map.maplibreMapView.onCreate(null)  // если используете savedInstanceState
+        mMap!!.map.maplibreMapView.getMapAsync { map ->
+            mMap!!.map.maplibreMap = map
+
+            mMap!!.map.maplibreMap.addOnCameraIdleListener(this)
+
+//        mMap!!.map!!.maplibreMapView.getMapAsync(this)
+            val styleJson = loadJsonFromAssets(requireContext(), "ngwstyle.json")
+            val allLayers = mMap!!.getAllLayers()
+
+            val vectorLayers = mMap!!.getVectorLayersByType(GeoConstants.GTAnyCheck)
+            val layersTMS = mMap!!.getTMSLayersByType(GeoConstants.GTAnyCheck)
+            val layersTrack =  mMap!!.getLayersByType(Constants.LAYERTYPE_TRACKS)
+            vectorLayers.addAll(layersTrack);
+
+            mMap!!.map!!.loadLayersToMaplibreMap(styleJson, allLayers, vectorLayers, layersTMS, true)
+        }
+
+
     }
 
     private fun getDispatcher(): Dispatcher {
@@ -3067,6 +3109,16 @@ class MapFragment
             valueForHint = objectValueForHint.toString()
 
         return valueForHint
+    }
+
+    override fun onCameraIdle() {
+
+        val zoom = getCurrentZoom()
+        setMapLibreZoomInEnabled()
+        setMapLibreZoomOutEnabled()
+        mScaleRulerText!!.text = rulerText
+        if (mZoom != null)
+            mZoom!!.text = zoomText
     }
 
 }
