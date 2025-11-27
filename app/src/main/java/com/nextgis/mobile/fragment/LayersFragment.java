@@ -78,6 +78,7 @@ import com.nextgis.mobile.activity.CreateVectorLayerActivity;
 import com.nextgis.mobile.activity.MainActivity;
 import com.nextgis.mobile.util.OfflineSyncIntentService;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -129,7 +130,7 @@ public class LayersFragment
     {
         View view = inflater.inflate(R.layout.fragment_layers, container, false);
 
-        LinearLayout linearLayout = view.findViewById(R.id.action_space);
+        final LinearLayout linearLayout = view.findViewById(R.id.action_space);
         if (null != linearLayout) {
             linearLayout.setBackgroundColor(ControlHelper.getColor(view.getContext(), android.R.attr.colorPrimary));
         }
@@ -223,12 +224,12 @@ public class LayersFragment
             DrawerLayout drawerLayout,
             final MapDrawable map)
     {
-        final MainActivity activity = (MainActivity) getActivity();
-        if (activity == null)
+        final WeakReference<MainActivity> activityRef = new WeakReference<MainActivity>((MainActivity)getActivity());
+        if (activityRef.get() == null)
             return;
-        mFragmentContainerView = activity.findViewById(fragmentId);
+        mFragmentContainerView = activityRef.get().findViewById(fragmentId);
 
-        Display display = activity.getWindowManager().getDefaultDisplay();
+        Display display = activityRef.get().getWindowManager().getDefaultDisplay();
 
         int displayWidth;
         Point size = new Point();
@@ -241,33 +242,40 @@ public class LayersFragment
         }
         mFragmentContainerView.setLayoutParams(params);
 
-        final MapFragment mapFragment = activity.getMapFragment();
-        mListAdapter = new LayersListAdapter(activity, mapFragment.getMMap());
+
+        final WeakReference<MapFragment> mapFragmentRef = new WeakReference<>(activityRef.get().getMapFragment());
+        mListAdapter = new LayersListAdapter(activityRef.get(), mapFragmentRef.get().getMMapRef().get());
         mListAdapter.setDrawer(drawerLayout);
         mListAdapter.setOnPencilClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!mapFragment.hasEdits()) {
-                    if (mapFragment.getMFinishListener() != null)
-                        mapFragment.getMFinishListener().onClick(null);
+                if (mapFragmentRef.get()!= null &&  !mapFragmentRef.get().hasEdits()) {
+                    if (mapFragmentRef.get().getMFinishListener() != null)
+                        mapFragmentRef.get().getMFinishListener().onClick(null);
                     return;
                 }
 
-                AlertDialog builder = new AlertDialog.Builder(activity)
+                if (activityRef.get() == null)
+                    return;
+                AlertDialog builder = new AlertDialog.Builder(activityRef.get())
                         .setTitle(com.nextgis.maplibui.R.string.save)
                         .setMessage(com.nextgis.maplibui.R.string.has_edits)
                         .setPositiveButton(com.nextgis.maplibui.R.string.save, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                mapFragment.saveEdits();
-                                mapFragment.setMode(MapFragment.MODE_NORMAL);
+                                if (mapFragmentRef.get()!= null ) {
+                                    mapFragmentRef.get().saveEdits();
+                                    mapFragmentRef.get().setMode(MapFragment.MODE_NORMAL);
+                                }
                             }
                         })
                         .setNegativeButton(com.nextgis.maplibui.R.string.discard, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                mapFragment.cancelEdits();
-                                mapFragment.setMode(MapFragment.MODE_NORMAL);
+                                if (mapFragmentRef.get()!= null ) {
+                                    mapFragmentRef.get().cancelEdits();
+                                    mapFragmentRef.get().setMode(MapFragment.MODE_NORMAL);
+                                }
                             }
                         }).create();
                 builder.show();
@@ -276,18 +284,21 @@ public class LayersFragment
         mListAdapter.setOnLayerEditListener(new LayersListAdapter.onEdit() {
             @Override
             public void onLayerEdit(ILayer layer) {
-                IGISApplication application = (IGISApplication) activity.getApplication();
+                if (activityRef.get() == null)
+                    return;
+                IGISApplication application = (IGISApplication) activityRef.get().getApplication();
                 application.sendEvent(GA_LAYER, GA_EDIT, GA_MENU);
-                mapFragment.onFinishChooseLayerDialog(MapFragment.EDIT_LAYER, layer);
+                mapFragmentRef.get().onFinishChooseLayerDialog(MapFragment.EDIT_LAYER, layer);
                 toggle();
             }
         });
-        mapFragment.setOnModeChangeListener(new MapFragment.onModeChange() {
-            @Override
-            public void onModeChangeListener() {
-                mListAdapter.notifyDataSetChanged();
-            }
-        });
+        if (mapFragmentRef.get() != null)
+            mapFragmentRef.get().setOnModeChangeListener(new MapFragment.onModeChange() {
+                @Override
+                public void onModeChangeListener() {
+                    mListAdapter.notifyDataSetChanged();
+                }
+            });
 
         mLayersListView = mFragmentContainerView.findViewById(R.id.layer_list);
         mLayersListView.setAdapter(mListAdapter);

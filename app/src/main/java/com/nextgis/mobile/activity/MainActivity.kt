@@ -718,7 +718,7 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
 
         when (requestCode) {
 
-            CODE_TRACK_LIST -> mapFragment!!.mMap!!.map.reloadTrackListToMap()
+            CODE_TRACK_LIST -> mapFragment!!.mMapRef.get()!!.map.reloadTrackListToMap()
 
 
             FILE_SELECT_CODE -> if (resultCode == RESULT_OK) {

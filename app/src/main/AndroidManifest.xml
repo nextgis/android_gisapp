@@ -91,6 +91,7 @@
 
         <activity
             android:name=".activity.MainActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:exported="true"
             android:label="@string/APP_NAME">
             <intent-filter>
