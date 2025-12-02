@@ -196,7 +196,9 @@ class MapFragment
 
     protected var mCoordinatesFormat: Int = 0
     protected var mCoordinatesFraction: Int = 0
-    protected var mChooseLayerDialog: ChooseLayerDialog? = null
+
+    protected var mChooseLayerDialogRef: WeakReference<ChooseLayerDialog> = WeakReference(null)
+
     protected var mGPSDialog: AlertDialog? = null
     protected var mVibrator: Vibrator? = null
 
@@ -209,6 +211,8 @@ class MapFragment
     protected val ADD_GEOMETRY_BY_WALK: Int = 3
     protected val ADD_POINT_BY_TAP: Int = 4
     private var mNeedSave = false
+
+    var longClickProcessed = false
 
     interface onModeChange {
         fun onModeChangeListener()
@@ -382,6 +386,16 @@ class MapFragment
     override fun loadLayersLite(){
         val allLayers = mMapRef.get()!!.getAllLayers()
         mMapRef.get()!!.map!!.loadLayersToMaplibreMapLite(allLayers)
+    }
+
+    override fun getLongLongClickProcesses(): Boolean {
+        return longClickProcessed
+    }
+
+    override fun setLongLongClickProcesses(longLongCLickPrecesses: Boolean) {
+        this.longClickProcessed = longLongCLickPrecesses;
+
+
     }
 
     private fun getDispatcher(): Dispatcher {
@@ -1291,17 +1305,34 @@ class MapFragment
 
         val edit = mPreferences!!.edit()
         if (null != mMapRef.get()) {
-            edit.putFloat(SettingsConstantsUI.KEY_PREF_ZOOM_LEVEL, mMapRef.get()!!.zoomLevel)
-            val point = mMapRef.get()!!.mapCenter
-            edit.putLong(
-                SettingsConstantsUI.KEY_PREF_SCROLL_X,
-                java.lang.Double.doubleToRawLongBits(point.x)
-            )
-            edit.putLong(
-                SettingsConstantsUI.KEY_PREF_SCROLL_Y,
-                java.lang.Double.doubleToRawLongBits(point.y)
-            )
 
+
+
+
+
+
+            if (mMapRef.get()!!.map!!.maplibreMap != null) {
+                edit.putFloat(SettingsConstantsUI.KEY_PREF_ZOOM_LEVEL,
+                    mMapRef.get()!!.map!!.maplibreMap.cameraPosition.zoom.toFloat())
+
+                val point2 = mMapRef.get()!!.map.getMaplibreCenter()
+                edit.putLong(
+                    SettingsConstantsUI.KEY_PREF_SCROLL_X,
+                    java.lang.Double.doubleToRawLongBits(point2.x))
+                edit.putLong(
+                    SettingsConstantsUI.KEY_PREF_SCROLL_Y,
+                    java.lang.Double.doubleToRawLongBits(point2.y))
+            } else {
+                edit.putFloat(SettingsConstantsUI.KEY_PREF_ZOOM_LEVEL, mMapRef.get()!!.zoomLevel)
+                val point = mMapRef.get()!!.mapCenter
+
+                edit.putLong(
+                    SettingsConstantsUI.KEY_PREF_SCROLL_X,
+                    java.lang.Double.doubleToRawLongBits(point.x))
+                edit.putLong(
+                    SettingsConstantsUI.KEY_PREF_SCROLL_Y,
+                    java.lang.Double.doubleToRawLongBits(point.y))
+            }
             mMapRef.get()!!.removeListener(this)
         }
         edit.apply()
@@ -1531,12 +1562,11 @@ class MapFragment
         mApp!!.sendEvent(ConstantsUI.GA_LAYER, ConstantsUI.GA_EDIT, ConstantsUI.GA_FAB)
 
         //show select layer dialog if several layers, else start default or custom form
-        var layers = mMapRef.get()!!.getVectorLayersByType(
+        val layers = removeHideLayers( mMapRef.get()!!.getVectorLayersByType(
             GeoConstants.GTPointCheck or GeoConstants.GTMultiPointCheck or
                     GeoConstants.GTLineStringCheck or GeoConstants.GTMultiLineStringCheck or
-                    GeoConstants.GTPolygonCheck or GeoConstants.GTMultiPolygonCheck
-        )
-        layers = removeHideLayers(layers)
+                    GeoConstants.GTPolygonCheck or GeoConstants.GTMultiPolygonCheck))
+
         if (layers.isEmpty()) {
             Toast.makeText(mActivity, getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG)
                 .show()
@@ -1556,8 +1586,8 @@ class MapFragment
         } else {
             if (isDialogShown) return
             //open choose edit layer dialog
-            mChooseLayerDialog = ChooseLayerDialog()
-            mChooseLayerDialog!!.setLayerList(layers)
+            mChooseLayerDialogRef = WeakReference(ChooseLayerDialog())
+            mChooseLayerDialogRef.get()!!.setLayerList(layers)
                 .setCode(EDIT_LAYER)
                 .setTitle(getString(com.nextgis.maplibui.R.string.choose_layers))
                 .setTheme(mActivity!!.themeId) //.show(mActivity.getSupportFragmentManager(), "choose_layer");
@@ -1570,9 +1600,9 @@ class MapFragment
         if (mSelectedLayer != null) mSelectedLayer!!.isLocked = false
 
         //show select layer dialog if several layers, else start default or custom form
-        var layers =
-            mMapRef.get()!!.getVectorLayersByType(GeoConstants.GTPointCheck or GeoConstants.GTMultiPointCheck)
-        layers = removeHideLayers(layers)
+        val layers = removeHideLayers(mMapRef.get()!!.getVectorLayersByType(GeoConstants.GTPointCheck
+                or GeoConstants.GTMultiPointCheck))
+
         if (layers.isEmpty()) {
             Toast.makeText(
                 mActivity, getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG
@@ -1594,8 +1624,8 @@ class MapFragment
         } else {
             if (isDialogShown) return
             //open choose edit layer dialog
-            mChooseLayerDialog = ChooseLayerDialog()
-            mChooseLayerDialog!!.setLayerList(layers)
+            mChooseLayerDialogRef = WeakReference(ChooseLayerDialog())
+            mChooseLayerDialogRef.get()!!.setLayerList(layers)
                 .setCode(ADD_POINT_BY_TAP)
                 .setTitle(getString(com.nextgis.maplibui.R.string.choose_layers))
                 .setTheme(mActivity!!.themeId)
@@ -1615,10 +1645,10 @@ class MapFragment
 
     protected fun addCurrentLocation() {
         //show select layer dialog if several layers, else start default or custom form
-        var layers = mMapRef.get()!!.getVectorLayersByType(
-            GeoConstants.GTMultiPointCheck or GeoConstants.GTPointCheck
-        )
-        layers = removeHideLayers(layers)
+        val layers = removeHideLayers (mMapRef.get()!!.getVectorLayersByType(
+            GeoConstants.GTMultiPointCheck or GeoConstants.GTPointCheck))
+
+
         if (layers.isEmpty()) {
             Toast.makeText(
                 mActivity, getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG
@@ -1647,8 +1677,8 @@ class MapFragment
         } else {
             if (isDialogShown) return
             //open choose dialog
-            mChooseLayerDialog = ChooseLayerDialog()
-            mChooseLayerDialog!!.setLayerList(layers)
+            mChooseLayerDialogRef = WeakReference(ChooseLayerDialog())
+            mChooseLayerDialogRef.get()!!.setLayerList(layers)
                 .setCode(ADD_CURRENT_LOC)
                 .setTitle(getString(com.nextgis.maplibui.R.string.choose_layers))
                 .setTheme(mActivity!!.themeId)
@@ -1675,11 +1705,9 @@ class MapFragment
 
     protected fun addGeometryByWalk() {
         //show select layer dialog if several layers, else start default or custom form
-        var layers = mMapRef.get()!!.getVectorLayersByType(
+        val layers = removeHideLayers (mMapRef.get()!!.getVectorLayersByType(
             (GeoConstants.GTLineStringCheck or GeoConstants.GTPolygonCheck
-                    or GeoConstants.GTMultiLineStringCheck or GeoConstants.GTMultiPolygonCheck)
-        )
-        layers = removeHideLayers(layers)
+                    or GeoConstants.GTMultiLineStringCheck or GeoConstants.GTMultiPolygonCheck)))
 
         if (layers.isEmpty()) {
             Toast.makeText(mActivity, getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG)
@@ -1700,8 +1728,8 @@ class MapFragment
         } else {
             if (isDialogShown) return
             //open choose edit layer dialog
-            mChooseLayerDialog = ChooseLayerDialog()
-            mChooseLayerDialog!!.setLayerList(layers)
+            mChooseLayerDialogRef = WeakReference(ChooseLayerDialog())
+            mChooseLayerDialogRef.get()!!.setLayerList(layers)
                 .setCode(ADD_GEOMETRY_BY_WALK)
                 .setTitle(getString(com.nextgis.maplibui.R.string.choose_layers))
                 .setTheme(mActivity!!.themeId)
@@ -1740,7 +1768,7 @@ class MapFragment
 
 
     override fun processMapLongClick(clickeEnelope: GeoEnvelope, clickPoint: PointF): Boolean {
-        onLongPressFromMaplibre(clickeEnelope, clickPoint)
+        return  onLongPressFromMaplibre(clickeEnelope, clickPoint)
         return true
     }
 
@@ -1750,15 +1778,15 @@ class MapFragment
         return true
     }
 
-    fun onLongPressFromMaplibre(clickeEnelope: GeoEnvelope, clickPoint : PointF) {
+    fun onLongPressFromMaplibre(clickeEnelope: GeoEnvelope, clickPoint : PointF): Boolean {
 
         if (!(mode == MODE_NORMAL || mode == MODE_SELECT_ACTION) || mRulerOverlay!!.isMeasuring) {
-            return
+            return false
         }
 
         //  exactEnv = mMapRef.get()!!.screenToMap(exactEnv)
         if (null == clickeEnelope)
-            return
+            return false
         val point = GeoPoint(clickeEnelope.center.x, clickeEnelope.center.y)
         point.crs = GeoConstants.CRS_WEB_MERCATOR
 
@@ -1799,6 +1827,8 @@ class MapFragment
                     continue
                 }
                 val feature = vectorLayer.getFeature(featureId)
+                if (feature == null)
+                    continue
                 originalFeatureForSelect = vectorLayer.getFeature(featureId)
                 if (originalFeatureForSelect != null) {
                     val valueForHint = getHintText(vectorLayer, feature)
@@ -1818,17 +1848,23 @@ class MapFragment
 
                 selectedVectorLayer.add(vectorLayer)
                 selectedGeometry.add(geometry)
+                if (feature == null){
+                    Log.e("ff", "null");
+                }
                 selectedFeatures.add(feature)
             }
         }
 
-        if (mSelectedLayers.size > 1)
+        if (mSelectedLayers.size > 1) {
             showOverlayPointMultiChoise(
                 clickPoint.x.toDouble(), clickPoint.y.toDouble(), mSelectedLayers,
                 selectedVectorLayer,
                 selectedGeometry,
                 selectedFeatures,
-                false)
+                false            )
+            return  true
+
+        }
         else {
             if (mSelectedLayer != null)
                 mSelectedLayer!!.isLocked = false
@@ -1843,106 +1879,109 @@ class MapFragment
 
             setMode(MODE_SELECT_ACTION)
             showOverlayPoint(clickPoint.x.toDouble(), clickPoint.y.toDouble())
+            return true
         }
         //set select action mode
-        mMapRef.get()!!.postInvalidate()
+        //mMapRef.get()!!.postInvalidate()
+
     }
 
     override fun onLongPress(event: MotionEvent) {
-        if (!(mode == MODE_NORMAL || mode == MODE_SELECT_ACTION) || mRulerOverlay!!.isMeasuring) {
-            return
-        }
-
-        val dMinX = (event.x - mTolerancePX).toDouble()
-        val dMaxX = (event.x + mTolerancePX).toDouble()
-        val dMinY = (event.y - mTolerancePX).toDouble()
-        val dMaxY = (event.y + mTolerancePX).toDouble()
-
-        val mapEnv = mMapRef.get()!!.screenToMap(GeoEnvelope(dMinX, dMaxX, dMinY, dMaxY)) ?: return
-
-        var exactEnv: GeoEnvelope? = GeoEnvelope(
-            event.x.toDouble(),
-            event.x.toDouble(),
-            event.y.toDouble(),
-            event.y.toDouble()
-        )
-        exactEnv = mMapRef.get()!!.screenToMap(exactEnv)
-        if (null == exactEnv) return
-        val point = GeoPoint(exactEnv.maxX, exactEnv.minY)
-        point.crs = GeoConstants.CRS_WEB_MERCATOR
-
-        //show actions dialog
-        val layers = mMapRef.get()!!.getVectorLayersByType(GeoConstants.GTAnyCheck)
-        var items: List<Long>
-
-
-        var vectorLayer: VectorLayer? = null
-        var selectedSingleVectorLayer: VectorLayer? = null
-        var selectedSingleFeatureId: Long = -1
-
-        val mSelectedLayers = ArrayList<String>()
-        var geometry: GeoGeometry? = null
-        var featureId: Long = -1
-
-        val selectedVectorLayer: MutableList<VectorLayer> = ArrayList()
-        val selectedGeometry: MutableList<GeoGeometry?> = ArrayList()
-        val selectedFeaturesList: MutableList<Feature> = ArrayList()
-
-        layersLoop@ for (layer in layers) {
-            //if (!layer.isValid) continue
-
-            if (!(layer as ILayerView).isVisible) continue
-
-            vectorLayer = layer as VectorLayer
-            items = vectorLayer.query(mapEnv)
-
-            for (i in items.indices) {    // FIXME hack for bad RTree cache
-                featureId = items[i]
-                geometry = vectorLayer.getGeometryForId(featureId)
-                if (EditLayerOverlay.notContains(geometry, point)) {
-                    continue
-                }
-
-                val feature = vectorLayer.getFeature(featureId)
-                val valueForHint = getHintText(vectorLayer, feature)
-
-                if (feature != null){
-                    if (valueForHint == null)
-                        mSelectedLayers.add(layer.getName() + ": " + featureId)
-                    else
-                        mSelectedLayers.add(layer.getName() + ": " + valueForHint)
-                }
-
-                selectedSingleVectorLayer = layer
-                selectedSingleFeatureId = featureId
-
-                selectedVectorLayer.add(vectorLayer)
-                selectedGeometry.add(geometry)
-                selectedFeaturesList.add(feature)
-            }
-        }
-
-        if (mSelectedLayers.size > 1)
-            showOverlayPointMultiChoise(
-                event.x.toDouble(), event.y.toDouble(), mSelectedLayers,
-                selectedVectorLayer,
-                selectedGeometry,
-                selectedFeaturesList,
-                true)
-        else {
-            if (mSelectedLayer != null)
-                mSelectedLayer!!.isLocked = false
-
-            mSelectedLayer = selectedSingleVectorLayer
-            editLayerOverlay!!.setSelectedLayer(selectedSingleVectorLayer)
-
-            if (geometry != null) editLayerOverlay!!.setSelectedFeature(selectedSingleFeatureId)
-
-            setMode(MODE_SELECT_ACTION)
-            showOverlayPoint(event.x.toDouble(), event.y.toDouble())
-        }
-        //set select action mode
-        mMapRef.get()!!.postInvalidate()
+//        if (!(mode == MODE_NORMAL || mode == MODE_SELECT_ACTION) || mRulerOverlay!!.isMeasuring) {
+//            return
+//        }
+//
+//        val dMinX = (event.x - mTolerancePX).toDouble()
+//        val dMaxX = (event.x + mTolerancePX).toDouble()
+//        val dMinY = (event.y - mTolerancePX).toDouble()
+//        val dMaxY = (event.y + mTolerancePX).toDouble()
+//
+//        val mapEnv = mMapRef.get()!!.screenToMap(GeoEnvelope(dMinX, dMaxX, dMinY, dMaxY)) ?: return
+//
+//        var exactEnv: GeoEnvelope? = GeoEnvelope(
+//            event.x.toDouble(),
+//            event.x.toDouble(),
+//            event.y.toDouble(),
+//            event.y.toDouble()
+//        )
+//        exactEnv = mMapRef.get()!!.screenToMap(exactEnv)
+//        if (null == exactEnv) return
+//        val point = GeoPoint(exactEnv.maxX, exactEnv.minY)
+//        point.crs = GeoConstants.CRS_WEB_MERCATOR
+//
+//        //show actions dialog
+//        val layers = mMapRef.get()!!.getVectorLayersByType(GeoConstants.GTAnyCheck)
+//        var items: List<Long>
+//
+//
+//        var vectorLayer: VectorLayer? = null
+//        var selectedSingleVectorLayer: VectorLayer? = null
+//        var selectedSingleFeatureId: Long = -1
+//
+//        val mSelectedLayers = ArrayList<String>()
+//        var geometry: GeoGeometry? = null
+//        var featureId: Long = -1
+//
+//        val selectedVectorLayer: MutableList<VectorLayer> = ArrayList()
+//        val selectedGeometry: MutableList<GeoGeometry?> = ArrayList()
+//        val selectedFeaturesList: MutableList<Feature> = ArrayList()
+//
+//        layersLoop@ for (layer in layers) {
+//            //if (!layer.isValid) continue
+//
+//            if (!(layer as ILayerView).isVisible) continue
+//
+//            vectorLayer = layer as VectorLayer
+//            items = vectorLayer.query(mapEnv)
+//
+//            for (i in items.indices) {    // FIXME hack for bad RTree cache
+//                featureId = items[i]
+//                geometry = vectorLayer.getGeometryForId(featureId)
+//                if (EditLayerOverlay.notContains(geometry, point)) {
+//                    continue
+//                }
+//
+//                val feature = vectorLayer.getFeature(featureId)
+//                val valueForHint = getHintText(vectorLayer, feature)
+//
+//                if (feature != null){
+//                    if (valueForHint == null)
+//                        mSelectedLayers.add(layer.getName() + ": " + featureId)
+//                    else
+//                        mSelectedLayers.add(layer.getName() + ": " + valueForHint)
+//                }
+//
+//                selectedSingleVectorLayer = layer
+//                selectedSingleFeatureId = featureId
+//
+//                selectedVectorLayer.add(vectorLayer)
+//                selectedGeometry.add(geometry)
+//                selectedFeaturesList.add(feature)
+//            }
+//        }
+//
+//        if (mSelectedLayers.size > 1)
+//            showOverlayPointMultiChoise(
+//                event.x.toDouble(), event.y.toDouble(), mSelectedLayers,
+//                selectedVectorLayer,
+//                selectedGeometry,
+//                selectedFeaturesList,
+//                true)
+//        else {
+//            if (mSelectedLayer != null)
+//                mSelectedLayer!!.isLocked = false
+//
+//            mSelectedLayer = selectedSingleVectorLayer
+//            editLayerOverlay!!.setSelectedLayer(selectedSingleVectorLayer)
+//
+//            if (geometry != null) editLayerOverlay!!.setSelectedFeature(selectedSingleFeatureId)
+//
+//            setMode(MODE_SELECT_ACTION)
+//            showOverlayPoint(event.x.toDouble(), event.y.toDouble())
+//        }
+//        //set select action mode
+//        mMapRef.get()!!.postInvalidate()
+        // old odd code
     }
 
     fun showAddByTapButton() {
@@ -2680,7 +2719,7 @@ class MapFragment
     }
 
     val isDialogShown: Boolean
-        get() = mChooseLayerDialog != null && mChooseLayerDialog!!.isResumed
+        get() = mChooseLayerDialogRef.get() != null && mChooseLayerDialogRef.get()!!.isResumed
 
     protected fun showFullCompass() {
         val fragmentManager = mActivity!!.supportFragmentManager
@@ -3056,7 +3095,7 @@ class MapFragment
         }
 
         if (TextUtils.isEmpty(fieldToDisplay)) {
-            fieldToDisplay = vectorLayer.fields[0].name
+            fieldToDisplay = if (vectorLayer.fields.size > 0 && vectorLayer.fields[0] != null )  vectorLayer.fields [0].name else ""
         }
 
         val objectValueForHint = feature.getFieldValue((fieldToDisplay))
