@@ -64,6 +64,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.getbase.floatingactionbutton.FloatingActionButton
+import com.getbase.floatingactionbutton.FloatingActionsMenu
 import com.google.android.material.snackbar.Snackbar
 import com.nextgis.maplib.api.GpsEventListener
 import com.nextgis.maplib.api.IGISApplication
@@ -85,6 +86,7 @@ import com.nextgis.maplib.location.GpsEventSource
 import com.nextgis.maplib.map.MLP.MLGeometryEditClass
 import com.nextgis.maplib.map.MPLFeaturesUtils
 import com.nextgis.maplib.map.MPLFeaturesUtils.id_name
+import com.nextgis.maplib.map.MPLFeaturesUtils.latLngPointFromGeoPoint
 import com.nextgis.maplib.map.MapDrawable
 import com.nextgis.maplib.map.MaplibreMapInteraction
 import com.nextgis.maplib.map.VectorLayer
@@ -93,7 +95,6 @@ import com.nextgis.maplib.util.FileUtil
 import com.nextgis.maplib.util.GeoConstants
 import com.nextgis.maplib.util.LocationUtil
 import com.nextgis.maplib.util.MapUtil
-import com.nextgis.maplibui.GISApplication
 import com.nextgis.maplibui.api.EditEventListener
 import com.nextgis.maplibui.api.ILayerUI
 import com.nextgis.maplibui.api.IVectorLayerUI
@@ -124,7 +125,6 @@ import org.maplibre.android.camera.CameraPosition
 import org.maplibre.android.camera.CameraUpdateFactory
 import org.maplibre.android.geometry.LatLng
 import org.maplibre.android.maps.MapLibreMap
-import org.maplibre.android.maps.MapView
 import org.maplibre.android.maps.OnMapReadyCallback
 import org.maplibre.android.module.http.HttpRequestImpl
 import org.maplibre.geojson.LineString
@@ -135,6 +135,7 @@ import org.maplibre.geojson.Point
 import org.maplibre.geojson.Polygon
 import java.io.IOException
 import java.lang.ref.WeakReference
+import java.util.Arrays
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 import kotlin.math.atan
@@ -181,7 +182,7 @@ class MapFragment
 
     protected var mMapRelativeLayout: RelativeLayout? = null
     protected var mGpsEventSource: GpsEventSource? = null
-    protected var mMainButton: View? = null
+    protected var mMainButton: FloatingActionsMenu? = null
     var mode: Int = 0
         protected set
     protected var mCurrentLocationOverlay: CurrentLocationOverlay? = null
@@ -385,7 +386,7 @@ class MapFragment
 
     override fun loadLayersLite(){
         val allLayers = mMapRef.get()!!.getAllLayers()
-        mMapRef.get()!!.map!!.loadLayersToMaplibreMapLite(allLayers)
+        mMapRef.get()!!.map!!.loadLayersToMaplibreMapLite(allLayers, false)
     }
 
     override fun getLongLongClickProcesses(): Boolean {
@@ -394,8 +395,6 @@ class MapFragment
 
     override fun setLongLongClickProcesses(longLongCLickPrecesses: Boolean) {
         this.longClickProcessed = longLongCLickPrecesses;
-
-
     }
 
     private fun getDispatcher(): Dispatcher {
@@ -519,11 +518,6 @@ class MapFragment
                 return result
             }
 
-//            com.nextgis.maplibui.R.id.menu_edit_  ->{
-//                val result = mMapRef.get()!!.map!!.deleteCurrentPoin();
-//                return result
-//            }
-
             com.nextgis.maplibui.R.id.menu_edit_move_point_to_center  ->{
                 val center = mMapRef.get()!!.map!!.maplibreMap.cameraPosition.target
                 return mMapRef.get()!!.map!!.moveToPoint(center);
@@ -535,10 +529,6 @@ class MapFragment
                     val latlng = convert3857To4326(mCurrentCenter!!.x, mCurrentCenter!!.y)
                     return mMapRef.get()!!.map!!.moveToPoint(LatLng(latlng[1], latlng[0]));
                 }
-//                if (mCurrentLocationOverlay != null && mCurrentLocationOverlay!!.currentLocation  != null) {
-//                    val latLng =  LatLng(mCurrentLocationOverlay!!.currentLocation.latitude,mCurrentLocationOverlay!!.currentLocation.longitude);
-//                    return mMapRef.get()!!.map!!.moveToPoint(latLng);
-//                }
                 return false;
             }
 
@@ -684,7 +674,7 @@ class MapFragment
             6 ->  promt=  "MODE_SELECT_FOR_VIEW"
             else -> promt=  "MODE_ELSE"
         }
-        Log.e("MMOODDEE", "mode set to " + promt);
+//        Log.e("MMOODDEE", "mode set to " + promt);
 
         this.mode = mode
 
@@ -780,7 +770,7 @@ class MapFragment
                                 editLayerOverlay!!.setHasEdits(true)
 
 
-                                mMapRef.get()!!.map!!.startFeatureSelectionForEdit(mSelectedLayer!!.id, mSelectedLayer!!.geometryType,
+                                mMapRef.get()!!.map!!.startFeatureSelectionForEdit(mSelectedLayer, mSelectedLayer!!.geometryType,
                                     editLayerOverlay!!.selectedFeature, true,mSelectedLayer!!.defaultStyleNoExcept)
                             }
 
@@ -789,7 +779,7 @@ class MapFragment
                                 undoRedoOverlay!!.saveToHistory(editLayerOverlay!!.selectedFeature)
                                 editLayerOverlay!!.setHasEdits(false)
                                 if(mSelectedLayer!= null)
-                                    mMapRef.get()!!.map!!.startFeatureSelectionForEdit(mSelectedLayer!!.id, mSelectedLayer!!.geometryType,
+                                    mMapRef.get()!!.map!!.startFeatureSelectionForEdit(mSelectedLayer, mSelectedLayer!!.geometryType,
                                         editLayerOverlay!!.selectedFeature, false, mSelectedLayer!!.defaultStyleNoExcept)
                             }
 
@@ -1075,7 +1065,7 @@ class MapFragment
 
         val mapLibreMap = mMapRef.get()!!.map.maplibreMap
         if (mapLibreMap != null) {
-            Log.e("ZZOM", "zoom " + mapLibreMap.zoom)
+//            Log.e("ZZOM", "zoom " + mapLibreMap.zoom)
             return "${mapLibreMap.zoom.toInt()}z"
         }
         else
@@ -1638,9 +1628,15 @@ class MapFragment
         editLayerOverlay!!.selectedFeature.geometry = GeoPoint()
         setMode(MODE_EDIT)
         undoRedoOverlay!!.clearHistory()
+        val mapLibreMap = mMapRef.get()!!.map!!.maplibreMap
         editLayerOverlay!!.createPointFromOverlay()
         editLayerOverlay!!.setHasEdits(true)
         undoRedoOverlay!!.saveToHistory(editLayerOverlay!!.selectedFeature)
+
+        mMapRef.get()!!.map!!.startFeatureSelectionForEdit(mSelectedLayer, mSelectedLayer!!.geometryType,
+            editLayerOverlay!!.selectedFeature, true,mSelectedLayer!!.defaultStyleNoExcept)
+
+
     }
 
     protected fun addCurrentLocation() {
@@ -1784,7 +1780,6 @@ class MapFragment
             return false
         }
 
-        //  exactEnv = mMapRef.get()!!.screenToMap(exactEnv)
         if (null == clickeEnelope)
             return false
         val point = GeoPoint(clickeEnelope.center.x, clickeEnelope.center.y)
@@ -1814,15 +1809,15 @@ class MapFragment
             if (!(layer as ILayerView).isVisible) continue
             vectorLayer = layer as VectorLayer
 
-            Log.e("CCLICK", "on long:")
-            Log.e("CCLICK", clickeEnelope.toString())
+//            Log.e("CCLICK", "on long:")
+//            Log.e("CCLICK", clickeEnelope.toString())
             items = vectorLayer.query(clickeEnelope)
             for (i in items.indices) {    // FIXME hack for bad RTree cache
                 featureId = items[i]
                 geometry = vectorLayer.getGeometryForId(featureId)
 
-                Log.e("CCLICK", "on long check contains point:" + point.toString())
-                Log.e("CCLICK", "on long check contains poly:" + geometry.toString())
+//                Log.e("CCLICK", "on long check contains point:" + point.toString())
+//                Log.e("CCLICK", "on long check contains poly:" + geometry.toString())
                 if (EditLayerOverlay.notContains(geometry, point)) {
                     continue
                 }
@@ -1838,34 +1833,32 @@ class MapFragment
                             mSelectedLayers.add(layer.getName() + ": " + featureId)
                         else
                             mSelectedLayers.add(layer.getName() + ": " + valueForHint)
+
+                        selectedSingleVectorLayer = layer
+                        selectedSingleFeatureId = featureId
+
+                        selectedVectorLayer.add(vectorLayer)
+                        selectedGeometry.add(geometry)
+                        selectedFeatures.add(feature)
                     }
                 } else {
                     mSelectedLayers.add(layer.getName() + ": " + featureId + " is null")
                 }
-
-                selectedSingleVectorLayer = layer
-                selectedSingleFeatureId = featureId
-
-                selectedVectorLayer.add(vectorLayer)
-                selectedGeometry.add(geometry)
-                if (feature == null){
-                    Log.e("ff", "null");
-                }
-                selectedFeatures.add(feature)
             }
         }
 
-        if (mSelectedLayers.size > 1) {
+        if (mSelectedLayers.size > 1 || selectedFeatures.size > 1) {
             showOverlayPointMultiChoise(
                 clickPoint.x.toDouble(), clickPoint.y.toDouble(), mSelectedLayers,
                 selectedVectorLayer,
                 selectedGeometry,
                 selectedFeatures,
-                false            )
+                true)
             return  true
 
-        }
-        else {
+        } else if (mSelectedLayers.size == 1 || selectedFeatures.size == 1) {
+
+
             if (mSelectedLayer != null)
                 mSelectedLayer!!.isLocked = false
 
@@ -1873,17 +1866,23 @@ class MapFragment
             editLayerOverlay!!.setSelectedLayer(selectedSingleVectorLayer)
 
             if (geometry != null && mSelectedLayer != null) {
+
                 editLayerOverlay!!.setSelectedFeature(selectedSingleFeatureId)
-                mMapRef.get()!!.map!!.startFeatureSelectionForView(mSelectedLayer!!.id, originalFeatureForSelect)
+                mMapRef.get()!!.map!!.startFeatureSelectionForView(mSelectedLayer,
+                    originalFeatureForSelect)
+                if (mode != MODE_SELECT_ACTION)
+                    setMode(MODE_SELECT_ACTION)
             }
 
-            setMode(MODE_SELECT_ACTION)
-            showOverlayPoint(clickPoint.x.toDouble(), clickPoint.y.toDouble())
+
             return true
+        } else {
+            showOverlayPoint(clickPoint.x.toDouble(), clickPoint.y.toDouble())
         }
         //set select action mode
         //mMapRef.get()!!.postInvalidate()
 
+        return true
     }
 
     override fun onLongPress(event: MotionEvent) {
@@ -2027,13 +2026,20 @@ class MapFragment
 
         hideAddByTapButton()
         showMainButton()
+        mMapRef.get()!!.map.clearPressedPoint()
+
     }
 
 
-    fun showOverlayPoint(x : Double, y: Double) {
+    fun showOverlayPoint(screenX : Double, screenY: Double) {
         hideMainButton()
         showAddByTapButton()
-        editLayerOverlay!!.setOverlayPoint(x, y)
+        editLayerOverlay!!.setOverlayPoint(screenX, screenY)
+
+        val pointf = PointF(screenX.toFloat(), screenY.toFloat())
+        val latLng: LatLng = mMapRef.get()!!.map!!.maplibreMap.getProjection().fromScreenLocation(pointf)
+
+        mMapRef.get()!!.map.addPressedPoint(latLng)
     }
 
     fun showOverlayPointMultiChoise(
@@ -2043,13 +2049,10 @@ class MapFragment
         geometry: List<GeoGeometry?>,
         features: List<Feature> ,
         editMode : Boolean) {
+
         val items = featureNames.toTypedArray<String>()
-
-        val builder = AlertDialog.Builder(
-            context!!
-        )
+        val builder = AlertDialog.Builder(            context!!        )
         builder.setTitle(R.string.choose_object)
-
         builder.setItems(items) { dialog, which -> //String selectedItem = items[which];
             // remove after some time
             if (mSelectedLayer != null) mSelectedLayer!!.isLocked = false
@@ -2058,21 +2061,37 @@ class MapFragment
             editLayerOverlay!!.setSelectedLayer(vectorLayer[which])
 
             if (geometry[which] != null) {
-                editLayerOverlay!!.setSelectedFeature(features[which].id)
-                //mMapRef.get()!!.map!!.startFeatureSelectionForEdit(mSelectedLayer!!.id, featureId[which])
-                if (editMode)
-                    mMapRef.get()!!.map!!.startFeatureSelectionForEdit(mSelectedLayer!!.id, mSelectedLayer!!.geometryType, features[which],
-                        false, mSelectedLayer!!.defaultStyleNoExcept)
-                else
-                    mMapRef.get()!!.map!!.startFeatureSelectionForView(mSelectedLayer!!.id, features[which])
+                showViewModeForFeature(mSelectedLayer!!,
+                    features[which],
+                    mSelectedLayer!!,
+                    geometry[which],
+                            features[which].id,
+                    features[which].id ,
+                    editMode)
+
+
+//                editLayerOverlay!!.setSelectedFeature(features[which].id)
+//                if (editMode)
+//                    mMapRef.get()!!.map!!.startFeatureSelectionForEdit(
+//                        mSelectedLayer, mSelectedLayer!!.geometryType,
+//                        features[which],
+//                        false, mSelectedLayer!!.defaultStyleNoExcept)
+//                else {
+//                    mMapRef.get()!!.map!!.startFeatureSelectionForView(
+//                        mSelectedLayer,
+//                        features[which])
+//                    if (mode != MODE_SELECT_ACTION)
+//                        setMode(MODE_SELECT_ACTION)
+//                }
+            } else {
+
+//                setMode(MODE_SELECT_ACTION)
+//                //showOverlayPoint(x,y)
+//
+//                hideMainButton()
+//                showAddByTapButton()
+//                editLayerOverlay!!.setOverlayPoint(x,y)
             }
-
-            setMode(MODE_SELECT_ACTION)
-            showOverlayPoint(x,y)
-
-            hideMainButton()
-            showAddByTapButton()
-            editLayerOverlay!!.setOverlayPoint(x,y)
         }
         builder.create().show()
     }
@@ -2187,7 +2206,7 @@ class MapFragment
                         selectedGeometry.add(geometry)
                         selectedFeatures.add(feature)
 
-                        mMapRef.get()!!.map!!.startFeatureSelectionForView(mSelectedLayer!!.id, feature)
+                        mMapRef.get()!!.map!!.startFeatureSelectionForView(mSelectedLayer, feature)
 
                         i++
                     }
@@ -2197,7 +2216,8 @@ class MapFragment
                     // need select none
                     setMode(MODE_NORMAL)
                 } else {
-                    if (mSelectedLayers.size > 1) showOverlayPointMultiChoise(
+                    if (mSelectedLayers.size > 1 || selectedFeatures.size >1)
+                        showOverlayPointMultiChoise(
                         event.x.toDouble(), event.y.toDouble(), mSelectedLayers,
                         selectedVectorLayer,
                         selectedGeometry,
@@ -2287,9 +2307,9 @@ class MapFragment
                 val minPoint = mMapRef.get()!!.map!!.maplibreMap.getProjection().fromScreenLocation(screenPointMin)
                 val maxPoint = mMapRef.get()!!.map!!.maplibreMap.getProjection().fromScreenLocation(screenPointMax)
 
-                Log.e("CCCLLIICK", " click at: " + screenx + " - " + " screeny: " + screeny)
-                Log.e("CCCLLIICK", "points lnglong " + minPoint.longitude + " : " +  minPoint.latitude + " : "
-                        + maxPoint.longitude + " : " + maxPoint.latitude )
+//                Log.e("CCCLLIICK", " click at: " + screenx + " - " + " screeny: " + screeny)
+//                Log.e("CCCLLIICK", "points lnglong " + minPoint.longitude + " : " +  minPoint.latitude + " : "
+//                        + maxPoint.longitude + " : " + maxPoint.latitude )
 
                 val pointsMin = convert4326To3857(minPoint.longitude, minPoint.latitude)
                 val pointsMax = convert4326To3857(maxPoint.longitude, maxPoint.latitude);
@@ -2316,7 +2336,7 @@ class MapFragment
 
 
                 //show actions dialog
-                val layers = mMapRef.get()!!.getVectorLayersByType(GeoConstants.GTAnyCheck)
+                var layers = mMapRef.get()!!.getVectorLayersByType(GeoConstants.GTAnyCheck)
                 var items: List<Long>
 
 
@@ -2333,14 +2353,19 @@ class MapFragment
                 val selectedFeatures: MutableList<Feature> = ArrayList()
 
 
+             if (mode == MODE_SELECT_ACTION && selectedLayer != null){
+                 layers = mutableListOf<ILayer>()
+                 layers.add(selectedLayer)
+             }
+
                 layersLoop@ for (layer in layers) {
                     //if (!layer.isValid) continue
 
                     if (!(layer as ILayerView).isVisible) continue
 
                     vectorLayer = layer as VectorLayer
-                    Log.e("CCLICK", "on tapUp:")
-                    Log.e("CCLICK", exactEnv.toString())
+//                    Log.e("CCLICK", "on tapUp:")
+//                    Log.e("CCLICK", exactEnv.toString())
                     items = vectorLayer.query(exactEnv)
 
                     var i = 0
@@ -2349,8 +2374,8 @@ class MapFragment
                         featureId = items[i]
                         geometry = vectorLayer.getGeometryForId(featureId)
 
-                        Log.e("CCLICK", "on Up check contains point:" + point.toString())
-                        Log.e("CCLICK", "on Up check contains poly:" + geometry.toString())
+//                        Log.e("CCLICK", "on Up check contains point:" + point.toString())
+//                        Log.e("CCLICK", "on Up check contains poly:" + geometry.toString())
 
                         if (EditLayerOverlay.notContains(geometry, point)) {
                             i++
@@ -2366,23 +2391,19 @@ class MapFragment
                             else
                                 mSelectedLayers.add(layer.getName() + ": " + valueForHint)
 
+//                            selectedFeatures.add(feature)
+
+                            selectedSingleVectorLayer = layer
+                            selectedSingleFeatureId = featureId
+
+                            selectedVectorLayer.add(vectorLayer)
+                            selectedGeometry.add(geometry)
                             selectedFeatures.add(feature)
-                        } else
+                        } else {
+                            i++
                             continue
-
-                        selectedSingleVectorLayer = layer
-                        selectedSingleFeatureId = featureId
-
-                        selectedVectorLayer.add(vectorLayer)
-                        selectedGeometry.add(geometry)
-                        selectedFeatures.add(feature)
-
-                        mSelectedLayer = layer
-
-                        if (featureId != -1L && mSelectedLayer != null) {
-                            mMapRef.get()!!.map!!.startFeatureSelectionForView(mSelectedLayer!!.id,feature)
-                            break
                         }
+                        mSelectedLayer = layer
                         i++
                     }
                 }
@@ -2391,30 +2412,91 @@ class MapFragment
                     // need select none
                     setMode(MODE_NORMAL)
                 } else {
-                    if (mSelectedLayers.size > 1) showOverlayPointMultiChoise(screenx.toDouble(), screeny.toDouble(), mSelectedLayers,
+                    if (mSelectedLayers.size > 1 || selectedFeatures.size > 1)
+                        showOverlayPointMultiChoise(
+                            screenx.toDouble(),
+                            screeny.toDouble(),
+                            mSelectedLayers,
                         selectedVectorLayer,
                         selectedGeometry,
                         selectedFeatures,
                         false )
-                    else {
-                        if (mSelectedLayer != null)
-                            mSelectedLayer!!.isLocked = false
+                    else if (mSelectedLayers.size == 1 || selectedFeatures.size == 1){
 
-                        mSelectedLayer = selectedSingleVectorLayer
-                        editLayerOverlay!!.setSelectedLayer(selectedSingleVectorLayer)
+                        showViewModeForFeature(selectedVectorLayer.get(0),
+                            selectedFeatures.get(0),
+                            selectedSingleVectorLayer,
+                            geometry,
+                            selectedSingleFeatureId,
+                            featureId ,
+                            mode == MODE_SELECT_ACTION)
 
-                        if (geometry != null) editLayerOverlay!!.setSelectedFeature(
-                            selectedSingleFeatureId
-                        )
 
-                        if (mode != MODE_SELECT_ACTION)
-                            setMode(MODE_SELECT_FOR_VIEW)
-                        //showOverlayPoint(event);
+//                        if (mSelectedLayer != null)
+//                            mSelectedLayer!!.isLocked = false
+//
+//                        mSelectedLayer = selectedSingleVectorLayer
+//                        editLayerOverlay!!.setSelectedLayer(selectedSingleVectorLayer)
+//
+//                        if (geometry != null) editLayerOverlay!!.setSelectedFeature(selectedSingleFeatureId)
+//
+//                        if (mode != MODE_SELECT_ACTION)
+//                            setMode(MODE_SELECT_FOR_VIEW)
+//                        //showOverlayPoint(event);
+//
+//                        if (featureId != -1L && mSelectedLayer != null) {
+//                            mMapRef.get()!!.map!!.startFeatureSelectionForView(
+//                                selectedVectorLayer.get(0),
+//                                selectedFeatures.get(0))
+//                        }
+                    } else {
+                        if (mAddPointButton!!.visibility == View.VISIBLE) {
+                            editLayerOverlay!!.hideOverlayPoint()
+                            //mMapRef.get()!!.postInvalidate()
+
+                            hideAddByTapButton()
+                            showMainButton()
+
+                            mMapRef.get()!!.map.clearPressedPoint()
+                        }
                     }
                 }
                 //set select action mode
-                mMapRef.get()!!.postInvalidate()
+                //mMapRef.get()!!.postInvalidate()
             } else if (!mRulerOverlay!!.isMeasuring) hideOverlayPoint()
+        }
+    }
+
+    fun showViewModeForFeature(layerd: ILayer,
+                               originalSelectedFeature: Feature,
+                               selectedSingleVectorLayer: VectorLayer?,
+                               geometry: GeoGeometry?,
+                               selectedSingleFeatureId: Long ,
+                               featureId: Long,
+                               editMode : Boolean){
+        if (mSelectedLayer != null)
+            mSelectedLayer!!.isLocked = false
+
+        mSelectedLayer = selectedSingleVectorLayer
+        editLayerOverlay!!.setSelectedLayer(selectedSingleVectorLayer)
+
+        if (geometry != null)
+            editLayerOverlay!!.setSelectedFeature(selectedSingleFeatureId)
+
+        if (editMode) {
+            if (mode != MODE_SELECT_ACTION)
+                setMode(MODE_SELECT_ACTION)
+        } else {
+            if (mode != MODE_SELECT_ACTION)
+                setMode(MODE_SELECT_FOR_VIEW)
+
+        }
+        //showOverlayPoint(event);
+
+        if (featureId != -1L && mSelectedLayer != null) {
+            mMapRef.get()!!.map!!.startFeatureSelectionForView(
+                layerd,
+                originalSelectedFeature)
         }
     }
 
@@ -2737,9 +2819,18 @@ class MapFragment
     override fun onClick(v: View) {
         when (v.id) {
             R.id.fl_compass -> showFullCompass()
-            R.id.add_current_location -> if (v.isEnabled) addCurrentLocation()
-            R.id.add_new_geometry -> if (v.isEnabled) addNewGeometry()
-            R.id.add_geometry_by_walk -> if (v.isEnabled) addGeometryByWalk()
+            R.id.add_current_location -> {
+                if (v.isEnabled) addCurrentLocation()
+                mMainButton!!.collapse()
+            }
+            R.id.add_new_geometry -> {
+                if (v.isEnabled) addNewGeometry()
+                mMainButton!!.collapse()
+            }
+            R.id.add_geometry_by_walk -> {
+                if (v.isEnabled) addGeometryByWalk()
+                mMainButton!!.collapse()
+            }
 
             R.id.action_zoom_in -> {
                 //if (v.isEnabled) mMapRef.get()!!.zoomIn() // old
@@ -2909,14 +3000,23 @@ class MapFragment
             return
         originalSelectedFeature.geometry = getGeometryFromMaplibreGeometry(feature)
         editLayerOverlay!!.updateGeometryFromMaplibre(originalSelectedFeature.geometry)
+        editLayerOverlay!!.fillDrawItems(originalSelectedFeature.geometry)
+        /*
+         val undoRedoFeature = undoRedoOverlay!!.feature
+                    val feature = editLayerOverlay!!.selectedFeature
+                    feature.geometry = undoRedoFeature.geometry
+                    editLayerOverlay!!.fillDrawItems(undoRedoFeature.geometry)
+
+                    val original = mSelectedLayer!!.getGeometryForId(feature.id)
+                    val hasEdits = original != null && undoRedoFeature.geometry == original
+
+        * */
         editLayerOverlay!!.updateActions(editObject)
         undoRedoOverlay!!.saveToHistory(originalSelectedFeature)
     }
 
-    override fun getSelectedLayerId(): Int {
-        mSelectedLayer?.let { return it.id }
-        return -1
-
+    override fun getSelectedLayer(): VectorLayer? {
+        return mSelectedLayer
     }
 
     private fun getGeometryFromMaplibreGeometry(feature: org.maplibre.geojson.Feature?) : GeoGeometry? {

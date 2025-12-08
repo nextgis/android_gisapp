@@ -154,7 +154,8 @@
         android:layout_marginRight="16dp"
         fab:fab_addButtonColorNormal="?attr/colorPrimary"
         fab:fab_addButtonColorPressed="?attr/colorAccent"
-        fab:fab_addButtonPlusIconColor="@android:color/white">
+        fab:fab_addButtonPlusIconColor="@android:color/white"
+        >
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/add_geometry_by_walk"

@@ -1073,7 +1073,7 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
             context: Context,
             intent: Intent ){
             if (intent.action == ConstantsUI.MESSAGE_INTENT) {
-                Log.e("ZZXX", "intent.getAction().equals(ConstantsUI.MESSAGE_INTENT)")
+//                Log.e("ZZXX", "intent.getAction().equals(ConstantsUI.MESSAGE_INTENT)")
                 Toast.makeText(
                     this@MainActivity, intent.extras!!.getString(
                         ConstantsUI.KEY_MESSAGE
@@ -1082,7 +1082,7 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
             }
 
             if (intent.action == Constants.MESSAGE_ALERT_INTENT) {
-                Log.e("ZZXX", "intent.getAction().equals(MESSAGE_ALERT_INTENT")
+//                Log.e("ZZXX", "intent.getAction().equals(MESSAGE_ALERT_INTENT")
                 val message = intent.extras!!.getString(Constants.MESSAGE_EXTRA)
                 val title = intent.extras!!.getString(Constants.MESSAGE_TITLE_EXTRA)
 
