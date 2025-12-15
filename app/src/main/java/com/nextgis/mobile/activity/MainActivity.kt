@@ -1109,7 +1109,6 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
             if (intent.action == ConstantsUI.MESSAGE_INTENT_TRACK) {
                 val tAction =  intent.getStringExtra(KEY_TRACK_ACTION)
                 if (tAction.equals(VALUE_TRACK_START)){
-
                 }
                 if (tAction.equals(VALUE_TRACK_STOP)){
                     mapFragment!!.reloadTracks()
@@ -1126,7 +1125,7 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
         intentFilter.addAction(ConstantsUI.MESSAGE_INTENT)
         intentFilter.addAction(Constants.MESSAGE_ALERT_INTENT)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(mMessageReceiver, intentFilter, RECEIVER_EXPORTED)
+            registerReceiver(mMessageReceiver, intentFilter, RECEIVER_NOT_EXPORTED)
         } else {
             registerReceiver(mMessageReceiver, intentFilter)
         }
@@ -1136,7 +1135,7 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
         intentFilterTrack.addAction(ConstantsUI.MESSAGE_INTENT_TRACK)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(mTrackReceiver, intentFilterTrack, RECEIVER_EXPORTED)
+            registerReceiver(mTrackReceiver, intentFilterTrack, RECEIVER_NOT_EXPORTED)
         } else {
             registerReceiver(mTrackReceiver, intentFilterTrack)
         }
