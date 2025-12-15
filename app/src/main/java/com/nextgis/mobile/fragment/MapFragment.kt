@@ -2372,7 +2372,7 @@ class MapFragment
                     while (i < items.size) {
                         // FIXME hack for bad RTree cache
                         featureId = items[i]
-                        geometry = vectorLayer.getGeometryForId(featureId)
+                        geometry = vectorLayer.getLargeGeometryForId(featureId)
 
 //                        Log.e("CCLICK", "on Up check contains point:" + point.toString())
 //                        Log.e("CCLICK", "on Up check contains poly:" + geometry.toString())

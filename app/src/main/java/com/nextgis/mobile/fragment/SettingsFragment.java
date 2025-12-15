@@ -88,6 +88,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static com.nextgis.maplib.util.Constants.ATTACHMENTS_NAME_POSTFIX;
+import static com.nextgis.maplib.util.Constants.CHANGES_NAME_POSTFIX;
 import static com.nextgis.maplib.util.Constants.MAP_EXT;
 import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_MAP;
 import static com.nextgis.maplib.util.SettingsConstants.KEY_PREF_SD_CARD_NAME;
@@ -263,7 +265,8 @@ public class SettingsFragment
             if (c.moveToFirst()) {
                 do {
                     String table = c.getString(0);
-                    if (table.startsWith("track") || table.startsWith("sqlite") || table.startsWith("android") || existing.contains(table))
+                    if (table.startsWith("track") || table.startsWith("sqlite") || table.startsWith("android") || existing.contains(table)
+                    || table.endsWith(CHANGES_NAME_POSTFIX) || table.endsWith(ATTACHMENTS_NAME_POSTFIX))
                         continue;
                     items.add(table);
                 } while (c.moveToNext());

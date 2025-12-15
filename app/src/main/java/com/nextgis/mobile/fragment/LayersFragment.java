@@ -448,12 +448,18 @@ public class LayersFragment
     }
 
     private void checkAccountForSync(final Context context, final Account account){
-        boolean isYourAccountSyncEnabled = ContentResolver.getSyncAutomatically(account, "com.nextgis.mobile.provider");
+        boolean isYourAccountSyncEnabled = ContentResolver.getSyncAutomatically(account,
+                context.getString(R.string.provider_auth
+                //"com.nextgis.mobile.provider"
+                ));
         if (!isYourAccountSyncEnabled){
             DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    ContentResolver.setSyncAutomatically(account, "com.nextgis.mobile.provider", true);
+                    ContentResolver.setSyncAutomatically(account,
+                            //"com.nextgis.mobile.provider",
+                            context.getString(R.string.provider_auth),
+                            true);
 
                 }
             };
