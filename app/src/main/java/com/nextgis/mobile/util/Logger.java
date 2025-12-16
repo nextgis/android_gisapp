@@ -25,11 +25,18 @@ import android.content.Context;
 import android.util.Log;
 
 import com.hypertrack.hyperlog.HyperLog;
+import com.nextgis.maplibui.util.HyperLogCrashHandler;
 
 public final class Logger {
     public static void initialize(Context context) {
         HyperLog.initialize(context);
         HyperLog.setLogLevel(Log.VERBOSE);
         HyperLog.setLogFormat(new CustomLogMessageFormat(context));
+
+        Thread.setDefaultUncaughtExceptionHandler(
+                new HyperLogCrashHandler()
+        );
+
+
     }
 }

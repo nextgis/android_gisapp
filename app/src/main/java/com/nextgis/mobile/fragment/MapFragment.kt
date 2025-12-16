@@ -1868,8 +1868,8 @@ class MapFragment
             if (geometry != null && mSelectedLayer != null) {
 
                 editLayerOverlay!!.setSelectedFeature(selectedSingleFeatureId)
-                mMapRef.get()!!.map!!.startFeatureSelectionForView(mSelectedLayer,
-                    originalFeatureForSelect)
+                mMapRef.get()!!.map!!.startFeatureSelectionForView(mSelectedLayer, originalFeatureForSelect)
+                defineMenuItems()
                 if (mode != MODE_SELECT_ACTION)
                     setMode(MODE_SELECT_ACTION)
             }
@@ -2492,11 +2492,19 @@ class MapFragment
 
         }
         //showOverlayPoint(event);
+        /*
+        * final ILayer  ilayerd, Integer layerGeoType,
+                                             Feature originalSelectedFeature, boolean createNew,
+                                             com.nextgis.maplib.display.Style ngstyle*/
 
         if (featureId != -1L && mSelectedLayer != null) {
+            if (mode == MODE_SELECT_ACTION)
+                editLayerOverlay!!.setSelectedFeature(selectedSingleFeatureId)
+
             mMapRef.get()!!.map!!.startFeatureSelectionForView(
-                layerd,
-                originalSelectedFeature)
+                    layerd,
+                    originalSelectedFeature)
+            defineMenuItems()
         }
     }
 
