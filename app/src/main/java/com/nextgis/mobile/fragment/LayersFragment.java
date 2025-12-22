@@ -112,6 +112,42 @@ public class LayersFragment
     protected List<Account>         mAccounts;
 
 
+
+
+    private static class LayerEditListener
+            implements LayersListAdapter.onEdit {
+
+        private final WeakReference<LayersFragment> fragmentRef;
+        private final WeakReference<MainActivity> activityRef;
+        private final WeakReference<MapFragment> mapFragmentRef;
+
+        LayerEditListener(
+                LayersFragment fragment,
+                WeakReference<MainActivity> activityRef,
+                WeakReference<MapFragment> mapFragmentRef) {
+            this.fragmentRef = new WeakReference<>(fragment);
+            this.activityRef = activityRef;
+            this.mapFragmentRef = mapFragmentRef;
+        }
+
+        @Override
+        public void onLayerEdit(ILayer layer) {
+            LayersFragment fragment = fragmentRef.get();
+            MainActivity activity = activityRef.get();
+            MapFragment mapFragment = mapFragmentRef.get();
+
+            if (fragment == null || activity == null || mapFragment == null)
+                return;
+
+            IGISApplication application = (IGISApplication) activity.getApplication();
+            application.sendEvent(GA_LAYER, GA_EDIT, GA_MENU);
+            mapFragment.onFinishChooseLayerDialog(MapFragment.EDIT_LAYER, layer);
+
+            fragment.toggle();
+        }
+    }
+
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -281,17 +317,22 @@ public class LayersFragment
                 builder.show();
             }
         });
-        mListAdapter.setOnLayerEditListener(new LayersListAdapter.onEdit() {
-            @Override
-            public void onLayerEdit(ILayer layer) {
-                if (activityRef.get() == null)
-                    return;
-                IGISApplication application = (IGISApplication) activityRef.get().getApplication();
-                application.sendEvent(GA_LAYER, GA_EDIT, GA_MENU);
-                mapFragmentRef.get().onFinishChooseLayerDialog(MapFragment.EDIT_LAYER, layer);
-                toggle();
-            }
-        });
+
+
+
+        mListAdapter.setOnLayerEditListener(new LayerEditListener(this, activityRef, mapFragmentRef));
+//                new LayersListAdapter.onEdit() {
+//            @Override
+//            public void onLayerEdit(ILayer layer) {
+//                if (activityRef.get() == null)
+//                    return;
+//                IGISApplication application = (IGISApplication) activityRef.get().getApplication();
+//                application.sendEvent(GA_LAYER, GA_EDIT, GA_MENU);
+//                mapFragmentRef.get().onFinishChooseLayerDialog(MapFragment.EDIT_LAYER, layer);
+//                toggle();
+//            }
+//        });
+
         if (mapFragmentRef.get() != null)
             mapFragmentRef.get().setOnModeChangeListener(new MapFragment.onModeChange() {
                 @Override
@@ -586,4 +627,36 @@ public class LayersFragment
             }
         }
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        if (mLayersListView != null) {
+            mLayersListView.setAdapter(null);
+        }
+
+        if (mListAdapter != null) {
+            mListAdapter.setOnLayerEditListener(null);
+            mListAdapter.setOnPencilClickListener(null);
+//            mListAdapter.onPause(); // если есть
+        }
+
+        mListAdapter = null;
+        mLayersListView = null;
+        mDrawerLayout = null;
+
+        final WeakReference<MainActivity> activityRef = new WeakReference<MainActivity>((MainActivity)getActivity());
+        if (activityRef.get() == null)
+            return;
+        final WeakReference<MapFragment> mapFragmentRef = new WeakReference<>(activityRef.get().getMapFragment());
+        MapFragment mf = mapFragmentRef != null ? mapFragmentRef.get() : null;
+        if (mf != null) {
+            mf.setOnModeChangeListener(null);
+        }
+
+
+
+    }
+
 }

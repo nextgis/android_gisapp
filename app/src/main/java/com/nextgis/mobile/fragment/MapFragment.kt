@@ -86,7 +86,6 @@ import com.nextgis.maplib.location.GpsEventSource
 import com.nextgis.maplib.map.MLP.MLGeometryEditClass
 import com.nextgis.maplib.map.MPLFeaturesUtils
 import com.nextgis.maplib.map.MPLFeaturesUtils.id_name
-import com.nextgis.maplib.map.MPLFeaturesUtils.latLngPointFromGeoPoint
 import com.nextgis.maplib.map.MapDrawable
 import com.nextgis.maplib.map.MaplibreMapInteraction
 import com.nextgis.maplib.map.VectorLayer
@@ -135,7 +134,6 @@ import org.maplibre.geojson.Point
 import org.maplibre.geojson.Polygon
 import java.io.IOException
 import java.lang.ref.WeakReference
-import java.util.Arrays
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 import kotlin.math.atan
@@ -626,9 +624,6 @@ class MapFragment
 
                 mMapRef.get()!!.map!!.finishCreateNewFeature(id)
 
-
-
-
             }
         } else if (editLayerOverlay!!.selectedFeatureGeometry != null) editLayerOverlay!!.setHasEdits(
             true
@@ -770,8 +765,21 @@ class MapFragment
                                 editLayerOverlay!!.setHasEdits(true)
 
 
-                                mMapRef.get()!!.map!!.startFeatureSelectionForEdit(mSelectedLayer, mSelectedLayer!!.geometryType,
-                                    editLayerOverlay!!.selectedFeature, true,mSelectedLayer!!.defaultStyleNoExcept)
+                                mMapRef.get()!!.map!!.startFeatureSelectionForEdit(mSelectedLayer,
+                                    mSelectedLayer!!.geometryType,
+                                    editLayerOverlay!!.selectedFeature,
+                                    true,
+                                    mSelectedLayer!!.defaultStyleNoExcept)
+
+                                // update rudiment code - created geometry on old pre-maplibre code
+                                // on editing it updates on MotionEvent.ACTION_UP actions
+                                updateGeometryFromMaplibre(
+                                    mMapRef.get()!!.map!!.editingObject.editingFeature,
+                                    mMapRef.get()!!.map!!.originalSelectedFeature,
+                                    mMapRef.get()!!.map!!.editingObject
+                                )
+
+
                             }
 
                             R.id.menu_feature_edit -> {
@@ -1822,8 +1830,10 @@ class MapFragment
                     continue
                 }
                 val feature = vectorLayer.getFeature(featureId)
-                if (feature == null)
+                if (feature == null) {
+                    Toast.makeText(mActivity, "not feature for " + featureId, Toast.LENGTH_LONG, ).show();
                     continue
+                }
                 originalFeatureForSelect = vectorLayer.getFeature(featureId)
                 if (originalFeatureForSelect != null) {
                     val valueForHint = getHintText(vectorLayer, feature)
