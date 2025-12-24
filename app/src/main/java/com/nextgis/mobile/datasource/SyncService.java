@@ -54,7 +54,7 @@ public class SyncService extends NGWSyncService {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(MESSAGE_NOTIFY_INTENT);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(mMessageReceiver, intentFilter, Context.RECEIVER_EXPORTED);
+            registerReceiver(mMessageReceiver, intentFilter, Context.RECEIVER_NOT_EXPORTED);
         } else {
             registerReceiver(mMessageReceiver, intentFilter);
         }

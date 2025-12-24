@@ -25,6 +25,8 @@ package com.nextgis.mobile.fragment;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -51,6 +53,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -83,6 +86,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.Context.MODE_MULTI_PROCESS;
+import static android.view.animation.Animation.INFINITE;
 import static com.nextgis.maplib.util.Constants.TAG;
 import static com.nextgis.maplibui.util.ConstantsUI.GA_CREATE;
 import static com.nextgis.maplibui.util.ConstantsUI.GA_EDIT;
@@ -110,6 +114,8 @@ public class LayersFragment
     protected ImageButton           mSyncButton;
     protected ImageButton           mNewLayer;
     protected List<Account>         mAccounts;
+
+    ObjectAnimator rotation;
 
 
 
@@ -450,14 +456,31 @@ public class LayersFragment
             return;
         }
         if (start) {
-            RotateAnimation rotateAnimation = new RotateAnimation(
-                    0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-            rotateAnimation.setFillAfter(true);
-            rotateAnimation.setDuration(700);
-            rotateAnimation.setRepeatCount(500);
 
-            mSyncButton.startAnimation(rotateAnimation);
+            if (rotation == null) {
+
+                rotation = ObjectAnimator.ofFloat(
+                        mSyncButton, "rotation",
+                        mSyncButton.getRotation(),
+                        mSyncButton.getRotation() + 360 * 10);
+                //rotation.setDuration(700 * 10); // 10 повторений
+                rotation.setDuration(6000);                    // длительность одного оборота (мс)
+                rotation.setRepeatCount(ValueAnimator.INFINITE);
+                rotation.setInterpolator(new LinearInterpolator()); // плавное вращение
+            }
+            rotation.start();
+
+
+//            RotateAnimation rotateAnimation = new RotateAnimation(
+//                    0, 360, Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 0.0f);
+//            rotateAnimation.setFillAfter(true);
+//            rotateAnimation.setDuration(700);
+//            rotateAnimation.setRepeatCount(500);
+//
+            //mSyncButton.startAnimation(rotateAnimation);
         } else {
+            if (rotation!= null)
+                rotation.cancel();
             mSyncButton.clearAnimation();
         }
     }
@@ -474,7 +497,7 @@ public class LayersFragment
         intentFilter.addAction(SyncAdapter.SYNC_FINISH);
         intentFilter.addAction(SyncAdapter.SYNC_CANCELED);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            getActivity().registerReceiver(mSyncReceiver, intentFilter, Context.RECEIVER_EXPORTED);
+            getActivity().registerReceiver(mSyncReceiver, intentFilter, Context.RECEIVER_NOT_EXPORTED);
         } else {
             getActivity().registerReceiver(mSyncReceiver, intentFilter);
         }

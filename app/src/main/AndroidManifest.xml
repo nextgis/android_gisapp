@@ -63,6 +63,7 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:allowBackup, label"
         android:networkSecurityConfig="@xml/network_security_config"
+        android:largeHeap="true"
         >
 
         <service

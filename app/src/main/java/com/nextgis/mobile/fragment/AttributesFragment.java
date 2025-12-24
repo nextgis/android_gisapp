@@ -170,7 +170,7 @@ public class AttributesFragment
         };
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            getContext().registerReceiver(messageReceiver, getReceiverIntent(), Context.RECEIVER_EXPORTED);
+            getContext().registerReceiver(messageReceiver, getReceiverIntent(), Context.RECEIVER_NOT_EXPORTED);
         } else {
             getContext().registerReceiver(messageReceiver, getReceiverIntent());
         }

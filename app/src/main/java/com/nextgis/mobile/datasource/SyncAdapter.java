@@ -66,6 +66,7 @@ public class SyncAdapter extends com.nextgis.maplib.datasource.ngw.SyncAdapter {
             Intent msg = new Intent(MESSAGE_ALERT_INTENT);
             msg.putExtra(MESSAGE_EXTRA, alertMessage);
             msg.putExtra(MESSAGE_TITLE_EXTRA, alertTitle);
+            msg.setPackage(getContext().getPackageName());
             getContext().sendBroadcast(msg);
 
             return;

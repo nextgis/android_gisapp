@@ -119,7 +119,7 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
     var mapFragment: MapFragment? = null
         protected set
     protected var mLayersFragment: LayersFragment? = null
-    protected var mMessageReceiver: MessageReceiver? = null
+    private var mMessageReceiver: MessageReceiver? = null
     protected var mToolbar: Toolbar? = null
 
 
@@ -1066,12 +1066,12 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
     }
 
 
-    protected inner class MessageReceiver
-
-        : BroadcastReceiver() {
+    private inner class MessageReceiver : BroadcastReceiver() {
         override fun onReceive(
             context: Context,
             intent: Intent ){
+            Log.e("ZZXX", "onReceive")
+
             if (intent.action == ConstantsUI.MESSAGE_INTENT) {
 //                Log.e("ZZXX", "intent.getAction().equals(ConstantsUI.MESSAGE_INTENT)")
                 Toast.makeText(
@@ -1082,7 +1082,7 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
             }
 
             if (intent.action == Constants.MESSAGE_ALERT_INTENT) {
-//                Log.e("ZZXX", "intent.getAction().equals(MESSAGE_ALERT_INTENT")
+                Log.e("ZZXX", "intent.getAction().equals(MESSAGE_ALERT_INTENT show alert")
                 val message = intent.extras!!.getString(Constants.MESSAGE_EXTRA)
                 val title = intent.extras!!.getString(Constants.MESSAGE_TITLE_EXTRA)
 
@@ -1179,12 +1179,12 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
         try {
             if (mMessageReceiver != null) {
                 unregisterReceiver(mMessageReceiver)
-                mMessageReceiver = null
+                //mMessageReceiver = null
             }
 
             if (mTrackReceiver != null) {
                 unregisterReceiver(mTrackReceiver)
-                mTrackReceiver = null
+                //mTrackReceiver = null
             }
 
         } catch (ignored: Exception) {
@@ -1281,5 +1281,11 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
 
         protected const val FILE_SELECT_CODE: Int = 555
         protected const val RELOAD_ACTIVITY_DATA: Int = 777
+    }
+
+    override fun onDestroy() {
+        mMessageReceiver = null
+        mTrackReceiver = null
+        super.onDestroy()
     }
 }
