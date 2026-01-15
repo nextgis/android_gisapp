@@ -761,7 +761,8 @@ class MapFragment
                                 editLayerOverlay!!.createNewGeometry()
                                 undoRedoOverlay!!.clearHistory()
                                 setMode(MODE_EDIT)
-                                undoRedoOverlay!!.saveToHistory(editLayerOverlay!!.selectedFeature)
+                                // skip - because next save from maplibre correct
+                                //undoRedoOverlay!!.saveToHistory(editLayerOverlay!!.selectedFeature)
                                 editLayerOverlay!!.setHasEdits(true)
 
 
@@ -2933,11 +2934,7 @@ class MapFragment
             .setMessage(com.nextgis.maplibui.R.string.delete_feature)
             .setPositiveButton(com.nextgis.maplibui.R.string.menu_delete) {
                 dialog: DialogInterface?, which: Int ->
-                val snackbar = Snackbar.make(
-                    activity!!.findViewById<View>(R.id.mainview),
-                    activity!!.getString(com.nextgis.maplibui.R.string.delete_item_done),
-                    Snackbar.LENGTH_LONG
-                )
+                val snackbar = Snackbar.make(activity!!.findViewById<View>(R.id.mainview), activity!!.getString(com.nextgis.maplibui.R.string.delete_item_done), Snackbar.LENGTH_LONG)
                     .setAction(com.nextgis.maplibui.R.string.undo) { v: View? ->
                         layer!!.showFeature(selectedFeatureId)
                         editLayerOverlay!!.setSelectedFeature(selectedFeatureId)
@@ -2966,14 +2963,8 @@ class MapFragment
                 defineMenuItems()
 
                 val view = snackbar.view
-                val textView =
-                    view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
-                textView.setTextColor(
-                    ContextCompat.getColor(
-                        mActivity!!,
-                        com.nextgis.maplibui.R.color.color_white
-                    )
-                )
+                val textView = view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+                textView.setTextColor(ContextCompat.getColor(mActivity!!, com.nextgis.maplibui.R.color.color_white))
                 snackbar.show()
             }
             .setNegativeButton(

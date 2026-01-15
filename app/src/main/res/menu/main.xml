@@ -31,12 +31,12 @@
         android:title="@string/menu_locate"
         app:showAsAction="always"/>
 
-    <item
-        android:id="@+id/menu_refresh"
-        android:icon="@drawable/ic_action_sync"
-        android:orderInCategory="25"
-        android:title="@string/refresh"
-        app:showAsAction="always"/>
+<!--    <item-->
+<!--        android:id="@+id/menu_refresh"-->
+<!--        android:icon="@drawable/ic_action_sync"-->
+<!--        android:orderInCategory="25"-->
+<!--        android:title="@string/refresh"-->
+<!--        app:showAsAction="always"/>-->
 
     <item
         android:id="@+id/menu_track"

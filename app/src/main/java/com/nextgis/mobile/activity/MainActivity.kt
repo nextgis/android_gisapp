@@ -395,7 +395,7 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
     }
 
     fun showEditToolbar() {
-        stopRefresh(mToolbar!!.menu.findItem(R.id.menu_refresh))
+        //stopRefresh(mToolbar!!.menu.findItem(R.id.menu_refresh))
         mToolbar!!.menu.clear()
         mToolbar!!.inflateMenu(com.nextgis.maplibui.R.menu.edit_geometry)
 
@@ -481,12 +481,12 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
                 return true
             }
 
-            R.id.menu_refresh -> {
-                if (null != mapFragment) {
-                    mapFragment!!.refresh()
-                }
-                return true
-            }
+//            R.id.menu_refresh -> {
+//                if (null != mapFragment) {
+//                    mapFragment!!.refresh()
+//                }
+//                return true
+//            }
 
             com.nextgis.maplibui.R.id.menu_edit_save -> return mapFragment!!.saveEdits()
             com.nextgis.maplibui.R.id.menu_edit_undo, com.nextgis.maplibui.R.id.menu_edit_redo -> return mapFragment!!.onOptionsItemSelected(
@@ -649,22 +649,22 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
 
     @Synchronized
     fun onRefresh(isRefresh: Boolean) {
-        val refreshItem = mToolbar!!.menu.findItem(R.id.menu_refresh)
-        if (null != refreshItem) {
-            if (isRefresh) {
-                if (refreshItem.actionView == null) {
-                    refreshItem.setActionView(R.layout.layout_refresh)
-                    val progress =
-                        refreshItem.actionView!!.findViewById<ProgressBar>(R.id.refreshingProgress)
-                    progress?.indeterminateDrawable?.setColorFilter(
-                        ContextCompat.getColor(
-                            this,
-                            com.nextgis.maplibui.R.color.color_grey_200
-                        ), PorterDuff.Mode.SRC_IN
-                    )
-                }
-            } else stopRefresh(refreshItem)
-        }
+//        val refreshItem = mToolbar!!.menu.findItem(R.id.menu_refresh)
+//        if (null != refreshItem) {
+//            if (isRefresh) {
+//                if (refreshItem.actionView == null) {
+//                    refreshItem.setActionView(R.layout.layout_refresh)
+//                    val progress =
+//                        refreshItem.actionView!!.findViewById<ProgressBar>(R.id.refreshingProgress)
+//                    progress?.indeterminateDrawable?.setColorFilter(
+//                        ContextCompat.getColor(
+//                            this,
+//                            com.nextgis.maplibui.R.color.color_grey_200
+//                        ), PorterDuff.Mode.SRC_IN
+//                    )
+//                }
+//            } else stopRefresh(refreshItem)
+//        }
     }
 
     protected fun stopRefresh(refreshItem: MenuItem?) {
