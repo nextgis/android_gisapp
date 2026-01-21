@@ -463,14 +463,14 @@ public class LayersFragment
                         mSyncButton, "rotation",
                         mSyncButton.getRotation(),
                         mSyncButton.getRotation() + 360 * 10);
-                //rotation.setDuration(700 * 10); // 10 повторений
-                rotation.setDuration(6000);                    // длительность одного оборота (мс)
+                //rotation.setDuration(700 * 10); // 10 reteat
+                rotation.setDuration(6000);                    // one rotate (ms)
                 rotation.setRepeatCount(ValueAnimator.INFINITE);
-                rotation.setInterpolator(new LinearInterpolator()); // плавное вращение
+                rotation.setInterpolator(new LinearInterpolator()); // smooth rotate
             }
             rotation.start();
 
-
+// old rotation
 //            RotateAnimation rotateAnimation = new RotateAnimation(
 //                    0, 360, Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 0.0f);
 //            rotateAnimation.setFillAfter(true);
@@ -662,7 +662,7 @@ public class LayersFragment
         if (mListAdapter != null) {
             mListAdapter.setOnLayerEditListener(null);
             mListAdapter.setOnPencilClickListener(null);
-//            mListAdapter.onPause(); // если есть
+//            mListAdapter.onPause(); // if exists
         }
 
         mListAdapter = null;

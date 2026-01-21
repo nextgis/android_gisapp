@@ -211,6 +211,8 @@ class MapFragment
     protected val ADD_POINT_BY_TAP: Int = 4
     private var mNeedSave = false
 
+    var tmpFirstLocation: Location? = null
+
     var longClickProcessed = false
 
     interface onModeChange {
@@ -439,11 +441,7 @@ class MapFragment
                 return true
             }
 
-            com.nextgis.maplibui.R.id.menu_edit_by_touch -> {
-                setMode(MODE_EDIT_BY_TOUCH)
-                result = editLayerOverlay!!.onOptionsItemSelected(id)
-                return result
-            }
+
 
             com.nextgis.maplibui.R.id.menu_edit_undo, com.nextgis.maplibui.R.id.menu_edit_redo -> {
                 result = undoRedoOverlay!!.onOptionsItemSelected(id)
@@ -465,12 +463,23 @@ class MapFragment
                 return result
             }
 
-            com.nextgis.maplibui.R.id.menu_edit_by_walk -> {
-                setMode(MODE_EDIT_BY_WALK)
+            com.nextgis.maplibui.R.id.menu_edit_by_touch -> {
+                setMode(MODE_EDIT_BY_TOUCH)
                 result = editLayerOverlay!!.onOptionsItemSelected(id)
-                if (result) undoRedoOverlay!!.saveToHistory(editLayerOverlay!!.selectedFeature)
                 return result
             }
+
+//            com.nextgis.maplibui.R.id.menu_edit_by_walk -> {
+//                setMode(MODE_EDIT_BY_WALK)
+//
+//                result = editLayerOverlay!!.onOptionsItemSelected(id)
+//                if (result)
+//                    undoRedoOverlay!!.saveToHistory(editLayerOverlay!!.selectedFeature)
+//
+//
+//                (mApp!!.map as MapDrawable).updateHistoryByWalkEnd()
+//                return result
+//            }
 
             com.nextgis.maplibui.R.id.menu_edit_delete_point  ->{
                 val result = mMapRef.get()!!.map!!.deleteCurrentPoint();
@@ -549,8 +558,11 @@ class MapFragment
         if (mode == MODE_EDIT_BY_WALK) {
             editLayerOverlay!!.stopGeometryByWalk()
             setMode(MODE_EDIT)
-            undoRedoOverlay!!.clearHistory()
+
+            (mApp!!.map as MapDrawable).updateHistoryByWalkEnd()
+//            undoRedoOverlay!!.clearHistory()
             undoRedoOverlay!!.defineUndoRedo()
+
             return true
         }
 
@@ -713,6 +725,8 @@ class MapFragment
                         menuItem.itemId
                     )
                 }
+                mMapRef.get()!!.map!!.showVertex()
+                mMapRef.get()!!.map!!.showMarker();
             }
 
             MODE_EDIT_BY_WALK -> {
@@ -720,6 +734,11 @@ class MapFragment
                 mActivity!!.showEditToolbar()
                 editLayerOverlay!!.mode = EditLayerOverlay.MODE_EDIT_BY_WALK
                 undoRedoOverlay!!.clearHistory()
+
+                mMapRef.get()!!.map!!.unselectFeatureFromEdit(false, true)
+                mMapRef.get()!!.map!!.hideVertex()
+                mMapRef.get()!!.map!!.hideMarker()
+
             }
 
             MODE_EDIT_BY_TOUCH -> {
@@ -727,10 +746,13 @@ class MapFragment
                 mActivity!!.showEditToolbar()
                 editLayerOverlay!!.mode = EditLayerOverlay.MODE_EDIT_BY_TOUCH
                 toolbar.setOnMenuItemClickListener { menuItem ->
-                    onOptionsItemSelected(
-                        menuItem.itemId
-                    )
+                    onOptionsItemSelected(menuItem.itemId)
                 }
+
+                mMapRef.get()!!.map!!.unselectFeatureFromEdit(false, true)
+                mMapRef.get()!!.map!!.hideVertex()
+                mMapRef.get()!!.map!!.hideMarker()
+
             }
 
             MODE_SELECT_ACTION -> {
@@ -1103,6 +1125,7 @@ class MapFragment
             val s = GeoLineString()
             s.add(p1)
             s.add(p2)
+
 
             return LocationUtil.formatLength(context, s.length, 1)
         }
@@ -1832,7 +1855,7 @@ class MapFragment
                 }
                 val feature = vectorLayer.getFeature(featureId)
                 if (feature == null) {
-                    Toast.makeText(mActivity, "not feature for " + featureId, Toast.LENGTH_LONG, ).show();
+                    Toast.makeText(mActivity, "not feature for " + featureId, Toast.LENGTH_LONG).show();
                     continue
                 }
                 originalFeatureForSelect = vectorLayer.getFeature(featureId)
@@ -2537,6 +2560,14 @@ class MapFragment
 
     override fun onLocationChanged(location: Location?) {
         if (location != null) {
+
+            if (tmpFirstLocation != null && tmpFirstLocation!!.latitude == location.latitude &&
+                tmpFirstLocation!!.longitude == location.longitude )
+                return
+            else
+                tmpFirstLocation = location
+
+
             if (mCurrentCenter == null) {
                 mCurrentCenter = GeoPoint()
             }
@@ -2564,6 +2595,10 @@ class MapFragment
 
 //            Log.e("TTRR", "end olLocChange update---------------" )
 
+            if (mode == MODE_EDIT_BY_WALK){
+                if (location != null)
+                    mMapRef.get()!!.map!!.addPointByWalk(LatLng(location.latitude, location.longitude));
+            }
         }
 
         fillStatusPanel(location)
