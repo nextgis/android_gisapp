@@ -144,7 +144,7 @@ import kotlin.math.tan
 /**
  * Main map fragment
  */
-class MapFragment
+public class MapFragment
 
     : Fragment(), MapViewEventListener, GpsEventListener, EditEventListener,
     View.OnClickListener, OnRulerChanged, OnMapReadyCallback , MaplibreMapInteraction,
@@ -670,6 +670,17 @@ class MapFragment
     }
 
     fun setMode(mode: Int, vararg readOnly: Boolean) {
+
+        if (mMapRef.get()!!.map!!.checkMeasurment(mode)){
+            mRulerOverlay!!.stopMeasuring()
+            showMainButton()
+            showRulerButton()
+            hideAddByTapButton()
+            mAddPointButton!!.setIcon(com.nextgis.maplibui.R.drawable.ic_action_add_point)
+            mActivity!!.title = mActivity!!.appName
+            mActivity!!.setSubtitle(null)
+            mMapRef.get()!!.map.stoptMeasuring()
+        }
         var promt = ""
         when(mode){
             0 ->  promt=  "MODE_NORMAL"
@@ -2916,6 +2927,8 @@ class MapFragment
                 mAddPointButton!!.setIcon(com.nextgis.maplibui.R.drawable.ic_action_add_point)
                 mActivity!!.title = mActivity!!.appName
                 mActivity!!.setSubtitle(null)
+                mMapRef.get()!!.map.stoptMeasuring()
+
             } else addPointByTap()
 
             R.id.action_ruler -> {
@@ -2932,6 +2945,7 @@ class MapFragment
         hideRulerButton()
         showAddByTapButton()
         mAddPointButton!!.setIcon(com.nextgis.maplibui.R.drawable.ic_action_apply_dark)
+        mMapRef.get()!!.map.startMeasuring()
     }
 
     override fun onLengthChanged(length: Double) {
@@ -3063,7 +3077,7 @@ class MapFragment
         return mSelectedLayer
     }
 
-    private fun getGeometryFromMaplibreGeometry(feature: org.maplibre.geojson.Feature?) : GeoGeometry? {
+    override fun getGeometryFromMaplibreGeometry(feature: org.maplibre.geojson.Feature?) : GeoGeometry? {
 
         if (feature == null)
             return null;

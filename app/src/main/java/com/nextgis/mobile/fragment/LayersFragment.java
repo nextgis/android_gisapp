@@ -568,7 +568,7 @@ public class LayersFragment
 
                     for (Account account : mAccounts) {
                         HyperLog.v(Constants.TAG, "onClick add sync to queue for " + account.name +" account");
-                        // тут надо предупредить что нет включенной синхронизации
+                        // attentd - no turned on sync
                         checkAccountForSync(v.getContext(), account);
 
                         Bundle settingsBundle = new Bundle();
