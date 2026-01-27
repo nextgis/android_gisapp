@@ -1,7 +1,13 @@
 {
   "glyphs": "asset://fonts/{fontstack}/{range}.pbf",
   "id": "basic",
-  "layers": [],
+  "layers": [{
+    "id": "background",
+    "type": "background",
+    "paint": {
+      "background-color": "#ff00f8"
+    }
+  }],
   "name": "Basic",
   "sources": {},
 

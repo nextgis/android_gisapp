@@ -164,7 +164,7 @@ public class SettingsFragment
 
                 final ListPreference changeMapBG =
                         (ListPreference) findPreference(SettingsConstantsUI.KEY_PREF_MAP_BG);
-                initializeMapBG(changeMapBG);
+                initializeMapBG(changeMapBG, getContext());
 
                 final Preference restore =
                         findPreference(SettingsConstantsUI.KEY_PREF_RESTORE_LAYERS);
@@ -554,7 +554,7 @@ public class SettingsFragment
     }
 
 
-    public static void initializeMapBG(final ListPreference mapBG)
+    public static void initializeMapBG(final ListPreference mapBG, final Context context)
     {
         mapBG.setSummary(mapBG.getEntry());
 
@@ -567,6 +567,7 @@ public class SettingsFragment
             {
                 preference.setSummary(
                         mapBG.getEntries()[mapBG.findIndexOfValue((String) newValue)]);
+                GISApplication.needUpdateBackground = true;
                 return true;
             }
         });

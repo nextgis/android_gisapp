@@ -94,6 +94,7 @@ import com.nextgis.maplib.util.FileUtil
 import com.nextgis.maplib.util.GeoConstants
 import com.nextgis.maplib.util.LocationUtil
 import com.nextgis.maplib.util.MapUtil
+import com.nextgis.maplibui.GISApplication
 import com.nextgis.maplibui.api.EditEventListener
 import com.nextgis.maplibui.api.ILayerUI
 import com.nextgis.maplibui.api.IVectorLayerUI
@@ -314,8 +315,8 @@ public class MapFragment
         mRuler = view.findViewById(R.id.action_ruler)
         mRuler?.setOnClickListener(this)
 
-        val addGeometryByWalk = view.findViewById<View>(R.id.add_geometry_by_walk)
-        addGeometryByWalk.setOnClickListener(this)
+//        val addGeometryByWalk = view.findViewById<View>(R.id.add_geometry_by_walk)
+//        addGeometryByWalk.setOnClickListener(this)
 
         mivZoomIn = view.findViewById(R.id.action_zoom_in)
         mivZoomIn?.setOnClickListener(this)
@@ -634,6 +635,8 @@ public class MapFragment
                 if (mSelectedLayer != null) mSelectedLayer!!.showFeature(id)
                 setMode(MODE_SELECT_ACTION)
 
+                if (mMapRef.get() == null || mMapRef.get()!!.map == null)
+                    return;
                 mMapRef.get()!!.map!!.finishCreateNewFeature(id)
 
             }
@@ -1338,12 +1341,6 @@ public class MapFragment
 
         val edit = mPreferences!!.edit()
         if (null != mMapRef.get()) {
-
-
-
-
-
-
             if (mMapRef.get()!!.map!!.maplibreMap != null) {
                 edit.putFloat(SettingsConstantsUI.KEY_PREF_ZOOM_LEVEL,
                     mMapRef.get()!!.map!!.maplibreMap.cameraPosition.zoom.toFloat())
@@ -1479,6 +1476,18 @@ public class MapFragment
 
         mCurrentCenter = null
 
+
+        if (GISApplication.needUpdateBackground){
+            try {
+                GISApplication.needUpdateBackground = false
+                if (mMapRef.get() != null) {
+                    mMapRef.get()!!.map.updateMapBackground()
+                }
+            } catch (exception : Exception) {
+
+            }
+
+        }
         //updateLastLocation()
     }
 
@@ -1741,40 +1750,40 @@ public class MapFragment
         return layerList
     }
 
-
-    protected fun addGeometryByWalk() {
-        //show select layer dialog if several layers, else start default or custom form
-        val layers = removeHideLayers (mMapRef.get()!!.getVectorLayersByType(
-            (GeoConstants.GTLineStringCheck or GeoConstants.GTPolygonCheck
-                    or GeoConstants.GTMultiLineStringCheck or GeoConstants.GTMultiPolygonCheck)))
-
-        if (layers.isEmpty()) {
-            Toast.makeText(mActivity, getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG)
-                .show()
-        } else if (layers.size == 1) {
-            //open form
-            val layer = layers[0] as VectorLayer
-            mSelectedLayer = layer
-            editLayerOverlay!!.setSelectedLayer(layer)
-            editLayerOverlay!!.newGeometryByWalk()
-            setMode(MODE_EDIT_BY_WALK)
-
-            Toast.makeText(
-                mActivity,
-                String.format(getString(R.string.edit_layer), layer.name),
-                Toast.LENGTH_SHORT
-            ).show()
-        } else {
-            if (isDialogShown) return
-            //open choose edit layer dialog
-            mChooseLayerDialogRef = WeakReference(ChooseLayerDialog())
-            mChooseLayerDialogRef.get()!!.setLayerList(layers)
-                .setCode(ADD_GEOMETRY_BY_WALK)
-                .setTitle(getString(com.nextgis.maplibui.R.string.choose_layers))
-                .setTheme(mActivity!!.themeId)
-                .show(mActivity!!.supportFragmentManager, ChooseLayerDialog.TAG)
-        }
-    }
+//
+//    protected fun addGeometryByWalk() {
+//        //show select layer dialog if several layers, else start default or custom form
+//        val layers = removeHideLayers (mMapRef.get()!!.getVectorLayersByType(
+//            (GeoConstants.GTLineStringCheck or GeoConstants.GTPolygonCheck
+//                    or GeoConstants.GTMultiLineStringCheck or GeoConstants.GTMultiPolygonCheck)))
+//
+//        if (layers.isEmpty()) {
+//            Toast.makeText(mActivity, getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG)
+//                .show()
+//        } else if (layers.size == 1) {
+//            //open form
+//            val layer = layers[0] as VectorLayer
+//            mSelectedLayer = layer
+//            editLayerOverlay!!.setSelectedLayer(layer)
+//            editLayerOverlay!!.newGeometryByWalk()
+//            setMode(MODE_EDIT_BY_WALK)
+//
+//            Toast.makeText(
+//                mActivity,
+//                String.format(getString(R.string.edit_layer), layer.name),
+//                Toast.LENGTH_SHORT
+//            ).show()
+//        } else {
+//            if (isDialogShown) return
+//            //open choose edit layer dialog
+//            mChooseLayerDialogRef = WeakReference(ChooseLayerDialog())
+//            mChooseLayerDialogRef.get()!!.setLayerList(layers)
+//                .setCode(ADD_GEOMETRY_BY_WALK)
+//                .setTitle(getString(com.nextgis.maplibui.R.string.choose_layers))
+//                .setTheme(mActivity!!.themeId)
+//                .show(mActivity!!.supportFragmentManager, ChooseLayerDialog.TAG)
+//        }
+//    }
 
 
     fun onFinishChooseLayerDialog(
@@ -2892,10 +2901,10 @@ public class MapFragment
                 if (v.isEnabled) addNewGeometry()
                 mMainButton!!.collapse()
             }
-            R.id.add_geometry_by_walk -> {
-                if (v.isEnabled) addGeometryByWalk()
-                mMainButton!!.collapse()
-            }
+//            R.id.add_geometry_by_walk -> {
+//                if (v.isEnabled) addGeometryByWalk()
+//                mMainButton!!.collapse()
+//            }
 
             R.id.action_zoom_in -> {
                 //if (v.isEnabled) mMapRef.get()!!.zoomIn() // old

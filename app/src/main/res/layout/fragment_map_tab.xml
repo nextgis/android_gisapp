@@ -163,14 +163,14 @@
         fab:fab_addButtonColorPressed="?attr/colorAccent"
         fab:fab_addButtonPlusIconColor="@android:color/white">
 
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/add_geometry_by_walk"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            fab:fab_colorNormal="?attr/colorPrimary"
-            fab:fab_colorPressed="?attr/colorAccent"
-            fab:fab_icon="@drawable/ic_action_maps_directions_walk"
-            fab:fab_size="mini"/>
+<!--        <com.getbase.floatingactionbutton.FloatingActionButton-->
+<!--            android:id="@+id/add_geometry_by_walk"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            fab:fab_colorNormal="?attr/colorPrimary"-->
+<!--            fab:fab_colorPressed="?attr/colorAccent"-->
+<!--            fab:fab_icon="@drawable/ic_action_maps_directions_walk"-->
+<!--            fab:fab_size="mini"/>-->
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/add_new_geometry"

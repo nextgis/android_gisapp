@@ -43,7 +43,7 @@
         android:icon="@drawable/ic_action_maps_directions_walk"
         android:orderInCategory="50"
         android:title="@string/track_start"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="never"/>
 
     <item
         android:id="@+id/menu_settings"
