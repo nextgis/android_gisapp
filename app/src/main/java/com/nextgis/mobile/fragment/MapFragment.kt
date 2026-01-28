@@ -1140,8 +1140,10 @@ public class MapFragment
             s.add(p1)
             s.add(p2)
 
-
-            return LocationUtil.formatLength(context, s.length, 1)
+            val result = LocationUtil.formatLength(context, s.length, 1)
+            if (result == null)
+                return "";
+            return result;
         }
 
 
