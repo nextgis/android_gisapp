@@ -23,11 +23,14 @@
 package com.nextgis.mobile.fragment
 
 import android.app.Activity
+import android.content.BroadcastReceiver
 import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
+import android.content.Context.RECEIVER_NOT_EXPORTED
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -59,7 +62,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -125,6 +127,7 @@ import org.maplibre.android.camera.CameraPosition
 import org.maplibre.android.camera.CameraUpdateFactory
 import org.maplibre.android.geometry.LatLng
 import org.maplibre.android.maps.MapLibreMap
+import org.maplibre.android.maps.MapLibreMapOptions
 import org.maplibre.android.maps.OnMapReadyCallback
 import org.maplibre.android.module.http.HttpRequestImpl
 import org.maplibre.geojson.LineString
@@ -178,6 +181,11 @@ public class MapFragment
 
     //, mZoomLevel;
     protected var mScaleRuler: ImageView? = null
+
+    var stylingProgrerss: View? = null;
+    var textStylingProgrerss: TextView? = null;
+
+    private var mMessageStyling: MessageStyling? = null
 
     protected var mMapRelativeLayout: RelativeLayout? = null
     protected var mGpsEventSource: GpsEventSource? = null
@@ -240,13 +248,14 @@ public class MapFragment
         mMapRef.get()!!.id = R.id.map_view
 
         editLayerOverlay = EditLayerOverlay(mActivity, mMapRef.get())
+
+        mMessageStyling = MessageStyling()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+        savedInstanceState: Bundle? ): View? {
         val view = inflater.inflate(R.layout.fragment_map, container, false)
 
         mCurrentLocationOverlay = CurrentLocationOverlay(mActivity, mMapRef.get())
@@ -263,6 +272,9 @@ public class MapFragment
         mMapRef.get()!!.addOverlay(editLayerOverlay)
         mMapRef.get()!!.addOverlay(undoRedoOverlay)
         mMapRef.get()!!.addOverlay(mRulerOverlay)
+
+        stylingProgrerss = view.findViewById(R.id.stylingProgress)
+        textStylingProgrerss= view.findViewById(R.id.textStyling)
 
         //search relative view of map, if not found - add it
         mMapRelativeLayout = view.findViewById(R.id.maprl)
@@ -339,6 +351,13 @@ public class MapFragment
         return view
     }
 
+    override fun changeProgress(show: Boolean) {
+        if (show)
+            stylingProgrerss?.visibility = View.VISIBLE
+        else
+            stylingProgrerss?.visibility = View.GONE
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -346,6 +365,9 @@ public class MapFragment
         val mapViewMaplibre = view.findViewById(R.id.mapViewMaplibre) as org.maplibre.android.maps.MapView
 
         mMapRef.get()!!.map!!.maplibreMapView = mapViewMaplibre
+
+
+
 
         mapViewMaplibre.onCreate(savedInstanceState)
 
@@ -364,7 +386,7 @@ public class MapFragment
             .dispatcher(getDispatcher())
             .build()
 
-        // set global http client
+        // set global http client for raster auth
         HttpRequestImpl.setOkHttpClient(client)
 
         val mapboxMaplibre = mapboxMap
@@ -382,7 +404,7 @@ public class MapFragment
 
         val allLayers = mMapRef.get()!!.getAllLayers()
 
-        mMapRef.get()!!.map!!.loadLayersToMaplibreMap(styleJson, allLayers, true)
+        mMapRef.get()!!.map!!.loadLayersToMaplibreMap(styleJson, allLayers, true, true)
     }
 
     override fun loadLayersLite(){
@@ -1079,6 +1101,10 @@ public class MapFragment
 
     }
 
+    override fun onLayerVisibleChanged(id: Int) {
+        // no need
+    }
+
     override fun onLayerChangedFeatureId(
         oldFeatureId: Long,
         newFeatureId: Long,
@@ -1111,7 +1137,8 @@ public class MapFragment
         val mapLibreMap = mMapRef.get()!!.map.maplibreMap
         if (mapLibreMap != null) {
 //            Log.e("ZZOM", "zoom " + mapLibreMap.zoom)
-            return "${mapLibreMap.zoom.toInt()}z"
+            //return "${mapLibreMap.zoom.toInt()}z"
+            return "%.1fz".format(Locale.US, mapLibreMap.zoom)
         }
         else
             return ".z"
@@ -1369,6 +1396,8 @@ public class MapFragment
         }
         edit.apply()
 
+        mActivity?.unregisterReceiver(mMessageStyling)
+
         super.onPause()
     }
 
@@ -1491,6 +1520,18 @@ public class MapFragment
 
         }
         //updateLastLocation()
+        val intentFilter = IntentFilter()
+        intentFilter.addAction(ConstantsUI.MESSAGE_INTENT_STYLING)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            mActivity?.registerReceiver( mMessageStyling, intentFilter, RECEIVER_NOT_EXPORTED)
+        } else {
+            mActivity?.registerReceiver(mMessageStyling, intentFilter)
+        }
+
+        val progressStyling = (getContext()!!.getApplicationContext() as IGISApplication).getingStyleInProgress
+        changeProgress(progressStyling)
+        Log.e("STYLING", "progress" + if (progressStyling) "true" else "false")
+
     }
 
 
@@ -3285,6 +3326,17 @@ public class MapFragment
         mScaleRulerText!!.text = rulerText
         if (mZoom != null)
             mZoom!!.text = zoomText
+    }
+
+
+    private inner class MessageStyling : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent ){
+            if (intent.action == ConstantsUI.MESSAGE_INTENT_STYLING) {
+                val textmessage = intent.getStringExtra(ConstantsUI.KEY_MESSAGE);
+                textStylingProgrerss?.setText(textmessage)
+
+            }
+        }
     }
 
 }
