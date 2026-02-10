@@ -189,7 +189,7 @@
         android:id="@+id/stylingProgress"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#506D6C6C"
+        android:background="#6C6D6C6C"
         android:visibility="visible"
 
         >

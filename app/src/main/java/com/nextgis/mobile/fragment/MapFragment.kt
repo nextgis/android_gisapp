@@ -92,6 +92,7 @@ import com.nextgis.maplib.map.MapDrawable
 import com.nextgis.maplib.map.MaplibreMapInteraction
 import com.nextgis.maplib.map.VectorLayer
 import com.nextgis.maplib.util.Constants
+import com.nextgis.maplib.util.Constants.MESSAGE_INTENT_STYLING
 import com.nextgis.maplib.util.FileUtil
 import com.nextgis.maplib.util.GeoConstants
 import com.nextgis.maplib.util.LocationUtil
@@ -276,6 +277,8 @@ public class MapFragment
         stylingProgrerss = view.findViewById(R.id.stylingProgress)
         textStylingProgrerss= view.findViewById(R.id.textStyling)
 
+        stylingProgrerss?.setOnClickListener { null }
+
         //search relative view of map, if not found - add it
         mMapRelativeLayout = view.findViewById(R.id.maprl)
         if (mMapRelativeLayout != null) {
@@ -354,8 +357,10 @@ public class MapFragment
     override fun changeProgress(show: Boolean) {
         if (show)
             stylingProgrerss?.visibility = View.VISIBLE
-        else
+        else {
             stylingProgrerss?.visibility = View.GONE
+            textStylingProgrerss?.text = ""
+        }
     }
 
 
@@ -1521,7 +1526,7 @@ public class MapFragment
         }
         //updateLastLocation()
         val intentFilter = IntentFilter()
-        intentFilter.addAction(ConstantsUI.MESSAGE_INTENT_STYLING)
+        intentFilter.addAction( MESSAGE_INTENT_STYLING)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             mActivity?.registerReceiver( mMessageStyling, intentFilter, RECEIVER_NOT_EXPORTED)
         } else {
@@ -1530,7 +1535,6 @@ public class MapFragment
 
         val progressStyling = (getContext()!!.getApplicationContext() as IGISApplication).getingStyleInProgress
         changeProgress(progressStyling)
-        Log.e("STYLING", "progress" + if (progressStyling) "true" else "false")
 
     }
 
@@ -3331,7 +3335,7 @@ public class MapFragment
 
     private inner class MessageStyling : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent ){
-            if (intent.action == ConstantsUI.MESSAGE_INTENT_STYLING) {
+            if (intent.action == MESSAGE_INTENT_STYLING) {
                 val textmessage = intent.getStringExtra(ConstantsUI.KEY_MESSAGE);
                 textStylingProgrerss?.setText(textmessage)
 
