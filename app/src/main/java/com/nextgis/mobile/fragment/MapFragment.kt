@@ -651,6 +651,18 @@ public class MapFragment
 
         if (mode == MODE_INFO || resultCode != Activity.RESULT_OK) {
             editLayerOverlay!!.setHasEdits(true)
+            if (resultCode == Activity.RESULT_OK){
+                /// need reload to maplibre feature
+                if (requestCode == IVectorLayerUI.MODIFY_REQUEST && data != null) {
+                    val id = data.getLongExtra(ConstantsUI.KEY_FEATURE_ID, Constants.NOT_FOUND.toLong())
+
+                    if (id != Constants.NOT_FOUND.toLong()) {
+                        mMapRef.get()!!.map!!.reloadFeatureToMaplibre(
+                        id,
+                        selectedLayer!! )
+                    }
+                }
+            }
             return
         }
 
@@ -664,8 +676,9 @@ public class MapFragment
 
                 if (mMapRef.get() == null || mMapRef.get()!!.map == null)
                     return;
-                mMapRef.get()!!.map!!.finishCreateNewFeature(id)
-
+                mMapRef.get()!!.map!!.finishCreateNewFeature(
+                    id,
+                    selectedLayer!! )
             }
         } else if (editLayerOverlay!!.selectedFeatureGeometry != null) editLayerOverlay!!.setHasEdits(
             true
@@ -1495,7 +1508,7 @@ public class MapFragment
         if (null != mStatusPanel) {
             if (mStatusPanelMode != 0) {
                 mStatusPanel!!.visibility = View.VISIBLE
-                fillStatusPanel(null)
+                fillStatusPanel(mGpsEventSource!!.lastKnownLocation)
 
                 if (mode != MODE_NORMAL && mStatusPanelMode != 3) mStatusPanel!!.visibility =
                     View.INVISIBLE
@@ -1504,6 +1517,7 @@ public class MapFragment
             }
 
             setMarginsToPanel()
+            updateLastLocation()
         }
 
         val showCompass =
@@ -2682,7 +2696,7 @@ public class MapFragment
 
     }
 
-    public fun updateLastLocation(){
+    fun updateLastLocation(){
 
         if (mGpsEventSource == null)
             return

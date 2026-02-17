@@ -36,7 +36,6 @@ import android.content.SyncResult
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.PorterDuff
 import android.location.Location
 import android.net.Uri
 import android.os.Build
@@ -44,6 +43,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.preference.PreferenceManager
+import android.provider.Settings
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.text.util.Linkify
@@ -51,7 +51,8 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.ProgressBar
+import android.widget.CheckBox
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -87,6 +88,7 @@ import com.nextgis.maplibui.overlay.EditLayerOverlay
 import com.nextgis.maplibui.service.TrackerService
 import com.nextgis.maplibui.service.TrackerService.BackgroundPermissionCallback
 import com.nextgis.maplibui.util.ConstantsUI
+import com.nextgis.maplibui.util.ConstantsUI.KEY_BATTERY
 import com.nextgis.maplibui.util.ConstantsUI.KEY_TRACK_ACTION
 import com.nextgis.maplibui.util.ConstantsUI.VALUE_TRACK_START
 import com.nextgis.maplibui.util.ConstantsUI.VALUE_TRACK_STOP
@@ -351,8 +353,7 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
-        grantResults: IntArray
-    ) {
+        grantResults: IntArray ) {
         when (requestCode) {
             TrackerService.PERMISSIONS_REQUEST_ZERO_LOCATION_POSPONDED -> if (hasLocationPermissions()) {
                 var item: MenuItem? = null
@@ -440,7 +441,7 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
 
     private fun controlTrack(item: MenuItem?) {
         if (item != null) {
-            val iconAndTitle = TrackerService.controlAndGetIconWithTitle(this)
+            val iconAndTitle = TrackerService.start_stop_tracking_GetIconWithTitle(this)
             setTrackItem(item, iconAndTitle.second, iconAndTitle.first)
         }
     }
@@ -1109,11 +1110,57 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
             if (intent.action == ConstantsUI.MESSAGE_INTENT_TRACK) {
                 val tAction =  intent.getStringExtra(KEY_TRACK_ACTION)
                 if (tAction.equals(VALUE_TRACK_START)){
+
                 }
                 if (tAction.equals(VALUE_TRACK_STOP)){
                     mapFragment!!.reloadTracks()
                 }
 
+                val batteryOK =  intent.getBooleanExtra(KEY_BATTERY, true)
+
+                if (!batteryOK) {
+
+                    val name = getPackageName() + "_preferences"
+                    val mSharedPreferences = getSharedPreferences(name, MODE_MULTI_PROCESS)
+
+                    val prefBatteryName =  "battery_dont_show_pref"
+                    val dontShow = mSharedPreferences.getBoolean(prefBatteryName, false)
+
+                    if (!dontShow) {
+                        val container = LinearLayout(this@MainActivity).apply {
+                            orientation = LinearLayout.VERTICAL
+                            setPadding(50, 0, 50, 0)
+                        }
+
+                        val checkBox = CheckBox(this@MainActivity).apply {
+                            text =
+                                this@MainActivity.getString(com.nextgis.maplibui.R.string.do_not_ask_again)
+                        }
+                        container.addView(checkBox)
+
+                        val builder = android.app.AlertDialog.Builder(this@MainActivity)
+                        builder.setMessage(com.nextgis.maplibui.R.string.battery_optimization)
+                            .setPositiveButton(com.nextgis.maplibui.R.string.battery_optimization_turnoff) { dialog, which ->
+                                if (checkBox.isChecked) {
+                                    mSharedPreferences.edit().putBoolean(prefBatteryName, true).apply()
+                                }
+
+                                val intent =
+                                    Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
+                                intent.setData(Uri.parse("package:" + getPackageName()))
+                                startActivity(intent)
+                            }
+                            .setTitle(com.nextgis.maplibui.R.string.battery_optimization_title)
+                            .setNegativeButton(com.nextgis.maplibui.R.string.cancel) { dialog, which ->
+                                if (checkBox.isChecked) {
+                                    mSharedPreferences.edit().putBoolean(prefBatteryName, true).apply()
+                                }
+                            }
+                            .setView(container)
+                        val alertDialog = builder.create()
+                        alertDialog.show()
+                    }
+                }
             }
         }
     }
