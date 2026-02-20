@@ -52,9 +52,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -67,6 +65,7 @@ import com.nextgis.maplib.api.INGWLayer;
 import com.nextgis.maplib.datasource.ngw.SyncAdapter;
 import com.nextgis.maplib.map.MapContentProviderHelper;
 import com.nextgis.maplib.map.MapDrawable;
+import com.nextgis.maplib.service.NGWSyncService;
 import com.nextgis.maplib.util.AccountUtil;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.SettingsConstants;
@@ -86,7 +85,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.Context.MODE_MULTI_PROCESS;
-import static android.view.animation.Animation.INFINITE;
 import static com.nextgis.maplib.util.Constants.TAG;
 import static com.nextgis.maplibui.util.ConstantsUI.GA_CREATE;
 import static com.nextgis.maplibui.util.ConstantsUI.GA_EDIT;
@@ -450,15 +448,14 @@ public class LayersFragment
     }
 
 
-    public void refresh(boolean start)
-    {
+    public void refreshSyncButtonAnimateState(boolean start) {
+//        Log.e("RRFRSH", "refreshSyncButtonAnimateState with = " + (start? "true" : "false"));
+
         if (mSyncButton == null) {
             return;
         }
         if (start) {
-
             if (rotation == null) {
-
                 rotation = ObjectAnimator.ofFloat(
                         mSyncButton, "rotation",
                         mSyncButton.getRotation(),
@@ -501,6 +498,9 @@ public class LayersFragment
         } else {
             getActivity().registerReceiver(mSyncReceiver, intentFilter);
         }
+
+        refreshSyncButtonAnimateState(NGWSyncService.isSyncStarted());
+
     }
 
 
@@ -640,12 +640,12 @@ public class LayersFragment
                 Intent intent)
         {
             if (intent.getAction().equals(SyncAdapter.SYNC_START)) {
-                refresh(true);
+                refreshSyncButtonAnimateState(true);
             } else if (intent.getAction().equals(SyncAdapter.SYNC_FINISH) || intent.getAction().equals(SyncAdapter.SYNC_CANCELED)) {
                 if (intent.hasExtra(SyncAdapter.EXCEPTION))
                     Toast.makeText(getContext(), intent.getStringExtra(SyncAdapter.EXCEPTION), Toast.LENGTH_LONG).show();
 
-                refresh(false);
+                refreshSyncButtonAnimateState(false);
                 updateInfo();
             }
         }

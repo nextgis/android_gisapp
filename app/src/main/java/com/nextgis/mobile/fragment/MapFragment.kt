@@ -1524,8 +1524,21 @@ public class MapFragment
             mPreferences!!.getBoolean(AppSettingsConstants.KEY_PREF_SHOW_COMPASS, true)
         checkCompass(showCompass)
 
-        mCurrentCenter = null
+        if (mGpsEventSource != null && mGpsEventSource!!.lastKnownLocation != null) {
+            mCurrentCenter = GeoPoint()
 
+            mCurrentCenter!!.setCoordinates(mGpsEventSource!!.lastKnownLocation.longitude, mGpsEventSource!!.lastKnownLocation.latitude)
+            mCurrentCenter!!.crs = GeoConstants.CRS_WGS84
+
+            if (!mCurrentCenter!!.project(GeoConstants.CRS_WEB_MERCATOR))
+                mCurrentCenter = null
+
+            // old convert
+            //                val  newPoint = convert4326To3857 (mGpsEventSource!!.lastKnownLocation.longitude, mGpsEventSource!!.lastKnownLocation.latitude)
+            //            mCurrentCenter!!.setCoordinates(newPoint.get(0), newPoint.get(1))
+        }
+        else
+            mCurrentCenter = null
 
         if (GISApplication.needUpdateBackground){
             try {

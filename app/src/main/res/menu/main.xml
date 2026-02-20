@@ -35,7 +35,7 @@
 <!--        android:id="@+id/menu_refresh"-->
 <!--        android:icon="@drawable/ic_action_sync"-->
 <!--        android:orderInCategory="25"-->
-<!--        android:title="@string/refresh"-->
+<!--        android:title="@string/refreshSyncButtonAnimateState"-->
 <!--        app:showAsAction="always"/>-->
 
     <item

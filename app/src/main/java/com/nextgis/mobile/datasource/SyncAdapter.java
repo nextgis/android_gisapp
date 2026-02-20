@@ -31,6 +31,8 @@ import android.content.SyncResult;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
+
 import androidx.core.app.NotificationCompat;
 
 import com.hypertrack.hyperlog.HyperLog;
@@ -59,6 +61,9 @@ public class SyncAdapter extends com.nextgis.maplib.datasource.ngw.SyncAdapter {
 
     @Override
     public void onPerformSync(Account account, Bundle bundle, String authority, ContentProviderClient contentProviderClient, SyncResult syncResult) {
+
+//        Log.e("RRFRSH", "SyncAdapter datasource - onPerformSync for " + account.name);
+
         if(!AccountUtil.isUserExists(getContext())) {
             HyperLog.v(Constants.TAG, "onPerformSync for" + account.name + " exit cos !AccountUtil.isUserExists");
             String alertMessage = getContext().getString(com.nextgis.maplibui.R.string.sync_need_login);
@@ -82,6 +87,8 @@ public class SyncAdapter extends com.nextgis.maplib.datasource.ngw.SyncAdapter {
             sendNotification(getContext(), SYNC_CHANGES, mError);
         else
             sendNotification(getContext(), SYNC_FINISH, null);
+
+//        Log.e("RRFRSH", "SyncAdapter datasource - onPerformSync end");
     }
 
     public void sendNotification(

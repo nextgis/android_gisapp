@@ -484,7 +484,7 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
 
 //            R.id.menu_refresh -> {
 //                if (null != mapFragment) {
-//                    mapFragment!!.refresh()
+//                    mapFragment!!.refreshSyncButtonAnimateState()
 //                }
 //                return true
 //            }
