@@ -63,8 +63,10 @@ import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.api.INGWLayer;
 import com.nextgis.maplib.datasource.ngw.SyncAdapter;
+import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapContentProviderHelper;
 import com.nextgis.maplib.map.MapDrawable;
+import com.nextgis.maplib.map.TrackLayer;
 import com.nextgis.maplib.service.NGWSyncService;
 import com.nextgis.maplib.util.AccountUtil;
 import com.nextgis.maplib.util.Constants;
@@ -85,6 +87,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.Context.MODE_MULTI_PROCESS;
+import static android.widget.Toast.LENGTH_LONG;
+import static com.nextgis.maplib.util.Constants.SYNC_NONE;
 import static com.nextgis.maplib.util.Constants.TAG;
 import static com.nextgis.maplibui.util.ConstantsUI.GA_CREATE;
 import static com.nextgis.maplibui.util.ConstantsUI.GA_EDIT;
@@ -536,11 +540,80 @@ public class LayersFragment
         }
     }
 
+    public boolean isSomeToSync(){
+
+        final AccountManager accountManager = AccountManager.get(getActivity().getApplicationContext());
+        final IGISApplication application = (IGISApplication) getActivity().getApplication();
+        List<INGWLayer> layers = new ArrayList<>();
+
+        List<Account> allAccounts = new ArrayList<>();
+
+        for (Account account : accountManager.getAccountsByType(application.getAccountsType())) {
+            layers.clear();
+            MapContentProviderHelper.getLayersByAccount(application.getMap(), account.name, layers);
+            if (layers.size() > 0)
+                allAccounts.add(account);
+        }
+
+        if (allAccounts.size() == 0)
+            return false;
+
+        String name = getContext().getPackageName() + "_preferences";
+        SharedPreferences mSharedPreferences = getContext().getSharedPreferences(name, MODE_MULTI_PROCESS);
+        boolean trackSync = mSharedPreferences.getBoolean(SettingsConstants.KEY_PREF_TRACK_SEND, false);
+
+        for (int i = 0; i < allAccounts.size(); i++ ){
+            if (isSomeToSync(allAccounts.get(i), trackSync))
+                return true;
+        }
+        return false;
+    }
+
+    public boolean isSomeToSync(Account account, boolean trackSync){
+
+
+        MapContentProviderHelper layerGroup =(MapContentProviderHelper) MapBase.getInstance();
+        List<ILayer> layersToSync = new ArrayList<>();
+        for (int i = 0; i < layerGroup.getLayerCount(); i++){
+            ILayer layer = layerGroup.getLayer(i);
+
+            if (layer instanceof INGWLayer && !account.name.equals(((INGWLayer)layer).getAccountName()))
+                continue;
+
+            if (layer instanceof  INGWLayer && ((INGWLayer) layer).getSyncType() == SYNC_NONE)
+                continue;
+
+            // only ngw and track
+            if (! ((layer instanceof INGWLayer) || (layer instanceof TrackLayer && trackSync ) ) )
+                continue;
+
+
+            boolean exists = false;
+            for (ILayer added : layersToSync){
+                if (added.getPath().equals(layer.getPath())){
+                    exists = true;
+                    break;
+                }
+            }
+            if (!exists)
+                layersToSync.add(layer);
+        }
+        return layersToSync.size()>0;
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.sync:
                 HyperLog.v(Constants.TAG, "onClick sync cliked!");
+
+                try {
+                    if (! isSomeToSync())
+                        Toast.makeText(v.getContext(), com.nextgis.maplibui.R.string.sync_no_layers, LENGTH_LONG).show();
+                } catch (Exception ex){
+                    HyperLog.e("SYNC", ex.getMessage());
+                }
+
 
                 final SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
                 String base = mPreferences.getString("ngid_url", NGIDUtils.NGID_MY);
@@ -643,7 +716,7 @@ public class LayersFragment
                 refreshSyncButtonAnimateState(true);
             } else if (intent.getAction().equals(SyncAdapter.SYNC_FINISH) || intent.getAction().equals(SyncAdapter.SYNC_CANCELED)) {
                 if (intent.hasExtra(SyncAdapter.EXCEPTION))
-                    Toast.makeText(getContext(), intent.getStringExtra(SyncAdapter.EXCEPTION), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), intent.getStringExtra(SyncAdapter.EXCEPTION), LENGTH_LONG).show();
 
                 refreshSyncButtonAnimateState(false);
                 updateInfo();

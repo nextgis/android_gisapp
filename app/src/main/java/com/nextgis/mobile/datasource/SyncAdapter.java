@@ -21,12 +21,15 @@
 
 package com.nextgis.mobile.datasource;
 
+import static android.content.Context.MODE_MULTI_PROCESS;
+
 import android.accounts.Account;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ContentProviderClient;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.SyncResult;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -38,6 +41,7 @@ import androidx.core.app.NotificationCompat;
 import com.hypertrack.hyperlog.HyperLog;
 import com.nextgis.maplib.util.AccountUtil;
 import com.nextgis.maplib.util.Constants;
+import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.maplibui.util.NotificationHelper;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.activity.MainActivity;
@@ -73,9 +77,11 @@ public class SyncAdapter extends com.nextgis.maplib.datasource.ngw.SyncAdapter {
             msg.putExtra(MESSAGE_TITLE_EXTRA, alertTitle);
             msg.setPackage(getContext().getPackageName());
             getContext().sendBroadcast(msg);
-
             return;
         }
+
+        if (!super.isSomeToSync( account))
+            return;
 
         sendNotification(getContext(), SYNC_START, null);
 
