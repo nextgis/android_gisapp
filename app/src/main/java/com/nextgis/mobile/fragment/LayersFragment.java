@@ -67,6 +67,7 @@ import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapContentProviderHelper;
 import com.nextgis.maplib.map.MapDrawable;
 import com.nextgis.maplib.map.TrackLayer;
+import com.nextgis.maplib.map.VectorLayer;
 import com.nextgis.maplib.service.NGWSyncService;
 import com.nextgis.maplib.util.AccountUtil;
 import com.nextgis.maplib.util.Constants;
@@ -75,6 +76,7 @@ import com.nextgis.maplibui.GISApplication;
 import com.nextgis.maplibui.fragment.LayersListAdapter;
 import com.nextgis.maplibui.fragment.ReorderedLayerView;
 import com.nextgis.maplibui.util.ControlHelper;
+import com.nextgis.maplibui.util.HyperLogCrashHandler;
 import com.nextgis.maplibui.util.NGIDUtils;
 import com.nextgis.maplibui.util.UiUtil;
 import com.nextgis.mobile.R;
@@ -147,7 +149,27 @@ public class LayersFragment
             if (fragment == null || activity == null || mapFragment == null)
                 return;
 
-            IGISApplication application = (IGISApplication) activity.getApplication();
+            if (layer instanceof VectorLayer) {
+
+                try {
+                    if (mapFragment.getLayerFeaturesML((VectorLayer) layer) == null) {
+                        Toast.makeText(
+                                this.activityRef.get(),
+                                com.nextgis.maplibui.R.string.edit_invisible,
+                                Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                } catch (Exception ex){
+                    Log.e("edit", ex.getMessage());
+
+                }
+            }
+
+
+
+
+
+                IGISApplication application = (IGISApplication) activity.getApplication();
             application.sendEvent(GA_LAYER, GA_EDIT, GA_MENU);
             mapFragment.onFinishChooseLayerDialog(MapFragment.EDIT_LAYER, layer);
 

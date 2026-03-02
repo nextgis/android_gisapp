@@ -128,7 +128,6 @@ import org.maplibre.android.camera.CameraPosition
 import org.maplibre.android.camera.CameraUpdateFactory
 import org.maplibre.android.geometry.LatLng
 import org.maplibre.android.maps.MapLibreMap
-import org.maplibre.android.maps.MapLibreMapOptions
 import org.maplibre.android.maps.OnMapReadyCallback
 import org.maplibre.android.module.http.HttpRequestImpl
 import org.maplibre.geojson.LineString
@@ -841,12 +840,13 @@ public class MapFragment
                                 //undoRedoOverlay!!.saveToHistory(editLayerOverlay!!.selectedFeature)
                                 editLayerOverlay!!.setHasEdits(true)
 
-
-                                mMapRef.get()!!.map!!.startFeatureSelectionForEdit(mSelectedLayer,
-                                    mSelectedLayer!!.geometryType,
-                                    editLayerOverlay!!.selectedFeature,
-                                    true,
-                                    mSelectedLayer!!.defaultStyleNoExcept)
+                                    mMapRef.get()!!.map!!.startFeatureSelectionForEdit(
+                                        mSelectedLayer,
+                                        mSelectedLayer!!.geometryType,
+                                        editLayerOverlay!!.selectedFeature,
+                                        true,
+                                        mSelectedLayer!!.defaultStyleNoExcept
+                                    )
 
                                 // update rudiment code - created geometry on old pre-maplibre code
                                 // on editing it updates on MotionEvent.ACTION_UP actions
@@ -860,12 +860,23 @@ public class MapFragment
                             }
 
                             R.id.menu_feature_edit -> {
-                                setMode(MODE_EDIT)
-                                undoRedoOverlay!!.saveToHistory(editLayerOverlay!!.selectedFeature)
-                                editLayerOverlay!!.setHasEdits(false)
-                                if(mSelectedLayer!= null)
-                                    mMapRef.get()!!.map!!.startFeatureSelectionForEdit(mSelectedLayer, mSelectedLayer!!.geometryType,
-                                        editLayerOverlay!!.selectedFeature, false, mSelectedLayer!!.defaultStyleNoExcept)
+
+                                if (mMapRef.get()!!.map!!.getLayerFeatures(mSelectedLayer!!) == null){
+                                    Toast.makeText(context,
+                                        com.nextgis.maplibui.R.string.edit_invisible,
+                                        Toast.LENGTH_LONG
+                                    ).show()
+
+                                } else {
+
+
+                                    setMode(MODE_EDIT)
+                                    undoRedoOverlay!!.saveToHistory(editLayerOverlay!!.selectedFeature)
+                                    editLayerOverlay!!.setHasEdits(false)
+                                    if(mSelectedLayer!= null)
+                                        mMapRef.get()!!.map!!.startFeatureSelectionForEdit(mSelectedLayer, mSelectedLayer!!.geometryType,
+                                            editLayerOverlay!!.selectedFeature, false, mSelectedLayer!!.defaultStyleNoExcept)
+                                }
                             }
 
                             R.id.menu_feature_delete -> deleteFeature()
@@ -3369,5 +3380,13 @@ public class MapFragment
             }
         }
     }
+
+
+    public fun getLayerFeaturesML(layer: VectorLayer): List<org.maplibre.geojson.Feature>? {
+            return mMapRef.get()!!.map!!.getLayerFeatures(layer)
+        }
+
+
+
 
 }
