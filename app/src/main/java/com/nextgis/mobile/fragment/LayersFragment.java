@@ -331,7 +331,7 @@ public class LayersFragment
                             public void onClick(DialogInterface dialog, int which) {
                                 if (mapFragmentRef.get()!= null ) {
                                     mapFragmentRef.get().saveEdits();
-                                    mapFragmentRef.get().setMode(MapFragment.MODE_NORMAL);
+                                    mapFragmentRef.get().setNewMode(MapFragment.MODE_NORMAL);
                                 }
                             }
                         })
@@ -340,7 +340,7 @@ public class LayersFragment
                             public void onClick(DialogInterface dialog, int which) {
                                 if (mapFragmentRef.get()!= null ) {
                                     mapFragmentRef.get().cancelEdits();
-                                    mapFragmentRef.get().setMode(MapFragment.MODE_NORMAL);
+                                    mapFragmentRef.get().setNewMode(MapFragment.MODE_NORMAL);
                                 }
                             }
                         }).create();
@@ -513,7 +513,7 @@ public class LayersFragment
     public void onResume()
     {
         super.onResume();
-        mListAdapter.onResume();
+          mListAdapter.onResume();
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(SyncAdapter.SYNC_START);

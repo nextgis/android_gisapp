@@ -1200,6 +1200,7 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
             val alertDialog = builder.create()
             alertDialog.show()
         }
+
     }
 
 
@@ -1334,5 +1335,11 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
         mMessageReceiver = null
         mTrackReceiver = null
         super.onDestroy()
+    }
+
+    override fun refreshLayersFrarment() {
+        super.refreshLayersFrarment()
+        if (mLayersFragment != null)
+            mLayersFragment?.onResume()
     }
 }

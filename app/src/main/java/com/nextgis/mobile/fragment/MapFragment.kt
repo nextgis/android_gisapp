@@ -464,7 +464,7 @@ public class MapFragment
 
             0 -> {
                 mMapRef.get()!!.isLockMap = false
-                setMode(MODE_EDIT)
+                setNewMode(MODE_EDIT)
                 return true
             }
 
@@ -491,7 +491,7 @@ public class MapFragment
             }
 
             com.nextgis.maplibui.R.id.menu_edit_by_touch -> {
-                setMode(MODE_EDIT_BY_TOUCH)
+                setNewMode(MODE_EDIT_BY_TOUCH)
                 result = editLayerOverlay!!.onOptionsItemSelected(id)
                 return result
             }
@@ -584,7 +584,7 @@ public class MapFragment
 
         if (mode == MODE_EDIT_BY_WALK) {
             editLayerOverlay!!.stopGeometryByWalk()
-            setMode(MODE_EDIT)
+            setNewMode(MODE_EDIT)
 
             (mApp!!.map as MapDrawable).updateHistoryByWalkEnd()
 //            undoRedoOverlay!!.clearHistory()
@@ -612,7 +612,7 @@ public class MapFragment
         editLayerOverlay!!.setHasEdits(false)
 
         if (mode == MODE_EDIT_BY_TOUCH) {
-            setMode(MODE_EDIT)
+            setNewMode(MODE_EDIT)
             undoRedoOverlay!!.clearHistory()
             undoRedoOverlay!!.defineUndoRedo()
         }
@@ -636,7 +636,7 @@ public class MapFragment
                 mActivity!!.contentResolver.update(uri, values, null, null)
 
                 mMapRef.get()!!.map!!.cancelFeatureEdit(false)
-                setMode(MODE_SELECT_ACTION)
+                setNewMode(MODE_SELECT_ACTION)
 
             }
         }
@@ -671,7 +671,7 @@ public class MapFragment
             if (id != Constants.NOT_FOUND.toLong()) {
                 editLayerOverlay!!.setSelectedFeature(id)
                 if (mSelectedLayer != null) mSelectedLayer!!.showFeature(id)
-                setMode(MODE_SELECT_ACTION)
+                setNewMode(MODE_SELECT_ACTION)
 
                 if (mMapRef.get() == null || mMapRef.get()!!.map == null)
                     return;
@@ -701,17 +701,17 @@ public class MapFragment
         editLayerOverlay!!.setHasEdits(false)
         if (mode == MODE_EDIT_BY_WALK) {
             editLayerOverlay!!.stopGeometryByWalk() // TODO toast?
-            setMode(MODE_EDIT)
+            setNewMode(MODE_EDIT)
             undoRedoOverlay!!.clearHistory()
             undoRedoOverlay!!.defineUndoRedo()
         }
         val featureId = editLayerOverlay!!.selectedFeatureId
         editLayerOverlay!!.setSelectedFeature(featureId)
         mMapRef.get()!!.map!!.cancelFeatureEdit(featureId != -1L)
-        setMode(MODE_SELECT_ACTION)
+        setNewMode(MODE_SELECT_ACTION)
     }
 
-    fun setMode(mode: Int, vararg readOnly: Boolean) {
+    fun setNewMode(mode: Int, vararg readOnly: Boolean) {
 
         if (mMapRef.get()!!.map!!.checkMeasurment(mode)){
             mRulerOverlay!!.stopMeasuring()
@@ -766,7 +766,7 @@ public class MapFragment
 
             MODE_EDIT -> {
                 if (mSelectedLayer == null) {
-                    setMode(MODE_NORMAL)
+                    setNewMode(MODE_NORMAL)
                     return
                 }
 
@@ -810,7 +810,7 @@ public class MapFragment
 
             MODE_SELECT_ACTION -> {
                 if (mSelectedLayer == null) {
-                    setMode(MODE_NORMAL)
+                    setNewMode(MODE_NORMAL)
                     return
                 }
 
@@ -822,7 +822,7 @@ public class MapFragment
                 toolbar.setNavigationIcon(com.nextgis.maplibui.R.drawable.ic_action_cancel_dark)
 
                 mFinishListener = View.OnClickListener {
-                    setMode(MODE_NORMAL)
+                    setNewMode(MODE_NORMAL)
                 }
                 toolbar.setNavigationOnClickListener(mFinishListener)
 
@@ -835,7 +835,7 @@ public class MapFragment
                                 editLayerOverlay!!.selectedFeature = Feature()
                                 editLayerOverlay!!.createNewGeometry()
                                 undoRedoOverlay!!.clearHistory()
-                                setMode(MODE_EDIT)
+                                setNewMode(MODE_EDIT)
                                 // skip - because next save from maplibre correct
                                 //undoRedoOverlay!!.saveToHistory(editLayerOverlay!!.selectedFeature)
                                 editLayerOverlay!!.setHasEdits(true)
@@ -870,7 +870,7 @@ public class MapFragment
                                 } else {
 
 
-                                    setMode(MODE_EDIT)
+                                    setNewMode(MODE_EDIT)
                                     undoRedoOverlay!!.saveToHistory(editLayerOverlay!!.selectedFeature)
                                     editLayerOverlay!!.setHasEdits(false)
                                     if(mSelectedLayer!= null)
@@ -880,7 +880,7 @@ public class MapFragment
                             }
 
                             R.id.menu_feature_delete -> deleteFeature()
-                            R.id.menu_feature_attributes -> setMode(MODE_INFO)
+                            R.id.menu_feature_attributes -> setNewMode(MODE_INFO)
                         }
                         true
                     })
@@ -891,7 +891,7 @@ public class MapFragment
 
             MODE_SELECT_FOR_VIEW -> {
                 if (mSelectedLayer == null) {
-                    setMode(MODE_NORMAL)
+                    setNewMode(MODE_NORMAL)
                     return
                 }
 
@@ -902,14 +902,14 @@ public class MapFragment
                 toolbar.menu.findItem(R.id.menu_feature_edit).setEnabled(false)
                 toolbar.setNavigationIcon(com.nextgis.maplibui.R.drawable.ic_action_cancel_dark)
 
-                mFinishListener = View.OnClickListener { setMode(MODE_NORMAL) }
+                mFinishListener = View.OnClickListener { setNewMode(MODE_NORMAL) }
                 toolbar.setNavigationOnClickListener(mFinishListener)
 
                 toolbar.setOnMenuItemClickListener(
                     Toolbar.OnMenuItemClickListener { item ->
                         if (mSelectedLayer == null) return@OnMenuItemClickListener false
                         when (item.itemId) {
-                            R.id.menu_feature_attributes -> setMode(
+                            R.id.menu_feature_attributes -> setNewMode(
                                 MODE_INFO,
                                 true
                             )
@@ -923,7 +923,7 @@ public class MapFragment
 
             MODE_INFO -> {
                 if (mSelectedLayer == null) {
-                    setMode(MODE_NORMAL)
+                    setNewMode(MODE_NORMAL)
                     return
                 }
                 var readOnlyModeValue = false
@@ -972,7 +972,7 @@ public class MapFragment
                     (activity as MainActivity).finishFragment()
                     if (attributesFragment.isTablet) activity!!.supportFragmentManager.beginTransaction()
                         .remove(attributesFragment).commit()
-                    if (view == null) setMode(MODE_NORMAL)
+                    if (view == null) setNewMode(MODE_NORMAL)
                 }
 
                 toolbar.setNavigationIcon(com.nextgis.maplibui.R.drawable.ic_action_cancel_dark)
@@ -998,7 +998,7 @@ public class MapFragment
         if (mode == MODE_NORMAL || mode == MODE_INFO) return
 
         if (mSelectedLayer == null) {
-            setMode(MODE_NORMAL)
+            setNewMode(MODE_NORMAL)
             return
         }
 
@@ -1114,7 +1114,7 @@ public class MapFragment
 
 
     override fun onLayerDeleted(id: Int) {
-        setMode(MODE_NORMAL)
+        setNewMode(MODE_NORMAL)
     }
 
 
@@ -1375,7 +1375,7 @@ public class MapFragment
             }
         }
 
-        setMode(mode)
+        setNewMode(mode)
 
         if (savedInstanceState != null && savedInstanceState.getBoolean(
                 BUNDLE_KEY_IS_MEASURING,
@@ -1703,7 +1703,7 @@ public class MapFragment
 
             mSelectedLayer = layer
             editLayerOverlay!!.setSelectedLayer(layer)
-            setMode(MODE_SELECT_ACTION)
+            setNewMode(MODE_SELECT_ACTION)
 
             Toast.makeText(
                 mActivity,
@@ -1763,7 +1763,7 @@ public class MapFragment
     protected fun createPointFromOverlay() {
         editLayerOverlay!!.selectedFeature = Feature()
         editLayerOverlay!!.selectedFeature.geometry = GeoPoint()
-        setMode(MODE_EDIT)
+        setNewMode(MODE_EDIT)
         undoRedoOverlay!!.clearHistory()
         val mapLibreMap = mMapRef.get()!!.map!!.maplibreMap
         editLayerOverlay!!.createPointFromOverlay()
@@ -1890,10 +1890,10 @@ public class MapFragment
                 layerUI.showEditForm(mActivity, Constants.NOT_FOUND.toLong(), null, -1)
             }
         } else if (code == EDIT_LAYER) {
-            setMode(MODE_SELECT_ACTION)
+            setNewMode(MODE_SELECT_ACTION)
         } else if (code == ADD_GEOMETRY_BY_WALK) {
             editLayerOverlay!!.newGeometryByWalk()
-            setMode(MODE_EDIT_BY_WALK)
+            setNewMode(MODE_EDIT_BY_WALK)
         } else if (code == ADD_POINT_BY_TAP) {
             createPointFromOverlay()
         }
@@ -2010,7 +2010,7 @@ public class MapFragment
                 mMapRef.get()!!.map!!.startFeatureSelectionForView(mSelectedLayer, originalFeatureForSelect)
                 defineMenuItems()
                 if (mode != MODE_SELECT_ACTION)
-                    setMode(MODE_SELECT_ACTION)
+                    setNewMode(MODE_SELECT_ACTION)
             }
 
 
@@ -2353,7 +2353,7 @@ public class MapFragment
 
                 if (mSelectedLayers.size == 0 && mode == MODE_SELECT_FOR_VIEW) {
                     // need select none
-                    setMode(MODE_NORMAL)
+                    setNewMode(MODE_NORMAL)
                 } else {
                     if (mSelectedLayers.size > 1 || selectedFeatures.size >1)
                         showOverlayPointMultiChoise(
@@ -2372,7 +2372,7 @@ public class MapFragment
                             selectedSingleFeatureId
                         )
 
-                        setMode(MODE_SELECT_FOR_VIEW)
+                        setNewMode(MODE_SELECT_FOR_VIEW)
                         //showOverlayPoint(event);
                     }
                 }
@@ -2549,7 +2549,7 @@ public class MapFragment
 
                 if (mSelectedLayers.size == 0 && mode == MODE_SELECT_FOR_VIEW) {
                     // need select none
-                    setMode(MODE_NORMAL)
+                    setNewMode(MODE_NORMAL)
                 } else {
                     if (mSelectedLayers.size > 1 || selectedFeatures.size > 1)
                         showOverlayPointMultiChoise(
@@ -2624,10 +2624,10 @@ public class MapFragment
 
         if (editMode) {
             if (mode != MODE_SELECT_ACTION)
-                setMode(MODE_SELECT_ACTION)
+                setNewMode(MODE_SELECT_ACTION)
         } else {
             if (mode != MODE_SELECT_ACTION)
-                setMode(MODE_SELECT_FOR_VIEW)
+                setNewMode(MODE_SELECT_FOR_VIEW)
 
         }
         //showOverlayPoint(event);
@@ -2876,7 +2876,7 @@ public class MapFragment
 
 
     override fun onFinishEditSession() {
-        setMode(MODE_NORMAL)
+        setNewMode(MODE_NORMAL)
     }
 
     override fun onFinishEditByWalkSession() {
@@ -2889,7 +2889,7 @@ public class MapFragment
 
 
     fun restoreBottomBar(mode: Int) {
-        setMode(if (mode != -1) mode else this.mode)
+        setNewMode(if (mode != -1) mode else this.mode)
     }
 
 
