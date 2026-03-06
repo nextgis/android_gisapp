@@ -1057,6 +1057,9 @@ public class MapFragment
             }
         }
 
+        editLayerOverlay?.mBottomToolbar?.setOnClickListener(null)
+        editLayerOverlay?.mBottomToolbar = null
+
         super.onDestroyView()
     }
 

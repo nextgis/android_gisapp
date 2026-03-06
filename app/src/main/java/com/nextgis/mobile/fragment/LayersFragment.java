@@ -315,7 +315,9 @@ public class LayersFragment
         mListAdapter.setOnPencilClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mapFragmentRef.get()!= null &&  !mapFragmentRef.get().hasEdits()) {
+                if (mapFragmentRef.get()!= null
+                //        &&   !mapFragmentRef.get().hasEdits()
+                ) {
                     if (mapFragmentRef.get().getMFinishListener() != null)
                         mapFragmentRef.get().getMFinishListener().onClick(null);
                     return;
