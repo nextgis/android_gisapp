@@ -52,6 +52,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.CheckBox
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -61,6 +62,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.hypertrack.hyperlog.HyperLog
 import com.nextgis.maplib.api.GpsEventListener
@@ -118,6 +120,11 @@ import java.util.zip.ZipOutputStream
  * Main activity. Map and drawer with layers list created here
  */
 class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
+
+
+//    lateinit var settingsFrame : FrameLayout
+
+
     var mapFragment: MapFragment? = null
         protected set
     protected var mLayersFragment: LayersFragment? = null
@@ -148,6 +155,8 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
         mMessageReceiver = MessageReceiver()
 
         mTrackReceiver = TrackStartStopReceiver()
+
+//        settingsFrame = findViewById(R.id.settingsFrame)
 
         mToolbar = findViewById(R.id.main_toolbar)
         setSupportActionBar(mToolbar)
@@ -1342,4 +1351,16 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
         if (mLayersFragment != null)
             mLayersFragment?.onResume()
     }
+
+//    override fun startLayerPropFragment(fragment: Fragment) {
+//        super.startLayerPropFragment(fragment)
+//
+//
+//        supportFragmentManager.beginTransaction()
+//            .replace(R.id.settingsFrame, fragment)
+//            .addToBackStack(null)
+//            .commit()
+//
+//
+//    }
 }

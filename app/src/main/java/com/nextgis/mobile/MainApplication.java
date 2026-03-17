@@ -63,6 +63,7 @@ import com.nextgis.maplibui.service.TrackerService;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.activity.SettingsActivity;
 import com.nextgis.mobile.util.Logger;
+import com.nextgis.mobile.util.OfflineSyncIntentService;
 
 import java.io.File;
 import java.io.IOException;
@@ -177,6 +178,11 @@ public class MainApplication extends GISApplication
     @Override
     public MapBase getMapBase() {
         return getMap();
+    }
+
+    @Override
+    public void startCreateNGWLayerSync(String lpath) {
+        OfflineSyncIntentService.startActionFoo(this, lpath);
     }
 
     @Override

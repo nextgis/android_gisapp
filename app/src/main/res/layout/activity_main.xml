@@ -47,6 +47,13 @@
             android:fitsSystemWindows="true"
             tools:layout="@layout/fragment_map"/>
 
+        <FrameLayout
+            android:id="@+id/settingsFrame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            />
+
         <include
             layout="@layout/actionbar"/>
 

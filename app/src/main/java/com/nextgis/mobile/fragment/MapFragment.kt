@@ -92,6 +92,11 @@ import com.nextgis.maplib.map.MapDrawable
 import com.nextgis.maplib.map.MaplibreMapInteraction
 import com.nextgis.maplib.map.VectorLayer
 import com.nextgis.maplib.util.Constants
+import com.nextgis.maplib.util.Constants.FIELD_ALPHA
+import com.nextgis.maplib.util.Constants.FIELD_BRIGHTNESS_MAX
+import com.nextgis.maplib.util.Constants.FIELD_BRIGHTNESS_MIN
+import com.nextgis.maplib.util.Constants.FIELD_CONTRAST
+import com.nextgis.maplib.util.Constants.LAYER_ID_KEY
 import com.nextgis.maplib.util.Constants.MESSAGE_INTENT_STYLING
 import com.nextgis.maplib.util.FileUtil
 import com.nextgis.maplib.util.GeoConstants
@@ -1568,6 +1573,8 @@ public class MapFragment
         //updateLastLocation()
         val intentFilter = IntentFilter()
         intentFilter.addAction( MESSAGE_INTENT_STYLING)
+//        intentFilter.addAction( MESSAGE_INTENT_STYLING_RASTER)
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             mActivity?.registerReceiver( mMessageStyling, intentFilter, RECEIVER_NOT_EXPORTED)
         } else {
@@ -3373,17 +3380,27 @@ public class MapFragment
             mZoom!!.text = zoomText
     }
 
-
     private inner class MessageStyling : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent ){
             if (intent.action == MESSAGE_INTENT_STYLING) {
                 val textmessage = intent.getStringExtra(ConstantsUI.KEY_MESSAGE);
                 textStylingProgrerss?.setText(textmessage)
-
             }
+//            if (intent.action == MESSAGE_INTENT_STYLING_RASTER) {
+//                // raster
+//                val layerId: Int? = intent.getIntExtra(LAYER_ID_KEY, -1)
+//                val alpha = intent.getIntExtra(FIELD_ALPHA, 0)
+//                val contrast = intent.getFloatExtra(FIELD_CONTRAST, 0f)
+//                val brightnessMin = intent.getFloatExtra(FIELD_BRIGHTNESS_MIN, 0f)
+//                val brightnessMax = intent.getFloatExtra(FIELD_BRIGHTNESS_MAX, 1f)
+//
+//
+//
+//                mMapRef.get()!!.map!!.updateRasterLayerProperties(layerId as Int?, alpha, contrast, brightnessMin,
+//                    brightnessMax)
+//            }
         }
     }
-
 
     public fun getLayerFeaturesML(layer: VectorLayer): List<org.maplibre.geojson.Feature>? {
             return mMapRef.get()!!.map!!.getLayerFeatures(layer)
