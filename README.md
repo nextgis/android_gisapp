@@ -99,7 +99,6 @@ It extends your GIS workflows beyond desktop, enabling teams to collect, edit, a
 ## Installation
 
 - [Install from Google Play](https://play.google.com/store/apps/details?id=com.nextgis.mobile)
-- [Get the latest release (apk) on GitHub](https://github.com/nextgis/android_gisapp/releases)
 - [Get the latest release (apk) at my.nextgis.com](https://my.nextgis.com/software)
 
 ## Documentation
