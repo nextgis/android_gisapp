@@ -1069,9 +1069,9 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
     override fun onFinishChooseLayerDialog(
         code: Int,
         layer: ILayer
-    ) {
+    , useCreatePoint: Boolean) {
         if (null != mapFragment) {
-            mapFragment!!.onFinishChooseLayerDialog(code, layer)
+            mapFragment!!.onFinishChooseLayerDialog(code, layer, useCreatePoint)
         }
     }
 
@@ -1080,10 +1080,8 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
         override fun onReceive(
             context: Context,
             intent: Intent ){
-            Log.e("ZZXX", "onReceive")
 
             if (intent.action == ConstantsUI.MESSAGE_INTENT) {
-//                Log.e("ZZXX", "intent.getAction().equals(ConstantsUI.MESSAGE_INTENT)")
                 Toast.makeText(
                     this@MainActivity, intent.extras!!.getString(
                         ConstantsUI.KEY_MESSAGE
@@ -1092,7 +1090,6 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
             }
 
             if (intent.action == Constants.MESSAGE_ALERT_INTENT) {
-                Log.e("ZZXX", "intent.getAction().equals(MESSAGE_ALERT_INTENT show alert")
                 val message = intent.extras!!.getString(Constants.MESSAGE_EXTRA)
                 val title = intent.extras!!.getString(Constants.MESSAGE_TITLE_EXTRA)
 

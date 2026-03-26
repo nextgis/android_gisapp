@@ -33,6 +33,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.PeriodicSync;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Point;
@@ -171,8 +172,7 @@ public class LayersFragment
 
                 IGISApplication application = (IGISApplication) activity.getApplication();
             application.sendEvent(GA_LAYER, GA_EDIT, GA_MENU);
-            mapFragment.onFinishChooseLayerDialog(MapFragment.EDIT_LAYER, layer);
-
+            mapFragment.onFinishChooseLayerDialog(MapFragment.EDIT_LAYER, layer, false);
             fragment.toggle();
         }
     }
@@ -627,6 +627,8 @@ public class LayersFragment
 
     @Override
     public void onClick(View v) {
+
+
         switch (v.getId()) {
             case R.id.sync:
                 HyperLog.v(Constants.TAG, "onClick sync cliked!");
@@ -742,6 +744,9 @@ public class LayersFragment
                 if (intent.hasExtra(SyncAdapter.EXCEPTION))
                     Toast.makeText(getContext(), intent.getStringExtra(SyncAdapter.EXCEPTION), LENGTH_LONG).show();
 
+                refreshSyncButtonAnimateState(false);
+                updateInfo();
+            } else {
                 refreshSyncButtonAnimateState(false);
                 updateInfo();
             }

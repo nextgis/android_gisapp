@@ -5,10 +5,13 @@ import static com.nextgis.maplib.datasource.ngw.SyncAdapter.ACTION_LPATH;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.IntentService;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.Context;
+import android.content.PeriodicSync;
 import android.content.SyncResult;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.INGWLayer;
@@ -68,24 +71,34 @@ public class OfflineSyncIntentService extends IntentService {
     }
 
     private void handleActionFoo(String lpath) {
-
+        Log.d("SSYNC", "OfflineSyncIntentService  handleActionFoo" + lpath);
         List<Account>         mAccounts = new ArrayList<>();
         final AccountManager accountManager = AccountManager.get(getApplicationContext());
         final IGISApplication application = (IGISApplication) getApplication();
         List<INGWLayer> layers = new ArrayList<>();
 
         for (Account account : accountManager.getAccountsByType(application.getAccountsType())) {
+
+            List<PeriodicSync> periodicSyncsList = ContentResolver.getPeriodicSyncs(account, ((IGISApplication) getApplication()).getAuthority());
+            Log.d("SSYNC", "Number of sync for: " + account.name);
+            Log.d("SSYNC", "Number of sync: " + periodicSyncsList.size());
+            for (PeriodicSync p : periodicSyncsList) {
+                Log.d("SSYNC", "period: " + p.period + " sec, Extras: " + p.extras);
+
+                for (String key : p.extras.keySet()) {
+                    Object value = p.extras.get(key);
+                    Log.d("SSYNC", "Key: " + key + ", Value: " + value + " (" + (value != null ? value.getClass().getSimpleName() : "null") + ")");
+                }
+            }
+
             layers.clear();
             MapContentProviderHelper.getLayersByAccount(application.getMap(), account.name, layers);
 
             if (layers.size() > 0 )
                 mAccounts.add(account);
         }
-
         SyncResult syncResult = new SyncResult();
-
         SyncAdapter syncAdapter = new SyncAdapter(getApplicationContext(), true);
-
 
         Bundle bundle = new Bundle();
         if (lpath != null)

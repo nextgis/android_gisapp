@@ -18,7 +18,7 @@ public class SDCardReceiver extends BroadcastReceiver {
         String nameSD = intent.getData().getPath();
         if (action.equals(Intent.ACTION_MEDIA_EJECT)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setMessage("Карточку вытащили")
+            builder.setMessage("Card removed")
                     .setPositiveButton("ok", null)
                     .setTitle("SD Card");
             AlertDialog alertDialog=builder.create();
