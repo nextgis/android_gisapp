@@ -29,6 +29,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <org.maplibre.android.maps.MapView
+        android:id="@+id/mapViewMaplibre"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <FrameLayout
         android:id="@+id/fl_compass"
         android:layout_width="64dp"
@@ -158,14 +163,14 @@
         fab:fab_addButtonColorPressed="?attr/colorAccent"
         fab:fab_addButtonPlusIconColor="@android:color/white">
 
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/add_geometry_by_walk"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            fab:fab_colorNormal="?attr/colorPrimary"
-            fab:fab_colorPressed="?attr/colorAccent"
-            fab:fab_icon="@drawable/ic_action_maps_directions_walk"
-            fab:fab_size="mini"/>
+<!--        <com.getbase.floatingactionbutton.FloatingActionButton-->
+<!--            android:id="@+id/add_geometry_by_walk"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            fab:fab_colorNormal="?attr/colorPrimary"-->
+<!--            fab:fab_colorPressed="?attr/colorAccent"-->
+<!--            fab:fab_icon="@drawable/ic_action_maps_directions_walk"-->
+<!--            fab:fab_size="mini"/>-->
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/add_new_geometry"
@@ -185,4 +190,42 @@
             fab:fab_icon="@drawable/ic_action_maps_place"
             fab:fab_size="mini"/>
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+    <RelativeLayout
+        android:id="@+id/stylingProgress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#506D6C6C"
+        android:visibility="gone"
+        >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="16dp"
+            android:layout_margin="16dp"
+            android:background="@android:color/white">
+
+            <ProgressBar
+                android:id="@+id/progressFill"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminate="true" />
+
+            <TextView
+                android:id="@+id/textStyling"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:maxWidth="200dp"
+                android:text=""
+                android:textAlignment="center" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
 </RelativeLayout>

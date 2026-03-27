@@ -63,6 +63,7 @@ import com.nextgis.maplibui.service.TrackerService;
 import com.nextgis.maplibui.util.SettingsConstantsUI;
 import com.nextgis.mobile.activity.SettingsActivity;
 import com.nextgis.mobile.util.Logger;
+import com.nextgis.mobile.util.OfflineSyncIntentService;
 
 import java.io.File;
 import java.io.IOException;
@@ -77,6 +78,11 @@ import static com.nextgis.maplibui.fragment.NGWSettingsFragment.setAccountSyncEn
 import static com.nextgis.mobile.util.AppSettingsConstants.AUTHORITY;
 import static com.nextgis.mobile.util.AppSettingsConstants.KEY_PREF_APP_VERSION;
 import static com.nextgis.mobile.util.AppSettingsConstants.KEY_PREF_GA;
+
+
+import org.maplibre.android.MapLibre;
+import org.maplibre.android.MapStrictMode;
+import org.maplibre.android.WellKnownTileServer;
 
 import io.sentry.Sentry;
 
@@ -123,6 +129,13 @@ public class MainApplication extends GISApplication
         updateFromOldVersion();
         NGWUtil.NGUA = "ng_mobile";
         NGWUtil.UUID = TrackerService.getUid(this);
+        initializeMapbox();
+    }
+
+    private void initializeMapbox() {
+        MapLibre.getInstance(this, BuildConfig.MAPBOX_KEY, WellKnownTileServer.MapTiler);
+        //TileLoadingMeasurementUtils.setUpTileLoadingMeasurement();
+        MapStrictMode.setStrictModeEnabled(true);
     }
 
     private void setExceptionHandler() {
@@ -160,6 +173,16 @@ public class MainApplication extends GISApplication
     @Override
     public boolean isCollectorApplication() {
         return false;
+    }
+
+    @Override
+    public MapBase getMapBase() {
+        return getMap();
+    }
+
+    @Override
+    public void startCreateNGWLayerSync(String lpath) {
+        OfflineSyncIntentService.startActionFoo(this, lpath);
     }
 
     @Override

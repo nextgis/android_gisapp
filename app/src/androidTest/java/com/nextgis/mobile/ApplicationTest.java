@@ -34,6 +34,6 @@ public class ApplicationTest
 {
     public ApplicationTest()
     {
-        ;
+
     }
 }

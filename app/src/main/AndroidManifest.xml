@@ -25,6 +25,7 @@
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
     <!--         <uses-permission android:name="android.permission.CAMERA"/> -->
     <uses-feature
@@ -61,8 +62,9 @@
         android:label="@string/APP_NAME"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
-        tools:replace="android:label"
+        tools:replace="android:allowBackup, label"
         android:networkSecurityConfig="@xml/network_security_config"
+        android:largeHeap="true"
         >
 
         <service
@@ -91,6 +93,7 @@
 
         <activity
             android:name=".activity.MainActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:exported="true"
             android:label="@string/APP_NAME">
             <intent-filter>

@@ -25,12 +25,15 @@ package com.nextgis.mobile.fragment;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.PeriodicSync;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Point;
@@ -50,8 +53,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -62,8 +64,12 @@ import com.nextgis.maplib.api.IGISApplication;
 import com.nextgis.maplib.api.ILayer;
 import com.nextgis.maplib.api.INGWLayer;
 import com.nextgis.maplib.datasource.ngw.SyncAdapter;
+import com.nextgis.maplib.map.MapBase;
 import com.nextgis.maplib.map.MapContentProviderHelper;
 import com.nextgis.maplib.map.MapDrawable;
+import com.nextgis.maplib.map.TrackLayer;
+import com.nextgis.maplib.map.VectorLayer;
+import com.nextgis.maplib.service.NGWSyncService;
 import com.nextgis.maplib.util.AccountUtil;
 import com.nextgis.maplib.util.Constants;
 import com.nextgis.maplib.util.SettingsConstants;
@@ -71,6 +77,7 @@ import com.nextgis.maplibui.GISApplication;
 import com.nextgis.maplibui.fragment.LayersListAdapter;
 import com.nextgis.maplibui.fragment.ReorderedLayerView;
 import com.nextgis.maplibui.util.ControlHelper;
+import com.nextgis.maplibui.util.HyperLogCrashHandler;
 import com.nextgis.maplibui.util.NGIDUtils;
 import com.nextgis.maplibui.util.UiUtil;
 import com.nextgis.mobile.R;
@@ -78,10 +85,13 @@ import com.nextgis.mobile.activity.CreateVectorLayerActivity;
 import com.nextgis.mobile.activity.MainActivity;
 import com.nextgis.mobile.util.OfflineSyncIntentService;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.Context.MODE_MULTI_PROCESS;
+import static android.widget.Toast.LENGTH_LONG;
+import static com.nextgis.maplib.util.Constants.SYNC_NONE;
 import static com.nextgis.maplib.util.Constants.TAG;
 import static com.nextgis.maplibui.util.ConstantsUI.GA_CREATE;
 import static com.nextgis.maplibui.util.ConstantsUI.GA_EDIT;
@@ -110,6 +120,63 @@ public class LayersFragment
     protected ImageButton           mNewLayer;
     protected List<Account>         mAccounts;
 
+    ObjectAnimator rotation;
+
+
+
+
+    private static class LayerEditListener
+            implements LayersListAdapter.onEdit {
+
+        private final WeakReference<LayersFragment> fragmentRef;
+        private final WeakReference<MainActivity> activityRef;
+        private final WeakReference<MapFragment> mapFragmentRef;
+
+        LayerEditListener(
+                LayersFragment fragment,
+                WeakReference<MainActivity> activityRef,
+                WeakReference<MapFragment> mapFragmentRef) {
+            this.fragmentRef = new WeakReference<>(fragment);
+            this.activityRef = activityRef;
+            this.mapFragmentRef = mapFragmentRef;
+        }
+
+        @Override
+        public void onLayerEdit(ILayer layer) {
+            LayersFragment fragment = fragmentRef.get();
+            MainActivity activity = activityRef.get();
+            MapFragment mapFragment = mapFragmentRef.get();
+
+            if (fragment == null || activity == null || mapFragment == null)
+                return;
+
+            if (layer instanceof VectorLayer) {
+
+                try {
+                    if (mapFragment.getLayerFeaturesML((VectorLayer) layer) == null) {
+                        Toast.makeText(
+                                this.activityRef.get(),
+                                com.nextgis.maplibui.R.string.edit_invisible,
+                                Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                } catch (Exception ex){
+                    Log.e("edit", ex.getMessage());
+
+                }
+            }
+
+
+
+
+
+                IGISApplication application = (IGISApplication) activity.getApplication();
+            application.sendEvent(GA_LAYER, GA_EDIT, GA_MENU);
+            mapFragment.onFinishChooseLayerDialog(MapFragment.EDIT_LAYER, layer, false);
+            fragment.toggle();
+        }
+    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -129,7 +196,7 @@ public class LayersFragment
     {
         View view = inflater.inflate(R.layout.fragment_layers, container, false);
 
-        LinearLayout linearLayout = view.findViewById(R.id.action_space);
+        final LinearLayout linearLayout = view.findViewById(R.id.action_space);
         if (null != linearLayout) {
             linearLayout.setBackgroundColor(ControlHelper.getColor(view.getContext(), android.R.attr.colorPrimary));
         }
@@ -223,12 +290,12 @@ public class LayersFragment
             DrawerLayout drawerLayout,
             final MapDrawable map)
     {
-        final MainActivity activity = (MainActivity) getActivity();
-        if (activity == null)
+        final WeakReference<MainActivity> activityRef = new WeakReference<MainActivity>((MainActivity)getActivity());
+        if (activityRef.get() == null)
             return;
-        mFragmentContainerView = activity.findViewById(fragmentId);
+        mFragmentContainerView = activityRef.get().findViewById(fragmentId);
 
-        Display display = activity.getWindowManager().getDefaultDisplay();
+        Display display = activityRef.get().getWindowManager().getDefaultDisplay();
 
         int displayWidth;
         Point size = new Point();
@@ -241,53 +308,70 @@ public class LayersFragment
         }
         mFragmentContainerView.setLayoutParams(params);
 
-        final MapFragment mapFragment = activity.getMapFragment();
-        mListAdapter = new LayersListAdapter(activity, mapFragment.mMap);
+
+        final WeakReference<MapFragment> mapFragmentRef = new WeakReference<>(activityRef.get().getMapFragment());
+        mListAdapter = new LayersListAdapter(activityRef.get(), mapFragmentRef.get().getMMapRef().get());
         mListAdapter.setDrawer(drawerLayout);
         mListAdapter.setOnPencilClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!mapFragment.hasEdits()) {
-                    if (mapFragment.mFinishListener != null)
-                        mapFragment.mFinishListener.onClick(null);
+                if (mapFragmentRef.get()!= null
+                //        &&   !mapFragmentRef.get().hasEdits()
+                ) {
+                    if (mapFragmentRef.get().getMFinishListener() != null)
+                        mapFragmentRef.get().getMFinishListener().onClick(null);
                     return;
                 }
 
-                AlertDialog builder = new AlertDialog.Builder(activity)
+                if (activityRef.get() == null)
+                    return;
+                AlertDialog builder = new AlertDialog.Builder(activityRef.get())
                         .setTitle(com.nextgis.maplibui.R.string.save)
                         .setMessage(com.nextgis.maplibui.R.string.has_edits)
                         .setPositiveButton(com.nextgis.maplibui.R.string.save, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                mapFragment.saveEdits();
-                                mapFragment.setMode(MapFragment.MODE_NORMAL);
+                                if (mapFragmentRef.get()!= null ) {
+                                    mapFragmentRef.get().saveEdits();
+                                    mapFragmentRef.get().setNewMode(MapFragment.MODE_NORMAL);
+                                }
                             }
                         })
                         .setNegativeButton(com.nextgis.maplibui.R.string.discard, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                mapFragment.cancelEdits();
-                                mapFragment.setMode(MapFragment.MODE_NORMAL);
+                                if (mapFragmentRef.get()!= null ) {
+                                    mapFragmentRef.get().cancelEdits();
+                                    mapFragmentRef.get().setNewMode(MapFragment.MODE_NORMAL);
+                                }
                             }
                         }).create();
                 builder.show();
             }
         });
-        mListAdapter.setOnLayerEditListener(new LayersListAdapter.onEdit() {
-            @Override
-            public void onLayerEdit(ILayer layer) {
-                IGISApplication application = (IGISApplication) activity.getApplication();
-                application.sendEvent(GA_LAYER, GA_EDIT, GA_MENU);
-                mapFragment.onFinishChooseLayerDialog(MapFragment.EDIT_LAYER, layer);
-                toggle();
-            }
-        });
-        mapFragment.setOnModeChangeListener(new MapFragment.onModeChange() {
-            @Override
-            public void onModeChangeListener() {
-                mListAdapter.notifyDataSetChanged();
-            }
-        });
+
+
+
+        mListAdapter.setOnLayerEditListener(new LayerEditListener(this, activityRef, mapFragmentRef));
+//                new LayersListAdapter.onEdit() {
+//            @Override
+//            public void onLayerEdit(ILayer layer) {
+//                if (activityRef.get() == null)
+//                    return;
+//                IGISApplication application = (IGISApplication) activityRef.get().getApplication();
+//                application.sendEvent(GA_LAYER, GA_EDIT, GA_MENU);
+//                mapFragmentRef.get().onFinishChooseLayerDialog(MapFragment.EDIT_LAYER, layer);
+//                toggle();
+//            }
+//        });
+
+        if (mapFragmentRef.get() != null)
+            mapFragmentRef.get().setOnModeChangeListener(new MapFragment.onModeChange() {
+                @Override
+                public void onModeChangeListener() {
+                    mListAdapter.notifyDataSetChanged();
+                }
+            });
 
         mLayersListView = mFragmentContainerView.findViewById(R.id.layer_list);
         mLayersListView.setAdapter(mListAdapter);
@@ -392,20 +476,36 @@ public class LayersFragment
     }
 
 
-    public void refresh(boolean start)
-    {
+    public void refreshSyncButtonAnimateState(boolean start) {
+//        Log.e("RRFRSH", "refreshSyncButtonAnimateState with = " + (start? "true" : "false"));
+
         if (mSyncButton == null) {
             return;
         }
         if (start) {
-            RotateAnimation rotateAnimation = new RotateAnimation(
-                    0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-            rotateAnimation.setFillAfter(true);
-            rotateAnimation.setDuration(700);
-            rotateAnimation.setRepeatCount(500);
+            if (rotation == null) {
+                rotation = ObjectAnimator.ofFloat(
+                        mSyncButton, "rotation",
+                        mSyncButton.getRotation(),
+                        mSyncButton.getRotation() + 360 * 10);
+                //rotation.setDuration(700 * 10); // 10 reteat
+                rotation.setDuration(6000);                    // one rotate (ms)
+                rotation.setRepeatCount(ValueAnimator.INFINITE);
+                rotation.setInterpolator(new LinearInterpolator()); // smooth rotate
+            }
+            rotation.start();
 
-            mSyncButton.startAnimation(rotateAnimation);
+// old rotation
+//            RotateAnimation rotateAnimation = new RotateAnimation(
+//                    0, 360, Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 0.0f);
+//            rotateAnimation.setFillAfter(true);
+//            rotateAnimation.setDuration(700);
+//            rotateAnimation.setRepeatCount(500);
+//
+            //mSyncButton.startAnimation(rotateAnimation);
         } else {
+            if (rotation!= null)
+                rotation.cancel();
             mSyncButton.clearAnimation();
         }
     }
@@ -415,17 +515,20 @@ public class LayersFragment
     public void onResume()
     {
         super.onResume();
-        mListAdapter.onResume();
+          mListAdapter.onResume();
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(SyncAdapter.SYNC_START);
         intentFilter.addAction(SyncAdapter.SYNC_FINISH);
         intentFilter.addAction(SyncAdapter.SYNC_CANCELED);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            getActivity().registerReceiver(mSyncReceiver, intentFilter, Context.RECEIVER_EXPORTED);
+            getActivity().registerReceiver(mSyncReceiver, intentFilter, Context.RECEIVER_NOT_EXPORTED);
         } else {
             getActivity().registerReceiver(mSyncReceiver, intentFilter);
         }
+
+        refreshSyncButtonAnimateState(NGWSyncService.isSyncStarted());
+
     }
 
 
@@ -437,12 +540,18 @@ public class LayersFragment
     }
 
     private void checkAccountForSync(final Context context, final Account account){
-        boolean isYourAccountSyncEnabled = ContentResolver.getSyncAutomatically(account, "com.nextgis.mobile.provider");
+        boolean isYourAccountSyncEnabled = ContentResolver.getSyncAutomatically(account,
+                context.getString(R.string.provider_auth
+                //"com.nextgis.mobile.provider"
+                ));
         if (!isYourAccountSyncEnabled){
             DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    ContentResolver.setSyncAutomatically(account, "com.nextgis.mobile.provider", true);
+                    ContentResolver.setSyncAutomatically(account,
+                            //"com.nextgis.mobile.provider",
+                            context.getString(R.string.provider_auth),
+                            true);
 
                 }
             };
@@ -455,11 +564,82 @@ public class LayersFragment
         }
     }
 
+    public boolean isSomeToSync(){
+
+        final AccountManager accountManager = AccountManager.get(getActivity().getApplicationContext());
+        final IGISApplication application = (IGISApplication) getActivity().getApplication();
+        List<INGWLayer> layers = new ArrayList<>();
+
+        List<Account> allAccounts = new ArrayList<>();
+
+        for (Account account : accountManager.getAccountsByType(application.getAccountsType())) {
+            layers.clear();
+            MapContentProviderHelper.getLayersByAccount(application.getMap(), account.name, layers);
+            if (layers.size() > 0)
+                allAccounts.add(account);
+        }
+
+        if (allAccounts.size() == 0)
+            return false;
+
+        String name = getContext().getPackageName() + "_preferences";
+        SharedPreferences mSharedPreferences = getContext().getSharedPreferences(name, MODE_MULTI_PROCESS);
+        boolean trackSync = mSharedPreferences.getBoolean(SettingsConstants.KEY_PREF_TRACK_SEND, false);
+
+        for (int i = 0; i < allAccounts.size(); i++ ){
+            if (isSomeToSync(allAccounts.get(i), trackSync))
+                return true;
+        }
+        return false;
+    }
+
+    public boolean isSomeToSync(Account account, boolean trackSync){
+
+
+        MapContentProviderHelper layerGroup =(MapContentProviderHelper) MapBase.getInstance();
+        List<ILayer> layersToSync = new ArrayList<>();
+        for (int i = 0; i < layerGroup.getLayerCount(); i++){
+            ILayer layer = layerGroup.getLayer(i);
+
+            if (layer instanceof INGWLayer && !account.name.equals(((INGWLayer)layer).getAccountName()))
+                continue;
+
+            if (layer instanceof  INGWLayer && ((INGWLayer) layer).getSyncType() == SYNC_NONE)
+                continue;
+
+            // only ngw and track
+            if (! ((layer instanceof INGWLayer) || (layer instanceof TrackLayer && trackSync ) ) )
+                continue;
+
+
+            boolean exists = false;
+            for (ILayer added : layersToSync){
+                if (added.getPath().equals(layer.getPath())){
+                    exists = true;
+                    break;
+                }
+            }
+            if (!exists)
+                layersToSync.add(layer);
+        }
+        return layersToSync.size()>0;
+    }
+
     @Override
     public void onClick(View v) {
+
+
         switch (v.getId()) {
             case R.id.sync:
                 HyperLog.v(Constants.TAG, "onClick sync cliked!");
+
+                try {
+                    if (! isSomeToSync())
+                        Toast.makeText(v.getContext(), com.nextgis.maplibui.R.string.sync_no_layers, LENGTH_LONG).show();
+                } catch (Exception ex){
+                    HyperLog.e("SYNC", ex.getMessage());
+                }
+
 
                 final SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
                 String base = mPreferences.getString("ngid_url", NGIDUtils.NGID_MY);
@@ -487,7 +667,7 @@ public class LayersFragment
 
                     for (Account account : mAccounts) {
                         HyperLog.v(Constants.TAG, "onClick add sync to queue for " + account.name +" account");
-                        // тут надо предупредить что нет включенной синхронизации
+                        // attentd - no turned on sync
                         checkAccountForSync(v.getContext(), account);
 
                         Bundle settingsBundle = new Bundle();
@@ -559,14 +739,49 @@ public class LayersFragment
                 Intent intent)
         {
             if (intent.getAction().equals(SyncAdapter.SYNC_START)) {
-                refresh(true);
+                refreshSyncButtonAnimateState(true);
             } else if (intent.getAction().equals(SyncAdapter.SYNC_FINISH) || intent.getAction().equals(SyncAdapter.SYNC_CANCELED)) {
                 if (intent.hasExtra(SyncAdapter.EXCEPTION))
-                    Toast.makeText(getContext(), intent.getStringExtra(SyncAdapter.EXCEPTION), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), intent.getStringExtra(SyncAdapter.EXCEPTION), LENGTH_LONG).show();
 
-                refresh(false);
+                refreshSyncButtonAnimateState(false);
+                updateInfo();
+            } else {
+                refreshSyncButtonAnimateState(false);
                 updateInfo();
             }
         }
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        if (mLayersListView != null) {
+            mLayersListView.setAdapter(null);
+        }
+
+        if (mListAdapter != null) {
+            mListAdapter.setOnLayerEditListener(null);
+            mListAdapter.setOnPencilClickListener(null);
+//            mListAdapter.onPause(); // if exists
+        }
+
+        mListAdapter = null;
+        mLayersListView = null;
+        mDrawerLayout = null;
+
+        final WeakReference<MainActivity> activityRef = new WeakReference<MainActivity>((MainActivity)getActivity());
+        if (activityRef.get() == null)
+            return;
+        final WeakReference<MapFragment> mapFragmentRef = new WeakReference<>(activityRef.get().getMapFragment());
+        MapFragment mf = mapFragmentRef != null ? mapFragmentRef.get() : null;
+        if (mf != null) {
+            mf.setOnModeChangeListener(null);
+        }
+
+
+
+    }
+
 }

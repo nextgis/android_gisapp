@@ -50,11 +50,11 @@ public class NewFieldDialog extends NGDialog {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         super.onCreateDialog(savedInstanceState);
 
-        View view = View.inflate(mContext, R.layout.dialog_new_field, null);
+        View view = View.inflate(mContextWeakRef.get(), R.layout.dialog_new_field, null);
         final EditText name = (EditText) view.findViewById(R.id.et_field_name);
         final Spinner type = (Spinner) view.findViewById(R.id.sp_field_type);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContextWeakRef.get());
         builder.setTitle(mTitle).setView(view).setNegativeButton(android.R.string.cancel, null)
             .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                 @Override

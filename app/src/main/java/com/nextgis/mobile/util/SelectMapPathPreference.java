@@ -110,7 +110,7 @@ public class SelectMapPathPreference
             final List<File>  externalFilesPaths = new ArrayList<>();
             final List<String> externalFilesStrings = new ArrayList<>();
             final List<String> cardnames = new ArrayList<>();
-            // два носителя или больше - есть что выбирать
+            // two storages - choose possible
             int selectedItem = -1;
 
             for (File file : files){
