@@ -133,7 +133,7 @@ public class MainApplication extends GISApplication
     }
 
     private void initializeMapbox() {
-        MapLibre.getInstance(this, BuildConfig.MAPBOX_KEY, WellKnownTileServer.MapTiler);
+        MapLibre.getInstance(this, "sjdkfhjkdshfkjhsdkjf", WellKnownTileServer.MapTiler);
         //TileLoadingMeasurementUtils.setUpTileLoadingMeasurement();
         MapStrictMode.setStrictModeEnabled(true);
     }

@@ -51,7 +51,7 @@ android {
         minSdkVersion 26
         compileSdk 36
         targetSdkVersion 36
-        versionCode 171
+        versionCode 172
         versionName '3.0.2'
         archivesBaseName = "ngmobile-$versionName"
         buildConfigField "String", "SENTRY_DSN", "\"${sentryDsn}\""
@@ -59,8 +59,6 @@ android {
         def props = new Properties()
         file("../local.properties").withInputStream { props.load(it) }
 
-
-        buildConfigField "String", "MAPBOX_KEY", "\"${props.getProperty("mapboxkey")}\""
     }
 
     productFlavors {
