@@ -87,6 +87,8 @@ public class SyncAdapter extends com.nextgis.maplib.datasource.ngw.SyncAdapter {
 
         sendNotification(getContext(), SYNC_START, null);
 
+        Log.d("SSYNC", "super.onPerformSync for " + account.name);
+
         super.onPerformSync(account, bundle, authority, contentProviderClient, syncResult);
 
         if (isCanceled())
