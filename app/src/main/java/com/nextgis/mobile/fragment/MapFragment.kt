@@ -113,6 +113,7 @@ import com.nextgis.maplibui.mapui.MapViewOverlays
 import com.nextgis.maplibui.overlay.CurrentLocationOverlay
 import com.nextgis.maplibui.overlay.CurrentTrackOverlay
 import com.nextgis.maplibui.overlay.EditLayerOverlay
+import com.nextgis.maplibui.overlay.EditLayerOverlay.WalkEditReceiver
 import com.nextgis.maplibui.overlay.RulerOverlay
 import com.nextgis.maplibui.overlay.RulerOverlay.OnRulerChanged
 import com.nextgis.maplibui.overlay.UndoRedoOverlay
@@ -229,6 +230,9 @@ public class MapFragment
 
     var longClickProcessed = false
 
+
+
+
     interface onModeChange {
         fun onModeChangeListener()
     }
@@ -334,8 +338,8 @@ public class MapFragment
         mRuler = view.findViewById(R.id.action_ruler)
         mRuler?.setOnClickListener(this)
 
-//        val addGeometryByWalk = view.findViewById<View>(R.id.add_geometry_by_walk)
-//        addGeometryByWalk.setOnClickListener(this)
+        val addGeometryByWalk = view.findViewById<View>(R.id.add_geometry_by_walk)
+        addGeometryByWalk.setOnClickListener(this)
 
         mivZoomIn = view.findViewById(R.id.action_zoom_in)
         mivZoomIn?.setOnClickListener(this)
@@ -501,17 +505,17 @@ public class MapFragment
                 return result
             }
 
-//            com.nextgis.maplibui.R.id.menu_edit_by_walk -> {
-//                setMode(MODE_EDIT_BY_WALK)
-//
-//                result = editLayerOverlay!!.onOptionsItemSelected(id)
-//                if (result)
-//                    undoRedoOverlay!!.saveToHistory(editLayerOverlay!!.selectedFeature)
-//
-//
-//                (mApp!!.map as MapDrawable).updateHistoryByWalkEnd()
-//                return result
-//            }
+            com.nextgis.maplibui.R.id.menu_edit_by_walk -> {
+                setNewMode(MODE_EDIT_BY_WALK)
+
+                result = editLayerOverlay!!.onOptionsItemSelected(id)
+                if (result)
+                    undoRedoOverlay!!.saveToHistory(editLayerOverlay!!.selectedFeature)
+
+
+                (mApp!!.map as MapDrawable).updateHistoryByWalkEnd()
+                return result
+            }
 
             com.nextgis.maplibui.R.id.menu_edit_delete_point  ->{
                 val result = mMapRef.get()!!.map!!.deleteCurrentPoint();
@@ -688,6 +692,7 @@ public class MapFragment
                     selectedLayer!! )
                 mMapRef.get()!!.map!!.reloadFeatureToMaplibre(id, selectedLayer)
                 mMapRef.get()!!.map!!.updateSelectedMarker()
+                mMapRef.get()!!.map.hideSelectedDotSource()
             }
         } else if (editLayerOverlay!!.selectedFeatureGeometry != null) editLayerOverlay!!.setHasEdits(
             true
@@ -732,6 +737,8 @@ public class MapFragment
             mActivity!!.title = mActivity!!.appName
             mActivity!!.setSubtitle(null)
             mMapRef.get()!!.map.stoptMeasuring()
+
+
         }
         var promt = ""
         when(mode){
@@ -855,8 +862,8 @@ public class MapFragment
                                         mSelectedLayer!!.geometryType,
                                         editLayerOverlay!!.selectedFeature,
                                         true,
-                                        mSelectedLayer!!.defaultStyleNoExcept
-                                    )
+                                        mSelectedLayer!!.defaultStyleNoExcept,
+                                        false )
 
                                 // update rudiment code - created geometry on old pre-maplibre code
                                 // on editing it updates on MotionEvent.ACTION_UP actions
@@ -885,7 +892,8 @@ public class MapFragment
                                     editLayerOverlay!!.setHasEdits(false)
                                     if(mSelectedLayer!= null)
                                         mMapRef.get()!!.map!!.startFeatureSelectionForEdit(mSelectedLayer, mSelectedLayer!!.geometryType,
-                                            editLayerOverlay!!.selectedFeature, false, mSelectedLayer!!.defaultStyleNoExcept)
+                                            editLayerOverlay!!.selectedFeature, false, mSelectedLayer!!.defaultStyleNoExcept,
+                                            false)
                                 }
                             }
 
@@ -1379,20 +1387,28 @@ public class MapFragment
 
                 val geometry = GeoGeometryFactory.fromWKT(
                     preferences.getString(ConstantsUI.KEY_GEOMETRY, ""),
-                    GeoConstants.CRS_WEB_MERCATOR
-                )
+                    GeoConstants.CRS_WEB_MERCATOR )
                 if (geometry != null) editLayerOverlay!!.setGeometryFromWalkEdit(geometry)
+                //need start ByWalking editing on maplibre
+
+                mMapRef.get()?.map?.startEditByWalkFromRestore(
+                    mSelectedLayer,
+                    editLayerOverlay!!.selectedFeature)
 
                 mode = MODE_EDIT_BY_WALK
             }
         }
 
-        setNewMode(mode)
+        if (mode == MODE_EDIT_BY_WALK) {
+            setNewMode(mode)
+            // start fill data from service
+        }
+        else
+            setNewMode(mode)
 
         if (savedInstanceState != null && savedInstanceState.getBoolean(
                 BUNDLE_KEY_IS_MEASURING,
-                false
-            )
+                false )
         ) startMeasuring()
     }
 
@@ -1588,6 +1604,11 @@ public class MapFragment
         val progressStyling = (getContext()!!.getApplicationContext() as IGISApplication).getingStyleInProgress
         changeProgress(progressStyling)
 
+        // check for walking was
+        if (WalkEditService.isServiceRunning(context) && mode == MODE_EDIT_BY_WALK) {
+            // need getFeature from old overlay and update in maplibre logic
+                mMapRef.get()?.map?.updateWalkingFeature(editLayerOverlay!!.selectedFeature)
+        }
     }
 
 
@@ -1727,7 +1748,7 @@ public class MapFragment
         } else {
             if (isDialogShown) return
             //open choose edit layer dialog
-            mChooseLayerDialogRef = WeakReference(ChooseLayerDialog(false))
+            mChooseLayerDialogRef = WeakReference(ChooseLayerDialog(false, false))
             mChooseLayerDialogRef.get()!!.setLayerList(layers)
                 .setCode(EDIT_LAYER)
                 .setTitle(getString(com.nextgis.maplibui.R.string.choose_layers))
@@ -1755,7 +1776,7 @@ public class MapFragment
 
             mSelectedLayer = layer
             editLayerOverlay!!.setSelectedLayer(layer)
-            createPointFromOverlay()
+            createPointFromOverlay(false)
 
             Toast.makeText(
                 mActivity,
@@ -1765,7 +1786,7 @@ public class MapFragment
         } else {
             if (isDialogShown) return
             //open choose edit layer dialog
-            mChooseLayerDialogRef = WeakReference(ChooseLayerDialog(false))
+            mChooseLayerDialogRef = WeakReference(ChooseLayerDialog(false, false))
             mChooseLayerDialogRef.get()!!.setLayerList(layers)
                 .setCode(ADD_POINT_BY_TAP)
                 .setTitle(getString(com.nextgis.maplibui.R.string.choose_layers))
@@ -1774,7 +1795,7 @@ public class MapFragment
         }
     }
 
-    protected fun createPointFromOverlay() {
+    protected fun createPointFromOverlay(isFillByWalking: Boolean) {
         editLayerOverlay!!.selectedFeature = Feature()
 
         if (mCurrentCenter != null)
@@ -1788,14 +1809,14 @@ public class MapFragment
         editLayerOverlay!!.setHasEdits(true)
         undoRedoOverlay!!.saveToHistory(editLayerOverlay!!.selectedFeature)
 
-        mMapRef.get()!!.map!!.startFeatureSelectionForEdit(mSelectedLayer, mSelectedLayer!!.geometryType,
-            editLayerOverlay!!.selectedFeature, true,mSelectedLayer!!.defaultStyleNoExcept)
-
-
+        mMapRef.get()!!.map!!.startFeatureSelectionForEdit(mSelectedLayer,
+            mSelectedLayer!!.geometryType,
+            editLayerOverlay!!.selectedFeature, true,mSelectedLayer!!.defaultStyleNoExcept,
+            isFillByWalking)
     }
 
     // useCreatePouintFromOverlay - need to call if create by click R.id.add_current_location button
-    protected fun addCurrentLocation(useCreatePouintFromOverlay: Boolean) {
+    protected fun addCurrentLocation(useCreatePointFromOverlay: Boolean) {
         //show select layer dialog if several layers, else start default or custom form
         val layers = removeHideLayers (mMapRef.get()!!.getVectorLayersByType(
             GeoConstants.GTMultiPointCheck or GeoConstants.GTPointCheck))
@@ -1813,8 +1834,8 @@ public class MapFragment
                 mSelectedLayer = vectorLayer as VectorLayer
                 editLayerOverlay!!.setSelectedLayer(mSelectedLayer)
 
-                if (useCreatePouintFromOverlay)
-                    createPointFromOverlay()
+                if (useCreatePointFromOverlay)
+                    createPointFromOverlay(false)
 
                 val vectorLayerUI = vectorLayer as IVectorLayerUI
                 vectorLayerUI.showEditForm(mActivity, Constants.NOT_FOUND.toLong(), null, -1)
@@ -1833,7 +1854,7 @@ public class MapFragment
         } else {
             if (isDialogShown) return
             //open choose dialog
-            mChooseLayerDialogRef = WeakReference(ChooseLayerDialog(true))
+            mChooseLayerDialogRef = WeakReference(ChooseLayerDialog(true, false))
             mChooseLayerDialogRef.get()!!.setLayerList(layers)
                 .setCode(ADD_CURRENT_LOC)
                 .setTitle(getString(com.nextgis.maplibui.R.string.choose_layers))
@@ -1858,46 +1879,52 @@ public class MapFragment
         return layerList
     }
 
-//
-//    protected fun addGeometryByWalk() {
-//        //show select layer dialog if several layers, else start default or custom form
-//        val layers = removeHideLayers (mMapRef.get()!!.getVectorLayersByType(
-//            (GeoConstants.GTLineStringCheck or GeoConstants.GTPolygonCheck
-//                    or GeoConstants.GTMultiLineStringCheck or GeoConstants.GTMultiPolygonCheck)))
-//
-//        if (layers.isEmpty()) {
-//            Toast.makeText(mActivity, getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG)
-//                .show()
-//        } else if (layers.size == 1) {
-//            //open form
-//            val layer = layers[0] as VectorLayer
-//            mSelectedLayer = layer
-//            editLayerOverlay!!.setSelectedLayer(layer)
-//            editLayerOverlay!!.newGeometryByWalk()
-//            setMode(MODE_EDIT_BY_WALK)
-//
-//            Toast.makeText(
-//                mActivity,
-//                String.format(getString(R.string.edit_layer), layer.name),
-//                Toast.LENGTH_SHORT
-//            ).show()
-//        } else {
-//            if (isDialogShown) return
-//            //open choose edit layer dialog
-//            mChooseLayerDialogRef = WeakReference(ChooseLayerDialog())
-//            mChooseLayerDialogRef.get()!!.setLayerList(layers)
-//                .setCode(ADD_GEOMETRY_BY_WALK)
-//                .setTitle(getString(com.nextgis.maplibui.R.string.choose_layers))
-//                .setTheme(mActivity!!.themeId)
-//                .show(mActivity!!.supportFragmentManager, ChooseLayerDialog.TAG)
-//        }
-//    }
+
+    protected fun addGeometryByWalk() {
+        //show select layer dialog if several layers, else start default or custom form
+        val layers = removeHideLayers (mMapRef.get()!!.getVectorLayersByType(
+            (GeoConstants.GTLineStringCheck or GeoConstants.GTPolygonCheck
+                    or GeoConstants.GTMultiLineStringCheck or GeoConstants.GTMultiPolygonCheck)))
+
+        if (layers.isEmpty()) {
+            Toast.makeText(mActivity, getString(R.string.warning_no_edit_layers), Toast.LENGTH_LONG)
+                .show()
+        } else if (layers.size == 1) {
+            //open form
+            val layer = layers[0] as VectorLayer
+            mSelectedLayer = layer
+            editLayerOverlay!!.setSelectedLayer(layer)
+
+            editLayerOverlay!!.newGeometryByWalk()
+
+            createPointFromOverlay(true)
+            editLayerOverlay!!.newGeometryByWalk()
+            setNewMode(MODE_EDIT_BY_WALK)
+
+
+            Toast.makeText(
+                mActivity,
+                String.format(getString(R.string.edit_layer), layer.name),
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            if (isDialogShown) return
+            //open choose edit layer dialog
+            mChooseLayerDialogRef = WeakReference(ChooseLayerDialog(true, true))
+            mChooseLayerDialogRef.get()!!.setLayerList(layers)
+                .setCode(ADD_GEOMETRY_BY_WALK)
+                .setTitle(getString(com.nextgis.maplibui.R.string.choose_layers))
+                .setTheme(mActivity!!.themeId)
+                .show(mActivity!!.supportFragmentManager, ChooseLayerDialog.TAG)
+        }
+    }
 
 
     fun onFinishChooseLayerDialog(
         code: Int,
         layer: ILayer?,
-        useCreatePointFromOverlay: Boolean
+        useCreatePointFromOverlay: Boolean,
+        startFillByWalk: Boolean
     ) {
         val vectorLayer = layer as VectorLayer?
         if (layer == null) return  // TODO toast?
@@ -1910,7 +1937,7 @@ public class MapFragment
 
 
         if (useCreatePointFromOverlay)
-            createPointFromOverlay()
+            createPointFromOverlay(startFillByWalk)
 
         if (code == ADD_CURRENT_LOC) {
             if (layer is ILayerUI) {
@@ -1921,12 +1948,12 @@ public class MapFragment
             setNewMode(MODE_SELECT_ACTION)
             //if (editLayerOverlay.selectedFeature == )
             if (useCreatePointFromOverlay)
-                createPointFromOverlay()
+                createPointFromOverlay(false)
         } else if (code == ADD_GEOMETRY_BY_WALK) {
             editLayerOverlay!!.newGeometryByWalk()
             setNewMode(MODE_EDIT_BY_WALK)
         } else if (code == ADD_POINT_BY_TAP) {
-            createPointFromOverlay()
+            createPointFromOverlay(false)
         }
     }
 
@@ -3011,16 +3038,16 @@ public class MapFragment
             R.id.fl_compass -> showFullCompass()
             R.id.add_current_location -> {
                 if (v.isEnabled) addCurrentLocation(true)
-                mMainButton!!.collapse()
+                    mMainButton!!.collapse()
             }
             R.id.add_new_geometry -> {
                 if (v.isEnabled) addNewGeometry()
-                mMainButton!!.collapse()
+                    mMainButton!!.collapse()
             }
-//            R.id.add_geometry_by_walk -> {
-//                if (v.isEnabled) addGeometryByWalk()
-//                mMainButton!!.collapse()
-//            }
+            R.id.add_geometry_by_walk -> {
+                if (v.isEnabled) addGeometryByWalk()
+                    mMainButton!!.collapse()
+            }
 
             R.id.action_zoom_in -> {
                 //if (v.isEnabled) mMapRef.get()!!.zoomIn() // old

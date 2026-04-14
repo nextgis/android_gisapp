@@ -1069,9 +1069,10 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
     override fun onFinishChooseLayerDialog(
         code: Int,
         layer: ILayer
-    , useCreatePoint: Boolean) {
+    , useCreatePoint: Boolean,
+        startFillByWalk: Boolean) {
         if (null != mapFragment) {
-            mapFragment!!.onFinishChooseLayerDialog(code, layer, useCreatePoint)
+            mapFragment!!.onFinishChooseLayerDialog(code, layer, useCreatePoint, startFillByWalk)
         }
     }
 

@@ -166,13 +166,9 @@ public class LayersFragment
                 }
             }
 
-
-
-
-
-                IGISApplication application = (IGISApplication) activity.getApplication();
+            IGISApplication application = (IGISApplication) activity.getApplication();
             application.sendEvent(GA_LAYER, GA_EDIT, GA_MENU);
-            mapFragment.onFinishChooseLayerDialog(MapFragment.EDIT_LAYER, layer, false);
+            mapFragment.onFinishChooseLayerDialog(MapFragment.EDIT_LAYER, layer, false, false);
             fragment.toggle();
         }
     }
