@@ -52,7 +52,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.CheckBox
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -62,7 +61,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.hypertrack.hyperlog.HyperLog
 import com.nextgis.maplib.api.GpsEventListener
@@ -80,6 +78,7 @@ import com.nextgis.maplib.util.GeoConstants
 import com.nextgis.maplib.util.MapUtil
 import com.nextgis.maplib.util.NGWUtil
 import com.nextgis.maplib.util.NetworkUtil
+import com.nextgis.maplibui.GISApplication
 import com.nextgis.maplibui.activity.NGActivity
 import com.nextgis.maplibui.api.IChooseLayerResult
 import com.nextgis.maplibui.api.IVectorLayerUI
@@ -395,8 +394,11 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
                     }
                 }
 
-            LOCATION_BACKGROUND_REQUEST -> if (mTrackItem != null) {
-                controlTrack(mTrackItem)
+            LOCATION_BACKGROUND_REQUEST -> {
+                if (mTrackItem != null)
+                    controlTrack(mTrackItem)
+                if (mTrackItem == null)
+                    checkBatteryOptimize()
                 mTrackItem = null
             }
 
@@ -512,7 +514,7 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
         }
     }
 
-    private fun askBackgroundPerm(item: MenuItem?) {
+    public fun askBackgroundPerm(item: MenuItem?) {
         TrackerService.showBackgroundDialog(this, object : BackgroundPermissionCallback {
             override fun beforeAndroid10(hasBackgroundPermission: Boolean) {
                 if (!hasBackgroundPermission) {
@@ -531,6 +533,8 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
                     )
                 } else {
                     controlTrack(item)
+                    if (item == null) // byWalk
+                        checkBatteryOptimize()
                 }
             }
 
@@ -541,6 +545,8 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
                     requestbackgroundLocationPermissions()
                 } else {
                     controlTrack(item)
+                    if (item == null) // byWalk
+                        checkBatteryOptimize()
                 }
             }
 
@@ -551,9 +557,28 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
                     requestbackgroundLocationPermissions()
                 } else {
                     controlTrack(item)
+                    if (item == null) // byWalk
+                        checkBatteryOptimize()
                 }
             }
         })
+    }
+
+    public fun checkBatteryOptimize(){
+        val batteryOK = TrackerService.checkIsBatteryPermOK(this)
+        if (!batteryOK) {
+
+            Handler().postDelayed(Runnable () {
+                val msg = Intent(ConstantsUI.MESSAGE_INTENT_TRACK)
+                msg.setPackage(this.getPackageName())
+                msg.putExtra(ConstantsUI.KEY_MESSAGE_TRACK, true)
+                msg.putExtra(KEY_BATTERY, false)
+                msg.putExtra(KEY_TRACK_ACTION, VALUE_TRACK_START)
+                msg.setPackage(getPackageName())
+                sendBroadcast(msg)
+            }, 1000)
+
+        }
     }
 
 
@@ -1152,8 +1177,7 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
                                     mSharedPreferences.edit().putBoolean(prefBatteryName, true).apply()
                                 }
 
-                                val intent =
-                                    Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
+                                val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
                                 intent.setData(Uri.parse("package:" + getPackageName()))
                                 startActivity(intent)
                             }
@@ -1348,6 +1372,11 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult {
         super.refreshLayersFrarment()
         if (mLayersFragment != null)
             mLayersFragment?.onResume()
+    }
+
+    public fun showToast( text: String ){
+        Toast.makeText(this, text, Toast.LENGTH_LONG)
+            .show()
     }
 
 //    override fun startLayerPropFragment(fragment: Fragment) {

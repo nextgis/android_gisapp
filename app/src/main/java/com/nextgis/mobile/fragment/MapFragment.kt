@@ -41,6 +41,7 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.os.Vibrator
 import android.preference.PreferenceManager
 import android.text.TextUtils
@@ -85,6 +86,8 @@ import com.nextgis.maplib.datasource.GeoPoint
 import com.nextgis.maplib.datasource.GeoPolygon
 import com.nextgis.maplib.display.SimpleFeatureRenderer
 import com.nextgis.maplib.location.GpsEventSource
+import com.nextgis.maplib.map.Layer
+import com.nextgis.maplib.map.LayerGroup
 import com.nextgis.maplib.map.MLP.MLGeometryEditClass
 import com.nextgis.maplib.map.MPLFeaturesUtils
 import com.nextgis.maplib.map.MPLFeaturesUtils.id_name
@@ -92,11 +95,7 @@ import com.nextgis.maplib.map.MapDrawable
 import com.nextgis.maplib.map.MaplibreMapInteraction
 import com.nextgis.maplib.map.VectorLayer
 import com.nextgis.maplib.util.Constants
-import com.nextgis.maplib.util.Constants.FIELD_ALPHA
-import com.nextgis.maplib.util.Constants.FIELD_BRIGHTNESS_MAX
-import com.nextgis.maplib.util.Constants.FIELD_BRIGHTNESS_MIN
-import com.nextgis.maplib.util.Constants.FIELD_CONTRAST
-import com.nextgis.maplib.util.Constants.LAYER_ID_KEY
+import com.nextgis.maplib.util.Constants.MESSAGE_INTENT_RELOAD
 import com.nextgis.maplib.util.Constants.MESSAGE_INTENT_STYLING
 import com.nextgis.maplib.util.FileUtil
 import com.nextgis.maplib.util.GeoConstants
@@ -113,7 +112,6 @@ import com.nextgis.maplibui.mapui.MapViewOverlays
 import com.nextgis.maplibui.overlay.CurrentLocationOverlay
 import com.nextgis.maplibui.overlay.CurrentTrackOverlay
 import com.nextgis.maplibui.overlay.EditLayerOverlay
-import com.nextgis.maplibui.overlay.EditLayerOverlay.WalkEditReceiver
 import com.nextgis.maplibui.overlay.RulerOverlay
 import com.nextgis.maplibui.overlay.RulerOverlay.OnRulerChanged
 import com.nextgis.maplibui.overlay.UndoRedoOverlay
@@ -192,6 +190,8 @@ public class MapFragment
     var textStylingProgrerss: TextView? = null;
 
     private var mMessageStyling: MessageStyling? = null
+    private var mMessageReload: MessageReloadLayer? = null
+
 
     protected var mMapRelativeLayout: RelativeLayout? = null
     protected var mGpsEventSource: GpsEventSource? = null
@@ -259,6 +259,7 @@ public class MapFragment
         editLayerOverlay = EditLayerOverlay(mActivity, mMapRef.get())
 
         mMessageStyling = MessageStyling()
+        mMessageReload = MessageReloadLayer()
     }
 
     override fun onCreateView(
@@ -615,7 +616,8 @@ public class MapFragment
             ).show()
             return false
         }
-        if (MapUtil.isGeometryIntersects(context, geometry)) return false
+        //MapUtil.isGeometryIntersects(context, geometry);
+            //return false
 
         mMapRef.get()!!.isLockMap = false
         editLayerOverlay!!.setHasEdits(false)
@@ -728,6 +730,7 @@ public class MapFragment
 
     fun setNewMode(mode: Int, vararg readOnly: Boolean) {
 
+        var askPerm = false
         if (mMapRef.get()!!.map!!.checkMeasurment(mode)){
             mRulerOverlay!!.stopMeasuring()
             showMainButton()
@@ -807,7 +810,11 @@ public class MapFragment
 
                 mMapRef.get()!!.map!!.unselectFeatureFromEdit(false, true)
                 mMapRef.get()!!.map!!.hideVertex()
+
                 mMapRef.get()!!.map!!.hideMarker()
+
+                askPerm = true
+
 
             }
 
@@ -1002,6 +1009,12 @@ public class MapFragment
 
         setMarginsToPanel()
         defineMenuItems()
+
+        if (askPerm)
+            Handler().postDelayed(Runnable(){
+                mActivity?.askBackgroundPerm(null)
+            }, 1000)
+
     }
 
     private fun getAttributesFragment(fragmentManager: FragmentManager): AttributesFragment {
@@ -1454,6 +1467,7 @@ public class MapFragment
         edit.apply()
 
         mActivity?.unregisterReceiver(mMessageStyling)
+        mActivity?.unregisterReceiver(mMessageReload)
 
         super.onPause()
     }
@@ -1593,12 +1607,17 @@ public class MapFragment
         //updateLastLocation()
         val intentFilter = IntentFilter()
         intentFilter.addAction( MESSAGE_INTENT_STYLING)
+
+        val intentFilterReload = IntentFilter()
+        intentFilterReload.addAction( MESSAGE_INTENT_RELOAD)
 //        intentFilter.addAction( MESSAGE_INTENT_STYLING_RASTER)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             mActivity?.registerReceiver( mMessageStyling, intentFilter, RECEIVER_NOT_EXPORTED)
+            mActivity?.registerReceiver( mMessageReload, intentFilterReload, RECEIVER_NOT_EXPORTED)
         } else {
             mActivity?.registerReceiver(mMessageStyling, intentFilter)
+            mActivity?.registerReceiver(mMessageReload, intentFilterReload)
         }
 
         val progressStyling = (getContext()!!.getApplicationContext() as IGISApplication).getingStyleInProgress
@@ -1609,8 +1628,33 @@ public class MapFragment
             // need getFeature from old overlay and update in maplibre logic
                 mMapRef.get()?.map?.updateWalkingFeature(editLayerOverlay!!.selectedFeature)
         }
-    }
 
+
+        val listOfLayers = (context?.applicationContext  as IGISApplication).getlayersToRefresh()
+        if (listOfLayers!= null)
+            for (layerId in listOfLayers)
+            (context?.applicationContext  as IGISApplication).removeLayerToRefresh(layerId)
+        if (listOfLayers!= null)
+            for (layerId in listOfLayers){
+                if (mMapRef.get()!= null && mMapRef.get()!!.map!= null && layerId != -1){
+                    val targetlayer = LayerGroup.getVectorLayersById(mMapRef.get()?.map, id)
+                    if (targetlayer != null) {
+                        val isVisible = (targetlayer as Layer).isVisible()
+                        if (isVisible) {
+                            if (mMapRef.get()!!.map!!.getLayerVisible(layerId)) {
+                                Handler().postDelayed({
+                                    mMapRef.get()!!.map!!.refreshLayerVisibility(layerId, false)
+                                }, 300)
+
+                                Handler().postDelayed({
+                                    mMapRef.get()!!.map!!.refreshLayerVisibility(layerId, true)
+                                }, 600)
+                            }
+                        }
+                    }
+                }
+            }
+    }
 
     protected fun setMarginsToPanel() {
         val toolbar = mActivity!!.bottomToolbar
@@ -3045,8 +3089,9 @@ public class MapFragment
                     mMainButton!!.collapse()
             }
             R.id.add_geometry_by_walk -> {
-                if (v.isEnabled) addGeometryByWalk()
-                    mMainButton!!.collapse()
+                if (v.isEnabled)
+                    addGeometryByWalk()
+                mMainButton!!.collapse()
             }
 
             R.id.action_zoom_in -> {
@@ -3434,7 +3479,8 @@ public class MapFragment
                 val textmessage = intent.getStringExtra(ConstantsUI.KEY_MESSAGE);
                 textStylingProgrerss?.setText(textmessage)
             }
-//            if (intent.action == MESSAGE_INTENT_STYLING_RASTER) {
+        }
+        //            if (intent.action == MESSAGE_INTENT_STYLING_RASTER) {
 //                // raster
 //                val layerId: Int? = intent.getIntExtra(LAYER_ID_KEY, -1)
 //                val alpha = intent.getIntExtra(FIELD_ALPHA, 0)
@@ -3447,6 +3493,27 @@ public class MapFragment
 //                mMapRef.get()!!.map!!.updateRasterLayerProperties(layerId as Int?, alpha, contrast, brightnessMin,
 //                    brightnessMax)
 //            }
+    }
+
+
+    private inner class MessageReloadLayer : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent ){
+            if (intent.action == MESSAGE_INTENT_RELOAD) {
+                val layerid = intent.getIntExtra(ConstantsUI.KEY_LAYER_ID, -1);
+                (context.applicationContext  as IGISApplication).removeLayerToRefresh(layerid)
+                if (mMapRef.get()!= null && mMapRef.get()!!.map!= null && layerid != -1){
+
+                    if (mMapRef.get()!!.map!!.getLayerVisible(layerid) == true) {
+                        Handler().postDelayed({
+                            mMapRef.get()!!.map!!.refreshLayerVisibility(layerid, false)
+                        }, 300)
+
+                        Handler().postDelayed({
+                            mMapRef.get()!!.map!!.refreshLayerVisibility(layerid, true)
+                        }, 600)
+                    }
+                }
+            }
         }
     }
 

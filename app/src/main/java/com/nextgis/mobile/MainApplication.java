@@ -68,7 +68,9 @@ import com.nextgis.mobile.util.OfflineSyncIntentService;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import static com.nextgis.maplib.util.Constants.DEBUG_MODE;
 import static com.nextgis.maplib.util.Constants.MAP_EXT;
@@ -99,6 +101,8 @@ public class MainApplication extends GISApplication
     public static final String LAYER_TRACKS = "tracks";
 
     private Tracker mTracker;
+
+    List<Integer> layersToRefresh = new ArrayList<>();
 
     @Override
     public void onCreate() {
@@ -183,6 +187,36 @@ public class MainApplication extends GISApplication
     @Override
     public void startCreateNGWLayerSync(String lpath) {
         OfflineSyncIntentService.startActionFoo(this, lpath);
+    }
+
+    @Override
+    public void setLayerToRefresh(int id) {
+        synchronized (layersToRefresh){
+            layersToRefresh.add(id);
+        }
+    }
+
+    @Override
+    public void removeLayerToRefresh(int id) {
+        try {
+            synchronized (layersToRefresh) {
+                layersToRefresh.removeIf(integer -> id == integer);
+            }
+        } catch (Exception ex){
+            Log.e(TAG, Objects.requireNonNull(ex.getMessage()));
+        }
+    }
+
+    @Override
+    public List<Integer> getlayersToRefresh() {
+        try {
+            synchronized (layersToRefresh) {
+                return new ArrayList<>(layersToRefresh);
+            }
+        } catch (Exception ex){
+            Log.e(TAG, Objects.requireNonNull(ex.getMessage()));
+            return new ArrayList<>();
+        }
     }
 
     @Override
