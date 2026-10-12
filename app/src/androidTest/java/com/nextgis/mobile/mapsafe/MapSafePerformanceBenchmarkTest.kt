@@ -75,6 +75,8 @@ class MapSafePerformanceBenchmarkTest {
     private var protocolName = PROTOCOL_PAPER
     private var runningOnEmulator = false
     private var datasetSource = DATASET_SOURCE_GENERATED
+    private var pointCounts = DEFAULT_POINT_COUNTS
+    private var attributeProfiles = AttributeProfile.entries.toList()
 
     @Test
     fun recordMaskingEncryptionAndDecryptionForRealisticFieldDatasets() {
@@ -96,9 +98,10 @@ class MapSafePerformanceBenchmarkTest {
         cleanupStaleBenchmarkLayers(context)
 
         val datasets = loadDatasets()
-        assertEquals(POINT_COUNTS.size * AttributeProfile.entries.size, datasets.size)
-        assertEquals(POINT_COUNTS, datasets.filter { it.profile == AttributeProfile.TYPICAL }.map(Dataset::pointCount))
-        assertEquals(POINT_COUNTS, datasets.filter { it.profile == AttributeProfile.RICH }.map(Dataset::pointCount))
+        assertEquals(pointCounts.size * attributeProfiles.size, datasets.size)
+        attributeProfiles.forEach { profile ->
+            assertEquals(pointCounts, datasets.filter { it.profile == profile }.map(Dataset::pointCount))
+        }
 
         val passphrase = "MapSafe automated benchmark recovery passphrase".toCharArray()
         val identity = try {
@@ -549,8 +552,8 @@ class MapSafePerformanceBenchmarkTest {
             ?.takeIf(String::isNotBlank)
         if (inputDirectory == null) {
             datasetSource = DATASET_SOURCE_GENERATED
-            return POINT_COUNTS.flatMap { pointCount ->
-                AttributeProfile.entries.map { profile -> createDataset(pointCount, profile) }
+            return pointCounts.flatMap { pointCount ->
+                attributeProfiles.map { profile -> createDataset(pointCount, profile) }
             }
         }
 
@@ -559,8 +562,8 @@ class MapSafePerformanceBenchmarkTest {
             "The staged benchmark input directory is unavailable: ${directory.absolutePath}"
         }
         datasetSource = DATASET_SOURCE_STAGED_PHONE
-        return POINT_COUNTS.flatMap { pointCount ->
-            AttributeProfile.entries.map { profile ->
+        return pointCounts.flatMap { pointCount ->
+            attributeProfiles.map { profile ->
                 loadDataset(
                     file = File(directory, "field-${pointCount}-${profile.csvName}.geojson"),
                     expectedPointCount = pointCount,
@@ -887,8 +890,8 @@ class MapSafePerformanceBenchmarkTest {
             .put("openpgp_signed", true)
             .put("environment_at_start", environmentAtStart.toJson())
             .put("environment_at_end", captureEnvironment(context).toJson())
-            .put("dataset_point_counts", org.json.JSONArray(POINT_COUNTS))
-            .put("attribute_profiles", org.json.JSONArray(AttributeProfile.entries.map(AttributeProfile::csvName)))
+            .put("dataset_point_counts", org.json.JSONArray(pointCounts))
+            .put("attribute_profiles", org.json.JSONArray(attributeProfiles.map(AttributeProfile::csvName)))
             .put("datasets", org.json.JSONArray().apply {
                 datasets.forEach { dataset ->
                     put(
@@ -906,7 +909,8 @@ class MapSafePerformanceBenchmarkTest {
     }
 
     private fun configureProtocol() {
-        protocolName = InstrumentationRegistry.getArguments()
+        val arguments = InstrumentationRegistry.getArguments()
+        protocolName = arguments
             .getString(ARG_PROTOCOL)
             ?.trim()
             ?.lowercase(Locale.US)
@@ -918,6 +922,40 @@ class MapSafePerformanceBenchmarkTest {
         } else {
             warmUpRuns = PAPER_WARM_UP_RUNS
             measuredRuns = PAPER_MEASURED_RUNS
+        }
+
+        arguments.getString(ARG_POINT_COUNTS)
+            ?.split(',')
+            ?.map(String::trim)
+            ?.filter(String::isNotEmpty)
+            ?.map { value -> value.toIntOrNull() ?: error("Invalid benchmark point count: $value") }
+            ?.also { requested ->
+                require(requested.isNotEmpty() && requested.all { it > 0 }) {
+                    "Benchmark point counts must be positive."
+                }
+                pointCounts = requested.distinct().sorted()
+            }
+
+        arguments.getString(ARG_PROFILES)
+            ?.split(',')
+            ?.map(String::trim)
+            ?.filter(String::isNotEmpty)
+            ?.map { value ->
+                AttributeProfile.entries.firstOrNull { it.csvName == value.lowercase(Locale.US) }
+                    ?: error("Invalid benchmark attribute profile: $value")
+            }
+            ?.also { requested ->
+                require(requested.isNotEmpty()) { "At least one benchmark attribute profile is required." }
+                attributeProfiles = requested.distinct()
+            }
+
+        arguments.getString(ARG_WARM_UP_RUNS)?.toIntOrNull()?.also { requested ->
+            require(requested >= 0) { "Benchmark warm-up runs cannot be negative." }
+            warmUpRuns = requested
+        }
+        arguments.getString(ARG_MEASURED_RUNS)?.toIntOrNull()?.also { requested ->
+            require(requested > 0) { "Benchmark measured runs must be positive." }
+            measuredRuns = requested
         }
     }
 
@@ -1174,7 +1212,7 @@ class MapSafePerformanceBenchmarkTest {
 
     companion object {
         private const val LOG_TAG = "MapSafeBenchmark"
-        private val POINT_COUNTS = listOf(50, 250, 500, 1_000, 2_000)
+        private val DEFAULT_POINT_COUNTS = listOf(50, 250, 500, 1_000, 2_000)
         private val CATEGORIES = listOf("water", "housing", "heritage", "health", "environment")
         private val SENSITIVITIES = listOf("community", "restricted", "sensitive")
         private val STATUSES = listOf("observed", "reviewed", "follow_up")
@@ -1193,6 +1231,10 @@ class MapSafePerformanceBenchmarkTest {
         private const val ARG_PROTOCOL = "mapsafe.protocol"
         private const val ARG_ALLOW_EMULATOR = "mapsafe.allowEmulator"
         private const val ARG_INPUT_DIRECTORY = "mapsafe.inputDirectory"
+        private const val ARG_POINT_COUNTS = "mapsafe.pointCounts"
+        private const val ARG_PROFILES = "mapsafe.profiles"
+        private const val ARG_WARM_UP_RUNS = "mapsafe.warmUpRuns"
+        private const val ARG_MEASURED_RUNS = "mapsafe.measuredRuns"
         private const val DATASET_SOURCE_GENERATED = "generated_by_instrumentation"
         private const val DATASET_SOURCE_STAGED_PHONE = "staged_from_downloads_mapsafe"
         private const val QUICK_WARM_UP_RUNS = 1

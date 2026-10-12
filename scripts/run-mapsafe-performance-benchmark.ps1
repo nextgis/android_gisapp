@@ -10,7 +10,15 @@ param(
 
     [switch]$UseExistingPhoneDatasets,
 
-    [switch]$SkipBuild
+    [switch]$SkipBuild,
+
+    [string]$PointCounts,
+
+    [string[]]$Profiles,
+
+    [int]$WarmUpRuns = -1,
+
+    [int]$MeasuredRuns = -1
 )
 
 Set-StrictMode -Version Latest
@@ -153,12 +161,9 @@ if ($UseExistingPhoneDatasets) {
     Write-Host "Private staged input: $stagedInputDirectory"
 }
 
-if ($Protocol -eq 'Quick') {
-    Write-Host 'Running 1 warm-up and 5 measurements for each benchmark cell...'
-}
-else {
-    Write-Host 'Running 5 warm-ups and 30 measurements for each benchmark cell...'
-}
+$displayWarmUpRuns = if ($WarmUpRuns -ge 0) { $WarmUpRuns } elseif ($Protocol -eq 'Quick') { 1 } else { 5 }
+$displayMeasuredRuns = if ($MeasuredRuns -ge 0) { $MeasuredRuns } elseif ($Protocol -eq 'Quick') { 5 } else { 30 }
+Write-Host "Running $displayWarmUpRuns warm-up(s) and $displayMeasuredRuns measurement(s) for each benchmark cell..."
 $instrumentationArguments = @(
     '-s', $Serial, 'shell', 'am', 'instrument', '-w', '-r',
     '-e', 'class', $benchmarkClass,
@@ -167,6 +172,18 @@ $instrumentationArguments = @(
 )
 if ($stagedInputDirectory) {
     $instrumentationArguments += @('-e', 'mapsafe.inputDirectory', $stagedInputDirectory)
+}
+if ($PointCounts) {
+    $instrumentationArguments += @('-e', 'mapsafe.pointCounts', $PointCounts)
+}
+if ($Profiles) {
+    $instrumentationArguments += @('-e', 'mapsafe.profiles', ($Profiles -join ','))
+}
+if ($WarmUpRuns -ge 0) {
+    $instrumentationArguments += @('-e', 'mapsafe.warmUpRuns', $WarmUpRuns.ToString())
+}
+if ($MeasuredRuns -ge 0) {
+    $instrumentationArguments += @('-e', 'mapsafe.measuredRuns', $MeasuredRuns.ToString())
 }
 $instrumentationArguments += "$testPackage/$runner"
 $instrumentation = Invoke-Adb -Arguments $instrumentationArguments
