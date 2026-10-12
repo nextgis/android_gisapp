@@ -49,6 +49,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.PopupMenu;
 
 import android.preference.PreferenceManager;
+import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -785,8 +786,7 @@ public class LayersFragment
 
     public  void showDataProposal(){
 
-        SpannableString  s = new SpannableString(requireContext().getString(com.nextgis.maplibui.R.string.data_text));
-        Linkify.addLinks(s, Linkify.ALL);
+        Spanned s = Html.fromHtml(requireContext().getString(com.nextgis.maplibui.R.string.data_text) , Html.FROM_HTML_MODE_LEGACY);
 
         AlertDialog alertDialog = new AlertDialog.Builder(requireActivity())
                 .setTitle(com.nextgis.maplibui.R.string.data_title)

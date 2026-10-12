@@ -45,12 +45,12 @@ import android.os.Handler
 import android.os.Looper
 import android.preference.PreferenceManager
 import android.provider.Settings
+import android.text.Html
 import android.text.SpannableString
 import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.text.util.Linkify
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -856,7 +856,7 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult,
                 val text = editText.text.toString()
                 checkOpenByUrl(text, true)
             }
-            .setNegativeButton("Отмена", null)
+            .setNegativeButton(com.nextgis.maplibui.R.string.cancel2, null)
             .show()
     }
 
@@ -1529,18 +1529,24 @@ class MainActivity : NGActivity(), GpsEventListener, IChooseLayerResult,
                 val message = intent.extras!!.getString(Constants.MESSAGE_EXTRA)
                 val title = intent.extras!!.getString(Constants.MESSAGE_TITLE_EXTRA)
 
-                val s = SpannableString(message) // msg should have url to enable clicking
-                Linkify.addLinks(s, Linkify.ALL)
+                val s = Html.fromHtml(
+                    message,
+                    Html.FROM_HTML_MODE_LEGACY
+                )
 
-                val builder = android.app.AlertDialog.Builder(this@MainActivity)
+
+                val builder = AlertDialog.Builder(this@MainActivity)
                 builder.setMessage(s)
                     .setPositiveButton("ok", null)
                     .setTitle(title)
                 val alertDialog = builder.create()
                 alertDialog.show()
 
+                (alertDialog.findViewById<View>(android.R.id.message) as TextView).linksClickable = true
                 (alertDialog.findViewById<View>(android.R.id.message) as TextView).movementMethod =
                     LinkMovementMethod.getInstance()
+
+
             }
         }
     }
